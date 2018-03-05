@@ -27,6 +27,7 @@ import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -112,9 +113,10 @@ public class MapViewHandler {
                         int id_tmp = 0;
                         int id = 0;
                         FeatureQueryResult result = featureQuery.get();
-                        if (result.iterator().hasNext()) {
+                        Iterator iterator = result.iterator();
+                        while (iterator.hasNext()) {
 
-                            Feature item = result.iterator().next();
+                            Feature item = (Feature) iterator.next();
                             id_tmp = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_ID_SUCO).toString().split("_")[0]);
                             if (id_tmp > id)
                                 id = id_tmp;
