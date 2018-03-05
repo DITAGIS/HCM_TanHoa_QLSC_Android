@@ -25,6 +25,8 @@ import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
+import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import java.util.Calendar;
 import java.util.Iterator;
@@ -40,6 +42,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.R;
  */
 
 public class MapViewHandler {
+    private static final java.lang.String PARTEN_DATE = "dd_MM_yyyy";
     private final ArcGISMap mMap;
     private final FeatureLayer suCoTanHoaLayer;
     private Callout mCallout;
@@ -51,6 +54,7 @@ public class MapViewHandler {
     private Popup popupInfos;
     private Context mContext;
     private static double DELTA_MOVE_Y = 0;//7000;
+    LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
     public MapViewHandler(ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
         this.mCallout = mCallout;
@@ -90,52 +94,79 @@ public class MapViewHandler {
         if (isClickBtnAdd) {
             final Feature feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
-            Short intObj = new Short((short) 0);
-            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_VITRI_SUCO, "sdf");
-            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO, intObj);
 
-            String searchStr = "";
-            String dateTime = "";
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                dateTime = getDateString();
-                searchStr = Constant.FEATURE_ATTRIBUTE_ID_SUCO + " like '%" + dateTime + "'";
-            }
-            QueryParameters queryParameters = new QueryParameters();
-
-            queryParameters.setWhereClause(searchStr);
-            final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
-            final String finalDateTime = dateTime;
-            featureQuery.addDoneListener(new Runnable() {
+            final ListenableFuture<List<GeocodeResult>> listListenableFuture = loc.reverseGeocodeAsync(clickPoint);
+            listListenableFuture.addDoneListener(new Runnable() {
                 @Override
                 public void run() {
                     try {
-                        int id_tmp = 0;
-                        int id = 0;
-                        FeatureQueryResult result = featureQuery.get();
-                        Iterator iterator = result.iterator();
-                        while (iterator.hasNext()) {
-
-                            Feature item = (Feature) iterator.next();
-                            id_tmp = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_ID_SUCO).toString().split("_")[0]);
-                            if (id_tmp > id)
-                                id = id_tmp;
+                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
+                        if (geocodeResults.size() > 0) {
+                            GeocodeResult geocodeResult = geocodeResults.get(0);
+//                            Map<String, Object >attrs  = new HashMap<>();
+//                            for(String key : geocodeResult.getAttributes().keySet()){
+//                                attrs.put(key, geocodeResult.getAttributes().get(key));
+//                            }
+                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
+                            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_VITRI_SUCO, address);
                         }
-                        id++;
-                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_ID_SUCO, id + "_" + finalDateTime);
+                        Short intObj = new Short((short) 0);
 
-                        ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
-                        isClickBtnAdd = false;
-                        mapViewResult.addDoneListener(new Runnable() {
+                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO, intObj);
+
+                        String searchStr = "";
+                        String dateTime = "";
+
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                            dateTime = getDateString();
+                            searchStr = Constant.FEATURE_ATTRIBUTE_ID_SUCO + " like '%" + dateTime + "'";
+                        }
+                        QueryParameters queryParameters = new QueryParameters();
+
+                        queryParameters.setWhereClause(searchStr);
+                        final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+                        final String finalDateTime = dateTime;
+                        featureQuery.addDoneListener(new Runnable() {
                             @Override
                             public void run() {
-                                mServiceFeatureTable.applyEditsAsync();
+                                try {
+                                    int id_tmp = 0;
+                                    int id = 0;
+                                    FeatureQueryResult result = featureQuery.get();
+                                    Iterator iterator = result.iterator();
+                                    while (iterator.hasNext()) {
+
+                                        Feature item = (Feature) iterator.next();
+                                        id_tmp = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_ID_SUCO).toString().split("_")[0]);
+                                        if (id_tmp > id)
+                                            id = id_tmp;
+                                    }
+                                    id++;
+                                    feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_ID_SUCO, id + "_" + finalDateTime);
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO, new SimpleDateFormat(PARTEN_DATE).parse(finalDateTime));
+//                                    }
+                                    ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
+                                    isClickBtnAdd = false;
+                                    mapViewResult.addDoneListener(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mServiceFeatureTable.applyEditsAsync();
+                                        }
+                                    });
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
+
+
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    } catch (ExecutionException e1) {
+                        e1.printStackTrace();
                     }
                 }
             });
@@ -194,11 +225,12 @@ public class MapViewHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getDateString() {
-        String timeStamp = new SimpleDateFormat("dd_MM_yyyy").format(Calendar.getInstance().getTime());
+        String timeStamp = new SimpleDateFormat(PARTEN_DATE).format(Calendar.getInstance().getTime());
         return timeStamp;
     }
 
     public void querySearch(String searchStr) {
+
         mCallout.dismiss();
 
         suCoTanHoaLayer.clearSelection();

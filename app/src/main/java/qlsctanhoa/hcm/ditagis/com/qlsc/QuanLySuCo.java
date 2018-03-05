@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.ArcGISRuntimeException;
@@ -36,6 +37,10 @@ import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.CustomAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
 
@@ -60,6 +65,9 @@ public class QuanLySuCo extends AppCompatActivity
     private static int LEVEL_OF_DETAIL = 12;
 
     private SearchView mTxtSearch;
+    private ListView mListViewSearch;
+    private CustomAdapter mCustomAdapter;
+
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 2;
@@ -72,6 +80,15 @@ public class QuanLySuCo extends AppCompatActivity
         setContentView(R.layout.activity_quan_ly_su_co);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //đưa listview search ra phía sau
+        this.mListViewSearch = findViewById(R.id.lstview_search);
+        this.mListViewSearch.invalidate();
+        List<CustomAdapter.Item> items = new ArrayList<>();
+        items.add(new CustomAdapter.Item("", "", "", "df", "af", 0));
+        this.mCustomAdapter = new CustomAdapter(QuanLySuCo.this, items);
+        this.mListViewSearch.setAdapter(mCustomAdapter);
+
         View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(bottomSheetView);
@@ -219,16 +236,18 @@ public class QuanLySuCo extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quan_ly_su_co, menu);
         mTxtSearch = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        mTxtSearch.setQueryHint("Tìm kiếm");
+        mTxtSearch.setQueryHint("Tìm kiếm mọi thứ...");
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
                 mMapViewHandler.querySearch(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 return false;
             }
         });
@@ -245,7 +264,7 @@ public class QuanLySuCo extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
-
+            QuanLySuCo.this.mListViewSearch.setVisibility(View.VISIBLE);
             return true;
         }
 
