@@ -1,0 +1,27 @@
+<resources>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_search">Tìm kiếm</string>
+
+    <string name="app_name">QLSC Tân Hòa</string>
+    <string name="dialog_title_add">Thêm sự cố</string>
+    <string name="btn_OK">OK</string>
+    <string name="btn_save">Lưu thay đổi</string>
+    <string name="btn_cancel">Hủy</string>
+    <string name="title_su_co">Sự cố</string>
+    <string name="people_info_title">Thông tin liên hệ</string>
+    <string name="hoten_field">Họ và tên</string>
+    <string name="sdt_field">Số điện thoại</string>
+    <string name="email_field">Thư điện tử</string>
+    <string name="address_field">Địa chỉ liên lạc</string>
+    <string name="suco_info_title">Thông tin liên hệ</string>
+    <string name="loaisuco_field">Loại sự cố</string>
+    <string name="noidung_field">Nội dung sự cố</string>
+    <string name="hinhanh_field">Hình ảnh đính kèm</string>
+    <string name="vitrisuco_field">Vị trí sự cố</string>
+
+    <string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>
+    <string name="service_feature_table">https://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
+</resources>

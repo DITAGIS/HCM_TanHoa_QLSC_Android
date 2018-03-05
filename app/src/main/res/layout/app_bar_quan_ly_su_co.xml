@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:subtitle=""
+            app:title=""></android.support.v7.widget.Toolbar>
+
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_quan_ly_su_co" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatBtnHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="145dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:src="@drawable/home"
+        android:visibility="invisible"
+        app:backgroundTint="@android:color/white" />
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatBtnLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:src="@drawable/location"
+        app:backgroundTint="@android:color/white" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatBtnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:src="@drawable/add"
+        app:backgroundTint="@android:color/white" />
+
+</android.support.design.widget.CoordinatorLayout>
