@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -71,7 +72,9 @@ public class QuanLySuCo extends AppCompatActivity
         setContentView(R.layout.activity_quan_ly_su_co);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+        View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
+        bottomSheetDialog.setContentView(bottomSheetView);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -115,7 +118,7 @@ public class QuanLySuCo extends AppCompatActivity
 
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
         final FeatureLayer suCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
-        popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout);
+        popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
         suCoTanHoaLayer.setPopupEnabled(true);
         mMap.getOperationalLayers().add(suCoTanHoaLayer);
         mMapView.setMap(mMap);

@@ -1,6 +1,9 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
 import android.content.Context;
+import android.icu.text.SimpleDateFormat;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,8 +26,7 @@ import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -47,7 +49,7 @@ public class MapViewHandler {
     private ServiceFeatureTable mServiceFeatureTable;
     private Popup popupInfos;
     private Context mContext;
-    private static double DELTA_MOVE_Y = 7000;
+    private static double DELTA_MOVE_Y = 0;//7000;
 
     public MapViewHandler(ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
         this.mCallout = mCallout;
@@ -85,21 +87,58 @@ public class MapViewHandler {
         // add done loading listener to fire when the selection returns
         final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(suCoTanHoaLayer, mClickPoint, 5, false, 1);
         if (isClickBtnAdd) {
-            Map<String, Object> attributes = new HashMap<String, Object>();
-            attributes.put(Constant.FEATURE_ATTRIBUTE_VITRI_SUCO, ""); // Coded Values: [1: Manatee] etc...
-            attributes.put(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO, 0); // Coded Values: [0: No] , [1: Yes]
-            attributes.put(Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO, Constant.DATE_FORMAT.format(new Date()));
-
             final Feature feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
-            ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
-            isClickBtnAdd = false;
-            mapViewResult.addDoneListener(new Runnable() {
+            Short intObj = new Short((short) 0);
+            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_VITRI_SUCO, "sdf");
+            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO, intObj);
+
+            String searchStr = "";
+            String dateTime = "";
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                dateTime = getDateString();
+                searchStr = Constant.FEATURE_ATTRIBUTE_ID_SUCO + " like '%" + dateTime + "'";
+            }
+            QueryParameters queryParameters = new QueryParameters();
+
+            queryParameters.setWhereClause(searchStr);
+            final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+            final String finalDateTime = dateTime;
+            featureQuery.addDoneListener(new Runnable() {
                 @Override
                 public void run() {
-                    mServiceFeatureTable.applyEditsAsync();
+                    try {
+                        int id_tmp = 0;
+                        int id = 0;
+                        FeatureQueryResult result = featureQuery.get();
+                        if (result.iterator().hasNext()) {
+
+                            Feature item = result.iterator().next();
+                            id_tmp = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_ID_SUCO).toString().split("_")[0]);
+                            if (id_tmp > id)
+                                id = id_tmp;
+                        }
+                        id++;
+                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_ID_SUCO, id + "_" + finalDateTime);
+
+                        ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
+                        isClickBtnAdd = false;
+                        mapViewResult.addDoneListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                mServiceFeatureTable.applyEditsAsync();
+                            }
+                        });
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
+
+
         } else {
             mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
                 @Override
@@ -149,6 +188,12 @@ public class MapViewHandler {
                 }
             });
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private String getDateString() {
+        String timeStamp = new SimpleDateFormat("dd_MM_yyyy").format(Calendar.getInstance().getTime());
+        return timeStamp;
     }
 
     public void querySearch(String searchStr) {

@@ -2,6 +2,7 @@ package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,11 +42,13 @@ public class Popup extends AppCompatActivity {
     private ServiceFeatureTable mServiceFeatureTable;
     private Callout mCallout;
     private Map<String, Object> mAttr;
+    private BottomSheetDialog mBottomSheetDialog;
 
-    public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout) {
+    public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout, BottomSheetDialog bottomSheetDialog) {
         this.mainActivity = mainActivity;
         this.mServiceFeatureTable = mServiceFeatureTable;
         this.mCallout = callout;
+        this.mBottomSheetDialog = bottomSheetDialog;
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +133,33 @@ public class Popup extends AppCompatActivity {
     }
 
     private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
+
+        View layout = mainActivity.getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
+        LinearLayout layout_info = layout.findViewById(R.id.layout_bs_info);
+        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
+            if (field.getDomain() != null) {
+
+            } else {
+                Object value = attr.get(field.getName());
+//                if (value != null) {
+                if (field.getName().equals(Constant.FEATURE_ATTRIBUTE_ID_SUCO)) {
+                    if (value != null)
+                        ((TextView) layout.findViewById(R.id.txt_bs_id_su_co)).setText(value.toString());
+                } else {
+                    TextView tv = new TextView(layout_info.getContext());
+                    tv.setPadding(0, 0, 0, 0);
+                    if (value == null)
+                        tv.setText(field.getAlias() + ":");
+                    else
+                        tv.setText(field.getAlias() + ": " + value.toString());
+                    layout_info.addView(tv);
+                }
+//                }
+
+            }
+        }
+        mBottomSheetDialog.setContentView(layout);
+        mBottomSheetDialog.show();
     }
 
     private void deleteFeature() {
