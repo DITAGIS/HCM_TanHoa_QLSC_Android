@@ -23,6 +23,7 @@ import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
+import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,7 +80,15 @@ public class Popup extends AppCompatActivity {
                         break;
                     case Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO:
                         if (value != null)
-                            ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(value.toString());
+                            ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(
+                                    ((UniqueValueRenderer)this.mSelectedArcGISFeature
+                                            .getFeatureTable()
+                                            .getLayerInfo()
+                                            .getDrawingInfo()
+                                            .getRenderer())
+                                            .getUniqueValues()
+                                            .get(Integer.parseInt(value.toString()))
+                                            .getLabel());
                         break;
                     case Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO:
                         if (value != null)
