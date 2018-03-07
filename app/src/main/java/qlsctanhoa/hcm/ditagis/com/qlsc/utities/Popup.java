@@ -13,6 +13,8 @@ import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -81,7 +83,7 @@ public class Popup extends AppCompatActivity {
                     case Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO:
                         if (value != null)
                             ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(
-                                    ((UniqueValueRenderer)this.mSelectedArcGISFeature
+                                    ((UniqueValueRenderer) this.mSelectedArcGISFeature
                                             .getFeatureTable()
                                             .getLayerInfo()
                                             .getDrawingInfo()
@@ -92,7 +94,7 @@ public class Popup extends AppCompatActivity {
                         break;
                     case Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO:
                         if (value != null)
-                            ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar)value).getTime()));
+                            ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                         break;
                 }
 //                linearLayoutInfo.addView(layout);
@@ -120,6 +122,7 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                viewMoreInfo_bottomsheet(mSelectedArcGISFeature, attr);
                 viewMoreInfo(mSelectedArcGISFeature, attr);
             }
         });
@@ -142,10 +145,10 @@ public class Popup extends AppCompatActivity {
     private void edit(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
     }
 
-    private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
+    private void viewMoreInfo_bottomsheet(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
 
         View layout = mainActivity.getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
-        LinearLayout layout_info = layout.findViewById(R.id.layout_bs_info);
+        LinearLayout layout_info = layout.findViewById(R.id.layout_alertdialog_info);
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             if (field.getDomain() != null) {
 
@@ -154,7 +157,7 @@ public class Popup extends AppCompatActivity {
 //                if (value != null) {
                 if (field.getName().equals(Constant.FEATURE_ATTRIBUTE_ID_SUCO)) {
                     if (value != null)
-                        ((TextView) layout.findViewById(R.id.txt_bs_id_su_co)).setText(value.toString());
+                        ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
                 } else {
                     TextView tv = new TextView(layout_info.getContext());
                     tv.setPadding(0, 0, 0, 0);
@@ -170,6 +173,62 @@ public class Popup extends AppCompatActivity {
         }
         mBottomSheetDialog.setContentView(layout);
         mBottomSheetDialog.show();
+    }
+
+    private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+        View layout = mainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
+
+        TableLayout layout_info = layout.findViewById(R.id.layout_alertdialog_info);
+        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
+            if (field.getDomain() != null) {
+
+            } else {
+                Object value = attr.get(field.getName());
+//                if (value != null) {
+                if (field.getName().equals(Constant.FEATURE_ATTRIBUTE_ID_SUCO)) {
+                    if (value != null)
+                        ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
+                } else {
+                    TableRow row_layout = new TableRow(layout_info.getContext());
+                    row_layout.setOrientation(LinearLayout.HORIZONTAL);
+                    row_layout.setBackgroundResource(R.drawable.cell_shape);
+                    TextView txtAlias = new TextView(layout_info.getContext());
+                    txtAlias.setPadding(0, 0, 0, 0);
+                    txtAlias.setWidth(400);
+                    txtAlias.setText(field.getAlias() + ": ");
+//                    txtAlias.setBackgroundResource(R.drawable.cell_shape);
+
+
+                    TextView txtValue = new TextView(layout_info.getContext());
+                    txtValue.setPadding(0, 0, 0, 0);
+//                    txtValue.setBackgroundResource(R.drawable.cell_shape);
+                    if (value != null)
+                        switch (field.getFieldType()) {
+                            case DATE:
+                                txtValue.setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                                break;
+                            case TEXT:
+                                txtValue.setText(value.toString());
+                                break;
+                        }
+                    row_layout.addView(txtAlias);
+                    row_layout.addView(txtValue);
+
+                    layout_info.addView(row_layout);
+                }
+//                }
+
+            }
+        }
+
+        builder.setView(layout);
+        AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        dialog.show();
+
+
     }
 
     private void deleteFeature() {

@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 
 public class Constant {
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd-MM-yyyy");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
     public static enum FEATURE_ATTRIBUTES {
         ID_SUCO {
             @Override
