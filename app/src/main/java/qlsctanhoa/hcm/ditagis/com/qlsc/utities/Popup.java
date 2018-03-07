@@ -25,6 +25,7 @@ import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +83,7 @@ public class Popup extends AppCompatActivity {
                         break;
                     case Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO:
                         if (value != null)
-                            ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(value.toString());
+                            ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar)value).getTime()));
                         break;
                 }
 //                linearLayoutInfo.addView(layout);

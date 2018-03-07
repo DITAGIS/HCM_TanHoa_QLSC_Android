@@ -1,7 +1,6 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
 import android.content.Context;
-import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
@@ -28,7 +27,9 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.R;
  */
 
 public class MapViewHandler {
-    private static final java.lang.String PARTEN_DATE = "dd_MM_yyyy";
+
     private final ArcGISMap mMap;
     private final FeatureLayer suCoTanHoaLayer;
     private Callout mCallout;
@@ -143,9 +144,12 @@ public class MapViewHandler {
                                     }
                                     id++;
                                     feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_ID_SUCO, id + "_" + finalDateTime);
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO, new SimpleDateFormat(PARTEN_DATE).parse(finalDateTime));
-//                                    }
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                        Date date = Constant.DATE_FORMAT.parse(finalDateTime);
+                                        Calendar c = Calendar.getInstance();
+                                        c.setTime(date);
+                                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO, c);
+                                    }
                                     ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
                                     isClickBtnAdd = false;
                                     mapViewResult.addDoneListener(new Runnable() {
@@ -158,6 +162,8 @@ public class MapViewHandler {
                                     e.printStackTrace();
                                 } catch (ExecutionException e) {
                                     e.printStackTrace();
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
                                 }
                             }
                         });
@@ -225,7 +231,7 @@ public class MapViewHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getDateString() {
-        String timeStamp = new SimpleDateFormat(PARTEN_DATE).format(Calendar.getInstance().getTime());
+        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
         return timeStamp;
     }
 
