@@ -8,8 +8,7 @@
     android:orientation="vertical"
     android:padding="@dimen/activity_margin"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="56dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:behavior_peekHeight="56dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,13 +42,17 @@
                 android:textStyle="bold"></TextView>
         </LinearLayout>
 
-        <LinearLayout
+        <TableLayout
             android:id="@+id/layout_alertdialog_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="vertical"
-            android:weightSum="3"></LinearLayout>
+            android:weightSum="3">
+
+        </TableLayout>
+
+
 
         <TextView
             android:id="@+id/txt_bs_trangthai_su_co"

@@ -179,53 +179,53 @@ public class MapViewHandler {
 
 
         } else {
-            mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
+//            mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
+//                @Override
+//                public void run() {
+            identifyFuture.addDoneListener(new Runnable() {
                 @Override
                 public void run() {
-                    identifyFuture.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                // call get on the future to get the result
-                                IdentifyLayerResult layerResult = identifyFuture.get();
-                                List<GeoElement> resultGeoElements = layerResult.getElements();
-                                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                    try {
+                        // call get on the future to get the result
+                        IdentifyLayerResult layerResult = identifyFuture.get();
+                        List<GeoElement> resultGeoElements = layerResult.getElements();
+                        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
-                                if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
-                                    if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-                                        mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
-                                        // highlight the selected feature
-                                        suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
-                                        Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
+                        if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
+                            if (resultGeoElements.get(0) instanceof ArcGISFeature) {
+                                mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
+                                // highlight the selected feature
+                                suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
+                                Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
 
-                                        LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
+                                LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
 
 
-                                        Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+                                Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
 
-                                        Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-                                        mMapView.setViewpointGeometryAsync(envelope1, 0);
-                                        // show CallOut
-                                        mCallout.setLocation(clickPoint);
+                                Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+                                mMapView.setViewpointGeometryAsync(envelope1, 0);
+                                // show CallOut
+                                mCallout.setLocation(clickPoint);
 
-                                        mCallout.setContent(linearLayout);
-                                        mCallout.refresh();
-                                        mCallout.show();
+                                mCallout.setContent(linearLayout);
+                                mCallout.refresh();
+                                mCallout.show();
 //                                    deleteFeature();
 //                                    updateFeature();
-                                    }
-                                } else {
-                                    Toast.makeText(mContext.getApplicationContext(), " click here", Toast.LENGTH_SHORT).show();
-                                    // none of the features on the map were selected
-                                    mCallout.dismiss();
-                                }
-                            } catch (Exception e) {
-                                Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
                             }
+                        } else {
+                            Toast.makeText(mContext.getApplicationContext(), " click here", Toast.LENGTH_SHORT).show();
+                            // none of the features on the map were selected
+                            mCallout.dismiss();
                         }
-                    });
+                    } catch (Exception e) {
+                        Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
+                    }
                 }
             });
+//                }
+//            });
         }
     }
 
