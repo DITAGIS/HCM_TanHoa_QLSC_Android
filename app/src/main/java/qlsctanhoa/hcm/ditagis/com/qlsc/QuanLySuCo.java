@@ -139,8 +139,7 @@ public class QuanLySuCo extends AppCompatActivity
         suCoTanHoaLayer.setPopupEnabled(true);
         mMap.getOperationalLayers().add(suCoTanHoaLayer);
         mMapView.setMap(mMap);
-        mLocationDisplay = mMapView.getLocationDisplay();
-        changeStatusOfLocationDataSource();
+
 
         mMap.addLoadStatusChangedListener(new LoadStatusChangedListener() {
             @Override
@@ -162,6 +161,8 @@ public class QuanLySuCo extends AppCompatActivity
                 }
             }
         });
+        changeStatusOfLocationDataSource();
+
         mMapViewHandler = new MapViewHandler(mMap, suCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
 
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
@@ -178,7 +179,8 @@ public class QuanLySuCo extends AppCompatActivity
     }
 
     private void changeStatusOfLocationDataSource() {
-        // Listen to changes in the status of the location data source.
+        mLocationDisplay = mMapView.getLocationDisplay();
+//        changeStatusOfLocationDataSource();
         mLocationDisplay.addDataSourceStatusChangedListener(new LocationDisplay.DataSourceStatusChangedListener() {
             @Override
             public void onStatusChanged(LocationDisplay.DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
@@ -198,24 +200,15 @@ public class QuanLySuCo extends AppCompatActivity
                 boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) ==
                         PackageManager.PERMISSION_GRANTED;
 
-                if (ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) != PackageManager.PERMISSION_GRANTED)
-                    ActivityCompat.requestPermissions(QuanLySuCo.this, new String[]{reqPermissions[0], reqPermissions[1]},
-                            REQUEST_ID_IMAGE_CAPTURE);
-
-                if (Build.VERSION.SDK_INT >= 23 &&
-                        ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) != PackageManager.PERMISSION_GRANTED)
-
-                {
+                if (!(permissionCheck1 && permissionCheck2)) {
+                    // If permissions are not already granted, request permission from the user.
+                    ActivityCompat.requestPermissions(QuanLySuCo.this, reqPermissions, requestCode);
+                } else {
                     // Report other unknown failure types to the user - for example, location services may not
                     // be enabled on the device.
                     String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
                             .getSource().getLocationDataSource().getError().getMessage());
                     Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
-
-                    // Update UI to reflect that the location display did not actually start
-//                    mSpinner.setSelection(0, true);
                 }
             }
         });
@@ -307,9 +300,6 @@ public class QuanLySuCo extends AppCompatActivity
 
 
     private void getMyLocation() {
-//        if (!mLocationDisplay.isStarted())
-//            mLocationDisplay.startAsync();
-        mLocationDisplay.setAutoPanMode(LocationDisplay.AutoPanMode.RECENTER);
         if (!mLocationDisplay.isStarted())
             mLocationDisplay.startAsync();
     }
