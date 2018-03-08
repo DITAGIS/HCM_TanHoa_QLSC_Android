@@ -2,7 +2,6 @@ package qlsctanhoa.hcm.ditagis.com.qlsc;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -21,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -45,7 +46,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
 
 public class QuanLySuCo extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
 
     private FloatingActionButton btnAdd;
@@ -127,7 +128,7 @@ public class QuanLySuCo extends AppCompatActivity
         mMapView = (MapView) findViewById(R.id.mapView);
 //        ArcGISMapImageLayer mapImageLayer = new ArcGISMapImageLayer(getResources().getString(R.string.world_elevation_service));
         // create an empty map instance
-        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.STREETS, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
+        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
 
         // set the map to be displayed in this view
         mMapView.setMap(mMap);
@@ -176,6 +177,12 @@ public class QuanLySuCo extends AppCompatActivity
                 return super.onSingleTapConfirmed(e);
             }
         });
+
+        ((LinearLayout) findViewById(R.id.layout_layer_open_street_map)).setOnClickListener(this);
+        ((LinearLayout) findViewById(R.id.layout_layer_street_map)).setOnClickListener(this);
+        ((LinearLayout) findViewById(R.id.layout_layer_topo)).setOnClickListener(this);
+        ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
+        ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
     }
 
     private void changeStatusOfLocationDataSource() {
@@ -320,6 +327,30 @@ public class QuanLySuCo extends AppCompatActivity
 
             // Update UI to reflect that the location display did not actually start
 //            mSpinner.setSelection(0, true);
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.floatBtnLayer:
+                v.setVisibility(View.INVISIBLE);
+                ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.VISIBLE);
+                break;
+            case R.id.layout_layer_open_street_map:
+                mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
+                break;
+            case R.id.layout_layer_street_map:
+                mMapView.getMap().setBasemap(Basemap.createStreets());
+                break;
+            case R.id.layout_layer_topo:
+                mMapView.getMap().setBasemap(Basemap.createTopographic());
+                break;
+            case R.id.btn_layer_close:
+                ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
+                ((FloatingActionButton)findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
+                break;
         }
     }
 }
