@@ -1,8 +1,8 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -21,13 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.ArcGISRuntimeException;
@@ -47,11 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.CustomAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
 
 public class QuanLySuCo extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener {
 
 
     private FloatingActionButton btnAdd;
@@ -60,11 +55,13 @@ public class QuanLySuCo extends AppCompatActivity
     private Callout mCallout;
     private android.graphics.Point mClickPoint;
     private ArcGISFeature mSelectedArcGISFeature;
+    private FeatureLayer suCoTanHoaLayer;
     private ServiceFeatureTable mServiceFeatureTable;
     private String mSelectedArcGISFeatureAttributeValue;
     private boolean isClickBtnAdd = false;
 
     private MapViewHandler mMapViewHandler;
+    private MapFunctions mapFunctions;
 
     private static double LATITUDE = 10.7554041;
     private static double LONGTITUDE = 106.6546293;
@@ -111,7 +108,8 @@ public class QuanLySuCo extends AppCompatActivity
         findViewById(R.id.floatBtnLocation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getMyLocation();
+                goHome();
+//                getMyLocation();
             }
         });
         findViewById(R.id.floatBtnHome).setOnClickListener(new View.OnClickListener() {
@@ -133,14 +131,13 @@ public class QuanLySuCo extends AppCompatActivity
         mMapView = (MapView) findViewById(R.id.mapView);
 //        ArcGISMapImageLayer mapImageLayer = new ArcGISMapImageLayer(getResources().getString(R.string.world_elevation_service));
         // create an empty map instance
-        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
-
+        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.STREETS, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
+        this.mapFunctions = new MapFunctions(this);
         // set the map to be displayed in this view
         mMapView.setMap(mMap);
         mCallout = mMapView.getCallout();
-
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
-        final FeatureLayer suCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
+        suCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
         popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
         suCoTanHoaLayer.setPopupEnabled(true);
         mMap.getOperationalLayers().add(suCoTanHoaLayer);
@@ -180,23 +177,6 @@ public class QuanLySuCo extends AppCompatActivity
                     Log.d("ArcgisruntimeException", ex.toString());
                 }
                 return super.onSingleTapConfirmed(e);
-            }
-        });
-
-        ((LinearLayout) findViewById(R.id.layout_layer_open_street_map)).setOnClickListener(this);
-        ((LinearLayout) findViewById(R.id.layout_layer_street_map)).setOnClickListener(this);
-        ((LinearLayout) findViewById(R.id.layout_layer_topo)).setOnClickListener(this);
-        ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
-        ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
-
-        ((CheckBox)findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    suCoTanHoaLayer.setVisible(true);
-                }
-                else
-                    suCoTanHoaLayer.setVisible(false);
             }
         });
     }
@@ -301,9 +281,10 @@ public class QuanLySuCo extends AppCompatActivity
 
         } else if (id == R.id.nav_manage) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_thongke) {
+            this.mapFunctions.thongKe();
 
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_tracuu) {
 
         }
 
@@ -319,6 +300,7 @@ public class QuanLySuCo extends AppCompatActivity
     }
 
     private void goHome() {
+        this.suCoTanHoaLayer.setVisible(false);
     }
 
 
@@ -345,70 +327,4 @@ public class QuanLySuCo extends AppCompatActivity
 //            mSpinner.setSelection(0, true);
         }
     }
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.floatBtnLayer:
-                v.setVisibility(View.INVISIBLE);
-                ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.VISIBLE);
-                break;
-            case R.id.layout_layer_open_street_map:
-                mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
-
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
-                break;
-            case R.id.layout_layer_street_map:
-                mMapView.getMap().setBasemap(Basemap.createStreets());
-
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
-                break;
-            case R.id.layout_layer_topo:
-                mMapView.getMap().setBasemap(Basemap.createTopographic());
-
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
-                break;
-            case R.id.btn_layer_close:
-                ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
-                ((FloatingActionButton)findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
-                break;
-        }
-    }
-
-    @SuppressLint("ResourceAsColor")
-    private void handlingColorBackgroundLayerSelected(int id){
-        switch (id){
-            case R.id.layout_layer_open_street_map:
-                ((ImageView)findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-                ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                break;
-            case R.id.layout_layer_street_map:
-
-                ((ImageView)findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-                ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                break;
-            case R.id.layout_layer_topo:
-                ((ImageView)findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
-                ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                break;
-        }
-    }
-
-
 }
