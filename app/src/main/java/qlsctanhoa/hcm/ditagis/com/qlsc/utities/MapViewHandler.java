@@ -215,8 +215,7 @@ public class MapViewHandler {
 //                                    updateFeature();
                             }
                         } else {
-                            Toast.makeText(mContext.getApplicationContext(), " click here", Toast.LENGTH_SHORT).show();
-                            // none of the features on the map were selected
+                           // none of the features on the map were selected
                             mCallout.dismiss();
                         }
                     } catch (Exception e) {

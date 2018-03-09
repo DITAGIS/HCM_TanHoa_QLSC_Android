@@ -26,5 +26,8 @@
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
     <string name="chuc_nang_thong_ke">Thống kê</string>
     <string name="chuc_nang_tra_cuu">Tra cứu</string>
+    <string name="tongloaitrangthai">tongloaitrangthai</string>
+    <string name="title_activity_tra_cuu">TraCuuActivity</string>
+
 
 </resources>
