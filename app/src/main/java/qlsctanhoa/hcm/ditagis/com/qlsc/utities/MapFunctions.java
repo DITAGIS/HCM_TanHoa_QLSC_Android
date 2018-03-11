@@ -1,6 +1,7 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.ThongKeActivity;
+import qlsctanhoa.hcm.ditagis.com.qlsc.TraCuuActivity;
 
 /**
  * Created by NGUYEN HONG on 3/8/2018.
@@ -72,5 +74,11 @@ public class MapFunctions {
 
 
 
+    }
+
+    public void traCuu() {
+        final Intent intent = new Intent(mQuanLySuCo, TraCuuActivity.class);
+
+        mQuanLySuCo.startActivity(intent);
     }
 }

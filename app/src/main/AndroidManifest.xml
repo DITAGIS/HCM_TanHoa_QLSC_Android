@@ -36,6 +36,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".ThongKeActivity" />
+        <activity
+            android:name=".TraCuuActivity"
+            android:label="@string/title_activity_tra_cuu"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

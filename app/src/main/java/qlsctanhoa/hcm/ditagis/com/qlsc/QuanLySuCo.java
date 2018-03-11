@@ -308,6 +308,7 @@ public class QuanLySuCo extends AppCompatActivity
             this.mapFunctions.thongKe();
 
         } else if (id == R.id.nav_tracuu) {
+            this.mapFunctions.traCuu();
 
         }
 
