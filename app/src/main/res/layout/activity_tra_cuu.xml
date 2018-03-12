@@ -7,11 +7,6 @@
     android:orientation="vertical"
     tools:context="qlsctanhoa.hcm.ditagis.com.qlsc.TraCuuActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/chuc_nang_tra_cuu" />
-
 
     <TableLayout
         android:layout_width="match_parent"
@@ -71,6 +66,10 @@
         android:id="@+id/btnTraCuu"
         android:text="Tra cứu"/>
 
+    <ListView
+        android:id="@+id/lstView_TraCuu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

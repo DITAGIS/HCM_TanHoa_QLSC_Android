@@ -23,7 +23,9 @@
     <color name="colorCSC_SL_2_1">#b0cae5</color>
     <color name="colorCSC_SL_3_1">#e5b1b0</color>
 
-
+    <color name="color_chua_sua_chua">#e5b1b0</color>
+    <color name="color_da_sua_chua">#b0cae5</color>
+    <color name="color_dang_sua_chua">#e5e5b0</color>
     <!--Theme 2-->
     <color name="colorPrimary_2">#dff0d8</color>
     <color name="colorPrimaryDark_2">#0055a0</color>
