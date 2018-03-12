@@ -35,7 +35,7 @@ public class Constant {
             }
         };
     }
-
+    public static final String OBJECTID = "OBJECTID";
     public static final String IDSU_CO = "IDSuCo";
     public static final String VI_TRI = "ViTri";
     public static final String TRANG_THAI = "TrangThai";

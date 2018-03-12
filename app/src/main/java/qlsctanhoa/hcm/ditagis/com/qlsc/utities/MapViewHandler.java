@@ -234,7 +234,35 @@ public class MapViewHandler {
         String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
         return timeStamp;
     }
+    public void queryByObjectID(int objectID) {
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause("OBJECTID = " + objectID);
+        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+        feature.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FeatureQueryResult result = feature.get();
+                    if (result.iterator().hasNext()) {
 
+                        Feature item = result.iterator().next();
+
+                        Envelope extent = item.getGeometry().getExtent();
+
+                        mMapView.setViewpointGeometryAsync(extent);
+
+                        suCoTanHoaLayer.selectFeature(item);
+
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
     public void querySearch(String searchStr) {
 
         mCallout.dismiss();

@@ -103,16 +103,28 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
     }
 
     public static class Item {
+
+
+        int objectID;
         String id;
         int trangThai;
         String ngayCapNhat;
         String diaChi;
 
-        public Item(String id, int trangThai, String ngayCapNhat, String diaChi) {
+        public Item(int objectID, String id, int trangThai, String ngayCapNhat, String diaChi) {
+            this.objectID = objectID;
             this.id = id;
             this.trangThai = trangThai;
             this.ngayCapNhat = ngayCapNhat;
             this.diaChi = diaChi;
+        }
+
+        public int getObjectID() {
+            return objectID;
+        }
+
+        public void setObjectID(int objectID) {
+            this.objectID = objectID;
         }
 
         public String getId() {

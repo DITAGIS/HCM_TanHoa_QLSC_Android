@@ -28,6 +28,7 @@
     <string name="chuc_nang_tra_cuu">Tra cứu</string>
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
+    <string name="ket_qua_objectid">ket_qua_objectid</string>
 
 
 </resources>
