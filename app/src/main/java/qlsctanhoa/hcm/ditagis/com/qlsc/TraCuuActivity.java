@@ -52,7 +52,7 @@ public class TraCuuActivity extends AppCompatActivity {
     @Override
     public void finish() {
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("result","sdf");
+        returnIntent.putExtra("result",3);
         setResult(Activity.RESULT_OK,returnIntent);
 
         super.finish();

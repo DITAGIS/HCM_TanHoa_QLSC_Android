@@ -40,9 +40,9 @@ public class ThongKeActivity extends AppCompatActivity {
         txtChuaSua.setText(tongloaitrangthai[1]+"");
         txtDangSua.setText(tongloaitrangthai[2]+"");
         txtDaSua.setText(tongloaitrangthai[3]+"");
-        txtPhanTramChuaSua.setText((tongloaitrangthai[1]/tongloaitrangthai[0])*100+"%");
-        txtPhanTramDangSua.setText((tongloaitrangthai[2]/tongloaitrangthai[0])*100+"%");
-        txtPhanTramDaSua.setText((tongloaitrangthai[3]/tongloaitrangthai[0])*100+"%");
+        txtPhanTramChuaSua.setText((tongloaitrangthai[1]*100)/tongloaitrangthai[0]+"%");
+        txtPhanTramDangSua.setText((tongloaitrangthai[2]*100)/tongloaitrangthai[0]+"%");
+        txtPhanTramDaSua.setText((tongloaitrangthai[3]*100)/tongloaitrangthai[0]+"%");
         mChart = (PieChart) findViewById(R.id.piechart);
         mChart = configureChart(mChart);
         mChart = setData(mChart,tongloaitrangthai);

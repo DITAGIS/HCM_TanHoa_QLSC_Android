@@ -32,7 +32,7 @@ public class MapFunctions {
     }
 
     public void thongKe() {
-        final int[] tongloaitrangthai = {0, 0, 0, 0};
+        final int[] tongloaitrangthai = {0, 0, 0, 0};// tong, chuasua, dangsua, dasua
 
 
         QueryParameters queryParameters = new QueryParameters();
@@ -50,8 +50,8 @@ public class MapFunctions {
                         int trangthai = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO).toString());
                         if (trangthai == 0)
                             tongloaitrangthai[1] += 1;
-                        else if (trangthai == 1) tongloaitrangthai[2] += 1;
-                        else if (trangthai == 3) tongloaitrangthai[3] += 1;
+                        else if (trangthai == 2) tongloaitrangthai[2] += 1;
+                        else if (trangthai == 1) tongloaitrangthai[3] += 1;
                     }
 
 
@@ -69,10 +69,34 @@ public class MapFunctions {
 
     }
 
-    public void traCuu(Activity firstActivity) {
-        final Intent intent = new Intent(firstActivity, TraCuuActivity.class);
+    public void traCuu() {
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause("TrangThai = 0");
+        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+        feature.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FeatureQueryResult result = feature.get();
+                    Iterator iterator = result.iterator();
+                    while (iterator.hasNext()) {
+                        Feature item = (Feature) iterator.next();
 
-        firstActivity.startActivityForResult(intent, 1);
+                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO).toString());
+
+                    }
+
+
+                    final Intent intent = new Intent(mQuanLySuCo, ThongKeActivity.class);
+                    intent.putExtra(mQuanLySuCo.getApplicationContext().getString(R.string.tongloaitrangthai), tongloaitrangthai);
+                    mQuanLySuCo.startActivity(intent);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 

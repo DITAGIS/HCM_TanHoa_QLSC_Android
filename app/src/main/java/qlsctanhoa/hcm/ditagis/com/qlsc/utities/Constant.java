@@ -40,4 +40,5 @@ public class Constant {
     public static final String FEATURE_ATTRIBUTE_VITRI_SUCO = "ViTri";
     public static final String FEATURE_ATTRIBUTE_TRANGTHAI_SUCO = "TrangThai";
     public static final String FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO = "NgayCapNhat";
+    public static final int REQUEST_CODE = 99;
 }

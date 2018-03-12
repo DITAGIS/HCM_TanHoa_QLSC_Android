@@ -420,11 +420,13 @@ public class QuanLySuCo extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("ádfgdsf", "onactivityresult");
+        final int tongloaitrangthai = data.getIntExtra("result",1);
         if (requestCode == 1) {
 
             if (resultCode == Activity.RESULT_OK) {
                 Toast.makeText(this, "Kết quả từ tra cứu", Toast.LENGTH_SHORT).show();
             }
         }
+        mapFunctions.traCuu();
     }
 }
