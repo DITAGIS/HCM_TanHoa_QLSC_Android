@@ -86,10 +86,6 @@ public class MapFunctions {
 
                     }
 
-
-                    final Intent intent = new Intent(mQuanLySuCo, ThongKeActivity.class);
-                    intent.putExtra(mQuanLySuCo.getApplicationContext().getString(R.string.tongloaitrangthai), tongloaitrangthai);
-                    mQuanLySuCo.startActivity(intent);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
