@@ -1,9 +1,9 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -18,9 +18,6 @@ public class TraCuuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tra_cuu);
-        query();
-
-
     }
 
     public void showDateTimePicker(View view) {
@@ -41,16 +38,17 @@ public class TraCuuActivity extends AppCompatActivity {
                 Button editText = (Button) findViewById(R.id.editShowDate);
                 editText.setText(s);
                 alertDialog.dismiss();
-            }});
+            }
+        });
         alertDialog.setView(dialogView);
         alertDialog.show();
 
     }
-    public void query(){
+
+    public void query() {
 
 
     }
-
     @Override
     public void finish() {
         Intent returnIntent = new Intent();
@@ -59,4 +57,5 @@ public class TraCuuActivity extends AppCompatActivity {
 
         super.finish();
     }
+
 }
