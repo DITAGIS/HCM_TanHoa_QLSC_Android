@@ -79,4 +79,8 @@ public class TraCuuActivity extends AppCompatActivity {
         super.finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }
