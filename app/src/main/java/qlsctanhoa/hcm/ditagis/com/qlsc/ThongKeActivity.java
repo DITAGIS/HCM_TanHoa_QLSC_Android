@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class ThongKeActivity extends AppCompatActivity {
     private TextView txtTongSuCo, txtChuaSua, txtDangSua, txtDaSua;
-    private TextView  txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
+    private TextView txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
     private QuanLySuCo mQuanLySuCo;
     private ServiceFeatureTable mServiceFeatureTable;
     private PieChart mChart;
@@ -36,18 +36,19 @@ public class ThongKeActivity extends AppCompatActivity {
 
     public void thongKe() {
         final int[] tongloaitrangthai = getIntent().getIntArrayExtra(this.getString(R.string.tongloaitrangthai));
-        txtTongSuCo.setText("Tổng các sự cố: " +tongloaitrangthai[0]);
-        txtChuaSua.setText(tongloaitrangthai[1]+"");
-        txtDangSua.setText(tongloaitrangthai[2]+"");
-        txtDaSua.setText(tongloaitrangthai[3]+"");
-        txtPhanTramChuaSua.setText((tongloaitrangthai[1]*100)/tongloaitrangthai[0]+"%");
-        txtPhanTramDangSua.setText((tongloaitrangthai[2]*100)/tongloaitrangthai[0]+"%");
-        txtPhanTramDaSua.setText((tongloaitrangthai[3]*100)/tongloaitrangthai[0]+"%");
+        txtTongSuCo.setText("Tổng các sự cố: " + tongloaitrangthai[0]);
+        txtChuaSua.setText(tongloaitrangthai[1] + "");
+        txtDangSua.setText(tongloaitrangthai[2] + "");
+        txtDaSua.setText(tongloaitrangthai[3] + "");
+        txtPhanTramChuaSua.setText((tongloaitrangthai[1] * 100) / tongloaitrangthai[0] + "%");
+        txtPhanTramDangSua.setText((tongloaitrangthai[2] * 100) / tongloaitrangthai[0] + "%");
+        txtPhanTramDaSua.setText((tongloaitrangthai[3] * 100) / tongloaitrangthai[0] + "%");
         mChart = (PieChart) findViewById(R.id.piechart);
         mChart = configureChart(mChart);
-        mChart = setData(mChart,tongloaitrangthai);
+        mChart = setData(mChart, tongloaitrangthai);
         mChart.animateXY(1500, 1500);
     }
+
     public PieChart configureChart(PieChart chart) {
         chart.setHoleColor(getResources().getColor(android.R.color.background_dark));
         chart.setHoleRadius(60f);
@@ -65,7 +66,7 @@ public class ThongKeActivity extends AppCompatActivity {
         return chart;
     }
 
-    private PieChart setData(PieChart chart,int[] tongloaitrangthai) {
+    private PieChart setData(PieChart chart, int[] tongloaitrangthai) {
         ArrayList<Entry> yVals1 = new ArrayList<Entry>();
 
         yVals1.add(new Entry(tongloaitrangthai[1], 0));
@@ -90,5 +91,4 @@ public class ThongKeActivity extends AppCompatActivity {
 //        chart.invalidate();
         return chart;
     }
-
 }
