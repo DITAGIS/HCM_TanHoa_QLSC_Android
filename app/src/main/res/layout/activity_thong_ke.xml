@@ -32,6 +32,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:gravity="center_horizontal"
                     android:padding="3dip"
                     android:text="Trạng thái"
                     android:textSize="17sp" />
@@ -39,6 +41,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="center_horizontal"
                     android:padding="3dip"
                     android:text="Số lượng"
@@ -46,9 +49,10 @@
 
                 <TextView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="center_horizontal"
+                    android:padding="3dip"
                     android:text="Phần trăm"
                     android:textSize="17sp" />
             </TableRow>
@@ -58,6 +62,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:padding="3dip"
                     android:text="Chưa sửa"
                     android:textSize="17sp" />
@@ -66,6 +71,7 @@
                     android:id="@+id/txtChuaSua"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
                     android:padding="3dip"
                     android:textSize="17sp" />
@@ -73,10 +79,12 @@
                 <TextView
                     android:id="@+id/txtPhanTramChuaSua"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
+                    android:padding="3dip"
                     android:textSize="17sp" />
+
             </TableRow>
 
             <TableRow android:layout_width="match_parent">
@@ -84,6 +92,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:padding="3dip"
                     android:text="Đang sửa"
                     android:textSize="17sp" />
@@ -92,6 +101,7 @@
                     android:id="@+id/txtDangSua"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
                     android:padding="3dip"
                     android:text=""
@@ -100,9 +110,11 @@
                 <TextView
                     android:id="@+id/txtPhanTramDangSua"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
                     android:textSize="17sp" />
             </TableRow>
 
@@ -111,6 +123,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:padding="3dip"
                     android:text="Đã sửa"
                     android:textSize="17sp" />
@@ -119,17 +132,21 @@
                     android:id="@+id/txtDaSua"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
                     android:padding="3dip"
                     android:text=""
                     android:textSize="17sp" />
 
+
                 <TextView
                     android:id="@+id/txtPhanTramDaSua"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
                     android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
                     android:textSize="17sp" />
             </TableRow>
         </TableLayout>
