@@ -1,6 +1,5 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
-import android.app.Activity;
 import android.content.Intent;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -15,7 +14,6 @@ import java.util.concurrent.ExecutionException;
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.ThongKeActivity;
-import qlsctanhoa.hcm.ditagis.com.qlsc.TraCuuActivity;
 
 /**
  * Created by NGUYEN HONG on 3/8/2018.
@@ -47,7 +45,7 @@ public class MapFunctions {
                     while (iterator.hasNext()) {
                         Feature item = (Feature) iterator.next();
                         tongloaitrangthai[0] += 1;
-                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO).toString());
+                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.TRANG_THAI).toString());
                         if (trangthai == 0)
                             tongloaitrangthai[1] += 1;
                         else if (trangthai == 2) tongloaitrangthai[2] += 1;
@@ -70,8 +68,11 @@ public class MapFunctions {
     }
 
     public void traCuu() {
+
         QueryParameters queryParameters = new QueryParameters();
-        queryParameters.setWhereClause("TrangThai = 0");
+        String dateFrom = "2018-3-7" + " 00:00:00";
+//        queryParameters.setWhereClause("TRANGTHAI = 0 AND NgayCapNhat >= '" + dateFrom + "'");
+        queryParameters.setWhereClause("TRANGTHAI = 0");
         final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
         feature.addDoneListener(new Runnable() {
             @Override
@@ -82,7 +83,7 @@ public class MapFunctions {
                     while (iterator.hasNext()) {
                         Feature item = (Feature) iterator.next();
 
-                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO).toString());
+                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.TRANG_THAI).toString());
 
                     }
 

@@ -36,9 +36,9 @@ public class Constant {
         };
     }
 
-    public static final String FEATURE_ATTRIBUTE_ID_SUCO = "IDSuCo";
-    public static final String FEATURE_ATTRIBUTE_VITRI_SUCO = "ViTri";
-    public static final String FEATURE_ATTRIBUTE_TRANGTHAI_SUCO = "TrangThai";
-    public static final String FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO = "NgayCapNhat";
+    public static final String IDSU_CO = "IDSuCo";
+    public static final String VI_TRI = "ViTri";
+    public static final String TRANG_THAI = "TrangThai";
+    public static final String NGAY_CAP_NHAT = "NgayCapNhat";
     public static final int REQUEST_CODE = 99;
 }

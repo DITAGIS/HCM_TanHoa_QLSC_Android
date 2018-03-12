@@ -8,63 +8,47 @@
     tools:context="qlsctanhoa.hcm.ditagis.com.qlsc.TraCuuActivity">
 
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TableRow>
-
-            <TextView
-                android:padding="10dip"
-                android:text="Ngày xảy ra" />
-            <Button
-                android:id="@+id/editShowDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="showDateTimePicker"
-                android:text="Chọn ngày" />
-
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Người sửa chữa" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Quận/ Huyện" />
-
-
-
-        </TableRow>
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Phân loại sự cố" />
-
-
-
-        </TableRow>
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Trạng thái" />
-
-
-        </TableRow>
-    </TableLayout>
-    <Button
+    <EditText
+        android:id="@+id/edit_dia_chi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:hint="Tìm theo địa chỉ" />
+
+
+    <Spinner
+        android:id="@+id/spin_district"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:entries="@array/district_arrays" />
+
+
+    <Button
+        android:id="@+id/editShowDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_margin"
+        android:onClick="showDateTimePicker"
+        android:text="Ngày thông báo" />
+
+
+    <EditText
+        android:id="@+id/edit_nguoi_sua_chua"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Người cập nhật" />
+
+    <Spinner
+        android:id="@+id/spin_phanloaisuco"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:entries="@array/phanloai_arrays" />
+
+
+    <Button
         android:id="@+id/btnTraCuu"
-        android:text="Tra cứu"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tra cứu" />
 
     <ListView
         android:id="@+id/lstView_TraCuu"

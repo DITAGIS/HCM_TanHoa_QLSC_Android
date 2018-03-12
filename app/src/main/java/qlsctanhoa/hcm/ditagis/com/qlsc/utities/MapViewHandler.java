@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -30,6 +29,7 @@ import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -103,24 +103,25 @@ public class MapViewHandler {
                     try {
                         List<GeocodeResult> geocodeResults = listListenableFuture.get();
                         if (geocodeResults.size() > 0) {
+
                             GeocodeResult geocodeResult = geocodeResults.get(0);
-//                            Map<String, Object >attrs  = new HashMap<>();
-//                            for(String key : geocodeResult.getAttributes().keySet()){
-//                                attrs.put(key, geocodeResult.getAttributes().get(key));
-//                            }
+                            Map<String, Object >attrs  = new HashMap<>();
+                            for(String key : geocodeResult.getAttributes().keySet()){
+                                attrs.put(key, geocodeResult.getAttributes().get(key));
+                            }
                             String address = geocodeResult.getAttributes().get("LongLabel").toString();
-                            feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_VITRI_SUCO, address);
+                            feature.getAttributes().put(Constant.VI_TRI, address);
                         }
                         Short intObj = new Short((short) 0);
 
-                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO, intObj);
+                        feature.getAttributes().put(Constant.TRANG_THAI, intObj);
 
                         String searchStr = "";
                         String dateTime = "";
 
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                             dateTime = getDateString();
-                            searchStr = Constant.FEATURE_ATTRIBUTE_ID_SUCO + " like '%" + dateTime + "'";
+                            searchStr = Constant.IDSU_CO + " like '%" + dateTime + "'";
                         }
                         QueryParameters queryParameters = new QueryParameters();
 
@@ -138,17 +139,17 @@ public class MapViewHandler {
                                     while (iterator.hasNext()) {
 
                                         Feature item = (Feature) iterator.next();
-                                        id_tmp = Integer.parseInt(item.getAttributes().get(Constant.FEATURE_ATTRIBUTE_ID_SUCO).toString().split("_")[0]);
+                                        id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
                                         if (id_tmp > id)
                                             id = id_tmp;
                                     }
                                     id++;
-                                    feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_ID_SUCO, id + "_" + finalDateTime);
+                                    feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalDateTime);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                                         Calendar c = Calendar.getInstance();
                                         c.setTime(date);
-                                        feature.getAttributes().put(Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO, c);
+                                        feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
                                     }
                                     ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
                                     isClickBtnAdd = false;

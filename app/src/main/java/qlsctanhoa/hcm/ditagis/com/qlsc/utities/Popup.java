@@ -72,15 +72,15 @@ public class Popup extends AppCompatActivity {
             } else {
                 Object value = attr.get(field.getName());
                 switch (field.getName()) {
-                    case Constant.FEATURE_ATTRIBUTE_ID_SUCO:
+                    case Constant.IDSU_CO:
                         if (value != null)
                             ((TextView) linearLayout.findViewById(R.id.txt_id_su_co)).setText(value.toString());
                         break;
-                    case Constant.FEATURE_ATTRIBUTE_VITRI_SUCO:
+                    case Constant.VI_TRI:
                         if (value != null)
                             ((TextView) linearLayout.findViewById(R.id.txt_vi_tri_su_co)).setText(value.toString());
                         break;
-                    case Constant.FEATURE_ATTRIBUTE_TRANGTHAI_SUCO:
+                    case Constant.TRANG_THAI:
                         if (value != null)
                             ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(
                                     ((UniqueValueRenderer) this.mSelectedArcGISFeature
@@ -92,7 +92,7 @@ public class Popup extends AppCompatActivity {
                                             .get(Integer.parseInt(value.toString()))
                                             .getLabel());
                         break;
-                    case Constant.FEATURE_ATTRIBUTE_NGAYCAPNHAT_SUCO:
+                    case Constant.NGAY_CAP_NHAT:
                         if (value != null)
                             ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                         break;
@@ -155,7 +155,7 @@ public class Popup extends AppCompatActivity {
             } else {
                 Object value = attr.get(field.getName());
 //                if (value != null) {
-                if (field.getName().equals(Constant.FEATURE_ATTRIBUTE_ID_SUCO)) {
+                if (field.getName().equals(Constant.IDSU_CO)) {
                     if (value != null)
                         ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
                 } else {
@@ -186,7 +186,7 @@ public class Popup extends AppCompatActivity {
             } else {
                 Object value = attr.get(field.getName());
 //                if (value != null) {
-                if (field.getName().equals(Constant.FEATURE_ATTRIBUTE_ID_SUCO)) {
+                if (field.getName().equals(Constant.IDSU_CO)) {
                     if (value != null)
                         ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
                 } else {

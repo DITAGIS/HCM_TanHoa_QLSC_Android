@@ -52,6 +52,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.CustomAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.TransferedData;
 
 public class QuanLySuCo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -309,8 +310,13 @@ public class QuanLySuCo extends AppCompatActivity
             this.mapFunctions.thongKe();
 
         } else if (id == R.id.nav_tracuu) {
-//            this.mapFunctions.traCuu(this);
+//            mapFunctions.traCuu();
+            TransferedData transferedData = new TransferedData();
             final Intent intent = new Intent(this, TraCuuActivity.class);
+            intent.putExtra("transferedData",transferedData);
+//            Bundle bundle = new Bundle();
+//            bundle.putSerializable("transferedData",transferedData);
+//            intent.putExtras(bundle);
 
             this.startActivityForResult(intent, 1);
         }
