@@ -35,10 +35,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ThongKeActivity" />
+
+        <activity
+            android:name=".ThongKeActivity"
+            android:label="Thống kê" />
         <activity
             android:name=".TraCuuActivity"
-            android:label="@string/title_activity_tra_cuu"
+            android:label="Tra cứu"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

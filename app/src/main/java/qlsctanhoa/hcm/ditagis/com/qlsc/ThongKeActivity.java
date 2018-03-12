@@ -1,7 +1,5 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 
 public class ThongKeActivity extends AppCompatActivity {
     private TextView txtTongSuCo, txtChuaSua, txtDangSua, txtDaSua;
-    private TextView txtPhanTramTongSuCo, txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
+    private TextView  txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
     private QuanLySuCo mQuanLySuCo;
     private ServiceFeatureTable mServiceFeatureTable;
     private PieChart mChart;
@@ -30,7 +28,6 @@ public class ThongKeActivity extends AppCompatActivity {
         this.txtChuaSua = this.findViewById(R.id.txtChuaSua);
         this.txtDangSua = this.findViewById(R.id.txtDangSua);
         this.txtDaSua = this.findViewById(R.id.txtDaSua);
-        this.txtPhanTramTongSuCo = this.findViewById(R.id.txtPhanTramTongSuCo);
         this.txtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
         this.txtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
         this.txtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
@@ -39,11 +36,10 @@ public class ThongKeActivity extends AppCompatActivity {
 
     public void thongKe() {
         final int[] tongloaitrangthai = getIntent().getIntArrayExtra(this.getString(R.string.tongloaitrangthai));
-        txtTongSuCo.setText(tongloaitrangthai[0]+"");
+        txtTongSuCo.setText("Tổng các sự cố: " +tongloaitrangthai[0]);
         txtChuaSua.setText(tongloaitrangthai[1]+"");
         txtDangSua.setText(tongloaitrangthai[2]+"");
         txtDaSua.setText(tongloaitrangthai[3]+"");
-        txtPhanTramTongSuCo.setText((tongloaitrangthai[0]/tongloaitrangthai[0])*100+"%");
         txtPhanTramChuaSua.setText((tongloaitrangthai[1]/tongloaitrangthai[0])*100+"%");
         txtPhanTramDangSua.setText((tongloaitrangthai[2]/tongloaitrangthai[0])*100+"%");
         txtPhanTramDaSua.setText((tongloaitrangthai[3]/tongloaitrangthai[0])*100+"%");
@@ -82,11 +78,12 @@ public class ThongKeActivity extends AppCompatActivity {
         PieDataSet set1 = new PieDataSet(yVals1, "");
         set1.setSliceSpace(0f);
         ArrayList<Integer> colors = new ArrayList<Integer>();
-        colors.add(getResources().getColor(android.R.color.holo_green_light));
         colors.add(getResources().getColor(android.R.color.holo_red_light));
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
+        colors.add(getResources().getColor(android.R.color.holo_green_light));
         set1.setColors(colors);
         PieData data = new PieData(xVals, set1);
+        data.setValueTextSize(15);
         set1.setValueTextSize(0);
         chart.setData(data);
         chart.highlightValues(null);

@@ -1,103 +1,156 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="qlsctanhoa.hcm.ditagis.com.qlsc.ThongKeActivity">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/chuc_nang_thong_ke" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tổng các sự cố" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_padding">
 
         <TextView
             android:id="@+id/txtTongSuCo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/activity_padding"
+            android:text="Tổng các sự cố: "
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--header-->
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="3dip"
+                    android:text="Trạng thái"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:padding="3dip"
+                    android:text="Số lượng"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:text="Phần trăm"
+                    android:textSize="17sp" />
+            </TableRow>
+
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="3dip"
+                    android:text="Chưa sửa"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtChuaSua"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtPhanTramChuaSua"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textSize="17sp" />
+            </TableRow>
+
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="3dip"
+                    android:text="Đang sửa"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtDangSua"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtPhanTramDangSua"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textSize="17sp" />
+            </TableRow>
+
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:padding="3dip"
+                    android:text="Đã sửa"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtDaSua"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtPhanTramDaSua"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="right"
+                    android:textSize="17sp" />
+            </TableRow>
+        </TableLayout>
+
         <TextView
-            android:id="@+id/txtPhanTramTongSuCo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/activity_padding"
+            android:text="Biểu đồ thống kê"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+
+        <com.github.mikephil.charting.charts.PieChart
+            android:id="@+id/piechart"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp" />
+
     </LinearLayout>
 
-    <TableLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Chưa sửa" />
-
-            <TextView
-                android:id="@+id/txtChuaSua"
-                android:gravity="right"
-                android:padding="3dip"
-                />
-            <TextView
-                android:id="@+id/txtPhanTramChuaSua"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Đang sửa" />
-
-            <TextView
-                android:id="@+id/txtDangSua"
-                android:gravity="right"
-                android:padding="3dip"
-                android:text="" />
-            <TextView
-                android:id="@+id/txtPhanTramDangSua"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:padding="3dip"
-                android:text="Đã sửa" />
-
-            <TextView
-                android:id="@+id/txtDaSua"
-                android:gravity="right"
-                android:padding="3dip"
-                android:text="" />
-            <TextView
-                android:id="@+id/txtPhanTramDaSua"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </TableRow>
-    </TableLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Biểu đồ thống kê" />
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/piechart"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="40dp"/>
-
-
-</LinearLayout>
+</ScrollView>

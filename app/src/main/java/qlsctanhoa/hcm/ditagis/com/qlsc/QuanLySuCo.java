@@ -2,6 +2,8 @@ package qlsctanhoa.hcm.ditagis.com.qlsc;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -149,7 +151,7 @@ public class QuanLySuCo extends AppCompatActivity
         mMap.getOperationalLayers().add(suCoTanHoaLayer);
         mMapView.setMap(mMap);
 
-        this.mapFunctions = new MapFunctions(this,mServiceFeatureTable);
+        this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addLoadStatusChangedListener(new LoadStatusChangedListener() {
             @Override
             public void loadStatusChanged(LoadStatusChangedEvent loadStatusChangedEvent) {
@@ -192,13 +194,12 @@ public class QuanLySuCo extends AppCompatActivity
         ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
         ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
 
-        ((CheckBox)findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ((CheckBox) findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     suCoTanHoaLayer.setVisible(true);
-                }
-                else
+                } else
                     suCoTanHoaLayer.setVisible(false);
             }
         });
@@ -308,8 +309,10 @@ public class QuanLySuCo extends AppCompatActivity
             this.mapFunctions.thongKe();
 
         } else if (id == R.id.nav_tracuu) {
-            this.mapFunctions.traCuu();
+//            this.mapFunctions.traCuu(this);
+            final Intent intent = new Intent(this, TraCuuActivity.class);
 
+            this.startActivityForResult(intent, 1);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -376,44 +379,52 @@ public class QuanLySuCo extends AppCompatActivity
                 break;
             case R.id.btn_layer_close:
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
-                ((FloatingActionButton)findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
+                ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
                 break;
         }
     }
 
     @SuppressLint("ResourceAsColor")
-    private void handlingColorBackgroundLayerSelected(int id){
-        switch (id){
+    private void handlingColorBackgroundLayerSelected(int id) {
+        switch (id) {
             case R.id.layout_layer_open_street_map:
-                ((ImageView)findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
+                ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
                 ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
             case R.id.layout_layer_street_map:
 
-                ((ImageView)findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
+                ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
                 ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
             case R.id.layout_layer_topo:
-                ((ImageView)findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap);
-                ((TextView)findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap);
+                ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
 
                 ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                ((TextView)findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
         }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("ádfgdsf", "onactivityresult");
+        if (requestCode == 1) {
 
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Kết quả từ tra cứu", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }
