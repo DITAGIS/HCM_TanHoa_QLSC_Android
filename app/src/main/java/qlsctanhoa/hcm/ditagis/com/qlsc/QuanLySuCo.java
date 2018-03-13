@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -48,11 +49,10 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import java.util.ArrayList;
 import java.util.List;
 
-import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.CustomAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
-import qlsctanhoa.hcm.ditagis.com.qlsc.utities.TransferedData;
 
 public class QuanLySuCo extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -78,7 +78,7 @@ public class QuanLySuCo extends AppCompatActivity
 
     private SearchView mTxtSearch;
     private ListView mListViewSearch;
-    private CustomAdapter mCustomAdapter;
+    private TraCuuAdapter mSearchAdapter;
 
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
@@ -96,10 +96,17 @@ public class QuanLySuCo extends AppCompatActivity
         //đưa listview search ra phía sau
         this.mListViewSearch = findViewById(R.id.lstview_search);
         this.mListViewSearch.invalidate();
-        List<CustomAdapter.Item> items = new ArrayList<>();
-        items.add(new CustomAdapter.Item("", "", "", "df", "af", 0));
-        this.mCustomAdapter = new CustomAdapter(QuanLySuCo.this, items);
-        this.mListViewSearch.setAdapter(mCustomAdapter);
+        List<TraCuuAdapter.Item> items = new ArrayList<>();
+        this.mSearchAdapter = new TraCuuAdapter(QuanLySuCo.this, items);
+        this.mListViewSearch.setAdapter(mSearchAdapter);
+        this.mListViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mMapViewHandler.queryByObjectID(((TraCuuAdapter.Item) parent.getItemAtPosition(position)).getObjectID());
+                mSearchAdapter.clear();
+                mSearchAdapter.notifyDataSetChanged();
+            }
+        });
 
         View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
@@ -262,7 +269,7 @@ public class QuanLySuCo extends AppCompatActivity
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                mMapViewHandler.querySearch(query);
+                mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                 return false;
             }
 
@@ -419,19 +426,21 @@ public class QuanLySuCo extends AppCompatActivity
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-      try {
-          final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid),1);
-          if (requestCode == 1) {
+        try {
+            final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
+            if (requestCode == 1) {
 
-              if (resultCode == Activity.RESULT_OK) {
-                  mMapViewHandler.queryByObjectID(objectid);
-                  Toast.makeText(this, "Kết quả từ tra cứu: "+ objectid, Toast.LENGTH_SHORT).show();
-              }
-          }
+                if (resultCode == Activity.RESULT_OK) {
+                    mMapViewHandler.queryByObjectID(objectid);
+                    Toast.makeText(this, "Kết quả từ tra cứu: " + objectid, Toast.LENGTH_SHORT).show();
+                }
+            }
 //          mapFunctions.traCuu();
-      }catch (Exception e){
+        } catch (Exception e) {
 
-      }
+        }
 
     }
+
+
 }

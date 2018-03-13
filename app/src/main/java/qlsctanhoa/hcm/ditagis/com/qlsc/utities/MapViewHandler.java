@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -29,6 +30,7 @@ import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,6 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
+import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
 
 
 /**
@@ -105,8 +108,8 @@ public class MapViewHandler {
                         if (geocodeResults.size() > 0) {
 
                             GeocodeResult geocodeResult = geocodeResults.get(0);
-                            Map<String, Object >attrs  = new HashMap<>();
-                            for(String key : geocodeResult.getAttributes().keySet()){
+                            Map<String, Object> attrs = new HashMap<>();
+                            for (String key : geocodeResult.getAttributes().keySet()) {
                                 attrs.put(key, geocodeResult.getAttributes().get(key));
                             }
                             String address = geocodeResult.getAttributes().get("LongLabel").toString();
@@ -216,7 +219,7 @@ public class MapViewHandler {
 //                                    updateFeature();
                             }
                         } else {
-                           // none of the features on the map were selected
+                            // none of the features on the map were selected
                             mCallout.dismiss();
                         }
                     } catch (Exception e) {
@@ -234,6 +237,7 @@ public class MapViewHandler {
         String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
         return timeStamp;
     }
+
     public void queryByObjectID(int objectID) {
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause("OBJECTID = " + objectID);
@@ -263,8 +267,10 @@ public class MapViewHandler {
         });
 
     }
-    public void querySearch(String searchStr) {
 
+    public void querySearch(String searchStr, ListView listView, final TraCuuAdapter adapter) {
+        adapter.clear();
+        adapter.notifyDataSetChanged();
         mCallout.dismiss();
 
         suCoTanHoaLayer.clearSelection();
@@ -294,7 +300,7 @@ public class MapViewHandler {
                     }
                     break;
                 case TEXT:
-                    builder.append(String.format("%s = '%s'", field.getName(), searchStr));
+                    builder.append(field.getName() + " like N'%" + searchStr + "%'");
                     builder.append(" or ");
                     break;
             }
@@ -307,15 +313,20 @@ public class MapViewHandler {
             public void run() {
                 try {
                     FeatureQueryResult result = feature.get();
-                    if (result.iterator().hasNext()) {
+                    Iterator iterator = result.iterator();
+                    while (iterator.hasNext()) {
+                        Feature item = (Feature) iterator.next();
+                        Map<String, Object> attributes = item.getAttributes();
+                        String format_date = "";
+                        String[] split = attributes.get(Constant.IDSU_CO).toString().split("_");
+                        try {
+                            format_date = Constant.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
+                        } catch (Exception e) {
 
-                        Feature item = result.iterator().next();
+                        }
+                        adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, attributes.get(Constant.VI_TRI).toString()));
+                        adapter.notifyDataSetChanged();
 
-                        Envelope extent = item.getGeometry().getExtent();
-
-                        mMapView.setViewpointGeometryAsync(extent);
-
-                        suCoTanHoaLayer.selectFeature(item);
 
                     }
                 } catch (InterruptedException e) {
