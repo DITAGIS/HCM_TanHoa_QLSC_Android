@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Date;
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
@@ -102,6 +104,7 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
         return convertView;
     }
 
+
     public static class Item {
 
 
@@ -157,6 +160,11 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
 
         public void setDiaChi(String diaChi) {
             this.diaChi = diaChi;
+        }
+
+        @Override
+        public String toString() {
+            return "Item{" + "objectID=" + objectID + ", id='" + id + '\'' + ", trangThai=" + trangThai + ", ngayCapNhat='" + ngayCapNhat + '\'' + ", diaChi='" + diaChi + '\'' + '}';
         }
     }
 }

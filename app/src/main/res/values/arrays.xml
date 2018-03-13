@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="district_arrays">
-        <item value=""> Chọn quận huyện </item>
-        <item value="768"> Quận Phú Nhuận </item>
-        <item value="766"> Quận Tân Bình</item>
-        <item value="767"> Quận Tân Phú </item>
+        <item > Chọn quận huyện </item>
+        <item > Quận Phú Nhuận </item>
+        <item > Quận Tân Bình</item>
+        <item > Quận Tân Phú </item>
     </string-array>
     <string-array name="phanloai_arrays">
-        <item value=""> Chọn loại sự cố </item>
-        <item value="1"> A </item>
-        <item value="2"> B </item>
+        <item > Chọn loại sự cố </item>
+        <item > A </item>
+        <item > B </item>
     </string-array>
 </resources>

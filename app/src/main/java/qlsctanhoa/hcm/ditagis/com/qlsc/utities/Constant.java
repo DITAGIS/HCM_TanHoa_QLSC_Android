@@ -41,4 +41,6 @@ public class Constant {
     public static final String TRANG_THAI = "TrangThai";
     public static final String NGAY_CAP_NHAT = "NgayCapNhat";
     public static final int REQUEST_CODE = 99;
+    public static final String[] CODEID_DISTRICT = { null,"768", "766", "767" };
+    public static final String[] CODE_PHANLOAI = { null,"1", "2" };
 }

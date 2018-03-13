@@ -310,13 +310,7 @@ public class QuanLySuCo extends AppCompatActivity
             this.mapFunctions.thongKe();
 
         } else if (id == R.id.nav_tracuu) {
-//            mapFunctions.traCuu();
-            TransferedData transferedData = new TransferedData();
             final Intent intent = new Intent(this, TraCuuActivity.class);
-            intent.putExtra("transferedData",transferedData);
-//            Bundle bundle = new Bundle();
-//            bundle.putSerializable("transferedData",transferedData);
-//            intent.putExtras(bundle);
 
             this.startActivityForResult(intent, 1);
         }
@@ -434,7 +428,7 @@ public class QuanLySuCo extends AppCompatActivity
                   Toast.makeText(this, "Kết quả từ tra cứu: "+ objectid, Toast.LENGTH_SHORT).show();
               }
           }
-          mapFunctions.traCuu();
+//          mapFunctions.traCuu();
       }catch (Exception e){
 
       }
