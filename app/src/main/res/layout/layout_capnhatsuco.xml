@@ -85,14 +85,31 @@
                 android:layout_width="@dimen/width_title_item_docso"
                 android:layout_height="wrap_content"
                 android:text="N.Cập nhật: "
+                android:layout_gravity="center_vertical"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/btn_ngay_cap_nhat"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="17sp" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txt_ngay_cap_nhat"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:textSize="17sp" />
+
+                <Button
+                    android:id="@+id/btn_ngay_cap_nhat"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="..."
+                    android:background="@color/colorWhite"
+                    android:textSize="17sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

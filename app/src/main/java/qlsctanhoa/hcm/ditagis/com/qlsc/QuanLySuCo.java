@@ -275,11 +275,11 @@ public class QuanLySuCo extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0){
+                if (newText.length() == 0) {
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
                 }
-                    return false;
+                return false;
             }
         });
 
