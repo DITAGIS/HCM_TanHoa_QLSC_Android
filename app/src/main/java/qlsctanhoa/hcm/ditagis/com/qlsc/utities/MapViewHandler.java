@@ -60,7 +60,6 @@ public class MapViewHandler {
     private Popup popupInfos;
     private Context mContext;
     private static double DELTA_MOVE_Y = 0;//7000;
-    private AddAsync mAddasync;
     LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
     public MapViewHandler(ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
@@ -74,7 +73,7 @@ public class MapViewHandler {
         this.mContext = mContext;
         this.mMap = mMap;
         this.suCoTanHoaLayer = suCoTanHoaLayer;
-        this.mAddasync = new AddAsync(mContext);
+
     }
 
     public void setClickBtnAdd(boolean clickBtnAdd) {
@@ -98,57 +97,9 @@ public class MapViewHandler {
         QueryParameters query = new QueryParameters();
         query.setGeometry(envelope);
         // add done loading listener to fire when the selection returns
-        final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(suCoTanHoaLayer, mClickPoint, 5, false, 1);
-        if (isClickBtnAdd) {
-            this.mAddasync.execute(clickPoint);
-        } else {
-//            mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
-//                @Override
-//                public void run() {
-            identifyFuture.addDoneListener(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // call get on the future to get the result
-                        IdentifyLayerResult layerResult = identifyFuture.get();
-                        List<GeoElement> resultGeoElements = layerResult.getElements();
-                        LayoutInflater layoutInflater = LayoutInflater.from(mContext);
 
-                        if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
-                            if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-                                mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
-                                // highlight the selected feature
-                                suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
-                                Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
-
-                                LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
-
-
-                                Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-
-                                Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-                                mMapView.setViewpointGeometryAsync(envelope1, 0);
-                                // show CallOut
-                                mCallout.setLocation(clickPoint);
-
-                                mCallout.setContent(linearLayout);
-                                mCallout.refresh();
-                                mCallout.show();
-//                                    deleteFeature();
-//                                    updateFeature();
-                            }
-                        } else {
-                            // none of the features on the map were selected
-                            mCallout.dismiss();
-                        }
-                    } catch (Exception e) {
-                        Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-                    }
-                }
-            });
-//                }
-//            });
-        }
+        SingleTapMapViewAsync addAsync = new SingleTapMapViewAsync(mContext);
+        addAsync.execute(clickPoint);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -264,11 +215,11 @@ public class MapViewHandler {
 
     }
 
-    class AddAsync extends AsyncTask<Point, Void, Void> {
+    class SingleTapMapViewAsync extends AsyncTask<Point, Void, Void> {
         private ProgressDialog mDialog;
         private Context mContext;
 
-        public AddAsync(Context context) {
+        public SingleTapMapViewAsync(Context context) {
             mContext = context;
             mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         }
@@ -285,99 +236,162 @@ public class MapViewHandler {
 
         @Override
         protected Void doInBackground(Point... params) {
-            Point clickPoint = params[0];
-            final Feature feature = mServiceFeatureTable.createFeature();
-            feature.setGeometry(clickPoint);
+            final Point clickPoint = params[0];
+            if (isClickBtnAdd) {
+                final Feature feature = mServiceFeatureTable.createFeature();
+                feature.setGeometry(clickPoint);
 
-            final ListenableFuture<List<GeocodeResult>> listListenableFuture = loc.reverseGeocodeAsync(clickPoint);
-            listListenableFuture.addDoneListener(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
-                        if (geocodeResults.size() > 0) {
+                final ListenableFuture<List<GeocodeResult>> listListenableFuture = loc.reverseGeocodeAsync(clickPoint);
+                listListenableFuture.addDoneListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            List<GeocodeResult> geocodeResults = listListenableFuture.get();
+                            if (geocodeResults.size() > 0) {
 
-                            GeocodeResult geocodeResult = geocodeResults.get(0);
-                            Map<String, Object> attrs = new HashMap<>();
-                            for (String key : geocodeResult.getAttributes().keySet()) {
-                                attrs.put(key, geocodeResult.getAttributes().get(key));
-                            }
-                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
-                            feature.getAttributes().put(Constant.VI_TRI, address);
-                        }
-                        Short intObj = new Short((short) 0);
-
-                        feature.getAttributes().put(Constant.TRANG_THAI, intObj);
-
-                        String searchStr = "";
-                        String dateTime = "";
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                            dateTime = getDateString();
-                            searchStr = Constant.IDSU_CO + " like '%" + dateTime + "'";
-                        }
-                        QueryParameters queryParameters = new QueryParameters();
-
-                        queryParameters.setWhereClause(searchStr);
-                        final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
-                        final String finalDateTime = dateTime;
-                        featureQuery.addDoneListener(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    int id_tmp = 0;
-                                    int id = 0;
-                                    FeatureQueryResult result = featureQuery.get();
-                                    Iterator iterator = result.iterator();
-                                    while (iterator.hasNext()) {
-
-                                        Feature item = (Feature) iterator.next();
-                                        id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
-                                        if (id_tmp > id)
-                                            id = id_tmp;
-                                    }
-                                    id++;
-                                    feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalDateTime);
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                                        Date date = Constant.DATE_FORMAT.parse(finalDateTime);
-                                        Calendar c = Calendar.getInstance();
-                                        c.setTime(date);
-                                        feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
-                                        feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
-                                    }
-                                    ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
-                                    isClickBtnAdd = false;
-                                    mapViewResult.addDoneListener(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (mDialog != null && mDialog.isShowing()) {
-                                                        mDialog.dismiss();
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                } catch (ExecutionException e) {
-                                    e.printStackTrace();
-                                } catch (ParseException e1) {
-                                    e1.printStackTrace();
+                                GeocodeResult geocodeResult = geocodeResults.get(0);
+                                Map<String, Object> attrs = new HashMap<>();
+                                for (String key : geocodeResult.getAttributes().keySet()) {
+                                    attrs.put(key, geocodeResult.getAttributes().get(key));
                                 }
+                                String address = geocodeResult.getAttributes().get("LongLabel").toString();
+                                feature.getAttributes().put(Constant.VI_TRI, address);
                             }
-                        });
+                            Short intObj = new Short((short) 0);
+
+                            feature.getAttributes().put(Constant.TRANG_THAI, intObj);
+
+                            String searchStr = "";
+                            String dateTime = "";
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                                dateTime = getDateString();
+                                searchStr = Constant.IDSU_CO + " like '%" + dateTime + "'";
+                            }
+                            QueryParameters queryParameters = new QueryParameters();
+
+                            queryParameters.setWhereClause(searchStr);
+                            final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+                            final String finalDateTime = dateTime;
+                            featureQuery.addDoneListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        int id_tmp = 0;
+                                        int id = 0;
+                                        FeatureQueryResult result = featureQuery.get();
+                                        Iterator iterator = result.iterator();
+                                        while (iterator.hasNext()) {
+
+                                            Feature item = (Feature) iterator.next();
+                                            id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
+                                            if (id_tmp > id)
+                                                id = id_tmp;
+                                        }
+                                        id++;
+                                        feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalDateTime);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                            Date date = Constant.DATE_FORMAT.parse(finalDateTime);
+                                            Calendar c = Calendar.getInstance();
+                                            c.setTime(date);
+                                            feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
+                                            feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
+                                        }
+                                        ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
+                                        isClickBtnAdd = false;
+                                        mapViewResult.addDoneListener(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (mDialog != null && mDialog.isShowing()) {
+                                                            mDialog.dismiss();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (ParseException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                }
+                            });
 
 
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    } catch (ExecutionException e1) {
-                        e1.printStackTrace();
+                        } catch (InterruptedException e1) {
+                            e1.printStackTrace();
+                        } catch (ExecutionException e1) {
+                            e1.printStackTrace();
+                        }
                     }
-                }
-            });
+                });
+            } else {
+//            mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
+//                @Override
+//                public void run() {
+                final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(suCoTanHoaLayer, mClickPoint, 5, false, 1);
+                identifyFuture.addDoneListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            // call get on the future to get the result
+                            IdentifyLayerResult layerResult = identifyFuture.get();
+                            List<GeoElement> resultGeoElements = layerResult.getElements();
+                            LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                            if (mDialog != null && mDialog.isShowing()) {
+                                mDialog.dismiss();
+                            }
+                            if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
+                                if (resultGeoElements.get(0) instanceof ArcGISFeature) {
+
+                                    mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
+                                    // highlight the selected feature
+                                    suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
+                                    Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
+
+                                    LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
+
+
+                                    Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+
+                                    Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+                                    mMapView.setViewpointGeometryAsync(envelope1, 0);
+                                    // show CallOut
+                                    mCallout.setLocation(clickPoint);
+
+                                    mCallout.setContent(linearLayout);
+
+                                   popupInfos.runOnUiThread(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           mCallout.refresh();
+                                           mCallout.show();
+                                       }
+                                   });
+
+//                                    deleteFeature();
+//                                    updateFeature();
+                                }
+                            } else {
+
+                                // none of the features on the map were selected
+                                mCallout.dismiss();
+                            }
+
+                        } catch (Exception e) {
+                            Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
+                        }
+                    }
+                });
+//                }
+//            });
+            }
+
             return null;
         }
 

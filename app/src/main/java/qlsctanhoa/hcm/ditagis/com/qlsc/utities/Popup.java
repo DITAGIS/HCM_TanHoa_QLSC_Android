@@ -53,14 +53,13 @@ public class Popup extends AppCompatActivity {
     private Map<String, Object> mAttr;
     private BottomSheetDialog mBottomSheetDialog;
     private Dialog mDialogEdit;
-    private EditAsync mEditAsync;
 
     public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout, BottomSheetDialog bottomSheetDialog) {
         this.mMainActivity = mainActivity;
         this.mServiceFeatureTable = mServiceFeatureTable;
         this.mCallout = callout;
         this.mBottomSheetDialog = bottomSheetDialog;
-        this.mEditAsync = new EditAsync(mMainActivity);
+
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,8 +223,8 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) mDialogEdit.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                mEditAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
+               EditAsync editAsync = new EditAsync(mMainActivity);
+                editAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
 
             }
         });
