@@ -218,29 +218,23 @@ public class MapViewHandler {
     class SingleTapMapViewAsync extends AsyncTask<Point, Void, Void> {
         private ProgressDialog mDialog;
         private Context mContext;
-
         public SingleTapMapViewAsync(Context context) {
             mContext = context;
             mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         }
-
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             mDialog.setMessage("Đang xử lý...");
             mDialog.setCancelable(false);
-
             mDialog.show();
-
         }
-
         @Override
         protected Void doInBackground(Point... params) {
             final Point clickPoint = params[0];
             if (isClickBtnAdd) {
                 final Feature feature = mServiceFeatureTable.createFeature();
                 feature.setGeometry(clickPoint);
-
                 final ListenableFuture<List<GeocodeResult>> listListenableFuture = loc.reverseGeocodeAsync(clickPoint);
                 listListenableFuture.addDoneListener(new Runnable() {
                     @Override
@@ -248,7 +242,6 @@ public class MapViewHandler {
                         try {
                             List<GeocodeResult> geocodeResults = listListenableFuture.get();
                             if (geocodeResults.size() > 0) {
-
                                 GeocodeResult geocodeResult = geocodeResults.get(0);
                                 Map<String, Object> attrs = new HashMap<>();
                                 for (String key : geocodeResult.getAttributes().keySet()) {
@@ -258,18 +251,15 @@ public class MapViewHandler {
                                 feature.getAttributes().put(Constant.VI_TRI, address);
                             }
                             Short intObj = new Short((short) 0);
-
                             feature.getAttributes().put(Constant.TRANG_THAI, intObj);
 
                             String searchStr = "";
                             String dateTime = "";
-
                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                                 dateTime = getDateString();
                                 searchStr = Constant.IDSU_CO + " like '%" + dateTime + "'";
                             }
                             QueryParameters queryParameters = new QueryParameters();
-
                             queryParameters.setWhereClause(searchStr);
                             final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
                             final String finalDateTime = dateTime;
@@ -277,12 +267,12 @@ public class MapViewHandler {
                                 @Override
                                 public void run() {
                                     try {
-                                        int id_tmp = 0;
+                                        // lấy id lớn nhất
+                                        int id_tmp;
                                         int id = 0;
                                         FeatureQueryResult result = featureQuery.get();
                                         Iterator iterator = result.iterator();
                                         while (iterator.hasNext()) {
-
                                             Feature item = (Feature) iterator.next();
                                             id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
                                             if (id_tmp > id)
@@ -321,8 +311,6 @@ public class MapViewHandler {
                                     }
                                 }
                             });
-
-
                         } catch (InterruptedException e1) {
                             e1.printStackTrace();
                         } catch (ExecutionException e1) {
@@ -331,9 +319,6 @@ public class MapViewHandler {
                     }
                 });
             } else {
-//            mMapView.setViewpointScaleAsync(144447.640625).addDoneListener(new Runnable() {
-//                @Override
-//                public void run() {
                 final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(suCoTanHoaLayer, mClickPoint, 5, false, 1);
                 identifyFuture.addDoneListener(new Runnable() {
                     @Override
@@ -348,37 +333,27 @@ public class MapViewHandler {
                             }
                             if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
                                 if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-
                                     mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
                                     // highlight the selected feature
                                     suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
                                     Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
 
                                     LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
-
-
                                     Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-
                                     Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
                                     mMapView.setViewpointGeometryAsync(envelope1, 0);
                                     // show CallOut
                                     mCallout.setLocation(clickPoint);
-
                                     mCallout.setContent(linearLayout);
-
-                                   popupInfos.runOnUiThread(new Runnable() {
-                                       @Override
-                                       public void run() {
-                                           mCallout.refresh();
-                                           mCallout.show();
-                                       }
-                                   });
-
-//                                    deleteFeature();
-//                                    updateFeature();
+                                    popupInfos.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mCallout.refresh();
+                                            mCallout.show();
+                                        }
+                                    });
                                 }
                             } else {
-
                                 // none of the features on the map were selected
                                 mCallout.dismiss();
                             }
@@ -388,10 +363,7 @@ public class MapViewHandler {
                         }
                     }
                 });
-//                }
-//            });
             }
-
             return null;
         }
 

@@ -92,9 +92,8 @@ public class QuanLySuCo extends AppCompatActivity
         setContentView(R.layout.activity_quan_ly_su_co);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        //đưa listview search ra phía sau
         this.mListViewSearch = findViewById(R.id.lstview_search);
+        //đưa listview search ra phía sau
         this.mListViewSearch.invalidate();
         List<TraCuuAdapter.Item> items = new ArrayList<>();
         this.mSearchAdapter = new TraCuuAdapter(QuanLySuCo.this, items);
@@ -144,7 +143,6 @@ public class QuanLySuCo extends AppCompatActivity
         });
 
         mMapView = (MapView) findViewById(R.id.mapView);
-//        ArcGISMapImageLayer mapImageLayer = new ArcGISMapImageLayer(getResources().getString(R.string.world_elevation_service));
         // create an empty map instance
         final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
 
@@ -268,7 +266,6 @@ public class QuanLySuCo extends AppCompatActivity
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-
                 mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                 return false;
             }
@@ -282,7 +279,6 @@ public class QuanLySuCo extends AppCompatActivity
                 return false;
             }
         });
-
         return true;
     }
 
@@ -307,25 +303,12 @@ public class QuanLySuCo extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else
         if (id == R.id.nav_thongke) {
             this.mapFunctions.thongKe();
-
         } else if (id == R.id.nav_tracuu) {
             final Intent intent = new Intent(this, TraCuuActivity.class);
-
             this.startActivityForResult(intent, 1);
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -339,7 +322,6 @@ public class QuanLySuCo extends AppCompatActivity
 
     private void goHome() {
     }
-
 
     private void getMyLocation() {
         if (!mLocationDisplay.isStarted())
@@ -375,17 +357,14 @@ public class QuanLySuCo extends AppCompatActivity
                 break;
             case R.id.layout_layer_open_street_map:
                 mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
-
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
                 break;
             case R.id.layout_layer_street_map:
                 mMapView.getMap().setBasemap(Basemap.createStreets());
-
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
                 break;
             case R.id.layout_layer_topo:
                 mMapView.getMap().setBasemap(Basemap.createTopographic());
-
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
                 break;
             case R.id.btn_layer_close:
@@ -401,17 +380,14 @@ public class QuanLySuCo extends AppCompatActivity
             case R.id.layout_layer_open_street_map:
                 ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
                 ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
                 ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
             case R.id.layout_layer_street_map:
-
                 ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap);
                 ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
                 ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
@@ -420,7 +396,6 @@ public class QuanLySuCo extends AppCompatActivity
             case R.id.layout_layer_topo:
                 ((ImageView) findViewById(R.id.img_layer_topo)).setBackgroundResource(R.drawable.layout_shape_basemap);
                 ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-
                 ((ImageView) findViewById(R.id.img_layer_open_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 ((ImageView) findViewById(R.id.img_layer_street_map)).setBackgroundResource(R.drawable.layout_shape_basemap_none);
@@ -433,18 +408,11 @@ public class QuanLySuCo extends AppCompatActivity
         try {
             final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
             if (requestCode == 1) {
-
                 if (resultCode == Activity.RESULT_OK) {
                     mMapViewHandler.queryByObjectID(objectid);
-//                    Toast.makeText(this, "Kết quả từ tra cứu: " + objectid, Toast.LENGTH_SHORT).show();
                 }
             }
-//          mapFunctions.traCuu();
         } catch (Exception e) {
-
         }
-
     }
-
-
 }

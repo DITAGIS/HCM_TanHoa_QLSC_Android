@@ -21,8 +21,10 @@
     <string name="hinhanh_field">Hình ảnh đính kèm</string>
     <string name="vitrisuco_field">Vị trí sự cố</string>
 
-    <string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>
-    <string name="service_feature_table">https://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
+    <!--<string name="service_feature_table">https://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
+    <string name="world_elevation_service">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
+    <string name="service_feature_table">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
     <string name="chuc_nang_thong_ke">Thống kê</string>
     <string name="chuc_nang_tra_cuu">Tra cứu</string>
