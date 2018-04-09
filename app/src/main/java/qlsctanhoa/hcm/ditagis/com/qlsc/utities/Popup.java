@@ -1,5 +1,6 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
@@ -10,9 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -27,8 +30,10 @@ import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -129,6 +134,7 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) linearLayout.findViewById(R.id.imgBtn_Edit)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                UpdateFeature();
                 edit(mSelectedArcGISFeature, attr);
             }
         });
@@ -142,7 +148,203 @@ public class Popup extends AppCompatActivity {
         return linearLayout;
     }
 
-    private void edit(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
+    private void edit(final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+        LayoutInflater inflater = LayoutInflater.from(this.mainActivity);//getLayoutInflater();
+        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_capnhatsuco, null);
+        final Dialog dialog = new Dialog(this.mainActivity);
+        dialog.setContentView(linearLayout);
+        dialog.setCancelable(false);
+        final Spinner spinTrangThai = dialog.findViewById(R.id.spin_trang_thai);
+        final EditText editViTri = dialog.findViewById(R.id.edit_vi_tri_su_co);
+        final Button btnNgayCapNhat = dialog.findViewById(R.id.btn_ngay_cap_nhat);
+        btnNgayCapNhat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                final View dialogView = View.inflate(this,mainActivity, R.layout.date_time_picker, null);
+//                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(this).create();
+//
+//                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//
+//                        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+//
+//                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+//
+//                        String s = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear();
+//
+//                        btnNgayCapNhat.setText(s);
+//                        alertDialog.dismiss();
+//                    }
+//                });
+//                alertDialog.setView(dialogView);
+//                alertDialog.show();
+            }
+        });
+        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
+//            LinearLayout layout = new LinearLayout(linearLayoutInfo.getContext());
+            if (field.getDomain() != null) {
+
+            } else {
+                Object value = attr.get(field.getName());
+                switch (field.getName()) {
+                    case Constant.IDSU_CO:
+                        if (value != null)
+                            ((TextView) dialog.findViewById(R.id.txt_id_su_co)).setText(value.toString());
+                        break;
+                    case Constant.VI_TRI:
+                        if (value != null)
+                            editViTri.setText(value.toString());
+                        break;
+                    case Constant.TRANG_THAI:
+                        if (value != null)
+                            spinTrangThai.setSelection(Integer.parseInt(value.toString()));
+                        break;
+                    case Constant.NGAY_CAP_NHAT:
+                        if (value != null)
+                            btnNgayCapNhat.setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        break;
+                }
+            }
+        }
+
+
+        ((ImageButton) dialog.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mServiceFeatureTable.loadAsync();
+                mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        mSelectedArcGISFeature.getAttributes().put(Constant.VI_TRI, editViTri.getText().toString());
+                        mSelectedArcGISFeature.getAttributes().put(Constant.TRANG_THAI, spinTrangThai.getSelectedItemPosition());
+                        try {
+                            // update feature in the feature table
+                            ListenableFuture<Void> mapViewResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+          /*mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature).addDoneListener(new Runnable() {*/
+                            mapViewResult.addDoneListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // apply change to the server
+                                    final ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
+
+                                    serverResult.addDoneListener(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                dialog.dismiss();
+                                                // check if server result successful
+                                                List<FeatureEditResult> edits = serverResult.get();
+                                                if (edits.size() > 0) {
+                                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                                    }
+                                                } else {
+                                                }
+                                            } catch (Exception e) {
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        } catch (Exception e) {
+                        }
+                    }
+                });
+            }
+        });
+        ((ImageButton) dialog.findViewById(R.id.imgBtn_capnhatsuco_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private void edit1(final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+        LayoutInflater inflater = LayoutInflater.from(this.mainActivity);//getLayoutInflater();
+        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_capnhatsuco, null);
+        final Dialog dialog = new Dialog(this.mainActivity);
+        dialog.setContentView(linearLayout);
+        dialog.setCancelable(false);
+        final Spinner spinTrangThai = dialog.findViewById(R.id.spin_trang_thai);
+        final EditText editViTri = dialog.findViewById(R.id.edit_vi_tri_su_co);
+        final Button btnNgayCapNhat = dialog.findViewById(R.id.btn_ngay_cap_nhat);
+        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
+//            LinearLayout layout = new LinearLayout(linearLayoutInfo.getContext());
+            if (field.getDomain() != null) {
+
+            } else {
+                Object value = attr.get(field.getName());
+                switch (field.getName()) {
+                    case Constant.IDSU_CO:
+                        if (value != null)
+                            ((TextView) dialog.findViewById(R.id.txt_id_su_co)).setText(value.toString());
+                        break;
+                    case Constant.VI_TRI:
+                        if (value != null)
+                            editViTri.setText(value.toString());
+                        break;
+                    case Constant.TRANG_THAI:
+                        if (value != null)
+                            spinTrangThai.setSelection(Integer.parseInt(value.toString()));
+                        break;
+                    case Constant.NGAY_CAP_NHAT:
+                        if (value != null)
+                            btnNgayCapNhat.setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        break;
+                }
+            }
+        }
+
+
+        ((ImageButton) dialog.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mServiceFeatureTable.loadAsync();
+                mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mSelectedArcGISFeature.getAttributes().put(Constant.VI_TRI, editViTri.getText().toString());
+                            mSelectedArcGISFeature.getAttributes().put(Constant.TRANG_THAI, spinTrangThai.getSelectedItemPosition() + "");
+                            Date date = null;
+                            date = Constant.DATE_FORMAT.parse(btnNgayCapNhat.getText().toString());
+                            Calendar c = Calendar.getInstance();
+                            c.setTime(date);
+//                            mSelectedArcGISFeature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
+
+                            // update feature in the feature table
+                            ListenableFuture<Void> mapViewResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+          /*mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature).addDoneListener(new Runnable() {*/
+                            mapViewResult.addDoneListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // apply change to the server
+                                    ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
+
+                                    serverResult.addDoneListener(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+                        } catch (ParseException e) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+            }
+        });
+        ((ImageButton) dialog.findViewById(R.id.imgBtn_capnhatsuco_cancel)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void viewMoreInfo_bottomsheet(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {

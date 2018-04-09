@@ -275,8 +275,11 @@ public class QuanLySuCo extends AppCompatActivity
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
-                return false;
+                if (newText.length() == 0){
+                    mSearchAdapter.clear();
+                    mSearchAdapter.notifyDataSetChanged();
+                }
+                    return false;
             }
         });
 
@@ -314,7 +317,7 @@ public class QuanLySuCo extends AppCompatActivity
 //        } else if (id == R.id.nav_manage) {
 //
 //        } else
-            if (id == R.id.nav_thongke) {
+        if (id == R.id.nav_thongke) {
             this.mapFunctions.thongKe();
 
         } else if (id == R.id.nav_tracuu) {
@@ -433,7 +436,7 @@ public class QuanLySuCo extends AppCompatActivity
 
                 if (resultCode == Activity.RESULT_OK) {
                     mMapViewHandler.queryByObjectID(objectid);
-                    Toast.makeText(this, "Kết quả từ tra cứu: " + objectid, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(this, "Kết quả từ tra cứu: " + objectid, Toast.LENGTH_SHORT).show();
                 }
             }
 //          mapFunctions.traCuu();

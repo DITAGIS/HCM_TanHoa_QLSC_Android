@@ -153,6 +153,7 @@ public class MapViewHandler {
                                         Calendar c = Calendar.getInstance();
                                         c.setTime(date);
                                         feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
+                                        feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
                                     }
                                     ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
                                     isClickBtnAdd = false;
@@ -324,7 +325,13 @@ public class MapViewHandler {
                         } catch (Exception e) {
 
                         }
-                        adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, attributes.get(Constant.VI_TRI).toString()));
+                        String viTri = "";
+                        try {
+                            viTri = attributes.get(Constant.VI_TRI).toString();
+                        } catch (Exception e) {
+
+                        }
+                        adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, viTri));
                         adapter.notifyDataSetChanged();
 
 

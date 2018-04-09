@@ -11,4 +11,9 @@
         <item > A </item>
         <item > B </item>
     </string-array>
+    <string-array name="trangthai_arrays">
+        <item >Chưa sửa chữa</item>
+        <item >Đang sửa chữa</item>
+        <item >Đã sửa chữa</item>
+    </string-array>
 </resources>

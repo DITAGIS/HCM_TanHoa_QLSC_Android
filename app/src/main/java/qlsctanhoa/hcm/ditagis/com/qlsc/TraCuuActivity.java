@@ -151,10 +151,16 @@ public class TraCuuActivity extends AppCompatActivity {
                         Feature item = (Feature) iterator.next();
 
                         Map<String, Object> attributes = item.getAttributes();
-                        String format_date = "";
+                        String format_date = "", viTri = "";
+                        try{
+                            viTri =  attributes.get(Constant.VI_TRI).toString();
+                        }catch (Exception e){
+
+                        }
                         if ((Calendar) attributes.get(Constant.NGAY_CAP_NHAT) != null)
                             format_date = Constant.DATE_FORMAT.format(((Calendar) attributes.get(Constant.NGAY_CAP_NHAT)).getTime());
-                        mTraCuuAdapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, attributes.get(Constant.VI_TRI).toString()));
+
+                        mTraCuuAdapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date,viTri));
                         mTraCuuAdapter.notifyDataSetChanged();
 
                     }
