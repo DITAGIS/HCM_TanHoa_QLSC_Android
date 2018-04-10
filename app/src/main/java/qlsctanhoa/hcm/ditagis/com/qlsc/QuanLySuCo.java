@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetDialog;
@@ -13,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -37,10 +39,12 @@ import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.loadable.LoadStatusChangedEvent;
 import com.esri.arcgisruntime.loadable.LoadStatusChangedListener;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
+import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
@@ -50,6 +54,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Config;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
@@ -66,6 +72,7 @@ public class QuanLySuCo extends AppCompatActivity
     private ArcGISFeature mSelectedArcGISFeature;
     private ServiceFeatureTable mServiceFeatureTable;
     private FeatureLayer suCoTanHoaLayer;
+    private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private String mSelectedArcGISFeatureAttributeValue;
     private boolean isClickBtnAdd = false;
 
@@ -143,11 +150,29 @@ public class QuanLySuCo extends AppCompatActivity
         });
 
         mMapView = (MapView) findViewById(R.id.mapView);
+
         // create an empty map instance
         final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
-
-        // set the map to be displayed in this view
         mMapView.setMap(mMap);
+        mFeatureLayerDTGS = new ArrayList<>();
+        // config feature layer service
+        ArrayList<Config> configs = Config.FeatureConfig.getConfigs();
+        for (Config config : configs) {
+            ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
+            FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+            featureLayer.setName(config.getTitle());
+//            featureLayer.setMinScale(config.getMinScale());
+            featureLayer.setMaxScale(0);
+            featureLayer.setMinScale(1000000);
+            FeatureLayerDTG featureLayerDTG = new FeatureLayerDTG(featureLayer);
+            featureLayerDTG.setOutFields(config.getOutField());
+            featureLayerDTG.setQueryFields(config.getQueryField());
+            featureLayerDTG.setTitleLayer(config.getTitle());
+            mFeatureLayerDTGS.add(featureLayerDTG);
+            mMap.getOperationalLayers().add(featureLayer);
+        }
+        // set the map to be displayed in this view
+
         mCallout = mMapView.getCallout();
 
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
@@ -155,9 +180,44 @@ public class QuanLySuCo extends AppCompatActivity
         popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
         suCoTanHoaLayer.setPopupEnabled(true);
         mMap.getOperationalLayers().add(suCoTanHoaLayer);
-        mMapView.setMap(mMap);
 
         this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
+        mMap.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                LinearLayout linnearDisplayLayer = (LinearLayout) findViewById(R.id.linnearDisplayLayer);
+                LayerList layers = mMap.getOperationalLayers();
+                int states[][] = {{android.R.attr.state_checked}, {}};
+                int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
+                for (final Layer layer : layers) {
+                    if (layer.getName().equals(Config.Title.title_diemsuco))
+                        continue;
+                    CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
+                    if (layer.getName().trim().equals(""))
+                        checkBox.setText(Config.Title.title_diemsuco);
+                    else
+                        checkBox.setText(layer.getName());
+                    CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
+                    linnearDisplayLayer.addView(checkBox);
+                    checkBox.setChecked(true);
+                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                        @Override
+                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                            // TODO Auto-generated method stub
+
+                            if (buttonView.isChecked()) {
+                                layer.setVisible(true);
+                            } else {
+                                layer.setVisible(false);
+                            }
+
+                        }
+                    });
+
+                }
+            }
+        });
         mMap.addLoadStatusChangedListener(new LoadStatusChangedListener() {
             @Override
             public void loadStatusChanged(LoadStatusChangedEvent loadStatusChangedEvent) {
@@ -200,15 +260,15 @@ public class QuanLySuCo extends AppCompatActivity
         ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
         ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
 
-        ((CheckBox) findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    suCoTanHoaLayer.setVisible(true);
-                } else
-                    suCoTanHoaLayer.setVisible(false);
-            }
-        });
+//        ((CheckBox) findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    suCoTanHoaLayer.setVisible(true);
+//                } else
+//                    suCoTanHoaLayer.setVisible(false);
+//            }
+//        });
     }
 
     private void changeStatusOfLocationDataSource() {

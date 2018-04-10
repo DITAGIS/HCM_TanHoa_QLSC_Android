@@ -298,6 +298,7 @@ public class MapViewHandler {
                                                         if (mDialog != null && mDialog.isShowing()) {
                                                             mDialog.dismiss();
                                                         }
+                                                        suCoTanHoaLayer.selectFeature(feature);
                                                     }
                                                 });
                                             }
