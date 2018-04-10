@@ -193,13 +193,16 @@ public class QuanLySuCo extends AppCompatActivity
                     if (layer.getName().equals(Config.Title.title_diemsuco))
                         continue;
                     CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
-                    if (layer.getName().trim().equals(""))
+
+                    if (layer.getName().trim().equals("")) {
                         checkBox.setText(Config.Title.title_diemsuco);
-                    else
+                    } else {
                         checkBox.setText(layer.getName());
+                    }
+                    checkBox.setChecked(true);
                     CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
                     linnearDisplayLayer.addView(checkBox);
-                    checkBox.setChecked(true);
+
                     checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                         @Override
@@ -215,6 +218,15 @@ public class QuanLySuCo extends AppCompatActivity
                         }
                     });
 
+                }
+                for (int i = 0; i < linnearDisplayLayer.getChildCount(); i++) {
+                    View v = linnearDisplayLayer.getChildAt(i);
+                    if (v instanceof CheckBox) {
+                        if (((CheckBox) v).getText().equals(Config.Title.title_diemsuco))
+                            ((CheckBox) v).setChecked(true);
+                        else
+                            ((CheckBox) v).setChecked(false);
+                    }
                 }
             }
         });
