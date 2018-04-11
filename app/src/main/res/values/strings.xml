@@ -26,11 +26,20 @@
     <string name="world_elevation_service">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
     <string name="service_feature_table">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
-    <string name="chuc_nang_thong_ke">Thống kê</string>
-    <string name="chuc_nang_tra_cuu">Tra cứu</string>
+    <string name="nav_thong_ke">Thống kê</string>
+    <string name="nav_tra_cuu">Tra cứu</string>
+    <string name="nav_cai_dat">Cài đặt</string>
+    <string name="nav_log_out">Đăng xuất</string>
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
     <string name="ket_qua_objectid">ket_qua_objectid</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!--preference-->
+    <string name="preference_settings_phuong_thuc_them_diem_su_co">preference_settings_phuong_thuc_them_diem_su_co</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_cham_diem">preference_settings_phuong_thuc_them_diem_su_co_cham_diem</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_toa_do">preference_settings_phuong_thuc_them_diem_su_co_toa_do</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_keo_tha">preference_settings_phuong_thuc_them_diem_su_co_keo_tha</string>
 
 
 </resources>

@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 public class Constant {
     public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
+
     public static enum FEATURE_ATTRIBUTES {
         ID_SUCO {
             @Override
@@ -35,6 +36,7 @@ public class Constant {
             }
         };
     }
+
     public static final String OBJECTID = "OBJECTID";
     public static final String IDSU_CO = "IDSuCo";
     public static final String VI_TRI = "ViTri";
@@ -42,6 +44,30 @@ public class Constant {
     public static final String NGAY_CAP_NHAT = "NgayCapNhat";
     public static final String NGAY_THONG_BAO = "NgayThongBao";
     public static final int REQUEST_CODE = 99;
-    public static final String[] CODEID_DISTRICT = { null,"768", "766", "767" };
-    public static final String[] CODE_PHANLOAI = { null,"1", "2" };
+    public static final String[] CODEID_DISTRICT = {null, "768", "766", "767"};
+    public static final String[] CODE_PHANLOAI = {null, "1", "2"};
+
+    public static final String[] SETTINGS_CATEGORY = {
+            "Phương thức thêm điểm sự cố",
+            "Bố cục giao diện",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+            "Cài đặt 1",
+
+    };
 }

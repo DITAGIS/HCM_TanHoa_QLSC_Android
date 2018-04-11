@@ -4,35 +4,50 @@
     tools:showIn="navigation_view">
 
     <!--<group android:checkableBehavior="single">-->
-        <!--<item-->
-            <!--android:id="@+id/nav_camera"-->
-            <!--android:icon="@drawable/ic_menu_camera"-->
-            <!--android:title="Import" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_gallery"-->
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            <!--android:title="Gallery" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:icon="@drawable/ic_menu_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:icon="@drawable/ic_menu_manage"-->
-            <!--android:title="Tools" />-->
+    <!--<item-->
+    <!--android:id="@+id/nav_camera"-->
+    <!--android:icon="@drawable/ic_menu_camera"-->
+    <!--android:title="Import" />-->
+    <!--<item-->
+    <!--android:id="@+id/nav_gallery"-->
+    <!--android:icon="@drawable/ic_menu_gallery"-->
+    <!--android:title="Gallery" />-->
+    <!--<item-->
+    <!--android:id="@+id/nav_slideshow"-->
+    <!--android:icon="@drawable/ic_menu_slideshow"-->
+    <!--android:title="Slideshow" />-->
+    <!--<item-->
+    <!--android:id="@+id/nav_manage"-->
+    <!--android:icon="@drawable/ic_menu_manage"-->
+    <!--android:title="Tools" />-->
     <!--</group>-->
 
     <item android:title="Chức năng">
         <menu>
-            <item
-                android:id="@+id/nav_thongke"
-                android:icon="@drawable/ic_thongke"
-                android:title="@string/chuc_nang_thong_ke" />
-            <item
-                android:id="@+id/nav_tracuu"
-                android:icon="@drawable/ic_search"
-                android:title= "@string/chuc_nang_tra_cuu" />
+            <group android:checkableBehavior="single">
+                <item
+                    
+                    android:id="@+id/nav_thongke"
+                    android:icon="@drawable/ic_thongke"
+                    android:title="@string/nav_thong_ke" />
+                <item
+                    android:id="@+id/nav_tracuu"
+                    android:icon="@drawable/ic_search"
+                    android:title="@string/nav_tra_cuu" />
+            </group>
         </menu>
     </item>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/nav_cai_dat" />
+        <item
+            android:id="@+id/nav_logOut"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/nav_log_out" />
+    </group>
+
 
 </menu>

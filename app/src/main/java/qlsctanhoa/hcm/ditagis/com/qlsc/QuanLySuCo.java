@@ -381,6 +381,13 @@ public class QuanLySuCo extends AppCompatActivity
             final Intent intent = new Intent(this, TraCuuActivity.class);
             this.startActivityForResult(intent, 1);
         }
+        else if (id == R.id.nav_setting) {
+            final Intent intent = new Intent(this, SettingsActivity.class);
+            this.startActivityForResult(intent, 1);
+        }
+        else if (id == R.id.nav_logOut) {
+            this.finish();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
