@@ -172,7 +172,6 @@ public class QuanLySuCo extends AppCompatActivity
             mMap.getOperationalLayers().add(featureLayer);
         }
         // set the map to be displayed in this view
-
         mCallout = mMapView.getCallout();
 
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));

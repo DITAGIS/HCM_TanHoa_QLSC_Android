@@ -18,9 +18,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -32,6 +31,7 @@ import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -39,6 +39,7 @@ import java.util.Map;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
+import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
 
 
 /**
@@ -223,7 +224,7 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) mDialogEdit.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               EditAsync editAsync = new EditAsync(mMainActivity);
+                EditAsync editAsync = new EditAsync(mMainActivity);
                 editAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
 
             }
@@ -240,7 +241,7 @@ public class Popup extends AppCompatActivity {
     private void viewMoreInfo_bottomsheet(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
 
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
-        LinearLayout layout_info = layout.findViewById(R.id.layout_alertdialog_info);
+        LinearLayout layout_info = layout.findViewById(R.id.lstView_alertdialog_info);
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             if (field.getDomain() != null) {
 
@@ -268,10 +269,11 @@ public class Popup extends AppCompatActivity {
     }
 
     private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
-
-        TableLayout layout_info = layout.findViewById(R.id.layout_alertdialog_info);
+        FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
+        ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
+        lstView.setAdapter(adapter);
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             if (field.getDomain() != null) {
 
@@ -282,32 +284,22 @@ public class Popup extends AppCompatActivity {
                     if (value != null)
                         ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
                 } else {
-                    TableRow row_layout = new TableRow(layout_info.getContext());
-                    row_layout.setOrientation(LinearLayout.HORIZONTAL);
-                    row_layout.setBackgroundResource(R.drawable.cell_shape);
-                    TextView txtAlias = new TextView(layout_info.getContext());
-                    txtAlias.setPadding(0, 0, 0, 0);
-                    txtAlias.setWidth(400);
-                    txtAlias.setText(field.getAlias() + ": ");
+                    FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
+                    item.setTitle(field.getAlias());
 //                    txtAlias.setBackgroundResource(R.drawable.cell_shape);
 
 
-                    TextView txtValue = new TextView(layout_info.getContext());
-                    txtValue.setPadding(0, 0, 0, 0);
-//                    txtValue.setBackgroundResource(R.drawable.cell_shape);
                     if (value != null)
                         switch (field.getFieldType()) {
                             case DATE:
-                                txtValue.setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                                item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                                 break;
                             case TEXT:
-                                txtValue.setText(value.toString());
+                                item.setValue(value.toString());
                                 break;
                         }
-                    row_layout.addView(txtAlias);
-                    row_layout.addView(txtValue);
-
-                    layout_info.addView(row_layout);
+                    adapter.add(item);
+                    adapter.notifyDataSetChanged();
                 }
 //                }
 
