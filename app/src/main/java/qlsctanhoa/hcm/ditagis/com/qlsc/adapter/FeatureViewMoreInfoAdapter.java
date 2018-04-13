@@ -71,21 +71,25 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         Item item = items.get(position);
 
         LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.layout_viewmoreinfo);
+        TextView txtAlias = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_alias);
+        //todo
+        txtAlias.setText(item.getAlias());
 
-        if (position % 2 == 1) {
-            convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorBackground_1));
-        } else {
+        TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_value);
+        //todo
+        txtValue.setText(item.getValue());
+        if (item.isEdit()) {
             convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorAccent_1));
+            convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.VISIBLE);
+        } else {
+            convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorBackground_1));
+            convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.INVISIBLE);
+
         }
-        TextView txtID = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_id);
-        //todo
-        txtID.setText(item.getAlias());
-
-        TextView txtDiaChi = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_value);
-        //todo
-        txtDiaChi.setText(item.getValue());
-
-
+        if (item.getValue() == null)
+            txtValue.setVisibility(View.GONE);
+        else
+            txtValue.setVisibility(View.VISIBLE);
         return convertView;
     }
 
