@@ -41,5 +41,9 @@
     <string name="preference_settings_phuong_thuc_them_diem_su_co_toa_do">Theo tọa độ vị trí</string>
     <string name="preference_settings_phuong_thuc_them_diem_su_co_keo_tha">Kéo thả bản đồ</string>
 
+    <string name="preference_settings_tuy_chon_tim_kiem">preference_settings_tuy_chon_tim_kiem</string>
+    <string name="preference_settings_tuy_chon_tim_kiem_co_san">Tìm kiếm sự cố</string>
+    <string name="preference_settings_tuy_chon_tim_kiem_chua_co">Tìm vị trí</string>
+
 
 </resources>

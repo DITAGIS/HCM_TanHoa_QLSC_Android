@@ -37,6 +37,7 @@ public class SettingsActivity extends AppCompatActivity {
                         showPhuongThucThemDiemSuCo();
                         break;
                     case 1:
+                        showOptionTimKiem();
                         break;
                 }
 
@@ -47,13 +48,18 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setSubTitle() {
         mSettingsAdapter.setItemSubtitle(0, getPhuongThucThemDiemSuCo());
-
+        mSettingsAdapter.setItemSubtitle(1, getOptionTimKiem());
 
         mSettingsAdapter.notifyDataSetChanged();
     }
 
     private String getPhuongThucThemDiemSuCo() {
         final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
+        return Preference.getInstance().loadPreference(key);
+    }
+
+    private String getOptionTimKiem() {
+        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem);
         return Preference.getInstance().loadPreference(key);
     }
 
@@ -101,6 +107,54 @@ public class SettingsActivity extends AppCompatActivity {
                     case R.id.rd_layout_settings_keo_tha:
                         Preference.getInstance().savePreferences(key,
                                 SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_keo_tha));
+                        break;
+                }
+                setSubTitle();
+                dialog.dismiss();
+            }
+        });
+        dialog.setView(layout);
+        dialog.show();
+    }
+
+    private void showOptionTimKiem() {
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
+        builder.setCancelable(true);
+        builder.setTitle("Tùy chọn tìm kiếm");
+        builder.setPositiveButton("THOÁT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        LayoutInflater inflater = getLayoutInflater();
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_tuy_chon_tim_kiem, null);
+        final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings_tim_kiem);
+        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem);
+        String type_Add_Point = getOptionTimKiem();
+        if (type_Add_Point.equals("") || type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co)))
+            group.check(R.id.rd_layout_settings_chua_co);
+        else if (type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san)))
+            group.check(R.id.rd_layout_settings_co_san);
+
+//        builder.setView(layout);
+        final AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                Preference.getInstance().deletePreferences(key);
+                switch (checkedId) {
+                    case R.id.rd_layout_settings_chua_co:
+                        Preference.getInstance().savePreferences(key,
+                                SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co));
+                        break;
+                    case R.id.rd_layout_settings_co_san:
+                        Preference.getInstance().savePreferences(key,
+                                SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san));
                         break;
                 }
                 setSubTitle();

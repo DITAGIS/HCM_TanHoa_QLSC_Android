@@ -34,8 +34,8 @@ public class Constant {
     private Constant() {
         mSettingsItems = new SettingsAdapter.Item[]{
                 new SettingsAdapter.Item("Phương thức thêm điểm sự cố", ""),
-                new SettingsAdapter.Item("Bố cục giao diện", ""),
                 new SettingsAdapter.Item("Tùy chọn tìm kiếm", ""),
+                new SettingsAdapter.Item("Bố cục giao diện", ""),
                 new SettingsAdapter.Item("Tiêu đề cài đặt", "Tiêu đề con cài đặt"),
                 new SettingsAdapter.Item("Tiêu đề cài đặt", "Tiêu đề con cài đặt"),
                 new SettingsAdapter.Item("Tiêu đề cài đặt", "Tiêu đề con cài đặt"),
