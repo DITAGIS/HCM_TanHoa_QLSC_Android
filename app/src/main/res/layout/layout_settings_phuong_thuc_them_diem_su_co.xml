@@ -16,7 +16,7 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Chấm điểm trên bản đồ"
+            android:text="@string/preference_settings_phuong_thuc_them_diem_su_co_cham_diem"
             android:checked="true"
             android:textSize="17sp" />
 
@@ -25,7 +25,7 @@
             style="@style/Radio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Theo tọa độ vị trí"
+            android:text="@string/preference_settings_phuong_thuc_them_diem_su_co_toa_do"
             android:textSize="17sp" />
 
         <RadioButton
@@ -33,7 +33,7 @@
             style="@style/Radio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Kéo thả bản đồ"
+            android:text="@string/preference_settings_phuong_thuc_them_diem_su_co_keo_tha"
             android:textSize="17sp" />
     </RadioGroup>
 </LinearLayout>

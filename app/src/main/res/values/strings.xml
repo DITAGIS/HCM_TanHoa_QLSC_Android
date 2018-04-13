@@ -37,9 +37,9 @@
 
     <!--preference-->
     <string name="preference_settings_phuong_thuc_them_diem_su_co">preference_settings_phuong_thuc_them_diem_su_co</string>
-    <string name="preference_settings_phuong_thuc_them_diem_su_co_cham_diem">preference_settings_phuong_thuc_them_diem_su_co_cham_diem</string>
-    <string name="preference_settings_phuong_thuc_them_diem_su_co_toa_do">preference_settings_phuong_thuc_them_diem_su_co_toa_do</string>
-    <string name="preference_settings_phuong_thuc_them_diem_su_co_keo_tha">preference_settings_phuong_thuc_them_diem_su_co_keo_tha</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_cham_diem">Chấm điểm trên bản đồ</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_toa_do">Theo tọa độ vị trí</string>
+    <string name="preference_settings_phuong_thuc_them_diem_su_co_keo_tha">Kéo thả bản đồ</string>
 
 
 </resources>

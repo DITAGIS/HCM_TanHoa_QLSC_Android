@@ -8,24 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioGroup;
 
+import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.SettingsAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Constant;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Preference;
 
 public class SettingsActivity extends AppCompatActivity {
     private ListView mLstViewSettings;
+    private SettingsAdapter mSettingsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Preference.getInstance().setContext(SettingsActivity.this);
 
         mLstViewSettings = findViewById(R.id.lstView_Settings);
-        mLstViewSettings.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Constant.SETTINGS_CATEGORY));
+        mSettingsAdapter = new SettingsAdapter(this, Constant.getInstance().getSettingsItems());
+        mLstViewSettings.setAdapter(mSettingsAdapter);
         mLstViewSettings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -36,12 +39,26 @@ public class SettingsActivity extends AppCompatActivity {
                     case 1:
                         break;
                 }
+
             }
         });
+        setSubTitle();
+    }
+
+    private void setSubTitle() {
+        mSettingsAdapter.setItemSubtitle(0, getPhuongThucThemDiemSuCo());
+
+
+        mSettingsAdapter.notifyDataSetChanged();
+    }
+
+    private String getPhuongThucThemDiemSuCo() {
+        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
+        return Preference.getInstance().loadPreference(key);
     }
 
     private void showPhuongThucThemDiemSuCo() {
-        Preference.getInstance().setContext(SettingsActivity.this);
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setCancelable(true);
         builder.setTitle("Phương thức thêm điểm sự cố");
@@ -56,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_phuong_thuc_them_diem_su_co, null);
         final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings);
         final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
-        String type_Add_Point = Preference.getInstance().loadPreference(key);
+        String type_Add_Point = getPhuongThucThemDiemSuCo();
         if (type_Add_Point.equals("") || type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem)))
             group.check(R.id.rd_layout_settings_cham_diem);
         else if (type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_toa_do)))
@@ -86,6 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
                                 SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_keo_tha));
                         break;
                 }
+                setSubTitle();
                 dialog.dismiss();
             }
         });
