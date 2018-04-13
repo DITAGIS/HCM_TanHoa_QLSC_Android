@@ -129,7 +129,7 @@
                     android:id="@+id/img_layer_topo"
                     android:layout_width="64dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/topo" />
+                    android:src="@drawable/imagery_with_labels" />
 
                 <TextView
                     android:id="@+id/txt_layer_topo"
@@ -137,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/text_layer_margin"
-                    android:text="Địa hình"
+                    android:text="Vệ tinh"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>

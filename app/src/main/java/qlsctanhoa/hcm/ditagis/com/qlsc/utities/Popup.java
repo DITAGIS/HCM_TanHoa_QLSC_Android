@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -21,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -40,6 +42,7 @@ import java.util.Map;
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
 
 
 /**
@@ -51,6 +54,7 @@ public class Popup extends AppCompatActivity {
     private ArcGISFeature mSelectedArcGISFeature = null;
     private ServiceFeatureTable mServiceFeatureTable;
     private Callout mCallout;
+    private FeatureLayerDTG mFeatureLayerDTG;
     private Map<String, Object> mAttr;
     private BottomSheetDialog mBottomSheetDialog;
     private Dialog mDialogEdit;
@@ -67,11 +71,13 @@ public class Popup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    public LinearLayout createPopup(final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+    public LinearLayout createPopup(FeatureLayerDTG layerDTG, final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+        this.mFeatureLayerDTG = layerDTG;
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
 //        LinearLayout linearLayout = new LinearLayout(this.mMainActivity.getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());//getLayoutInflater();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
+//        String[] updateFields = mFeatureLayerDTG.getu();
 //        LinearLayout linearLayoutInfo = linearLayout.findViewById(R.id.linearlayout_info);
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
 //            LinearLayout layout = new LinearLayout(linearLayoutInfo.getContext());
@@ -271,9 +277,17 @@ public class Popup extends AppCompatActivity {
     private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
-        FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
+        final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
         lstView.setAdapter(adapter);
+        lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(adapter.getItem(position).isEdit())
+                    Toast.makeText(mMainActivity,"Có thể chỉnh sửa", Toast.LENGTH_SHORT).show();
+            }
+        });
+        String[] updateFields = mFeatureLayerDTG.getUpdateFields();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             if (field.getDomain() != null) {
 
@@ -285,9 +299,9 @@ public class Popup extends AppCompatActivity {
                         ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
                 } else {
                     FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
-                    item.setTitle(field.getAlias());
+                    item.setAlias(field.getAlias());
 //                    txtAlias.setBackgroundResource(R.drawable.cell_shape);
-
+                    item.setFieldName(field.getName());
 
                     if (value != null)
                         switch (field.getFieldType()) {
@@ -298,6 +312,13 @@ public class Popup extends AppCompatActivity {
                                 item.setValue(value.toString());
                                 break;
                         }
+                    item.setEdit(false);
+                    for (String updateField : updateFields) {
+                        if (item.getFieldName().equals(updateField)) {
+                            item.setEdit(true);
+                            break;
+                        }
+                    }
                     adapter.add(item);
                     adapter.notifyDataSetChanged();
                 }
@@ -305,6 +326,7 @@ public class Popup extends AppCompatActivity {
 
             }
         }
+
 
         builder.setView(layout);
         AlertDialog dialog = builder.create();

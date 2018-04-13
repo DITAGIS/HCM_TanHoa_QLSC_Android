@@ -35,6 +35,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
@@ -97,6 +98,8 @@ public class QuanLySuCo extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
+        setLicense();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.mListViewSearch = findViewById(R.id.lstview_search);
@@ -168,6 +171,7 @@ public class QuanLySuCo extends AppCompatActivity
             featureLayerDTG.setOutFields(config.getOutField());
             featureLayerDTG.setQueryFields(config.getQueryField());
             featureLayerDTG.setTitleLayer(config.getTitle());
+            featureLayerDTG.setUpdateFields(config.getUpdateField());
             mFeatureLayerDTGS.add(featureLayerDTG);
             mMap.getOperationalLayers().add(featureLayer);
         }
@@ -251,7 +255,7 @@ public class QuanLySuCo extends AppCompatActivity
         });
         changeStatusOfLocationDataSource();
 
-        mMapViewHandler = new MapViewHandler(mMap, suCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
+        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS,mMap, suCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
 
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
@@ -278,6 +282,30 @@ public class QuanLySuCo extends AppCompatActivity
 //                    suCoTanHoaLayer.setVisible(true);
 //                } else
 //                    suCoTanHoaLayer.setVisible(false);
+//            }
+//        });
+    }
+
+    private void setLicense() {
+        //way 1
+        ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169");
+
+
+        //way 2
+//        UserCredential credential = new UserCredential("thanle95", "Gemini111");
+//
+//// replace the URL with either the ArcGIS Online URL or your portal URL
+//        final Portal portal = new Portal("https://than-le.maps.arcgis.com");
+//        portal.setCredential(credential);
+//
+//// load portal and listen to done loading event
+//        portal.loadAsync();
+//        portal.addDoneLoadingListener(new Runnable() {
+//            @Override
+//            public void run() {
+//                LicenseInfo licenseInfo = portal.getPortalInfo().getLicenseInfo();
+//                // Apply the license at Standard level
+//                ArcGISRuntimeEnvironment.setLicense(licenseInfo);
 //            }
 //        });
     }
@@ -442,7 +470,7 @@ public class QuanLySuCo extends AppCompatActivity
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
                 break;
             case R.id.layout_layer_topo:
-                mMapView.getMap().setBasemap(Basemap.createTopographic());
+                mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
                 break;
             case R.id.btn_layer_close:

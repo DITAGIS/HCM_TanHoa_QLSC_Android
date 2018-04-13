@@ -19,15 +19,23 @@ public class FeatureLayerDTG {
 
     private String[] outFields;
     private String[] queryFields;
+    private String[] updateFields;
     private String titleLayer;
 
+    public String[] getUpdateFields() {
+        return updateFields;
+    }
 
+    public void setUpdateFields(String[] updateFields) {
+        this.updateFields = updateFields;
+    }
 
     public FeatureLayerDTG(MapView mMapView, FeatureLayer featureLayer, String[] outFields) {
         this.mMapView = mMapView;
         this.featureLayer = featureLayer;
         this.outFields = outFields;
     }
+
     public FeatureLayerDTG(FeatureLayer featureLayer) {
         this.featureLayer = featureLayer;
     }

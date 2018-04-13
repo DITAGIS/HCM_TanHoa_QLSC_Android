@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
 
 
 /**
@@ -50,6 +51,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
 public class MapViewHandler {
 
     private final ArcGISMap mMap;
+    private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private final FeatureLayer suCoTanHoaLayer;
     private Callout mCallout;
     private android.graphics.Point mClickPoint;
@@ -62,7 +64,8 @@ public class MapViewHandler {
     private static double DELTA_MOVE_Y = 0;//7000;
     LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
-    public MapViewHandler(ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
+    public MapViewHandler(List<FeatureLayerDTG> featureLayerDTGS, ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
+        this.mFeatureLayerDTGS = featureLayerDTGS;
         this.mCallout = mCallout;
         this.mClickPoint = mClickPoint;
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
@@ -218,10 +221,12 @@ public class MapViewHandler {
     class SingleTapMapViewAsync extends AsyncTask<Point, Void, Void> {
         private ProgressDialog mDialog;
         private Context mContext;
+
         public SingleTapMapViewAsync(Context context) {
             mContext = context;
             mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         }
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -229,6 +234,7 @@ public class MapViewHandler {
             mDialog.setCancelable(false);
             mDialog.show();
         }
+
         @Override
         protected Void doInBackground(Point... params) {
             final Point clickPoint = params[0];
@@ -325,34 +331,40 @@ public class MapViewHandler {
                     @Override
                     public void run() {
                         try {
-                            // call get on the future to get the result
-                            IdentifyLayerResult layerResult = identifyFuture.get();
-                            List<GeoElement> resultGeoElements = layerResult.getElements();
                             LayoutInflater layoutInflater = LayoutInflater.from(mContext);
                             if (mDialog != null && mDialog.isShowing()) {
                                 mDialog.dismiss();
                             }
-                            if (resultGeoElements.size() > 0 && !isClickBtnAdd) {
+                            IdentifyLayerResult layerResult = identifyFuture.get();
+                            List<GeoElement> resultGeoElements = layerResult.getElements();
+                            if (resultGeoElements.size() > 0) {
                                 if (resultGeoElements.get(0) instanceof ArcGISFeature) {
                                     mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
                                     // highlight the selected feature
-                                    suCoTanHoaLayer.selectFeature(mSelectedArcGISFeature);
-                                    Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
+                                    for (FeatureLayerDTG layerDTG : mFeatureLayerDTGS) {
+                                        FeatureLayer featureLayer = layerDTG.getFeatureLayer();
+                                        featureLayer.clearSelection();
+                                        if (layerDTG.getTitleLayer().equals("Điểm sự cố")) {
+                                            featureLayer.selectFeature(mSelectedArcGISFeature);
+                                            Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
 
-                                    LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
-                                    Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-                                    Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-                                    mMapView.setViewpointGeometryAsync(envelope1, 0);
-                                    // show CallOut
-                                    mCallout.setLocation(clickPoint);
-                                    mCallout.setContent(linearLayout);
-                                    popupInfos.runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mCallout.refresh();
-                                            mCallout.show();
+                                            LinearLayout linearLayout = popupInfos.createPopup(layerDTG, mSelectedArcGISFeature, attr);
+                                            Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+                                            Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+                                            mMapView.setViewpointGeometryAsync(envelope1, 0);
+                                            // show CallOut
+                                            mCallout.setLocation(clickPoint);
+                                            mCallout.setContent(linearLayout);
+                                            popupInfos.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    mCallout.refresh();
+                                                    mCallout.show();
+                                                }
+                                            });
                                         }
-                                    });
+                                    }
+
                                 }
                             } else {
                                 // none of the features on the map were selected
