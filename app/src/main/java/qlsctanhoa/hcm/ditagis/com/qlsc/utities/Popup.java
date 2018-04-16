@@ -16,13 +16,14 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -36,6 +37,7 @@ import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -57,6 +59,7 @@ public class Popup extends AppCompatActivity {
     private FeatureLayerDTG mFeatureLayerDTG;
     private Map<String, Object> mAttr;
     private BottomSheetDialog mBottomSheetDialog;
+    private int beforeAdapter, afterAdapter;
     private Dialog mDialogEdit;
 
     public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout, BottomSheetDialog bottomSheetDialog) {
@@ -275,7 +278,7 @@ public class Popup extends AppCompatActivity {
     }
 
     private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
@@ -283,8 +286,7 @@ public class Popup extends AppCompatActivity {
         lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(adapter.getItem(position).isEdit())
-                    Toast.makeText(mMainActivity,"Có thể chỉnh sửa", Toast.LENGTH_SHORT).show();
+                edit(parent, view, position, id);
             }
         });
         String[] updateFields = mFeatureLayerDTG.getUpdateFields();
@@ -319,21 +321,137 @@ public class Popup extends AppCompatActivity {
                             break;
                         }
                     }
+
+                    item.setFieldType(field.getFieldType());
                     adapter.add(item);
-                    adapter.notifyDataSetChanged();
+                    new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);
                 }
 //                }
 
             }
         }
-
-
+        beforeAdapter = adapter.hashCode();
         builder.setView(layout);
+        builder.setCancelable(false);
+        builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                afterAdapter = adapter.hashCode();
+                if (beforeAdapter != afterAdapter) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
+                    builder.setMessage("Bạn có muốn cập nhật tất cả thay đổi?");
+                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                    alertDialog.show();
+                }
+                dialog.dismiss();
+            }
+        });
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         dialog.show();
 
+
+    }
+
+    private void edit(final AdapterView<?> parent, View view, int position, long id) {
+        if (parent.getItemAtPosition(position) instanceof FeatureViewMoreInfoAdapter.Item) {
+            final FeatureViewMoreInfoAdapter.Item item = (FeatureViewMoreInfoAdapter.Item) parent.getItemAtPosition(position);
+            if (item.isEdit()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+                builder.setTitle("Cập nhật thuộc tính");
+                builder.setMessage(item.getAlias());
+                builder.setCancelable(false)
+                        .setNegativeButton("Hùy", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().inflate(R.layout.layout_dialog_update_feature_listview, null);
+
+                builder.setView(layout);
+                final FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
+                final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
+                final Button button = layout.findViewById(R.id.btn_edit_viewmoreinfo);
+                final LinearLayout layoutEditText = layout.findViewById(R.id.layout_edit_viewmoreinfo_Editext);
+                final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
+                final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
+                switch (item.getFieldType()) {
+                    case DATE:
+                        layoutTextView.setVisibility(View.VISIBLE);
+                        textView.setText(item.getValue());
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final View dialogView = View.inflate(mMainActivity, R.layout.date_time_picker, null);
+                                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(mMainActivity).create();
+
+                                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+
+                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+                                        String s = String.format("%02d", datePicker.getDayOfMonth()) + "_" + String.format("%02d", (datePicker.getMonth() + 1)) + "_" + datePicker.getYear();
+
+                                        textView.setText(s);
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                alertDialog.setView(dialogView);
+                                alertDialog.show();
+                            }
+                        });
+                        break;
+                    case TEXT:
+                        layoutEditText.setVisibility(View.VISIBLE);
+                        editText.setText(item.getValue());
+                        break;
+                    case SHORT:
+                        (layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner)).setVisibility(View.VISIBLE);
+//                        ((TextView) (layout.findViewById(R.id.txt_edit_viewmoreinfo))).setText(item.getValue());
+                        break;
+                }
+                builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (item.getFieldType()) {
+                            case DATE:
+                                item.setValue(textView.getText().toString());
+                                break;
+                            case TEXT:
+                                item.setValue(editText.getText().toString());
+                                break;
+                            case SHORT:
+                                item.setValue(spin.getSelectedItemPosition() + "");
+                                break;
+                        }
+                        dialog.dismiss();
+                        FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();
+                        new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);
+                    }
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+
+            }
+        }
 
     }
 
@@ -467,4 +585,59 @@ public class Popup extends AppCompatActivity {
 
     }
 
+    class NotifyDataSetChangeAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void> {
+        private ProgressDialog dialog;
+        private Context mContext;
+
+        public NotifyDataSetChangeAsync(Context context) {
+            mContext = context;
+            dialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setMessage("Đang cập nhật giao diện...");
+            dialog.setCancelable(false);
+
+            dialog.show();
+
+        }
+
+        @Override
+        protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
+           final FeatureViewMoreInfoAdapter adapter = params[0];
+            try {
+                Thread.sleep(500);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+
+        }
+
+
+        @Override
+        protected void onPostExecute(Void result) {
+            if(dialog != null || dialog.isShowing())
+                dialog.dismiss();
+            super.onPostExecute(result);
+
+        }
+
+    }
 }

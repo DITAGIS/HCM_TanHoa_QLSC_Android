@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.esri.arcgisruntime.data.Field;
+
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
@@ -99,8 +101,18 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         private String value;
         private String fieldName;
         private boolean isEdit;
+        private Field.Type fieldType;
 
         public Item() {
+        }
+
+
+        public Field.Type getFieldType() {
+            return fieldType;
+        }
+
+        public void setFieldType(Field.Type fieldType) {
+            this.fieldType = fieldType;
         }
 
         public String getFieldName() {
