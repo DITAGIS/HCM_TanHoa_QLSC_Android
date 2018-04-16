@@ -1,10 +1,7 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
@@ -15,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -27,6 +25,8 @@ import android.widget.TextView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.CodedValue;
+import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
@@ -36,7 +36,6 @@ import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,8 @@ import java.util.Map;
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import qlsctanhoa.hcm.ditagis.com.qlsc.async.EditAsync;
+import qlsctanhoa.hcm.ditagis.com.qlsc.async.NotifyDataSetChangeAsync;
 import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
 
 
@@ -59,7 +60,6 @@ public class Popup extends AppCompatActivity {
     private FeatureLayerDTG mFeatureLayerDTG;
     private Map<String, Object> mAttr;
     private BottomSheetDialog mBottomSheetDialog;
-    private int beforeAdapter, afterAdapter;
     private Dialog mDialogEdit;
 
     public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout, BottomSheetDialog bottomSheetDialog) {
@@ -77,13 +77,9 @@ public class Popup extends AppCompatActivity {
     public LinearLayout createPopup(FeatureLayerDTG layerDTG, final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
         this.mFeatureLayerDTG = layerDTG;
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
-//        LinearLayout linearLayout = new LinearLayout(this.mMainActivity.getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());//getLayoutInflater();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
-//        String[] updateFields = mFeatureLayerDTG.getu();
-//        LinearLayout linearLayoutInfo = linearLayout.findViewById(R.id.linearlayout_info);
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-//            LinearLayout layout = new LinearLayout(linearLayoutInfo.getContext());
             if (field.getDomain() != null) {
 
             } else {
@@ -114,23 +110,6 @@ public class Popup extends AppCompatActivity {
                             ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                         break;
                 }
-//                linearLayoutInfo.addView(layout);
-//
-//                TextView alias = new TextView(linearLayoutInfo.getContext());
-//                alias.setPadding(0, 0, 10, 0);
-//                alias.setText(field.getAlias());
-//
-//
-//                TextView txtValue = new TextView(linearLayoutInfo.getContext());
-//                txtValue.setPadding(0, 0, 10, 0);
-//                Object value = attr.get(field.getAlias());
-//                if (value == null)
-//                    txtValue.setText("");
-//                else
-//                    txtValue.setText(attr.get(field.getAlias()).toString());
-//
-//                layout.addView(alias);
-//                layout.addView(txtValue);
             }
         }
         if (mCallout != null)
@@ -173,35 +152,8 @@ public class Popup extends AppCompatActivity {
         btnNgayCapNhat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                final View dialogView = View.inflate(mMainActivity, R.layout.date_time_picker, null);
-//                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(mMainActivity).create();
-//
-//                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        Date date = Calendar.getInstance().getTime();
-//                        date.toString();
-////                        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-////
-////                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-//
-////                        String s = String.format("%02d", date.getDayOfMonth()) + "_" + String.format("%02d", (date.getMonth() + 1)) + "_" + date.getYear();
-////
-////                        btnNgayCapNhat.setText(s);
-//                        alertDialog.dismiss();
-//                    }
-//                });
-//                alertDialog.setView(dialogView);
-//                alertDialog.show();
                 Calendar calendar = Calendar.getInstance();
                 txtNgayCapNhat.setText(Constant.DATE_FORMAT.format(calendar.getTime()));
-//                        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-//
-//                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-
-//                        String s = String.format("%02d", date.getDayOfMonth()) + "_" + String.format("%02d", (date.getMonth() + 1)) + "_" + date.getYear();
-//
-//                        btnNgayCapNhat.setText(s);
             }
         });
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
@@ -233,8 +185,8 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) mDialogEdit.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditAsync editAsync = new EditAsync(mMainActivity);
-                editAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
+//                EditAsync editAsync = new EditAsync(mMainActivity);
+//                editAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
 
             }
         });
@@ -277,11 +229,11 @@ public class Popup extends AppCompatActivity {
         mBottomSheetDialog.show();
     }
 
-    private void viewMoreInfo(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
+    private void viewMoreInfo(final ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
-        ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
+        final ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
         lstView.setAdapter(adapter);
         lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -291,71 +243,75 @@ public class Popup extends AppCompatActivity {
         });
         String[] updateFields = mFeatureLayerDTG.getUpdateFields();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            if (field.getDomain() != null) {
-
-            } else {
-                Object value = attr.get(field.getName());
+//            if (field.getDomain() != null) {
+//
+//            } else {
+            Object value = attr.get(field.getName());
 //                if (value != null) {
-                if (field.getName().equals(Constant.IDSU_CO)) {
-                    if (value != null)
-                        ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
-                } else {
-                    FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
-                    item.setAlias(field.getAlias());
+            if (field.getName().equals(Constant.IDSU_CO)) {
+                if (value != null)
+                    ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
+            } else {
+                FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
+                item.setAlias(field.getAlias());
 //                    txtAlias.setBackgroundResource(R.drawable.cell_shape);
-                    item.setFieldName(field.getName());
+                item.setFieldName(field.getName());
 
-                    if (value != null)
-                        switch (field.getFieldType()) {
-                            case DATE:
-                                item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
-                                break;
-                            case TEXT:
-                                item.setValue(value.toString());
-                                break;
-                        }
-                    item.setEdit(false);
-                    for (String updateField : updateFields) {
-                        if (item.getFieldName().equals(updateField)) {
-                            item.setEdit(true);
+                if (value != null)
+                    switch (field.getFieldType()) {
+                        case DATE:
+                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                             break;
-                        }
+                        case TEXT:
+                            item.setValue(value.toString());
+                            break;
+                        case SHORT:
+                            if (field.getDomain() != null) {
+                                List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                                item.setValue(codedValues.get(Short.parseShort(value.toString())).getName());
+                            }
+                            break;
                     }
-
-                    item.setFieldType(field.getFieldType());
-                    adapter.add(item);
-                    new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);
+                item.setEdit(false);
+                for (String updateField : updateFields) {
+                    if (item.getFieldName().equals(updateField)) {
+                        item.setEdit(true);
+                        break;
+                    }
                 }
+
+                item.setFieldType(field.getFieldType());
+                adapter.add(item);
+                adapter.notifyDataSetChanged();
+            }
 //                }
 
-            }
+//            }
         }
-        beforeAdapter = adapter.hashCode();
         builder.setView(layout);
         builder.setCancelable(false);
         builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                afterAdapter = adapter.hashCode();
-                if (beforeAdapter != afterAdapter) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
-                    builder.setMessage("Bạn có muốn cập nhật tất cả thay đổi?");
-                    builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-                    alertDialog.show();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
+                builder.setMessage("Bạn có muốn cập nhật tất cả thay đổi?");
+                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new EditAsync(mMainActivity, mServiceFeatureTable, mSelectedArcGISFeature).execute(adapter);
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                alertDialog.show();
                 dialog.dismiss();
             }
         });
@@ -375,7 +331,7 @@ public class Popup extends AppCompatActivity {
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
                 builder.setCancelable(false)
-                        .setNegativeButton("Hùy", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
@@ -389,7 +345,9 @@ public class Popup extends AppCompatActivity {
                 final Button button = layout.findViewById(R.id.btn_edit_viewmoreinfo);
                 final LinearLayout layoutEditText = layout.findViewById(R.id.layout_edit_viewmoreinfo_Editext);
                 final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
+                final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
                 final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
+
                 switch (item.getFieldType()) {
                     case DATE:
                         layoutTextView.setVisibility(View.VISIBLE);
@@ -422,8 +380,19 @@ public class Popup extends AppCompatActivity {
                         editText.setText(item.getValue());
                         break;
                     case SHORT:
-                        (layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner)).setVisibility(View.VISIBLE);
-//                        ((TextView) (layout.findViewById(R.id.txt_edit_viewmoreinfo))).setText(item.getValue());
+                        layoutSpin.setVisibility(View.VISIBLE);
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                        if (codedValues != null) {
+
+                            List<String> codes = new ArrayList<>();
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+                            if (item.getValue() != null)
+                                spin.setSelection(codes.indexOf(item.getValue()));
+
+                        }
                         break;
                 }
                 builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
@@ -437,7 +406,7 @@ public class Popup extends AppCompatActivity {
                                 item.setValue(editText.getText().toString());
                                 break;
                             case SHORT:
-                                item.setValue(spin.getSelectedItemPosition() + "");
+                                item.setValue(spin.getSelectedItem().toString());
                                 break;
                         }
                         dialog.dismiss();
@@ -510,134 +479,4 @@ public class Popup extends AppCompatActivity {
 
     }
 
-    class EditAsync extends AsyncTask<String, Void, Void> {
-        private ProgressDialog mDialog;
-        private Context mContext;
-
-        public EditAsync(Context context) {
-            mContext = context;
-            mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog.setMessage("Đang xử lý...");
-            mDialog.setCancelable(false);
-
-            mDialog.show();
-
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            final String viTri = params[0];
-            final short trangThai = Short.parseShort(params[1]);
-            final String ngayCapNhat = params[2];
-
-            mServiceFeatureTable.loadAsync();
-            mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mSelectedArcGISFeature.getAttributes().put(Constant.VI_TRI, viTri);
-                        mSelectedArcGISFeature.getAttributes().put(Constant.TRANG_THAI, trangThai);
-                        Date date = null;
-                        date = Constant.DATE_FORMAT.parse(ngayCapNhat);
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(date);
-                        mSelectedArcGISFeature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
-                        // update feature in the feature table
-                        mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature).addDoneListener(new Runnable() {
-                            @Override
-                            public void run() {
-                                mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mDialogEdit.dismiss();
-                                        if (mDialog != null && mDialog.isShowing()) {
-                                            mDialog.dismiss();
-                                        }
-                                    }
-                                });
-                            }
-                        });
-
-                    } catch (Exception e) {
-                    }
-                }
-            });
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-        }
-
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-        }
-
-    }
-
-    class NotifyDataSetChangeAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void> {
-        private ProgressDialog dialog;
-        private Context mContext;
-
-        public NotifyDataSetChangeAsync(Context context) {
-            mContext = context;
-            dialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog.setMessage("Đang cập nhật giao diện...");
-            dialog.setCancelable(false);
-
-            dialog.show();
-
-        }
-
-        @Override
-        protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
-           final FeatureViewMoreInfoAdapter adapter = params[0];
-            try {
-                Thread.sleep(500);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-
-        }
-
-
-        @Override
-        protected void onPostExecute(Void result) {
-            if(dialog != null || dialog.isShowing())
-                dialog.dismiss();
-            super.onPostExecute(result);
-
-        }
-
-    }
 }
