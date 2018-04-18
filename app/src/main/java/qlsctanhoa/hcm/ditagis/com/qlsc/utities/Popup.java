@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.QuanLySuCo;
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
@@ -46,11 +47,6 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.async.EditAsync;
 import qlsctanhoa.hcm.ditagis.com.qlsc.async.NotifyDataSetChangeAsync;
 import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
-
-
-/**
- * Created by NGUYEN HONG on 1/31/2018.
- */
 
 public class Popup extends AppCompatActivity {
     private QuanLySuCo mMainActivity;
@@ -74,8 +70,11 @@ public class Popup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    public LinearLayout createPopup(FeatureLayerDTG layerDTG, final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+    public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
+    }
+
+    public LinearLayout createPopup( final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());//getLayoutInflater();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
@@ -122,13 +121,7 @@ public class Popup extends AppCompatActivity {
                 viewMoreInfo(mSelectedArcGISFeature, attr);
             }
         });
-        ((ImageButton) linearLayout.findViewById(R.id.imgBtn_Edit)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                UpdateFeature();
-                edit(mSelectedArcGISFeature, attr);
-            }
-        });
+
         ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,96 +130,6 @@ public class Popup extends AppCompatActivity {
         });
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return linearLayout;
-    }
-
-    private void edit(final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
-        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity);//getLayoutInflater();
-        LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_capnhatsuco, null);
-        mDialogEdit = new Dialog(this.mMainActivity);
-        mDialogEdit.setContentView(linearLayout);
-        mDialogEdit.setCancelable(false);
-        final Spinner spinTrangThai = mDialogEdit.findViewById(R.id.spin_trang_thai);
-        final EditText editViTri = mDialogEdit.findViewById(R.id.edit_vi_tri_su_co);
-        final Button btnNgayCapNhat = mDialogEdit.findViewById(R.id.btn_ngay_cap_nhat);
-        final TextView txtNgayCapNhat = mDialogEdit.findViewById(R.id.txt_ngay_cap_nhat);
-        btnNgayCapNhat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                txtNgayCapNhat.setText(Constant.DATE_FORMAT.format(calendar.getTime()));
-            }
-        });
-        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-//            LinearLayout layout = new LinearLayout(linearLayoutInfo.getContext());
-            if (field.getDomain() != null) {
-
-            } else {
-                Object value = attr.get(field.getName());
-                switch (field.getName()) {
-                    case Constant.IDSU_CO:
-                        if (value != null)
-                            ((TextView) mDialogEdit.findViewById(R.id.txt_id_su_co)).setText(value.toString());
-                        break;
-                    case Constant.VI_TRI:
-                        if (value != null)
-                            editViTri.setText(value.toString());
-                        break;
-                    case Constant.TRANG_THAI:
-                        if (value != null)
-                            spinTrangThai.setSelection(Integer.parseInt(value.toString()));
-                        break;
-                    case Constant.NGAY_CAP_NHAT:
-                        if (value != null)
-                            txtNgayCapNhat.setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
-                        break;
-                }
-            }
-        }
-        ((ImageButton) mDialogEdit.findViewById(R.id.imgBtn_capnhatsuco_save)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                EditAsync editAsync = new EditAsync(mMainActivity);
-//                editAsync.execute(editViTri.getText().toString(), spinTrangThai.getSelectedItemPosition() + "", txtNgayCapNhat.getText().toString());
-
-            }
-        });
-        ((ImageButton) mDialogEdit.findViewById(R.id.imgBtn_capnhatsuco_cancel)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDialogEdit.dismiss();
-            }
-        });
-        mDialogEdit.show();
-    }
-
-    private void viewMoreInfo_bottomsheet(ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
-
-        View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
-        LinearLayout layout_info = layout.findViewById(R.id.lstView_alertdialog_info);
-        for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            if (field.getDomain() != null) {
-
-            } else {
-                Object value = attr.get(field.getName());
-//                if (value != null) {
-                if (field.getName().equals(Constant.IDSU_CO)) {
-                    if (value != null)
-                        ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
-                } else {
-                    TextView tv = new TextView(layout_info.getContext());
-                    tv.setPadding(0, 0, 0, 0);
-                    if (value == null)
-                        tv.setText(field.getAlias() + ":");
-                    else
-                        tv.setText(field.getAlias() + ": " + value.toString());
-                    layout_info.addView(tv);
-                }
-//                }
-
-            }
-        }
-        mBottomSheetDialog.setContentView(layout);
-        mBottomSheetDialog.show();
     }
 
     private void viewMoreInfo(final ArcGISFeature mSelectedArcGISFeature, Map<String, Object> attr) {
@@ -448,11 +351,22 @@ public class Popup extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     // apply change to the server
-                                    ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
+                                    final ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
                                     serverResult.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-
+                                            try {
+                                                List<FeatureEditResult> edits = serverResult.get();
+                                                // check if the server edit was successful
+                                                if (edits != null && edits.size() > 0) {
+                                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                                    } else {
+                                                        throw edits.get(0).getError();
+                                                    }
+                                                }
+                                                mServiceFeatureTable.loadAsync();
+                                            } catch (InterruptedException | ExecutionException e) {
+                                            }
                                         }
                                     });
                                 }
@@ -463,8 +377,7 @@ public class Popup extends AppCompatActivity {
                         }
                     }
                 });
-                if (mCallout != null)
-                    mCallout.dismiss();
+                if (mCallout != null) mCallout.dismiss();
             }
         }).setNegativeButton("Không", new DialogInterface.OnClickListener() {
             @Override

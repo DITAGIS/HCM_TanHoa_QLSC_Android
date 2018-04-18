@@ -112,8 +112,9 @@ public class MapViewHandler {
     }
 
     public void queryByObjectID(int objectID) {
-        QueryParameters queryParameters = new QueryParameters();
-        queryParameters.setWhereClause("OBJECTID = " + objectID);
+        final QueryParameters queryParameters = new QueryParameters();
+        final String query = "OBJECTID = " + objectID;
+        queryParameters.setWhereClause(query);
         final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
         feature.addDoneListener(new Runnable() {
             @Override
@@ -123,13 +124,29 @@ public class MapViewHandler {
                     if (result.iterator().hasNext()) {
 
                         Feature item = result.iterator().next();
-
                         Envelope extent = item.getGeometry().getExtent();
 
                         mMapView.setViewpointGeometryAsync(extent);
-
+//                        QueryParameters queryParameters1 = new QueryParameters();
+//                        queryParameters1.setGeometry(extent);
+//                        suCoTanHoaLayer.selectFeaturesAsync(queryParameters1, FeatureLayer.SelectionMode.NEW);
+//                        suCoTanHoaLayer.setSelectionColor(Color.GREEN);
+//                        suCoTanHoaLayer.setSelectionWidth(20);
                         suCoTanHoaLayer.selectFeature(item);
-
+//                        Map<String, Object> attr = item.getAttributes();
+//                        Point clickPoint = new Point(extent.getCenter().getX(), extent.getCenter().getY());
+//                        LinearLayout linearLayout = popupInfos.createPopup( (ArcGISFeature) item, attr);
+//                        mMapView.setViewpointGeometryAsync(extent, 0);
+//                        // show CallOut
+//                        mCallout.setLocation(clickPoint);
+//                        mCallout.setContent(linearLayout);
+//                        popupInfos.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mCallout.refresh();
+//                                mCallout.show();
+//                            }
+//                        });
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -206,7 +223,7 @@ public class MapViewHandler {
                         adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, viTri));
                         adapter.notifyDataSetChanged();
 
-
+//                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -347,8 +364,8 @@ public class MapViewHandler {
                                         if (layerDTG.getTitleLayer().equals("Điểm sự cố")) {
                                             featureLayer.selectFeature(mSelectedArcGISFeature);
                                             Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
-
-                                            LinearLayout linearLayout = popupInfos.createPopup(layerDTG, mSelectedArcGISFeature, attr);
+                                            popupInfos.setFeatureLayerDTG(layerDTG);
+                                            LinearLayout linearLayout = popupInfos.createPopup(mSelectedArcGISFeature, attr);
                                             Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
                                             Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
                                             mMapView.setViewpointGeometryAsync(envelope1, 0);

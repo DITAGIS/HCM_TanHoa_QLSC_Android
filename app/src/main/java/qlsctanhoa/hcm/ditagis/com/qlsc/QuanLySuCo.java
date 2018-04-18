@@ -41,8 +41,6 @@ import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.layers.Layer;
-import com.esri.arcgisruntime.loadable.LoadStatusChangedEvent;
-import com.esri.arcgisruntime.loadable.LoadStatusChangedListener;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.LayerList;
@@ -72,7 +70,7 @@ public class QuanLySuCo extends AppCompatActivity
     private android.graphics.Point mClickPoint;
     private ArcGISFeature mSelectedArcGISFeature;
     private ServiceFeatureTable mServiceFeatureTable;
-    private FeatureLayer suCoTanHoaLayer;
+    private FeatureLayer mSuCoTanHoaLayer;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private String mSelectedArcGISFeatureAttributeValue;
     private boolean isClickBtnAdd = false;
@@ -179,10 +177,10 @@ public class QuanLySuCo extends AppCompatActivity
         mCallout = mMapView.getCallout();
 
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
-        suCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
+        mSuCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
         popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
-        suCoTanHoaLayer.setPopupEnabled(true);
-        mMap.getOperationalLayers().add(suCoTanHoaLayer);
+        mSuCoTanHoaLayer.setPopupEnabled(true);
+        mMap.getOperationalLayers().add(mSuCoTanHoaLayer);
 
         this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addDoneLoadingListener(new Runnable() {
@@ -233,29 +231,9 @@ public class QuanLySuCo extends AppCompatActivity
                 }
             }
         });
-        mMap.addLoadStatusChangedListener(new LoadStatusChangedListener() {
-            @Override
-            public void loadStatusChanged(LoadStatusChangedEvent loadStatusChangedEvent) {
-                switch (loadStatusChangedEvent.getNewLoadStatus()) {
-                    case LOADING:
-                    case NOT_LOADED:
-                        Toast.makeText(QuanLySuCo.this, "Đang tải bản đồ", Toast.LENGTH_SHORT).show();
-                        btnAdd.setEnabled(false);
-                        break;
-                    case FAILED_TO_LOAD:
-                        Toast.makeText(QuanLySuCo.this, "Lỗi khi tải bản đồ", Toast.LENGTH_SHORT).show();
-                        btnAdd.setEnabled(false);
-                        break;
-                    case LOADED:
-                        Toast.makeText(QuanLySuCo.this, "Đã tải xong bản đồ", Toast.LENGTH_SHORT).show();
-                        btnAdd.setEnabled(true);
-                        break;
-                }
-            }
-        });
         changeStatusOfLocationDataSource();
 
-        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS,mMap, suCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
+        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS,mMap, mSuCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
 
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
@@ -263,12 +241,11 @@ public class QuanLySuCo extends AppCompatActivity
                 try {
                     mMapViewHandler.onSingleTapMapView(e);
                 } catch (ArcGISRuntimeException ex) {
-                    Log.d("ArcgisruntimeException", ex.toString());
+                    Log.d("", ex.toString());
                 }
                 return super.onSingleTapConfirmed(e);
             }
         });
-
         ((LinearLayout) findViewById(R.id.layout_layer_open_street_map)).setOnClickListener(this);
         ((LinearLayout) findViewById(R.id.layout_layer_street_map)).setOnClickListener(this);
         ((LinearLayout) findViewById(R.id.layout_layer_topo)).setOnClickListener(this);
@@ -279,16 +256,16 @@ public class QuanLySuCo extends AppCompatActivity
 //            @Override
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //                if (isChecked) {
-//                    suCoTanHoaLayer.setVisible(true);
+//                    mSuCoTanHoaLayer.setVisible(true);
 //                } else
-//                    suCoTanHoaLayer.setVisible(false);
+//                    mSuCoTanHoaLayer.setVisible(false);
 //            }
 //        });
     }
 
     private void setLicense() {
         //way 1
-        ArcGISRuntimeEnvironment.setLicense("runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169");
+        ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
 
 
         //way 2
@@ -338,9 +315,9 @@ public class QuanLySuCo extends AppCompatActivity
                 } else {
                     // Report other unknown failure types to the user - for example, location services may not
                     // be enabled on the device.
-                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
-                            .getSource().getLocationDataSource().getError().getMessage());
-                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
+//                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
+//                            .getSource().getLocationDataSource().getError().getMessage());
+//                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -361,10 +338,11 @@ public class QuanLySuCo extends AppCompatActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quan_ly_su_co, menu);
         mTxtSearch = (SearchView) menu.findItem(R.id.action_search).getActionView();
-        mTxtSearch.setQueryHint("Tìm kiếm mọi thứ...");
+        mTxtSearch.setQueryHint(getString(R.string.title_search));
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mSuCoTanHoaLayer.clearSelection();
                 mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                 return false;
             }
@@ -421,7 +399,7 @@ public class QuanLySuCo extends AppCompatActivity
     }
 
     private void add() {
-        Toast.makeText(mMapView.getContext().getApplicationContext(), "Vui lòng click vào bản đồ để thêm một điểm sự cố", Toast.LENGTH_LONG).show();
+        Toast.makeText(mMapView.getContext().getApplicationContext(), getString(R.string.notify_add_feature), Toast.LENGTH_LONG).show();
         isClickBtnAdd = true;
         mMapViewHandler.setClickBtnAdd(true);
     }

@@ -54,12 +54,12 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private String getPhuongThucThemDiemSuCo() {
-        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
+        final String key = getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
         return Preference.getInstance().loadPreference(key);
     }
 
     private String getOptionTimKiem() {
-        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem);
+        final String key = getString(R.string.preference_settings_tuy_chon_tim_kiem);
         return Preference.getInstance().loadPreference(key);
     }
 
@@ -67,8 +67,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setCancelable(true);
-        builder.setTitle("Phương thức thêm điểm sự cố");
-        builder.setPositiveButton("THOÁT", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.nav_cai_dat_them_su_co_title));
+        builder.setPositiveButton(getString(R.string.quit), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -78,9 +78,9 @@ public class SettingsActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_phuong_thuc_them_diem_su_co, null);
         final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings);
-        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
+        final String key = getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
         String type_Add_Point = getPhuongThucThemDiemSuCo();
-        if (type_Add_Point.equals("") || type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem)))
+        if (type_Add_Point.equals("") || type_Add_Point.equals(getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem)))
             group.check(R.id.rd_layout_settings_cham_diem);
         else if (type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_toa_do)))
             group.check(R.id.rd_layout_settings_toa_do);
@@ -98,15 +98,15 @@ public class SettingsActivity extends AppCompatActivity {
                 switch (checkedId) {
                     case R.id.rd_layout_settings_cham_diem:
                         Preference.getInstance().savePreferences(key,
-                                SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem));
+                                getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem));
                         break;
                     case R.id.rd_layout_settings_toa_do:
                         Preference.getInstance().savePreferences(key,
-                                SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_toa_do));
+                                getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_toa_do));
                         break;
                     case R.id.rd_layout_settings_keo_tha:
                         Preference.getInstance().savePreferences(key,
-                                SettingsActivity.this.getResources().getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_keo_tha));
+                                getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_keo_tha));
                         break;
                 }
                 setSubTitle();
@@ -121,8 +121,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setCancelable(true);
-        builder.setTitle("Tùy chọn tìm kiếm");
-        builder.setPositiveButton("THOÁT", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.nav_cai_dat_tim_kiem_title));
+        builder.setPositiveButton(getString(R.string.quit), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -132,11 +132,11 @@ public class SettingsActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_tuy_chon_tim_kiem, null);
         final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings_tim_kiem);
-        final String key = SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem);
+        final String key = getString(R.string.preference_settings_tuy_chon_tim_kiem);
         String type_Add_Point = getOptionTimKiem();
         if (type_Add_Point.equals("") || type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co)))
             group.check(R.id.rd_layout_settings_chua_co);
-        else if (type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san)))
+        else if (type_Add_Point.equals(getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san)))
             group.check(R.id.rd_layout_settings_co_san);
 
 //        builder.setView(layout);
@@ -150,11 +150,11 @@ public class SettingsActivity extends AppCompatActivity {
                 switch (checkedId) {
                     case R.id.rd_layout_settings_chua_co:
                         Preference.getInstance().savePreferences(key,
-                                SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co));
+                                getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co));
                         break;
                     case R.id.rd_layout_settings_co_san:
                         Preference.getInstance().savePreferences(key,
-                                SettingsActivity.this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san));
+                               getString(R.string.preference_settings_tuy_chon_tim_kiem_co_san));
                         break;
                 }
                 setSubTitle();

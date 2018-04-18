@@ -6,11 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Date;
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
@@ -46,23 +44,6 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
     public long getItemId(int position) {
         return 0;
     }
-
-
-//    public Item getItem(String mlt) {
-//        for (Item item : this.items)
-//            if (item.getTieuThu().equals(mlt))
-//                return item;
-//        return null;
-//    }
-//
-//    public boolean removeItem(String mlt) {
-//        for (Item item : this.items)
-//            if (item.getTieuThu().equals(mlt)) {
-//                this.items.remove(item);
-//                return true;
-//            }
-//        return false;
-//    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

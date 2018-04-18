@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="district_arrays">
-        <item > Chọn quận huyện </item>
-        <item > Quận Phú Nhuận </item>
-        <item > Quận Tân Bình</item>
-        <item > Quận Tân Phú </item>
+        <item> Chọn quận huyện </item>
+        <item> Quận Phú Nhuận </item>
+        <item> Quận Tân Bình</item>
+        <item> Quận Tân Phú </item>
     </string-array>
     <string-array name="phanloai_arrays">
-        <item > Chọn loại sự cố </item>
-        <item > A </item>
-        <item > B </item>
+        <item> Chọn loại sự cố </item>
+        <item> A </item>
+        <item> B </item>
     </string-array>
     <string-array name="trangthai_arrays">
-        <item >Chưa sửa chữa</item>
-        <item >Đang sửa chữa</item>
-        <item >Đã sửa chữa</item>
+        <item>Chưa sửa chữa</item>
+        <item>Đang sửa chữa</item>
+        <item>Đã sửa chữa</item>
+    </string-array>
+    <string-array name="update_fields_arrays">
+        <item>NgayKhacPhuc</item>
+        <item>NgaySuaChua</item>
+        <item>NguyenNhan</item>
+        <item>NguoiSuaChua</item>
+        <item>GhiChuVatTu</item>
+        <item>ViTri</item>
+        <item>GhiChu</item>
+        <item>NgayCapNhat</item>
+        <item>PhanLoaiSuCo</item>
+        <item>DonViSuaChua</item>
+        <item>DuongKinhOng</item>
+        <item>HinhThucPhatHien</item>
+        <item>VatLieu</item>
+        <item>SoNha</item>
+        <item>TrangThai</item>
+        <item>NGUOICAPNHAT</item>
+        <item>KetQuaKiemTra</item>
+        <item>ApLuc</item>
+        <item>THOIGIANTHUCHIEN</item>
+        <item>CONGNHANTHUCHIEN</item>
+        <item>VatLieuOng</item>
+        <item>LoaiSuCo</item>
     </string-array>
 </resources>

@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
 
 /**
@@ -24,7 +25,7 @@ public class NotifyDataSetChangeAsync extends AsyncTask<FeatureViewMoreInfoAdapt
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog.setMessage("Đang cập nhật giao diện...");
+        dialog.setMessage(mActivity.getString(R.string.async_dang_cap_nhat_giao_dien));
         dialog.setCancelable(false);
 
         dialog.show();

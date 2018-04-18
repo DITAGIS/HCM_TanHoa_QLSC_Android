@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Constant;
 
@@ -34,7 +35,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        dialog.setMessage("Đang xử lý...");
+        dialog.setMessage(mContext.getString(R.string.async_dang_xu_ly));
         dialog.setCancelable(false);
 
         dialog.show();

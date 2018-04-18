@@ -36,7 +36,7 @@ public class ThongKeActivity extends AppCompatActivity {
 
     public void thongKe() {
         final int[] tongloaitrangthai = getIntent().getIntArrayExtra(this.getString(R.string.tongloaitrangthai));
-        txtTongSuCo.setText("Tổng các sự cố: " + tongloaitrangthai[0]);
+        txtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai[0]);
         txtChuaSua.setText(tongloaitrangthai[1] + "");
         txtDangSua.setText(tongloaitrangthai[2] + "");
         txtDaSua.setText(tongloaitrangthai[3] + "");
@@ -73,9 +73,9 @@ public class ThongKeActivity extends AppCompatActivity {
         yVals1.add(new Entry(tongloaitrangthai[2], 1));
         yVals1.add(new Entry(tongloaitrangthai[3], 2));
         ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("Chưa sửa chữa");
-        xVals.add("Đang sửa chữa");
-        xVals.add("Đã sửa chữa");
+        xVals.add(getString(R.string.nav_thong_ke_chua_sua_chua));
+        xVals.add(getString(R.string.nav_thong_ke_dang_sua_chua));
+        xVals.add(getString(R.string.nav_thong_ke_da_sua_chua));
         PieDataSet set1 = new PieDataSet(yVals1, "");
         set1.setSliceSpace(0f);
         ArrayList<Integer> colors = new ArrayList<Integer>();

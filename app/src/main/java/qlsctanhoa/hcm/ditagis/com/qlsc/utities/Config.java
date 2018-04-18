@@ -1,5 +1,7 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
+import android.content.Context;
+
 import java.util.ArrayList;
 
 /**
@@ -13,6 +15,17 @@ public class Config {
     private String[] updateField;
     private String title;
     private int minScale;
+    private Context mContext;
+    private static Config instance = null;
+
+    public static Config getInstance() {
+        if (instance == null)
+            instance = new Config();
+        return instance;
+    }
+
+    private Config() {
+    }
 
     public String[] getUpdateField() {
         return updateField;

@@ -47,23 +47,6 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         return 0;
     }
 
-
-//    public Item getItem(String mlt) {
-//        for (Item item : this.items)
-//            if (item.getTieuThu().equals(mlt))
-//                return item;
-//        return null;
-//    }
-//
-//    public boolean removeItem(String mlt) {
-//        for (Item item : this.items)
-//            if (item.getTieuThu().equals(mlt)) {
-//                this.items.remove(item);
-//                return true;
-//            }
-//        return false;
-//    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

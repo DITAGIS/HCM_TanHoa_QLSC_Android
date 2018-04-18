@@ -103,14 +103,6 @@
             android:src="@drawable/ic_info" />
 
         <ImageButton
-            android:id="@+id/imgBtn_Edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:paddingRight="@dimen/padding_title_popup"
-            android:src="@drawable/ic_edit" />
-
-        <ImageButton
             android:id="@+id/imgBtn_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
