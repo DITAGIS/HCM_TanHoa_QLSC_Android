@@ -27,16 +27,19 @@ import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
+import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
+import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -74,7 +77,7 @@ public class Popup extends AppCompatActivity {
         this.mFeatureLayerDTG = layerDTG;
     }
 
-    public LinearLayout createPopup( final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
+    public LinearLayout createPopup(final ArcGISFeature mSelectedArcGISFeature, final Map<String, Object> attr) {
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());//getLayoutInflater();
         LinearLayout linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
@@ -94,15 +97,7 @@ public class Popup extends AppCompatActivity {
                         break;
                     case Constant.TRANG_THAI:
                         if (value != null)
-                            ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(
-                                    ((UniqueValueRenderer) this.mSelectedArcGISFeature
-                                            .getFeatureTable()
-                                            .getLayerInfo()
-                                            .getDrawingInfo()
-                                            .getRenderer())
-                                            .getUniqueValues()
-                                            .get(Integer.parseInt(value.toString()))
-                                            .getLabel());
+                            ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(((UniqueValueRenderer) this.mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getDrawingInfo().getRenderer()).getUniqueValues().get(Integer.parseInt(value.toString())).getLabel());
                         break;
                     case Constant.NGAY_CAP_NHAT:
                         if (value != null)
@@ -111,8 +106,7 @@ public class Popup extends AppCompatActivity {
                 }
             }
         }
-        if (mCallout != null)
-            mCallout.dismiss();
+        if (mCallout != null) mCallout.dismiss();
 
         ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -160,21 +154,20 @@ public class Popup extends AppCompatActivity {
 //                    txtAlias.setBackgroundResource(R.drawable.cell_shape);
                 item.setFieldName(field.getName());
 
-                if (value != null)
-                    switch (field.getFieldType()) {
-                        case DATE:
-                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
-                            break;
-                        case TEXT:
-                            item.setValue(value.toString());
-                            break;
-                        case SHORT:
-                            if (field.getDomain() != null) {
-                                List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
-                                item.setValue(codedValues.get(Short.parseShort(value.toString())).getName());
-                            }
-                            break;
-                    }
+                if (value != null) switch (field.getFieldType()) {
+                    case DATE:
+                        item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        break;
+                    case TEXT:
+                        item.setValue(value.toString());
+                        break;
+                    case SHORT:
+                        if (field.getDomain() != null) {
+                            List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                            item.setValue(codedValues.get(Short.parseShort(value.toString())).getName());
+                        }
+                        break;
+                }
                 item.setEdit(false);
                 for (String updateField : updateFields) {
                     if (item.getFieldName().equals(updateField)) {
@@ -233,13 +226,12 @@ public class Popup extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
-                builder.setCancelable(false)
-                        .setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
                 final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().inflate(R.layout.layout_dialog_update_feature_listview, null);
 
                 builder.setView(layout);
@@ -326,7 +318,6 @@ public class Popup extends AppCompatActivity {
         }
 
     }
-
     private void deleteFeature() {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle("Xác nhận");
@@ -351,22 +342,11 @@ public class Popup extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     // apply change to the server
-                                    final ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
+                                    ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
                                     serverResult.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-                                            try {
-                                                List<FeatureEditResult> edits = serverResult.get();
-                                                // check if the server edit was successful
-                                                if (edits != null && edits.size() > 0) {
-                                                    if (!edits.get(0).hasCompletedWithErrors()) {
-                                                    } else {
-                                                        throw edits.get(0).getError();
-                                                    }
-                                                }
-                                                mServiceFeatureTable.loadAsync();
-                                            } catch (InterruptedException | ExecutionException e) {
-                                            }
+
                                         }
                                     });
                                 }

@@ -171,7 +171,7 @@ public class QuanLySuCo extends AppCompatActivity
             featureLayerDTG.setTitleLayer(config.getTitle());
             featureLayerDTG.setUpdateFields(config.getUpdateField());
             mFeatureLayerDTGS.add(featureLayerDTG);
-            mMap.getOperationalLayers().add(featureLayer);
+//            mMap.getOperationalLayers().add(featureLayer);
         }
         // set the map to be displayed in this view
         mCallout = mMapView.getCallout();
