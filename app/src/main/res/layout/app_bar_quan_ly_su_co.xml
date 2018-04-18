@@ -172,6 +172,13 @@
             android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/img_map_pin"
+        android:layout_width="64dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:src="@drawable/pin" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/floatBtnLayer"
         android:layout_width="wrap_content"
@@ -213,6 +220,91 @@
         android:layout_marginBottom="15dp"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/add"
+        android:visibility="invisible"
         app:backgroundTint="@android:color/white" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="end|bottom"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Vĩ độ"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Kinh độ"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/edit_latitude"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="10.7554041"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/edit_longtitude"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="106.6546293"
+                android:textColor="@color/colorWhite"
+                android:textSize="17sp" />
+            />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"></LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/img_layvitri"
+                android:layout_width="64dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_get_location" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_add_feature_close"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="right"
+            android:background="@color/colorRed"
+            android:text="x" />
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
