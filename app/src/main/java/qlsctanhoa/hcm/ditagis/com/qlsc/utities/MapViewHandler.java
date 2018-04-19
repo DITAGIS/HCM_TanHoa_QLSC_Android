@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.GeoElement;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -83,26 +85,36 @@ public class MapViewHandler {
         isClickBtnAdd = clickBtnAdd;
     }
 
-
-    public void onSingleTapMapView(MotionEvent e) {
-        suCoTanHoaLayer.clearSelection();
-        if (mCallout.isShowing()) {
-            mCallout.dismiss();
-        }
-        mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
-        mSelectedArcGISFeature = null;
-        // get the point that was clicked and convert it to a point in map coordinates
-        final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-        int tolerance = 10;
-        double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
-        // create objects required to do a selection with a query
-        Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, mMap.getSpatialReference());
-        QueryParameters query = new QueryParameters();
-        query.setGeometry(envelope);
-        // add done loading listener to fire when the selection returns
-
+    public void addFeature(){
         SingleTapMapViewAsync addAsync = new SingleTapMapViewAsync(mContext);
-        addAsync.execute(clickPoint);
+        Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+        isClickBtnAdd = true;
+        addAsync.execute(add_point);
+    }
+    public void onSingleTapMapView(MotionEvent e) {
+        final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
+        if(isClickBtnAdd){
+            mMapView.setViewpointCenterAsync(clickPoint);
+        }
+        else {
+            suCoTanHoaLayer.clearSelection();
+            if (mCallout.isShowing()) {
+                mCallout.dismiss();
+            }
+            mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
+            mSelectedArcGISFeature = null;
+            // get the point that was clicked and convert it to a point in map coordinates
+            int tolerance = 10;
+            double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
+            // create objects required to do a selection with a query
+            Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, mMap.getSpatialReference());
+            QueryParameters query = new QueryParameters();
+            query.setGeometry(envelope);
+            // add done loading listener to fire when the selection returns
+
+            SingleTapMapViewAsync addAsync = new SingleTapMapViewAsync(mContext);
+            addAsync.execute(clickPoint);
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)

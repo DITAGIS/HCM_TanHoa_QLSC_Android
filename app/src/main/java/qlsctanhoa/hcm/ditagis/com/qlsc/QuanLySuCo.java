@@ -76,11 +76,9 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
 
-public class QuanLySuCo extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
 
-    private FloatingActionButton btnAdd;
     private Popup popupInfos;
     private MapView mMapView;
     private Callout mCallout;
@@ -106,8 +104,7 @@ public class QuanLySuCo extends AppCompatActivity
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 2;
-    String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission
-            .ACCESS_COARSE_LOCATION};
+    String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -139,20 +136,14 @@ public class QuanLySuCo extends AppCompatActivity
         bottomSheetDialog.setContentView(bottomSheetView);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        findViewById(R.id.floatBtnLocation).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getMyLocation();
-            }
-        });
+
         findViewById(R.id.floatBtnHome).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -160,14 +151,6 @@ public class QuanLySuCo extends AppCompatActivity
             }
         });
 
-
-        btnAdd = this.findViewById(R.id.floatBtnAdd);
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                add();
-            }
-        });
 
         mMapView = (MapView) findViewById(R.id.mapView);
 
@@ -210,8 +193,7 @@ public class QuanLySuCo extends AppCompatActivity
                 int states[][] = {{android.R.attr.state_checked}, {}};
                 int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
                 for (final Layer layer : layers) {
-                    if (layer.getName().equals(Config.Title.title_diemsuco))
-                        continue;
+                    if (layer.getName().equals(Config.Title.title_diemsuco)) continue;
                     CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
 
                     if (layer.getName().trim().equals("")) {
@@ -244,23 +226,20 @@ public class QuanLySuCo extends AppCompatActivity
                     if (v instanceof CheckBox) {
                         if (((CheckBox) v).getText().equals(Config.Title.title_diemsuco))
                             ((CheckBox) v).setChecked(true);
-                        else
-                            ((CheckBox) v).setChecked(false);
+                        else ((CheckBox) v).setChecked(false);
                     }
                 }
             }
         });
         changeStatusOfLocationDataSource();
 
-        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS,mMap, mSuCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
+        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS, mMap, mSuCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
         final EditText edit_latitude = ((EditText) findViewById(R.id.edit_latitude));
         final EditText edit_longtitude = ((EditText) findViewById(R.id.edit_longtitude));
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 try {
-                    final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-                    mMapView.setViewpointCenterAsync(clickPoint);
                     mMapViewHandler.onSingleTapMapView(e);
                 } catch (ArcGISRuntimeException ex) {
                     Log.d("", ex.toString());
@@ -284,21 +263,26 @@ public class QuanLySuCo extends AppCompatActivity
                 return super.onScale(detector);
             }
         });
+        mLocationDisplay.addLocationChangedListener(new LocationDisplay.LocationChangedListener() {
+            @Override
+            public void onLocationChanged(LocationDisplay.LocationChangedEvent locationChangedEvent) {
+                Point position = locationChangedEvent.getLocation().getPosition();
+                edit_longtitude.setText(position.getX()+"");
+                edit_latitude.setText(position.getY()+"");
+                Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
+                mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
+            }
+        });
         ((LinearLayout) findViewById(R.id.layout_layer_open_street_map)).setOnClickListener(this);
         ((LinearLayout) findViewById(R.id.layout_layer_street_map)).setOnClickListener(this);
         ((LinearLayout) findViewById(R.id.layout_layer_topo)).setOnClickListener(this);
         ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
         ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
+        this.findViewById(R.id.floatBtnAdd).setOnClickListener(this);
+        findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
 
-//        ((CheckBox) findViewById(R.id.chkb_DiemSuCo)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if (isChecked) {
-//                    mSuCoTanHoaLayer.setVisible(true);
-//                } else
-//                    mSuCoTanHoaLayer.setVisible(false);
-//            }
-//        });
+        findViewById(R.id.img_layvitri).setOnClickListener(this);
+        findViewById(R.id.floatBtnLocation).setOnClickListener(this);
     }
 
     private void setLicense() {
@@ -333,19 +317,15 @@ public class QuanLySuCo extends AppCompatActivity
             public void onStatusChanged(LocationDisplay.DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
 
                 // If LocationDisplay started OK, then continue.
-                if (dataSourceStatusChangedEvent.isStarted())
-                    return;
+                if (dataSourceStatusChangedEvent.isStarted()) return;
 
                 // No error is reported, then continue.
-                if (dataSourceStatusChangedEvent.getError() == null)
-                    return;
+                if (dataSourceStatusChangedEvent.getError() == null) return;
 
                 // If an error is found, handle the failure to start.
                 // Check permissions to see if failure may be due to lack of permissions.
-                boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) ==
-                        PackageManager.PERMISSION_GRANTED;
-                boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) ==
-                        PackageManager.PERMISSION_GRANTED;
+                boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
+                boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
 
                 if (!(permissionCheck1 && permissionCheck2)) {
                     // If permissions are not already granted, request permission from the user.
@@ -423,12 +403,10 @@ public class QuanLySuCo extends AppCompatActivity
         } else if (id == R.id.nav_tracuu) {
             final Intent intent = new Intent(this, TraCuuActivity.class);
             this.startActivityForResult(intent, 1);
-        }
-        else if (id == R.id.nav_setting) {
+        } else if (id == R.id.nav_setting) {
             final Intent intent = new Intent(this, SettingsActivity.class);
             this.startActivityForResult(intent, 1);
-        }
-        else if (id == R.id.nav_logOut) {
+        } else if (id == R.id.nav_logOut) {
             this.finish();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -445,27 +423,13 @@ public class QuanLySuCo extends AppCompatActivity
     private void goHome() {
     }
 
-    private void getMyLocation() {
-        if (!mLocationDisplay.isStarted())
-            mLocationDisplay.startAsync();
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        // If request is cancelled, the result arrays are empty.
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            // Location permission was granted. This would have been triggered in response to failing to start the
-            // LocationDisplay, so try starting this again.
             mLocationDisplay.startAsync();
-        } else {
-            // If permission was denied, show toast to inform user what was chosen. If LocationDisplay is started again,
-            // request permission UX will be shown again, option should be shown to allow never showing the UX again.
-            // Alternative would be to disable functionality so request is not shown again.
-            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast
-                    .LENGTH_SHORT).show();
 
-            // Update UI to reflect that the location display did not actually start
-//            mSpinner.setSelection(0, true);
+        } else {
+            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -492,6 +456,27 @@ public class QuanLySuCo extends AppCompatActivity
             case R.id.btn_layer_close:
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
                 ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
+                break;
+            case R.id.img_layvitri:
+                mMapViewHandler.addFeature();
+                break;
+            case R.id.floatBtnAdd:
+                ((LinearLayout) findViewById(R.id.linear_addfeature)).setVisibility(View.VISIBLE);
+                ((ImageView) findViewById(R.id.img_map_pin)).setVisibility(View.VISIBLE);
+                ((FloatingActionButton) findViewById(R.id.floatBtnAdd)).setVisibility(View.GONE);
+                break;
+            case R.id.btn_add_feature_close:
+                ((LinearLayout) findViewById(R.id.linear_addfeature)).setVisibility(View.GONE);
+                ((ImageView) findViewById(R.id.img_map_pin)).setVisibility(View.GONE);
+                ((FloatingActionButton) findViewById(R.id.floatBtnAdd)).setVisibility(View.VISIBLE);
+                isClickBtnAdd = false;
+                break;
+            case R.id.floatBtnLocation:
+                if (!mLocationDisplay.isStarted())
+                    mLocationDisplay.startAsync();
+                else mLocationDisplay.stop();
+//                final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
+//                mMapView.setViewpointCenterAsync(clickPoint);
                 break;
         }
     }

@@ -177,6 +177,7 @@
         android:layout_width="64dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
+        android:visibility="gone"
         android:src="@drawable/pin" />
 
     <android.support.design.widget.FloatingActionButton
@@ -220,14 +221,15 @@
         android:layout_marginBottom="15dp"
         android:layout_marginRight="@dimen/fab_margin"
         android:src="@drawable/add"
-        android:visibility="invisible"
         app:backgroundTint="@android:color/white" />
 
     <LinearLayout
+        android:id="@+id/linear_addfeature"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_gravity="end|bottom"
         android:background="@color/colorPrimary"
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <LinearLayout
