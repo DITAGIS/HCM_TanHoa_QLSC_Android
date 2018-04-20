@@ -419,7 +419,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
                 break;
             case R.id.layout_layer_street_map:
-                mMapView.getMap().setMaxScale(1128.497175);
+                mMapView.getMap().setMaxScale(1128.497176);
                 mMapView.getMap().setBasemap(Basemap.createStreets());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
                 break;
