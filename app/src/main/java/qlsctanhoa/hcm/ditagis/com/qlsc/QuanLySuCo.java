@@ -183,7 +183,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
         mSuCoTanHoaLayer.setPopupEnabled(true);
         mMap.getOperationalLayers().add(mSuCoTanHoaLayer);
-
         this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
@@ -249,12 +248,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
-                Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
-                edit_longtitude.setText(project.getExtent().getCenter().getX() + "");
-                edit_latitude.setText(project.getExtent().getCenter().getY() + "");
-                Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
-
+                double[] location = mMapViewHandler.onScroll(e1, e2, distanceX, distanceY);
+                edit_longtitude.setText(location[0] + "");
+                edit_latitude.setText(location[1] + "");
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
 
@@ -273,14 +269,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
             }
         });
-        ((LinearLayout) findViewById(R.id.layout_layer_open_street_map)).setOnClickListener(this);
-        ((LinearLayout) findViewById(R.id.layout_layer_street_map)).setOnClickListener(this);
-        ((LinearLayout) findViewById(R.id.layout_layer_topo)).setOnClickListener(this);
-        ((Button) findViewById(R.id.btn_layer_close)).setOnClickListener(this);
-        ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setOnClickListener(this);
-        this.findViewById(R.id.floatBtnAdd).setOnClickListener(this);
+        findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
+        findViewById(R.id.layout_layer_street_map).setOnClickListener(this);
+        findViewById(R.id.layout_layer_topo).setOnClickListener(this);
+        findViewById(R.id.floatBtnLayer).setOnClickListener(this);
+        findViewById(R.id.floatBtnAdd).setOnClickListener(this);
         findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
-
+        findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
         findViewById(R.id.floatBtnLocation).setOnClickListener(this);
     }
@@ -308,34 +303,19 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //            }
 //        });
     }
-
+    //location
     private void changeStatusOfLocationDataSource() {
         mLocationDisplay = mMapView.getLocationDisplay();
-//        changeStatusOfLocationDataSource();
         mLocationDisplay.addDataSourceStatusChangedListener(new LocationDisplay.DataSourceStatusChangedListener() {
             @Override
             public void onStatusChanged(LocationDisplay.DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
-
-                // If LocationDisplay started OK, then continue.
                 if (dataSourceStatusChangedEvent.isStarted()) return;
-
-                // No error is reported, then continue.
                 if (dataSourceStatusChangedEvent.getError() == null) return;
-
-                // If an error is found, handle the failure to start.
-                // Check permissions to see if failure may be due to lack of permissions.
                 boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
                 boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
-
                 if (!(permissionCheck1 && permissionCheck2)) {
-                    // If permissions are not already granted, request permission from the user.
                     ActivityCompat.requestPermissions(QuanLySuCo.this, reqPermissions, requestCode);
                 } else {
-                    // Report other unknown failure types to the user - for example, location services may not
-                    // be enabled on the device.
-//                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
-//                            .getSource().getLocationDataSource().getError().getMessage());
-//                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -442,16 +422,20 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.VISIBLE);
                 break;
             case R.id.layout_layer_open_street_map:
+                mMapView.getMap().setMaxScale(1128.497175);
                 mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
                 break;
             case R.id.layout_layer_street_map:
+                mMapView.getMap().setMaxScale(1128.497175);
                 mMapView.getMap().setBasemap(Basemap.createStreets());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
                 break;
             case R.id.layout_layer_topo:
+                mMapView.getMap().setMaxScale(5);
                 mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
+
                 break;
             case R.id.btn_layer_close:
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
@@ -464,19 +448,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 ((LinearLayout) findViewById(R.id.linear_addfeature)).setVisibility(View.VISIBLE);
                 ((ImageView) findViewById(R.id.img_map_pin)).setVisibility(View.VISIBLE);
                 ((FloatingActionButton) findViewById(R.id.floatBtnAdd)).setVisibility(View.GONE);
+                mMapViewHandler.setClickBtnAdd(true);
                 break;
             case R.id.btn_add_feature_close:
                 ((LinearLayout) findViewById(R.id.linear_addfeature)).setVisibility(View.GONE);
                 ((ImageView) findViewById(R.id.img_map_pin)).setVisibility(View.GONE);
                 ((FloatingActionButton) findViewById(R.id.floatBtnAdd)).setVisibility(View.VISIBLE);
-                isClickBtnAdd = false;
+                mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
                 if (!mLocationDisplay.isStarted())
                     mLocationDisplay.startAsync();
                 else mLocationDisplay.stop();
-//                final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-//                mMapView.setViewpointCenterAsync(clickPoint);
                 break;
         }
     }

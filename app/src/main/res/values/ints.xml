@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="max_short">32767</integer>
+    <integer name="max_int">2147483647</integer>
+</resources>

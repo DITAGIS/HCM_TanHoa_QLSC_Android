@@ -36,9 +36,6 @@
                 android:paddingLeft="20dp"
                 android:text="value"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
-
         </LinearLayout>
 
         <ImageView
@@ -47,8 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:src="@drawable/ic_edit" />
-
-
     </FrameLayout>
 
 </LinearLayout>
