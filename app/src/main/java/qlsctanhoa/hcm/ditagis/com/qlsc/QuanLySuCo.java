@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,6 +43,7 @@ import android.widget.Toast;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -57,6 +59,12 @@ import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.symbology.MultilayerPointSymbol;
+import com.esri.arcgisruntime.symbology.Renderer;
+import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
+import com.esri.arcgisruntime.symbology.SimpleRenderer;
+import com.esri.arcgisruntime.symbology.Symbol;
+import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,6 +182,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mSuCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
         popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
         mSuCoTanHoaLayer.setPopupEnabled(true);
+        setRendererSuCoFeatureLayer();
         mMap.getOperationalLayers().add(mSuCoTanHoaLayer);
         this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addDoneLoadingListener(new Runnable() {
@@ -255,8 +264,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onLocationChanged(LocationDisplay.LocationChangedEvent locationChangedEvent) {
                 Point position = locationChangedEvent.getLocation().getPosition();
-                edit_longtitude.setText(position.getX()+"");
-                edit_latitude.setText(position.getY()+"");
+                edit_longtitude.setText(position.getX() + "");
+                edit_latitude.setText(position.getY() + "");
                 Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
                 mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
             }
@@ -270,6 +279,29 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
         findViewById(R.id.floatBtnLocation).setOnClickListener(this);
+    }
+
+    private void setRendererSuCoFeatureLayer() {
+        UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
+        uniqueValueRenderer.getFieldNames().add("TrangThai");
+        SimpleMarkerSymbol defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 15);
+        SimpleMarkerSymbol chuaxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 15);
+        SimpleMarkerSymbol dangxyly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.YELLOW, 15);
+        SimpleMarkerSymbol daxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.GREEN, 15);
+        uniqueValueRenderer.setDefaultSymbol(defaultSymbol);
+        uniqueValueRenderer.setDefaultLabel("Chưa xác định");
+
+        List<Object> chuaxulyValue = new ArrayList<>();
+        chuaxulyValue.add(0);
+        List<Object> dangxylyValue = new ArrayList<>();
+        dangxylyValue.add(2);
+        List<Object> daxulyValue = new ArrayList<>();
+        daxulyValue.add(1);
+
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", chuaxuly,chuaxulyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", dangxyly, dangxylyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
+        mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
     }
 
     private void setLicense() {
@@ -295,6 +327,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //            }
 //        });
     }
+
     //location
     private void changeStatusOfLocationDataSource() {
         mLocationDisplay = mMapView.getLocationDisplay();
@@ -449,8 +482,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
-                if (!mLocationDisplay.isStarted())
-                    mLocationDisplay.startAsync();
+                if (!mLocationDisplay.isStarted()) mLocationDisplay.startAsync();
                 else mLocationDisplay.stop();
                 break;
         }
