@@ -17,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.AutoScrollHelper;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +25,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -43,11 +45,11 @@ import android.widget.Toast;
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.data.ArcGISFeature;
-import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.layers.Layer;
@@ -57,13 +59,12 @@ import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.symbology.MultilayerPointSymbol;
-import com.esri.arcgisruntime.symbology.Renderer;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleRenderer;
-import com.esri.arcgisruntime.symbology.Symbol;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
@@ -142,16 +143,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-        findViewById(R.id.floatBtnHome).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goHome();
-            }
-        });
-
-
         mMapView = (MapView) findViewById(R.id.mapView);
 
         // create an empty map instance
@@ -173,7 +164,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             featureLayerDTG.setTitleLayer(config.getTitle());
             featureLayerDTG.setUpdateFields(config.getUpdateField());
             mFeatureLayerDTGS.add(featureLayerDTG);
-            mMap.getOperationalLayers().add(featureLayer);
+//            mMap.getOperationalLayers().add(featureLayer);
         }
         // set the map to be displayed in this view
         mCallout = mMapView.getCallout();
@@ -184,6 +175,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mSuCoTanHoaLayer.setPopupEnabled(true);
         setRendererSuCoFeatureLayer();
         mMap.getOperationalLayers().add(mSuCoTanHoaLayer);
+
         this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
@@ -279,8 +271,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
         findViewById(R.id.floatBtnLocation).setOnClickListener(this);
+        findViewById(R.id.floatBtnHome).setOnClickListener(this);
     }
 
+    private void setLicense() {
+        //way 1
+        ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
+    }
     private void setRendererSuCoFeatureLayer() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         uniqueValueRenderer.getFieldNames().add("TrangThai");
@@ -303,44 +300,33 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
     }
-
-    private void setLicense() {
-        //way 1
-        ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
-
-
-        //way 2
-//        UserCredential credential = new UserCredential("thanle95", "Gemini111");
-//
-//// replace the URL with either the ArcGIS Online URL or your portal URL
-//        final Portal portal = new Portal("https://than-le.maps.arcgis.com");
-//        portal.setCredential(credential);
-//
-//// load portal and listen to done loading event
-//        portal.loadAsync();
-//        portal.addDoneLoadingListener(new Runnable() {
-//            @Override
-//            public void run() {
-//                LicenseInfo licenseInfo = portal.getPortalInfo().getLicenseInfo();
-//                // Apply the license at Standard level
-//                ArcGISRuntimeEnvironment.setLicense(licenseInfo);
-//            }
-//        });
-    }
-
-    //location
     private void changeStatusOfLocationDataSource() {
         mLocationDisplay = mMapView.getLocationDisplay();
+//        changeStatusOfLocationDataSource();
         mLocationDisplay.addDataSourceStatusChangedListener(new LocationDisplay.DataSourceStatusChangedListener() {
             @Override
             public void onStatusChanged(LocationDisplay.DataSourceStatusChangedEvent dataSourceStatusChangedEvent) {
+
+                // If LocationDisplay started OK, then continue.
                 if (dataSourceStatusChangedEvent.isStarted()) return;
+
+                // No error is reported, then continue.
                 if (dataSourceStatusChangedEvent.getError() == null) return;
+
+                // If an error is found, handle the failure to start.
+                // Check permissions to see if failure may be due to lack of permissions.
                 boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
                 boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
+
                 if (!(permissionCheck1 && permissionCheck2)) {
+                    // If permissions are not already granted, request permission from the user.
                     ActivityCompat.requestPermissions(QuanLySuCo.this, reqPermissions, requestCode);
                 } else {
+                    // Report other unknown failure types to the user - for example, location services may not
+                    // be enabled on the device.
+//                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent
+//                            .getSource().getLocationDataSource().getError().getMessage());
+//                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -484,6 +470,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.floatBtnLocation:
                 if (!mLocationDisplay.isStarted()) mLocationDisplay.startAsync();
                 else mLocationDisplay.stop();
+                break;
+            case R.id.floatBtnHome:
+                goHome();
                 break;
         }
     }

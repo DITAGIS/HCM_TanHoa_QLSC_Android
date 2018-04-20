@@ -132,6 +132,7 @@ public class Popup extends AppCompatActivity {
         ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
                 deleteFeature();
             }
         });
@@ -419,10 +420,23 @@ public class Popup extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     // apply change to the server
-                                    ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
+                                    final ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
                                     serverResult.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
+                                            List<FeatureEditResult> edits = null;
+                                            try {
+                                                edits = serverResult.get();
+                                                    if (edits.size() > 0) {
+                                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                                        Log.e("", "Feature successfully updated");
+                                                    }
+                                                }
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            } catch (ExecutionException e) {
+                                                e.printStackTrace();
+                                            }
 
                                         }
                                     });
