@@ -46,7 +46,6 @@ public class TraCuuActivity extends AppCompatActivity {
         this.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(getString(R.string.ket_qua_objectid), ((TraCuuAdapter.Item) parent.getItemAtPosition(position)).getObjectID());
                 setResult(Activity.RESULT_OK, returnIntent);
@@ -61,7 +60,6 @@ public class TraCuuActivity extends AppCompatActivity {
             public void onClick(View v) {
                 mTraCuuAdapter.clear();
                 mTraCuuAdapter.notifyDataSetChanged();
-
                 Parameter paras = new Parameter();
                 paras.setDate(datePicker);
                 EditText diachi = (EditText) findViewById(R.id.edit_dia_chi);

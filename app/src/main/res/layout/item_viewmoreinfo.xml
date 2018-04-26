@@ -39,11 +39,11 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/img_viewmoreinfo_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:src="@drawable/ic_edit" />
+        android:id="@+id/img_viewmoreinfo_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_edit" />
     </FrameLayout>
 
 </LinearLayout>
