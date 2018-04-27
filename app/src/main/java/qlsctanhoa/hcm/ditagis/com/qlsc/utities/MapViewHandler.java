@@ -36,6 +36,7 @@ import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -43,6 +44,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.R;
@@ -130,6 +132,14 @@ public class MapViewHandler {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getDateString() {
+        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
+
+        SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
+        writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
+        String timeStamp1 = writeDate.format(Calendar.getInstance().getTime());
+        return timeStamp1;
+    }
+    private String getTimeID() {
         String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
         return timeStamp;
     }
@@ -386,14 +396,17 @@ public class MapViewHandler {
 
                         String searchStr = "";
                         String dateTime = "";
+                        String timeID = "";
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                             dateTime = getDateString();
-                            searchStr = Constant.IDSU_CO + " like '%" + dateTime + "'";
+                            timeID = getTimeID();
+                            searchStr = Constant.IDSU_CO + " like '%" + timeID + "'";
                         }
                         QueryParameters queryParameters = new QueryParameters();
                         queryParameters.setWhereClause(searchStr);
                         final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
                         final String finalDateTime = dateTime;
+                        final String finalTimeID = timeID;
                         featureQuery.addDoneListener(new Runnable() {
                             @Override
                             public void run() {
@@ -409,11 +422,10 @@ public class MapViewHandler {
                                         if (id_tmp > id) id = id_tmp;
                                     }
                                     id++;
-                                    feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalDateTime);
+                                    feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalTimeID);
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                                         Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                                         Calendar c = Calendar.getInstance();
-                                        c.setTime(date);
                                         feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
                                         feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
                                     }

@@ -1,5 +1,6 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
+import android.content.Context;
 import android.text.format.DateFormat;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import qlsctanhoa.hcm.ditagis.com.qlsc.R;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.ThongKeAdapter;
 
 /**
@@ -17,19 +19,21 @@ public class TimePeriodReport {
     private Calendar calendar;
     private Date today;
     private List<ThongKeAdapter.Item> items;
+    private Context mContext;
 
-    public TimePeriodReport() {
+    public TimePeriodReport(Context context) {
+        mContext = context;
         today = new Date();
         calendar = Calendar.getInstance();
         items = new ArrayList<>();
-        items.add(new ThongKeAdapter.Item(1, "Tất cả", null, null,null));
-        items.add(new ThongKeAdapter.Item(2, "Tháng này", dayToFirstYearString(getFirstDayofMonth()), dayToFirstYearString(getLastDayofMonth()),dayToFirstDayString(getFirstDayofMonth(),getLastDayofMonth())));
-        items.add(new ThongKeAdapter.Item(3, "Tháng trước", dayToFirstYearString(getFirstDayofLastMonth()), dayToFirstYearString(getLastDayofLastMonth()),dayToFirstDayString(getFirstDayofLastMonth(),getLastDayofLastMonth())));
-        items.add(new ThongKeAdapter.Item(4, "3 tháng gần nhất", dayToFirstYearString(getFirstDayofLast3Months()), dayToFirstYearString(getLastDayofLast3Months()),dayToFirstDayString(getFirstDayofLast3Months(),getLastDayofLast3Months())));
-        items.add(new ThongKeAdapter.Item(5, "6 tháng gần nhất", dayToFirstYearString(getFirstDayofLast6Months()), dayToFirstYearString(getLastDayofLast6Months()),dayToFirstDayString(getFirstDayofLast6Months(),getLastDayofLast6Months())));
-        items.add(new ThongKeAdapter.Item(6, "Năm nay", dayToFirstYearString(getFirstDayofYear()), dayToFirstYearString(getLastDayofYear()),dayToFirstDayString(getFirstDayofYear(),getLastDayofYear())));
-        items.add(new ThongKeAdapter.Item(7, "Năm trước", dayToFirstYearString(getFirstDayoflLastYear()), dayToFirstYearString(getLastDayofLastYear()),dayToFirstDayString(getFirstDayoflLastYear(),getLastDayofLastYear())));
-        items.add(new ThongKeAdapter.Item(8, "Tùy chỉnh",null,null,"-- - --"));
+        items.add(new ThongKeAdapter.Item(1, "Tất cả", null, null, null));
+        items.add(new ThongKeAdapter.Item(2, "Tháng này", startDayToFirstYearString(getFirstDayofMonth()), endDayToFirstYearString(getLastDayofMonth()), dayToFirstDayString(getFirstDayofMonth(), getLastDayofMonth())));
+        items.add(new ThongKeAdapter.Item(3, "Tháng trước", startDayToFirstYearString(getFirstDayofLastMonth()), endDayToFirstYearString(getLastDayofLastMonth()), dayToFirstDayString(getFirstDayofLastMonth(), getLastDayofLastMonth())));
+        items.add(new ThongKeAdapter.Item(4, "3 tháng gần nhất", startDayToFirstYearString(getFirstDayofLast3Months()), endDayToFirstYearString(getLastDayofLast3Months()), dayToFirstDayString(getFirstDayofLast3Months(), getLastDayofLast3Months())));
+        items.add(new ThongKeAdapter.Item(5, "6 tháng gần nhất", startDayToFirstYearString(getFirstDayofLast6Months()), endDayToFirstYearString(getLastDayofLast6Months()), dayToFirstDayString(getFirstDayofLast6Months(), getLastDayofLast6Months())));
+        items.add(new ThongKeAdapter.Item(6, "Năm nay", startDayToFirstYearString(getFirstDayofYear()), endDayToFirstYearString(getLastDayofYear()), dayToFirstDayString(getFirstDayofYear(), getLastDayofYear())));
+        items.add(new ThongKeAdapter.Item(7, "Năm trước", startDayToFirstYearString(getFirstDayoflLastYear()), endDayToFirstYearString(getLastDayofLastYear()), dayToFirstDayString(getFirstDayoflLastYear(), getLastDayofLastYear())));
+        items.add(new ThongKeAdapter.Item(8, "Tùy chỉnh", null, null, "-- - --"));
     }
 
     public List<ThongKeAdapter.Item> getItems() {
@@ -40,12 +44,16 @@ public class TimePeriodReport {
         this.items = items;
     }
 
-    private String dayToFirstYearString(Date date) {
-        return (String) DateFormat.format("yyyy-MM-dd 00:00:00", date);
+    private String startDayToFirstYearString(Date date) {
+        return (String) DateFormat.format(mContext.getString(R.string.format_startday_yearfirst), date);
+    }
+
+    private String endDayToFirstYearString(Date date) {
+        return (String) DateFormat.format(mContext.getString(R.string.format_endday_yearfirst), date);
     }
 
     private String dayToFirstDayString(Date firstDate, Date lastDate) {
-        return (String) DateFormat.format("dd/MM/yyyy", firstDate) + " - " + (String) DateFormat.format("dd/MM/yyyy", lastDate);
+        return (String) DateFormat.format(mContext.getString(R.string.format_time_day_month_year), firstDate) + " - " + (String) DateFormat.format(mContext.getString(R.string.format_time_day_month_year), lastDate);
     }
 
     private Date getFirstDayofMonth() {

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
     <FrameLayout
+        android:id="@+id/framelayout_thoigianbatdau"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -45,5 +46,10 @@
             android:layout_gravity="right|center_vertical"
             android:src="@drawable/ic_right" />
     </FrameLayout>
+    <Button
+        android:id="@+id/btn_layngaythongke"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Xong"/>
 
 </LinearLayout>
