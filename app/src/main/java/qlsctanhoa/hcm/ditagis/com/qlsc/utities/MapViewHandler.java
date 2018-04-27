@@ -1,11 +1,12 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,7 +15,9 @@ import android.widget.ListView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.Feature;
+import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.QueryParameters;
@@ -31,7 +34,6 @@ import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.symbology.Symbol;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
@@ -56,7 +58,7 @@ import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
  * Created by ThanLe on 2/2/2018.
  */
 
-public class MapViewHandler {
+public class MapViewHandler extends Activity {
 
     private final ArcGISMap mMap;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
@@ -70,6 +72,8 @@ public class MapViewHandler {
     private Popup popupInfos;
     private Context mContext;
     private static double DELTA_MOVE_Y = 0;//7000;
+    private static final int REQUEST_ID_IMAGE_CAPTURE = 1;
+    private Uri mUri;
     LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
 
     public MapViewHandler(List<FeatureLayerDTG> featureLayerDTGS, ArcGISMap mMap, final FeatureLayer suCoTanHoaLayer, Callout mCallout, android.graphics.Point mClickPoint, ArcGISFeature mSelectedArcGISFeature, MapView mMapView, boolean isClickBtnAdd, ServiceFeatureTable mServiceFeatureTable, Popup popupInfos, Context mContext) {
@@ -91,11 +95,12 @@ public class MapViewHandler {
         isClickBtnAdd = clickBtnAdd;
     }
 
-    public void addFeature() {
-        SingleTapAdddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAdddFeatureAsync(mContext);
+    public void addFeature(byte[] image) {
+        SingleTapAdddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAdddFeatureAsync(mContext, image);
         Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         singleTapAdddFeatureAsync.execute(add_point);
     }
+
 
     public double[] onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
@@ -108,7 +113,7 @@ public class MapViewHandler {
     public void onSingleTapMapView(MotionEvent e) {
         final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
         if (isClickBtnAdd) {
-            mMapView.setViewpointCenterAsync(clickPoint,10);
+            mMapView.setViewpointCenterAsync(clickPoint, 10);
         } else {
             suCoTanHoaLayer.clearSelection();
             if (mCallout.isShowing()) {
@@ -139,6 +144,7 @@ public class MapViewHandler {
         String timeStamp1 = writeDate.format(Calendar.getInstance().getTime());
         return timeStamp1;
     }
+
     private String getTimeID() {
         String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
         return timeStamp;
@@ -357,8 +363,10 @@ public class MapViewHandler {
     class SingleTapAdddFeatureAsync extends AsyncTask<Point, Void, Void> {
         private ProgressDialog mDialog;
         private Context mContext;
+        private byte[] mImage;
 
-        public SingleTapAdddFeatureAsync(Context context) {
+        public SingleTapAdddFeatureAsync(Context context, byte[] image) {
+            mImage = image;
             mContext = context;
             mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         }
@@ -372,6 +380,113 @@ public class MapViewHandler {
         }
 
         @Override
+//        protected Void doInBackground(Point... params) {
+//            final Point clickPoint = params[0];
+//            final Feature feature = mServiceFeatureTable.createFeature();
+//            feature.setGeometry(clickPoint);
+//            final ListenableFuture<List<GeocodeResult>> listListenableFuture = loc.reverseGeocodeAsync(clickPoint);
+//            listListenableFuture.addDoneListener(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
+//                        if (geocodeResults.size() > 0) {
+//                            GeocodeResult geocodeResult = geocodeResults.get(0);
+//                            Map<String, Object> attrs = new HashMap<>();
+//                            for (String key : geocodeResult.getAttributes().keySet()) {
+//                                attrs.put(key, geocodeResult.getAttributes().get(key));
+//                            }
+//                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
+//                            feature.getAttributes().put(Constant.VI_TRI, address);
+//                        }
+//                        Short intObj = new Short((short) 0);
+//                        feature.getAttributes().put(Constant.TRANG_THAI, intObj);
+//
+//                        String searchStr = "";
+//                        String dateTime = "";
+//                        String timeID = "";
+//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//                            dateTime = getDateString();
+//                            timeID = getTimeID();
+//                            searchStr = Constant.IDSU_CO + " like '%" + timeID + "'";
+//                        }
+//                        QueryParameters queryParameters = new QueryParameters();
+//                        queryParameters.setWhereClause(searchStr);
+//                        final ListenableFuture<FeatureQueryResult> featureQuery = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+//                        final String finalDateTime = dateTime;
+//                        final String finalTimeID = timeID;
+//
+//                        featureQuery.addDoneListener(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                try {
+//                                    // lấy id lớn nhất
+//                                    int id_tmp;
+//                                    int id = 0;
+//                                    FeatureQueryResult result = featureQuery.get();
+//                                    Iterator iterator = result.iterator();
+//                                    while (iterator.hasNext()) {
+//                                        Feature item = (Feature) iterator.next();
+//                                        id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
+//                                        if (id_tmp > id) id = id_tmp;
+//                                    }
+//                                    id++;
+//                                    feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalTimeID);
+//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                                        Date date = Constant.DATE_FORMAT.parse(finalDateTime);
+//                                        Calendar c = Calendar.getInstance();
+//                                        feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
+//                                        feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
+//                                    }
+//                                    ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
+//                                    mapViewResult.addDoneListener(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
+//                                                @Override
+//                                                public void run() {
+////                                                    final String attachmentName = getApplication().getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
+////                                                    ListenableFuture<Attachment> addResult = mSelectedArcGISFeature.addAttachmentAsync(mImage, "image/png", attachmentName);
+////
+////                                                    addResult.addDoneListener(new Runnable() {
+////                                                        @Override
+////                                                        public void run() {
+////                                                            final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+////                                                            tableResult.addDoneListener(new Runnable() {
+////                                                                @Override
+////                                                                public void run() {
+////                                                                    applyServerEdits();
+////                                                                }
+////                                                            });
+////                                                        }
+////                                                    });
+//                                                    if (mDialog != null && mDialog.isShowing()) {
+//                                                        mDialog.dismiss();
+//                                                    }
+//                                                    suCoTanHoaLayer.selectFeature(feature);
+//                                                }
+//                                            });
+//                                        }
+//                                    });
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                } catch (ExecutionException e) {
+//                                    e.printStackTrace();
+//                                } catch (ParseException e1) {
+//                                    e1.printStackTrace();
+//                                }
+//                            }
+//                        });
+//                    } catch (InterruptedException e1) {
+//                        e1.printStackTrace();
+//                    } catch (ExecutionException e1) {
+//                        e1.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//            return null;
+//        }
         protected Void doInBackground(Point... params) {
             final Point clickPoint = params[0];
             final Feature feature = mServiceFeatureTable.createFeature();
@@ -436,10 +551,46 @@ public class MapViewHandler {
                                             mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    if (mDialog != null && mDialog.isShowing()) {
-                                                        mDialog.dismiss();
-                                                    }
-                                                    suCoTanHoaLayer.selectFeature(feature);
+
+                                                    mSelectedArcGISFeature = (ArcGISFeature) feature;
+                                                    final String attachmentName = mContext.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
+                                                    ListenableFuture<Attachment> addResult = mSelectedArcGISFeature.addAttachmentAsync(mImage, "image/png", attachmentName);
+
+                                                    addResult.addDoneListener(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+                                                            tableResult.addDoneListener(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                                                                    updatedServerResult.addDoneListener(new Runnable() {
+                                                                        @Override
+                                                                        public void run() {
+                                                                            try {
+                                                                                List<FeatureEditResult> edits = updatedServerResult.get();
+                                                                                if (edits.size() > 0) {
+                                                                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                                                                        if (mDialog != null && mDialog.isShowing()) {
+                                                                                            mDialog.dismiss();
+                                                                                        }
+                                                                                        suCoTanHoaLayer.selectFeature(feature);
+                                                                                    } else {
+                                                                                    }
+                                                                                } else {
+                                                                                }
+                                                                            } catch (Exception e) {
+                                                                                e.printStackTrace();
+                                                                            }
+                                                                        }
+                                                                    });
+
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+
+
                                                 }
                                             });
                                         }

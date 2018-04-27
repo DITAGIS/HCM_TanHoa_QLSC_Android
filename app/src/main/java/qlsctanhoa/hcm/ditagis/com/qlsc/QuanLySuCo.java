@@ -6,10 +6,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
@@ -17,7 +24,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.AutoScrollHelper;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -25,14 +31,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -49,37 +53,38 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.Polygon;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.LayerList;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
-import com.esri.arcgisruntime.mapping.view.Graphic;
-import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
-import com.esri.arcgisruntime.symbology.SimpleRenderer;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Config;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.ImageFile;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MySnackBar;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
 
 public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
-
+    private Uri mUri;
     private Popup popupInfos;
     private MapView mMapView;
     private Callout mCallout;
@@ -104,7 +109,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
-    private static final int REQUEST_ID_IMAGE_CAPTURE = 2;
+    private static final int REQUEST_ID_IMAGE_CAPTURE = 55;
     String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @SuppressLint("ClickableViewAccessibility")
@@ -114,7 +119,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
         setLicense();
-
+        //for camera
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.mListViewSearch = findViewById(R.id.lstview_search);
@@ -131,7 +138,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mSearchAdapter.notifyDataSetChanged();
             }
         });
-
+        requestPermisson();
         View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
         bottomSheetDialog.setContentView(bottomSheetView);
@@ -278,6 +285,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         //way 1
         ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
     }
+
     private void setRendererSuCoFeatureLayer() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         uniqueValueRenderer.getFieldNames().add("TrangThai");
@@ -295,11 +303,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         List<Object> daxulyValue = new ArrayList<>();
         daxulyValue.add(1);
 
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", chuaxuly,chuaxulyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", chuaxuly, chuaxulyValue));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", dangxyly, dangxylyValue));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
     }
+
     private void changeStatusOfLocationDataSource() {
         mLocationDisplay = mMapView.getLocationDisplay();
 //        changeStatusOfLocationDataSource();
@@ -411,6 +420,23 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mMapViewHandler.setClickBtnAdd(true);
     }
 
+    public boolean requestPermisson() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE},
+                    REQUEST_ID_IMAGE_CAPTURE);
+        }
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return false;
+        } else
+            return true;
+    }
+
     private void goHome() {
     }
 
@@ -453,7 +479,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 ((FloatingActionButton) findViewById(R.id.floatBtnLayer)).setVisibility(View.VISIBLE);
                 break;
             case R.id.img_layvitri:
-                mMapViewHandler.addFeature();
+//                mMapViewHandler.capture();
+                capture();
                 break;
             case R.id.floatBtnAdd:
                 ((LinearLayout) findViewById(R.id.linear_addfeature)).setVisibility(View.VISIBLE);
@@ -474,6 +501,82 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.floatBtnHome:
                 goHome();
                 break;
+        }
+    }
+
+    public void capture() {
+        Intent cameraIntent = new Intent(
+                android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
+
+        File photo = ImageFile.getFile(this);
+//        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
+        this.mUri = Uri.fromFile(photo);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.mUri);
+//        this.mUri = Uri.fromFile(photo);
+        startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
+    }
+
+    @Nullable
+    private Bitmap getBitmap(String path) {
+
+        Uri uri = Uri.fromFile(new File(path));
+        InputStream in = null;
+        try {
+            final int IMAGE_MAX_SIZE = 1200000; // 1.2MP
+            in = getContentResolver().openInputStream(uri);
+
+            // Decode image size
+            BitmapFactory.Options o = new BitmapFactory.Options();
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(in, null, o);
+            in.close();
+
+
+            int scale = 1;
+            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
+                    IMAGE_MAX_SIZE) {
+                scale++;
+            }
+            Log.d("", "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
+
+            Bitmap b = null;
+            in = getContentResolver().openInputStream(uri);
+            if (scale > 1) {
+                scale--;
+                // scale to max possible inSampleSize that still yields an image
+                // larger than target
+                o = new BitmapFactory.Options();
+                o.inSampleSize = scale;
+                b = BitmapFactory.decodeStream(in, null, o);
+
+                // resize to desired dimensions
+                int height = b.getHeight();
+                int width = b.getWidth();
+                Log.d("", "1th scale operation dimenions - width: " + width + ", height: " + height);
+
+                double y = Math.sqrt(IMAGE_MAX_SIZE
+                        / (((double) width) / height));
+                double x = (y / height) * width;
+
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
+                        (int) y, true);
+                b.recycle();
+                b = scaledBitmap;
+
+                System.gc();
+            } else {
+                b = BitmapFactory.decodeStream(in);
+            }
+            in.close();
+
+            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " +
+                    b.getHeight());
+            return b;
+        } catch (IOException e) {
+            Log.e("", e.getMessage(), e);
+            return null;
         }
     }
 
@@ -516,6 +619,37 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 }
             }
         } catch (Exception e) {
+        }
+
+        if (requestCode == REQUEST_ID_IMAGE_CAPTURE)
+
+        {
+            if (resultCode == RESULT_OK) {
+                if (this.mUri != null) {
+//                    Uri selectedImage = this.mUri;
+//                    getContentResolver().notifyChange(selectedImage, null);
+                    Bitmap bitmap = getBitmap(mUri.getPath());
+                    try {
+                        if (bitmap != null) {
+                            Matrix matrix = new Matrix();
+                            matrix.postRotate(90);
+                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                            byte[] image = outputStream.toByteArray();
+                            Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
+
+                            mMapViewHandler.addFeature(image);
+                            //Todo xóa ảnh
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                MySnackBar.make(mMapView, "Hủy chụp ảnh", false);
+            } else {
+                MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
+            }
         }
     }
 }

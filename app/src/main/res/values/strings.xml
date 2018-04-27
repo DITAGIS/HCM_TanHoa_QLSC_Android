@@ -22,6 +22,8 @@
     <string name="hinhanh_field">Hình ảnh đính kèm</string>
     <string name="vitrisuco_field">Vị trí sự cố</string>
 
+    <string name="path_saveImage">.qlsc</string>
+    <string name="attachment">attachment</string>
     <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
     <!--<string name="service_feature_table">https://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
     <string name="world_elevation_service">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
