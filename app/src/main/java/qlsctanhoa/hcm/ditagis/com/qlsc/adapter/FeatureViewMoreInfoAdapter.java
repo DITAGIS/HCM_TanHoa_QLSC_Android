@@ -61,6 +61,9 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         txtAlias.setText(item.getAlias());
 
         TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_value);
+        if (item.getFieldName().equals("ViTri") || item.getFieldName().equals("GhiChu") || item.getFieldName().equals("GhiChuVatTu")) {
+            txtValue.setWidth(550);
+        }
         //todo
         txtValue.setText(item.getValue());
         if (item.isEdit()) {
@@ -71,10 +74,8 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
             convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.INVISIBLE);
 
         }
-        if (item.getValue() == null)
-            txtValue.setVisibility(View.GONE);
-        else
-            txtValue.setVisibility(View.VISIBLE);
+        if (item.getValue() == null) txtValue.setVisibility(View.GONE);
+        else txtValue.setVisibility(View.VISIBLE);
         return convertView;
     }
 

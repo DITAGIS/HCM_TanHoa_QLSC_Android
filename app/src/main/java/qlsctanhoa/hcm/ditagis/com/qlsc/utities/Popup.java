@@ -173,9 +173,11 @@ public class Popup extends AppCompatActivity {
                         case DATE:
                             item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                             break;
+                        case OID:
                         case TEXT:
                             item.setValue(value.toString());
                             break;
+                        case DOUBLE:
                         case SHORT:
                             item.setValue(value.toString());
 
@@ -364,6 +366,8 @@ public class Popup extends AppCompatActivity {
                                     }
                                     break;
                                 case TEXT:
+                                    item.setValue(editText.getText().toString());
+                                    break;
                                 case SHORT:
                                     try {
                                         short x = Short.parseShort(editText.getText().toString());
