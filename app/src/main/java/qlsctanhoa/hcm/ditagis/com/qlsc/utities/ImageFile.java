@@ -21,7 +21,7 @@ public class ImageFile {
         File outFile = new File(path, context.getResources().getString(R.string.path_saveImage));
         if (!outFile.exists())
             outFile.mkdir();
-        File f = new File(outFile, "xxx.jpeg");
+        File f = new File(outFile, "xxx.png");
         return f;
     }
 

@@ -635,10 +635,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             matrix.postRotate(90);
                             Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
                             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+                            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-
                             mMapViewHandler.addFeature(image);
                             //Todo xóa ảnh
                         }
