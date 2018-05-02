@@ -18,7 +18,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -48,7 +47,6 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
-import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -285,9 +283,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         List<Object> daxulyValue = new ArrayList<>();
         daxulyValue.add(1);
 
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", chuaxuly, chuaxulyValue));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", dangxyly, dangxylyValue));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue("Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Chưa xử lý", "Chưa xử lý", chuaxuly, chuaxulyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Chưa xử lý", "Chưa xử lý", dangxyly, dangxylyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
     }
 
@@ -306,8 +307,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 // If an error is found, handle the failure to start.
                 // Check permissions to see if failure may be due to lack of permissions.
-                boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
-                boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this, reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
+                boolean permissionCheck1 = ContextCompat.checkSelfPermission(QuanLySuCo.this,
+                        reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
+                boolean permissionCheck2 = ContextCompat.checkSelfPermission(QuanLySuCo.this,
+                        reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
 
                 if (!(permissionCheck1 && permissionCheck2)) {
                     // If permissions are not already granted, request permission from the user.
@@ -402,10 +405,20 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     public boolean requestPermisson() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE,
+                    Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE);
         }
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+                                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         } else return true;
     }

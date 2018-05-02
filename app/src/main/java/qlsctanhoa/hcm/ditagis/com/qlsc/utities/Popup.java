@@ -1,10 +1,7 @@
 package qlsctanhoa.hcm.ditagis.com.qlsc.utities;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -31,14 +28,12 @@ import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
-import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
-import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -101,7 +96,8 @@ public class Popup extends AppCompatActivity {
                     break;
                 case Constant.NGAY_CAP_NHAT:
                     if (value != null)
-                        ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).
+                                setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                     break;
             }
         }
@@ -113,7 +109,7 @@ public class Popup extends AppCompatActivity {
         for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
             lstFeatureType.add(mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().get(i).getName());
         }
-        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());//getLayoutInflater();
+        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
         refressPopup();
         if (mCallout != null) mCallout.dismiss();
@@ -140,7 +136,8 @@ public class Popup extends AppCompatActivity {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
-        final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
+        final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity,
+                new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
         lstView.setAdapter(adapter);
         lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -166,7 +163,9 @@ public class Popup extends AppCompatActivity {
                         String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
                         if (valueFeatureType != null) item.setValue(valueFeatureType);
                     } else if (field.getDomain() != null) {
-                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                        List<CodedValue> codedValues = ((CodedValueDomain)
+                                this.mSelectedArcGISFeature.getFeatureTable()
+                                        .getField(item.getFieldName()).getDomain()).getCodedValues();
                         String valueDomain = getValueDomain(codedValues, value.toString()).toString();
                         if (valueDomain != null) item.setValue(valueDomain);
                     } else switch (field.getFieldType()) {
@@ -266,7 +265,8 @@ public class Popup extends AppCompatActivity {
         if (parent.getItemAtPosition(position) instanceof FeatureViewMoreInfoAdapter.Item) {
             final FeatureViewMoreInfoAdapter.Item item = (FeatureViewMoreInfoAdapter.Item) parent.getItemAtPosition(position);
             if (item.isEdit()) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity,
+                        android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
                 builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -275,7 +275,8 @@ public class Popup extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
-                final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().inflate(R.layout.layout_dialog_update_feature_listview, null);
+                final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().
+                        inflate(R.layout.layout_dialog_update_feature_listview, null);
                 builder.setView(layout);
                 final FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
                 final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
@@ -288,7 +289,8 @@ public class Popup extends AppCompatActivity {
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
                 if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                     layoutSpin.setVisibility(View.VISIBLE);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(),
+                            android.R.layout.simple_list_item_1, lstFeatureType);
                     spin.setAdapter(adapter);
                     if (item.getValue() != null)
                         spin.setSelection(lstFeatureType.indexOf(item.getValue()));
@@ -318,8 +320,10 @@ public class Popup extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-                                        String s = String.format("%02d", datePicker.getDayOfMonth()) + "_" + String.format("%02d", (datePicker.getMonth() + 1)) + "_" + datePicker.getYear();
+                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
+                                                datePicker.getMonth(), datePicker.getDayOfMonth());
+                                        String s = String.format("%02d_%02d_%d",
+                                                datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
 
                                         textView.setText(s);
                                         alertDialog.dismiss();
@@ -426,7 +430,7 @@ public class Popup extends AppCompatActivity {
                                             List<FeatureEditResult> edits = null;
                                             try {
                                                 edits = serverResult.get();
-                                                    if (edits.size() > 0) {
+                                                if (edits.size() > 0) {
                                                     if (!edits.get(0).hasCompletedWithErrors()) {
                                                         Log.e("", "Feature successfully updated");
                                                     }
