@@ -193,7 +193,6 @@ public class Popup extends AppCompatActivity {
                         break;
                     }
                 }
-
                 item.setFieldType(field.getFieldType());
                 adapter.add(item);
                 adapter.notifyDataSetChanged();

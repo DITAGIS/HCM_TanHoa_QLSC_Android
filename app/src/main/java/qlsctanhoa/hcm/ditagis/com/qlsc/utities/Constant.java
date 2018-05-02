@@ -22,6 +22,7 @@ public class Constant {
     public static final String[] CODEID_DISTRICT = {null, "768", "766", "767"};
     public static final String[] CODE_PHANLOAI = {null, "1", "2"};
 
+    public static final String NAME_DIEMSUCO = "DIEMSUCO";
 
     private static Constant mInstance = null;
 

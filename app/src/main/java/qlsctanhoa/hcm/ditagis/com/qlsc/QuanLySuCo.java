@@ -76,8 +76,8 @@ import java.util.List;
 import qlsctanhoa.hcm.ditagis.com.qlsc.adapter.TraCuuAdapter;
 import qlsctanhoa.hcm.ditagis.com.qlsc.libs.FeatureLayerDTG;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Config;
+import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Constant;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.ImageFile;
-import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapFunctions;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MapViewHandler;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.MySnackBar;
 import qlsctanhoa.hcm.ditagis.com.qlsc.utities.Popup;
@@ -88,21 +88,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Popup popupInfos;
     private MapView mMapView;
     private Callout mCallout;
-    private android.graphics.Point mClickPoint;
-    private ArcGISFeature mSelectedArcGISFeature;
-    private ServiceFeatureTable mServiceFeatureTable;
-    private FeatureLayer mSuCoTanHoaLayer;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
-    private String mSelectedArcGISFeatureAttributeValue;
-    private boolean isClickBtnAdd = false;
-
     private MapViewHandler mMapViewHandler;
-    private MapFunctions mapFunctions;
-
     private static double LATITUDE = 10.7554041;
     private static double LONGTITUDE = 106.6546293;
     private static int LEVEL_OF_DETAIL = 12;
-
     private SearchView mTxtSearch;
     private ListView mListViewSearch;
     private TraCuuAdapter mSearchAdapter;
@@ -161,29 +151,26 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         for (Config config : configs) {
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
             FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-            featureLayer.setName(config.getTitle());
-//            featureLayer.setMinScale(config.getMinScale());
+            featureLayer.setName(config.getAlias());
             featureLayer.setMaxScale(0);
             featureLayer.setMinScale(1000000);
             FeatureLayerDTG featureLayerDTG = new FeatureLayerDTG(featureLayer);
             featureLayerDTG.setOutFields(config.getOutField());
             featureLayerDTG.setQueryFields(config.getQueryField());
-            featureLayerDTG.setTitleLayer(config.getTitle());
+            featureLayerDTG.setTitleLayer(config.getAlias());
             featureLayerDTG.setUpdateFields(config.getUpdateField());
+            if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
+                featureLayer.setId(config.getName());
+                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout, bottomSheetDialog);
+                featureLayer.setPopupEnabled(true);
+                setRendererSuCoFeatureLayer(featureLayer);
+                mCallout = mMapView.getCallout();
+                mMapViewHandler = new MapViewHandler(featureLayerDTG,mCallout, mMapView,popupInfos,QuanLySuCo.this);
+            }
             mFeatureLayerDTGS.add(featureLayerDTG);
-//            mMap.getOperationalLayers().add(featureLayer);
+            mMap.getOperationalLayers().add(featureLayer);
+
         }
-        // set the map to be displayed in this view
-        mCallout = mMapView.getCallout();
-
-        mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
-        mSuCoTanHoaLayer = new FeatureLayer(mServiceFeatureTable);
-        popupInfos = new Popup(QuanLySuCo.this, mServiceFeatureTable, mCallout, bottomSheetDialog);
-        mSuCoTanHoaLayer.setPopupEnabled(true);
-        setRendererSuCoFeatureLayer();
-        mMap.getOperationalLayers().add(mSuCoTanHoaLayer);
-
-        this.mapFunctions = new MapFunctions(this, mServiceFeatureTable);
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
             public void run() {
@@ -192,11 +179,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 int states[][] = {{android.R.attr.state_checked}, {}};
                 int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
                 for (final Layer layer : layers) {
-                    if (layer.getName().equals(Config.Title.title_diemsuco)) continue;
+//                    if (layer.getName().equals(Config.Alias.alias_diemsuco)) continue;
                     CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
 
                     if (layer.getName().trim().equals("")) {
-                        checkBox.setText(Config.Title.title_diemsuco);
+                        checkBox.setText(Config.Alias.alias_diemsuco);
                     } else {
                         checkBox.setText(layer.getName());
                     }
@@ -223,7 +210,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 for (int i = 0; i < linnearDisplayLayer.getChildCount(); i++) {
                     View v = linnearDisplayLayer.getChildAt(i);
                     if (v instanceof CheckBox) {
-                        if (((CheckBox) v).getText().equals(Config.Title.title_diemsuco))
+                        if (((CheckBox) v).getText().equals(Config.Alias.alias_diemsuco))
                             ((CheckBox) v).setChecked(true);
                         else ((CheckBox) v).setChecked(false);
                     }
@@ -232,7 +219,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         });
         changeStatusOfLocationDataSource();
 
-        mMapViewHandler = new MapViewHandler(mFeatureLayerDTGS, mMap, mSuCoTanHoaLayer, mCallout, mClickPoint, mSelectedArcGISFeature, mMapView, isClickBtnAdd, mServiceFeatureTable, popupInfos, QuanLySuCo.this);
         final EditText edit_latitude = ((EditText) findViewById(R.id.edit_latitude));
         final EditText edit_longtitude = ((EditText) findViewById(R.id.edit_longtitude));
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
@@ -286,7 +272,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
     }
 
-    private void setRendererSuCoFeatureLayer() {
+    private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         uniqueValueRenderer.getFieldNames().add("TrangThai");
         SimpleMarkerSymbol defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 15);
@@ -360,7 +346,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mSuCoTanHoaLayer.clearSelection();
                 mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                 return false;
             }
@@ -399,7 +384,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // Handle navigation view item clicks here.
         int id = item.getItemId();
         if (id == R.id.nav_thongke) {
-            this.mapFunctions.thongKe();
+            final Intent intent = new Intent(this, ThongKeActivity.class);
+            this.startActivity(intent);
         } else if (id == R.id.nav_tracuu) {
             final Intent intent = new Intent(this, TraCuuActivity.class);
             this.startActivityForResult(intent, 1);
@@ -416,25 +402,16 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     private void add() {
         Toast.makeText(mMapView.getContext().getApplicationContext(), getString(R.string.notify_add_feature), Toast.LENGTH_LONG).show();
-        isClickBtnAdd = true;
         mMapViewHandler.setClickBtnAdd(true);
     }
 
     public boolean requestPermisson() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE},
-                    REQUEST_ID_IMAGE_CAPTURE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE, Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE);
         }
-        if (Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return false;
-        } else
-            return true;
+        } else return true;
     }
 
     private void goHome() {
@@ -505,10 +482,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     public void capture() {
-        Intent cameraIntent = new Intent(
-                android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
 
         File photo = ImageFile.getFile(this);
 //        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
@@ -535,8 +510,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
 
             int scale = 1;
-            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) >
-                    IMAGE_MAX_SIZE) {
+            while ((o.outWidth * o.outHeight) * (1 / Math.pow(scale, 2)) > IMAGE_MAX_SIZE) {
                 scale++;
             }
             Log.d("", "scale = " + scale + ", orig-width: " + o.outWidth + ", orig-height: " + o.outHeight);
@@ -556,12 +530,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 int width = b.getWidth();
                 Log.d("", "1th scale operation dimenions - width: " + width + ", height: " + height);
 
-                double y = Math.sqrt(IMAGE_MAX_SIZE
-                        / (((double) width) / height));
+                double y = Math.sqrt(IMAGE_MAX_SIZE / (((double) width) / height));
                 double x = (y / height) * width;
 
-                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x,
-                        (int) y, true);
+                Bitmap scaledBitmap = Bitmap.createScaledBitmap(b, (int) x, (int) y, true);
                 b.recycle();
                 b = scaledBitmap;
 
@@ -571,8 +543,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             }
             in.close();
 
-            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " +
-                    b.getHeight());
+            Log.d("", "bitmap size - width: " + b.getWidth() + ", height: " + b.getHeight());
             return b;
         } catch (IOException e) {
             Log.e("", e.getMessage(), e);

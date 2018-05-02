@@ -70,14 +70,13 @@ public class ThongKeActivity extends AppCompatActivity {
         this.txtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
         this.txtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
         this.txtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
-        thongKe();
-
         ((LinearLayout) ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialogSelectTime();
             }
         });
+        query(items.get(0));
     }
 
     private void showDialogSelectTime() {
@@ -115,7 +114,7 @@ public class ThongKeActivity extends AppCompatActivity {
                     edit_thongke_tuychinh_ngaybatdau.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showDateTimePicker(edit_thongke_tuychinh_ngaybatdau, finalThoigianbatdau,"START");
+                            showDateTimePicker(edit_thongke_tuychinh_ngaybatdau, finalThoigianbatdau, "START");
                         }
                     });
                     final StringBuilder finalThoigianketthuc = new StringBuilder();
@@ -123,7 +122,7 @@ public class ThongKeActivity extends AppCompatActivity {
                     edit_thongke_tuychinh_ngayketthuc.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            showDateTimePicker(edit_thongke_tuychinh_ngayketthuc, finalThoigianketthuc,"FINISH");
+                            showDateTimePicker(edit_thongke_tuychinh_ngayketthuc, finalThoigianketthuc, "FINISH");
                         }
                     });
 
@@ -175,10 +174,9 @@ public class ThongKeActivity extends AppCompatActivity {
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                 String displaytime = (String) DateFormat.format(getString(R.string.format_time_day_month_year), calendar.getTime());
                 String format = null;
-                if(typeInput.equals("START")){
+                if (typeInput.equals("START")) {
                     format = (String) DateFormat.format(getString(R.string.format_startday_yearfirst), calendar.getTime());
-                }
-                else if(typeInput.equals("FINISH")){
+                } else if (typeInput.equals("FINISH")) {
                     format = (String) DateFormat.format(getString(R.string.format_endday_yearfirst), calendar.getTime());
                 }
 
@@ -253,21 +251,6 @@ public class ThongKeActivity extends AppCompatActivity {
         txtPhanTramChuaSua.setText(percentChuaSua + "%");
         txtPhanTramDangSua.setText(percentDangSua + "%");
         txtPhanTramDaSua.setText(percentDaSua + "%");
-        mChart = (PieChart) findViewById(R.id.piechart);
-        mChart = configureChart(mChart);
-        mChart = setData(mChart, tongloaitrangthai);
-        mChart.animateXY(1500, 1500);
-    }
-
-    public void thongKe() {
-        final int[] tongloaitrangthai = getIntent().getIntArrayExtra(this.getString(R.string.tongloaitrangthai));
-        txtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + " " + tongloaitrangthai[0]);
-        txtChuaSua.setText(tongloaitrangthai[1] + "");
-        txtDangSua.setText(tongloaitrangthai[2] + "");
-        txtDaSua.setText(tongloaitrangthai[3] + "");
-        txtPhanTramChuaSua.setText((tongloaitrangthai[1] * 100) / tongloaitrangthai[0] + "%");
-        txtPhanTramDangSua.setText((tongloaitrangthai[2] * 100) / tongloaitrangthai[0] + "%");
-        txtPhanTramDaSua.setText((tongloaitrangthai[3] * 100) / tongloaitrangthai[0] + "%");
         mChart = (PieChart) findViewById(R.id.piechart);
         mChart = configureChart(mChart);
         mChart = setData(mChart, tongloaitrangthai);
