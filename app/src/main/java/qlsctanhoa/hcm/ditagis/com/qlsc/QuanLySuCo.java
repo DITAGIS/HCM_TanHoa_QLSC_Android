@@ -129,10 +129,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             }
         });
         requestPermisson();
-        View bottomSheetView = getLayoutInflater().inflate(R.layout.layout_bottom_sheet, null);
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this);
-        bottomSheetDialog.setContentView(bottomSheetView);
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -161,7 +157,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             featureLayerDTG.setUpdateFields(config.getUpdateField());
             if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
                 featureLayer.setId(config.getName());
-                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout, bottomSheetDialog);
+                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 mCallout = mMapView.getCallout();

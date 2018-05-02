@@ -60,17 +60,13 @@ public class Popup extends AppCompatActivity {
     private ServiceFeatureTable mServiceFeatureTable;
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
-    private Map<String, Object> mAttr;
-    private BottomSheetDialog mBottomSheetDialog;
-    private Dialog mDialogEdit;
     private List<String> lstFeatureType;
     private LinearLayout linearLayout;
 
-    public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout, BottomSheetDialog bottomSheetDialog) {
+    public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout) {
         this.mMainActivity = mainActivity;
         this.mServiceFeatureTable = mServiceFeatureTable;
         this.mCallout = callout;
-        this.mBottomSheetDialog = bottomSheetDialog;
 
     }
 

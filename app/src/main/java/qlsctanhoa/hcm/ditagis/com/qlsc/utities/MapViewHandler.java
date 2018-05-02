@@ -158,31 +158,11 @@ public class MapViewHandler extends Activity {
                 try {
                     FeatureQueryResult result = feature.get();
                     if (result.iterator().hasNext()) {
-
                         Feature item = result.iterator().next();
                         Envelope extent = item.getGeometry().getExtent();
 
                         mMapView.setViewpointGeometryAsync(extent);
-//                        QueryParameters queryParameters1 = new QueryParameters();
-//                        queryParameters1.setGeometry(extent);
-//                        suCoTanHoaLayer.selectFeaturesAsync(queryParameters1, FeatureLayer.SelectionMode.NEW);
-//                        suCoTanHoaLayer.setSelectionColor(Color.GREEN);
-//                        suCoTanHoaLayer.setSelectionWidth(20);
                         suCoTanHoaLayer.selectFeature(item);
-//                        Map<String, Object> attr = item.getAttributes();
-//                        Point clickPoint = new Point(extent.getCenter().getX(), extent.getCenter().getY());
-//                        LinearLayout linearLayout = popupInfos.createPopup( (ArcGISFeature) item, attr);
-//                        mMapView.setViewpointGeometryAsync(extent, 0);
-//                        // show CallOut
-//                        mCallout.setLocation(clickPoint);
-//                        mCallout.setContent(linearLayout);
-//                        popupInfos.runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mCallout.refresh();
-//                                mCallout.show();
-//                            }
-//                        });
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
