@@ -5,7 +5,7 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.ditagis.hcm.qlsc"
+        applicationId "hcm.ditagis.com.tanhoa.qlsc"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1

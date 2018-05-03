@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="qlsctanhoa.hcm.ditagis.com.qlsc">
+    package="hcm.ditagis.com.tanhoa.qlsc">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -26,7 +26,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".QuanLySuCo"
+            android:name="hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
@@ -37,16 +37,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ThongKeActivity"
+            android:name="hcm.ditagis.com.tanhoa.qlsc.ThongKeActivity"
             android:label="Thống kê"
-            android:parentActivityName=".QuanLySuCo" />
+            android:parentActivityName="hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo" />
         <activity
-            android:name=".TraCuuActivity"
+            android:name="hcm.ditagis.com.tanhoa.qlsc.TraCuuActivity"
             android:label="Tra cứu thông tin"
-            android:parentActivityName=".QuanLySuCo" />
-        <activity android:name=".SettingsActivity"
+            android:parentActivityName="hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo" />
+        <activity android:name="hcm.ditagis.com.tanhoa.qlsc.SettingsActivity"
             android:label="Cài đặt"
-            android:parentActivityName=".QuanLySuCo"
+            android:parentActivityName="hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo"
             ></activity>
     </application>
 
