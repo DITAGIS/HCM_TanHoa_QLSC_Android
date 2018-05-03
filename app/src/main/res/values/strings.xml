@@ -64,8 +64,7 @@
     <string name="preference_settings_tuy_chon_tim_kiem_co_san">Tìm kiếm sự cố</string>
     <string name="preference_settings_tuy_chon_tim_kiem_chua_co">Tìm vị trí</string>
 
-    <string name="format_startday_yearfirst">yyyy-MM-dd 00:00:00</string>
-    <string name="format_endday_yearfirst">yyyy-MM-dd 23:59:59</string>
+    <string name="format_day_yearfirst">yyyy-MM-dd HH:mm:ss</string>
     <string name="format_time_day_month_year">dd/MM/yyyy</string>
 
 

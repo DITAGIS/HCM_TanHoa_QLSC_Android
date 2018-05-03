@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
@@ -168,11 +169,19 @@ public class ThongKeActivity extends AppCompatActivity {
                 String displaytime = (String) DateFormat.format(getString(R.string.format_time_day_month_year), calendar.getTime());
                 String format = null;
                 if (typeInput.equals("START")) {
-                    format = (String) DateFormat.format(getString(R.string.format_startday_yearfirst), calendar.getTime());
+                    calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
+                    calendar.clear(Calendar.MINUTE);
+                    calendar.clear(Calendar.SECOND);
+                    calendar.clear(Calendar.MILLISECOND);
                 } else if (typeInput.equals("FINISH")) {
-                    format = (String) DateFormat.format(getString(R.string.format_endday_yearfirst), calendar.getTime());
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+                    calendar.set(Calendar.MILLISECOND,999);
                 }
-
+                SimpleDateFormat dateFormatGmt = new SimpleDateFormat(getString(R.string.format_day_yearfirst));
+                dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+                format = dateFormatGmt.format(calendar.getTime());
                 editText.setText(displaytime);
                 output.append(format);
                 alertDialog.dismiss();
