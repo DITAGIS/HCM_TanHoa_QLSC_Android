@@ -58,6 +58,7 @@ import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
 import com.esri.arcgisruntime.mapping.LayerList;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
@@ -100,6 +101,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private TraCuuAdapter mSearchAdapter;
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
+    private Point mCurrentPoint;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -266,8 +268,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 Point position = locationChangedEvent.getLocation().getPosition();
                 edit_longtitude.setText(position.getX() + "");
                 edit_latitude.setText(position.getY() + "");
-                Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
-                mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
+                setViewPointCenter(position);
             }
         });
         findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
@@ -345,6 +346,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 }
             }
         });
+    }
+
+    private void setViewPointCenter(Point position) {
+        Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
+        mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
     }
 
     @Override
@@ -464,22 +470,29 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.floatBtnLayer:
                 v.setVisibility(View.INVISIBLE);
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.VISIBLE);
+                mCurrentPoint = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
                 break;
             case R.id.layout_layer_open_street_map:
                 mMapView.getMap().setMaxScale(1128.497175);
                 mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
+                mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
+
+                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.layout_layer_street_map:
                 mMapView.getMap().setMaxScale(1128.497176);
                 mMapView.getMap().setBasemap(Basemap.createStreets());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
+
+                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.layout_layer_topo:
                 mMapView.getMap().setMaxScale(5);
                 mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
 
+                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.btn_layer_close:
                 ((LinearLayout) findViewById(R.id.layout_layer)).setVisibility(View.INVISIBLE);
@@ -502,8 +515,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
-                if (!mLocationDisplay.isStarted()) mLocationDisplay.startAsync();
-                else mLocationDisplay.stop();
+                if (!mLocationDisplay.isStarted()) {
+                    mLocationDisplay.startAsync();
+                    setViewPointCenter(mLocationDisplay.getMapLocation());
+                } else mLocationDisplay.stop();
                 break;
             case R.id.floatBtnHome:
                 goHome();
