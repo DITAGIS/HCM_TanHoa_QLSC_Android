@@ -59,4 +59,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.esri.arcgisruntime:arcgis-android:100.2.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
 }

@@ -47,6 +47,7 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
+import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -71,7 +72,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
@@ -87,6 +90,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private MapView mMapView;
     private Callout mCallout;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private FeatureLayerDTG mFeatureLayerDTG;
     private MapViewHandler mMapViewHandler;
     private static double LATITUDE = 10.7554041;
     private static double LONGTITUDE = 106.6546293;
@@ -94,10 +98,26 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private SearchView mTxtSearch;
     private ListView mListViewSearch;
     private TraCuuAdapter mSearchAdapter;
-
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
+
+    public void setUri(Uri uri) {
+        this.mUri = uri;
+    }
+
+    public void setFeatureViewMoreInfoAdapter(FeatureViewMoreInfoAdapter featureViewMoreInfoAdapter) {
+        this.mFeatureViewMoreInfoAdapter = featureViewMoreInfoAdapter;
+    }
+
+    private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
+
+    public void setSelectedArcGISFeature(ArcGISFeature selectedArcGISFeature) {
+        this.mSelectedArcGISFeature = selectedArcGISFeature;
+    }
+
+    private ArcGISFeature mSelectedArcGISFeature;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 55;
+    private static final int REQUEST_ID_IMAGE_CAPTURE_POPUP = 44;
     String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @SuppressLint("ClickableViewAccessibility")
@@ -159,9 +179,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 mCallout = mMapView.getCallout();
-                mMapViewHandler = new MapViewHandler(featureLayerDTG,mCallout, mMapView,popupInfos,QuanLySuCo.this);
+                mFeatureLayerDTG = featureLayerDTG;
+                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
             }
-            mFeatureLayerDTGS.add(featureLayerDTG);
+            mFeatureLayerDTGS.add(mFeatureLayerDTG);
             mMap.getOperationalLayers().add(featureLayer);
 
         }
@@ -418,7 +439,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-                                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             return false;
         } else return true;
     }
@@ -619,6 +640,37 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
                             mMapViewHandler.addFeature(image);
+                            //Todo xóa ảnh
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+            } else if (resultCode == RESULT_CANCELED) {
+                MySnackBar.make(mMapView, "Hủy chụp ảnh", false);
+            } else {
+                MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
+            }
+        } else if (requestCode == REQUEST_ID_IMAGE_CAPTURE_POPUP) {
+            if (resultCode == RESULT_OK) {
+//                this.mUri= data.getData();
+                if (this.mUri != null) {
+//                    Uri selectedImage = this.mUri;
+//                    getContentResolver().notifyChange(selectedImage, null);
+                    Bitmap bitmap = getBitmap(mUri.getPath());
+                    try {
+                        if (bitmap != null) {
+                            Matrix matrix = new Matrix();
+                            matrix.postRotate(90);
+                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                            byte[] image = outputStream.toByteArray();
+                            Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
+//                            mMapViewHandler.addFeature(image);
+                            popupInfos.getDialog().dismiss();
+                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature);
+
+                            editAsync.execute(mFeatureViewMoreInfoAdapter);
                             //Todo xóa ảnh
                         }
                     } catch (Exception e) {

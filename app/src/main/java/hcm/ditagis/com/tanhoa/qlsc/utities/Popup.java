@@ -1,7 +1,9 @@
 package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
+import android.content.Intent;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
@@ -35,6 +38,11 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -45,7 +53,7 @@ import java.util.concurrent.ExecutionException;
 import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
-import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
+import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAttachmentsAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
@@ -57,6 +65,15 @@ public class Popup extends AppCompatActivity {
     private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
     private LinearLayout linearLayout;
+    private Uri mUri;
+    private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
+    private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
+
+    private DialogInterface mDialog;
+
+    public DialogInterface getDialog() {
+        return mDialog;
+    }
 
     public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout) {
         this.mMainActivity = mainActivity;
@@ -65,9 +82,6 @@ public class Popup extends AppCompatActivity {
 
     }
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
 
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
@@ -136,11 +150,18 @@ public class Popup extends AppCompatActivity {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
-        final FeatureViewMoreInfoAdapter adapter = new FeatureViewMoreInfoAdapter(mMainActivity,
+        mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity,
                 new ArrayList<FeatureViewMoreInfoAdapter.Item>());
-        final ListView lstView = layout.findViewById(R.id.lstView_alertdialog_info);
-        lstView.setAdapter(adapter);
-        lstView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
+        layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewAttachment();
+            }
+        });
+
+        lstViewInfo.setAdapter(mFeatureViewMoreInfoAdapter);
+        lstViewInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 edit(parent, view, position, id);
@@ -190,49 +211,114 @@ public class Popup extends AppCompatActivity {
                     }
                 }
                 item.setFieldType(field.getFieldType());
-                adapter.add(item);
-                adapter.notifyDataSetChanged();
+                mFeatureViewMoreInfoAdapter.add(item);
+                mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
             }
         }
+
         builder.setView(layout);
         builder.setCancelable(false);
-        builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener()
+
+        {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
-                builder.setMessage("Bạn có muốn cập nhật tất cả thay đổi?");
-                builder.setNegativeButton("Không", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        EditAsync editAsync = new EditAsync(mMainActivity, mServiceFeatureTable, mSelectedArcGISFeature);
-                        try {
-                            Void aVoid = editAsync.execute(adapter).get();
-                            refressPopup();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
-                        dialog.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-                alertDialog.show();
                 dialog.dismiss();
+            }
+        }).setNegativeButton("Chụp ảnh và cập nhật", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                capture();
+//                EditAsync editAsync = new EditAsync(mMainActivity, mServiceFeatureTable, mSelectedArcGISFeature);
+//
+//                editAsync.execute(mFeatureViewMoreInfoAdapter);
+                mDialog = dialog;
+//                        refressPopup();
+//                dialog.dismiss();
             }
         });
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         dialog.show();
+
+
+    }
+
+    private void viewAttachment() {
+//        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity,mSelectedArcGISFeature);
+//        viewAttachmentAsync.execute();
+//        get attachment
+        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
+        LayoutInflater layoutInflater = LayoutInflater.from(mMainActivity);
+        final View layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
+        ListView lstViewAttachment = layout.findViewById(R.id.lstView_alertdialog_attachments);
+
+        final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
+        lstViewAttachment.setAdapter(attachmentsAdapter);
+        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
+        attachmentResults.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    final List<Attachment> attachments = attachmentResults.get();
+                    int size = attachments.size();
+                    // if selected feature has attachments, display them in a list fashion
+                    if (!attachments.isEmpty()) {
+                        //
+                        for (final Attachment attachment : attachments) {
+                            if (attachment.getContentType().toLowerCase().trim().contains("png")) {
+                                final FeatureViewMoreInfoAttachmentsAdapter.Item item = new FeatureViewMoreInfoAttachmentsAdapter.Item();
+                                item.setName(attachment.getName());
+                                final ListenableFuture<InputStream> inputStreamListenableFuture = attachment.fetchDataAsync();
+                                inputStreamListenableFuture.addDoneListener(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            InputStream inputStream = inputStreamListenableFuture.get();
+                                            item.setImg(IOUtils.toByteArray(inputStream));
+                                            attachmentsAdapter.add(item);
+                                            attachmentsAdapter.notifyDataSetChanged();
+                                            if (attachmentsAdapter.getCount() > 0 && attachments.lastIndexOf(attachment) == attachments.size() - 1) {
+                                                builder.setView(layout);
+                                                builder.setCancelable(false);
+                                                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                    }
+                                                });
+                                                AlertDialog dialog = builder.create();
+                                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                                                dialog.show();
+                                            } else {
+                                                Toast.makeText(mMainActivity, "Không có file hình ảnh đính kèm", Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        } catch (ExecutionException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
+                            }
+                        }
+
+                    } else {
+                        size--;
+//                        MySnackBar.make(mCallout, "Không có file hình ảnh đính kèm", true);
+                    }
+
+                } catch (Exception e) {
+                    Log.e("ERROR", e.getMessage());
+                }
+            }
+        });
 
 
     }
@@ -411,7 +497,7 @@ public class Popup extends AppCompatActivity {
                     @Override
                     public void run() {
                         if (mSelectedArcGISFeature.getLoadStatus() == LoadStatus.FAILED_TO_LOAD) {
-                            Log.d(getResources().getString(R.string.app_name), "Error while loading feature");
+                            Log.d(mMainActivity.getResources().getString(R.string.app_name), "Error while loading feature");
                         }
                         try {
                             // update feature in the feature table
@@ -444,7 +530,7 @@ public class Popup extends AppCompatActivity {
                             });
 
                         } catch (Exception e) {
-                            Log.e(getResources().getString(R.string.app_name), "deteting feature in the feature table failed: " + e.getMessage());
+                            Log.e(mMainActivity.getResources().getString(R.string.app_name), "deteting feature in the feature table failed: " + e.getMessage());
                         }
                     }
                 });
@@ -460,6 +546,22 @@ public class Popup extends AppCompatActivity {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
 
+
+    }
+
+    public void capture() {
+        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
+
+        File photo = ImageFile.getFile(mMainActivity);
+//        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
+        this.mUri = Uri.fromFile(photo);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.mUri);
+        mMainActivity.setSelectedArcGISFeature(mSelectedArcGISFeature);
+        mMainActivity.setFeatureViewMoreInfoAdapter(mFeatureViewMoreInfoAdapter);
+        mMainActivity.setUri(mUri);
+//        this.mUri = Uri.fromFile(photo);
+        mMainActivity.startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
 
     }
 

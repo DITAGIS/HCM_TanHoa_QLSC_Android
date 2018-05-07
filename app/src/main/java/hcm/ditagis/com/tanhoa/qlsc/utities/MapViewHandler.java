@@ -508,7 +508,7 @@ public class MapViewHandler extends Activity {
                                                             if (!edits.get(0).hasCompletedWithErrors()) {
                                                                 //attachmentList.add(fileName);
                                                                 String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
-                                                                // update the attachment list view on the control panel
+                                                                // update the attachment list view/ on the control panel
                                                             } else {
                                                             }
                                                         } else {
