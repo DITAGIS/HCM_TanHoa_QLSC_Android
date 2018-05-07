@@ -41,6 +41,7 @@
 
     <!--navigation-->
     <string name="nav_tra_cuu">Tra cứu</string>
+    <string name="nav_xoa_tim_kiem">Xóa các tìm kiếm</string>
     <string name="nav_cai_dat">Cài đặt</string>
     <string name="nav_log_out">Đăng xuất</string>
     <string name="nav_cai_dat_them_su_co_title">Phương thức thêm điểm sự cố</string>

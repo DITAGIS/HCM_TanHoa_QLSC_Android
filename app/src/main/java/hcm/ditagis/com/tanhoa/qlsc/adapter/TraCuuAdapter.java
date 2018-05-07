@@ -94,6 +94,8 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
         int trangThai;
         String ngayCapNhat;
         String diaChi;
+        double latitude;
+        double longtitude;
 
         public Item(int objectID, String id, int trangThai, String ngayCapNhat, String diaChi) {
             this.objectID = objectID;
@@ -101,6 +103,22 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             this.trangThai = trangThai;
             this.ngayCapNhat = ngayCapNhat;
             this.diaChi = diaChi;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public double getLongtitude() {
+            return longtitude;
+        }
+
+        public void setLongtitude(double longtitude) {
+            this.longtitude = longtitude;
         }
 
         public int getObjectID() {

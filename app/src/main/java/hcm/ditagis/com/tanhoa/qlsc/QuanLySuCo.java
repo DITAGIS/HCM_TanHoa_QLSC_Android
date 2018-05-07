@@ -10,6 +10,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +63,8 @@ import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
+import com.esri.arcgisruntime.mapping.view.Graphic;
+import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
@@ -90,7 +94,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Popup popupInfos;
     private MapView mMapView;
     private Callout mCallout;
-    private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private FeatureLayerDTG mFeatureLayerDTG;
     private MapViewHandler mMapViewHandler;
     private static double LATITUDE = 10.7554041;
@@ -102,6 +105,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
     private Point mCurrentPoint;
+    private Geocoder mGeocoder;
+    private GraphicsOverlay mGraphicsOverlay;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -128,6 +133,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
+        mGeocoder = new Geocoder(this);
         setLicense();
         //for camera
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -143,9 +149,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         this.mListViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mMapViewHandler.queryByObjectID(((TraCuuAdapter.Item) parent.getItemAtPosition(position)).getObjectID());
-                mSearchAdapter.clear();
-                mSearchAdapter.notifyDataSetChanged();
+                TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));
+                int objectID = item.getObjectID();
+                if (objectID != -1) {
+                    mMapViewHandler.queryByObjectID(objectID);
+                    mSearchAdapter.clear();
+                    mSearchAdapter.notifyDataSetChanged();
+                }
+                //tìm kiếm địa chỉ
+                else {
+                    setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
+
+                }
             }
         });
         requestPermisson();
@@ -161,7 +176,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // create an empty map instance
         final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
         mMapView.setMap(mMap);
-        mFeatureLayerDTGS = new ArrayList<>();
+        List<FeatureLayerDTG> mFeatureLayerDTGS = new ArrayList<>();
         // config feature layer service
         ArrayList<Config> configs = Config.FeatureConfig.getConfigs();
         for (Config config : configs) {
@@ -236,8 +251,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         });
         changeStatusOfLocationDataSource();
 
-        final EditText edit_latitude = ((EditText) findViewById(R.id.edit_latitude));
-        final EditText edit_longtitude = ((EditText) findViewById(R.id.edit_longtitude));
+        final EditText edit_latitude_vido = ((EditText) findViewById(R.id.edit_latitude_vido));
+        final EditText edit_longtitude_kinhdo = ((EditText) findViewById(R.id.edit_longtitude_kinhdo));
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -252,8 +267,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 double[] location = mMapViewHandler.onScroll(e1, e2, distanceX, distanceY);
-                edit_longtitude.setText(location[0] + "");
-                edit_latitude.setText(location[1] + "");
+                edit_longtitude_kinhdo.setText(location[0] + "");
+                edit_latitude_vido.setText(location[1] + "");
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
 
@@ -266,11 +281,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onLocationChanged(LocationDisplay.LocationChangedEvent locationChangedEvent) {
                 Point position = locationChangedEvent.getLocation().getPosition();
-                edit_longtitude.setText(position.getX() + "");
-                edit_latitude.setText(position.getY() + "");
+                edit_longtitude_kinhdo.setText(position.getX() + "");
+                edit_latitude_vido.setText(position.getY() + "");
                 setViewPointCenter(position);
             }
         });
+        mGraphicsOverlay = new GraphicsOverlay();
+        mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
+
         findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_topo).setOnClickListener(this);
@@ -280,12 +298,28 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
         findViewById(R.id.floatBtnLocation).setOnClickListener(this);
-        findViewById(R.id.floatBtnHome).setOnClickListener(this);
     }
 
     private void setLicense() {
         //way 1
         ArcGISRuntimeEnvironment.setLicense(getString(R.string.license));
+        //way 2
+//        UserCredential credential = new UserCredential("thanle95", "Gemini111");
+//
+//// replace the URL with either the ArcGIS Online URL or your portal URL
+//        final Portal portal = new Portal("https://than-le.maps.arcgis.com");
+//        portal.setCredential(credential);
+//
+//// load portal and listen to done loading event
+//        portal.loadAsync();
+//        portal.addDoneLoadingListener(new Runnable() {
+//            @Override
+//            public void run() {
+//                LicenseInfo licenseInfo = portal.getPortalInfo().getLicenseInfo();
+//                // Apply the license at Standard level
+//                ArcGISRuntimeEnvironment.setLicense(licenseInfo);
+//            }
+//        });
     }
 
     private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
@@ -353,6 +387,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
     }
 
+    private void setViewPointCenterLongLat(Point position) {
+        Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWgs84());
+        Geometry geometry1 = GeometryEngine.project(geometry, SpatialReferences.getWebMercator());
+        Point point = geometry1.getExtent().getCenter();
+
+        SimpleMarkerSymbol symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CROSS, Color.RED, 20);
+        Graphic graphic = new Graphic(point, symbol);
+        mGraphicsOverlay.getGraphics().add(graphic);
+
+        mMapView.setViewpointCenterAsync(point);
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -381,6 +427,21 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 if (newText.length() == 0) {
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
+                } else {
+
+                    try {
+                        mSearchAdapter.clear();
+                        List<Address> addressList = mGeocoder.getFromLocationName(newText, 5);
+                        for (Address address : addressList) {
+                            TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
+                            item.setLatitude(address.getLatitude());
+                            item.setLongtitude(address.getLongitude());
+                            mSearchAdapter.add(item);
+                        }
+                        mSearchAdapter.notifyDataSetChanged();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 return false;
             }
@@ -421,14 +482,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         } else if (id == R.id.nav_logOut) {
             this.finish();
         }
+        else if (id == R.id.nav_delete_searching) {
+            mGraphicsOverlay.getGraphics().clear();
+            mSearchAdapter.clear();
+            mSearchAdapter.notifyDataSetChanged();
+        }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void add() {
-        Toast.makeText(mMapView.getContext().getApplicationContext(), getString(R.string.notify_add_feature), Toast.LENGTH_LONG).show();
-        mMapViewHandler.setClickBtnAdd(true);
     }
 
     public boolean requestPermisson() {
@@ -450,9 +511,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         } else return true;
     }
 
-    private void goHome() {
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -462,7 +520,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
         }
     }
-
 
     @Override
     public void onClick(View v) {
@@ -519,9 +576,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     mLocationDisplay.startAsync();
                     setViewPointCenter(mLocationDisplay.getMapLocation());
                 } else mLocationDisplay.stop();
-                break;
-            case R.id.floatBtnHome:
-                goHome();
                 break;
         }
     }

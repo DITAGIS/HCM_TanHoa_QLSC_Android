@@ -40,6 +40,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_delete_searching"
+            android:icon="@drawable/ic_delete"
+            android:title="@string/nav_xoa_tim_kiem" />
+        <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_settings"
             android:title="@string/nav_cai_dat" />
