@@ -1,4 +1,4 @@
-package hcm.ditagis.com.tanhoa.qlsc.entities;
+package hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB;
 
 /**
  * @author fuhi

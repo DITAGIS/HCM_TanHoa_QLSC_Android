@@ -1,4 +1,4 @@
-package hcm.ditagis.com.tanhoa.qlsc.entities;
+package hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB;
 
 /**
  * Created by ThanLe on 09/11/2017.

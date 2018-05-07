@@ -12,9 +12,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import hcm.ditagis.com.tanhoa.qlsc.entities.Code_CSC_SanLuong;
-import hcm.ditagis.com.tanhoa.qlsc.entities.Flag;
-import hcm.ditagis.com.tanhoa.qlsc.entities.HoaDon;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.Code_CSC_SanLuong;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.Flag;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.HoaDon;
 
 public class HoaDonDB implements IDB<HoaDon, Boolean, String> {
     private final String TABLE_NAME = "DocSo";

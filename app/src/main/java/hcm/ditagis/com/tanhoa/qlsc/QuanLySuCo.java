@@ -668,7 +668,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
 //                            mMapViewHandler.addFeature(image);
                             popupInfos.getDialog().dismiss();
-                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature);
+                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, image);
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                             //Todo xóa ảnh
                         }
