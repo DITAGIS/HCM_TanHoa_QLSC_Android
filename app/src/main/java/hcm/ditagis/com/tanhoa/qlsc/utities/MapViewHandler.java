@@ -77,6 +77,7 @@ public class MapViewHandler extends Activity {
     private Context mContext;
     private Uri mUri;
 
+
     public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mMapView,
                           Popup popupInfos, Context mContext) {
         this.mFeatureLayerDTG = featureLayerDTG;

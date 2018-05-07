@@ -15,14 +15,46 @@
 
         android:layout_height="match_parent" />
 
-    <ListView
-        android:id="@+id/lstview_search"
+    <LinearLayout
+        android:id="@+id/layout_tim_kiem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
-        >
+        android:orientation="vertical"
+        android:visibility="invisible">
 
-    </ListView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:background="@color/colorWhite">
+
+            <TextView
+                android:id="@+id/txt_tim_su_co"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Tìm sự cố"
+
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <TextView
+                android:id="@+id/txt_tim_dia_chi"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Tìm địa chỉ"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lstview_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
