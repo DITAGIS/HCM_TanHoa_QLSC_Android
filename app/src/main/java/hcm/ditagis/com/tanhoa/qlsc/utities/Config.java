@@ -58,7 +58,8 @@ public class Config {
         this.alias = alias;
         this.minScale = minScale;
     }
-    public Config(String url, String[] queryField, String[] outField, String name,String alias, int minScale, String[] updateField) {
+
+    public Config(String url, String[] queryField, String[] outField, String name, String alias, int minScale, String[] updateField) {
         this.url = url;
         this.queryField = queryField;
         this.outField = outField;
@@ -123,7 +124,7 @@ public class Config {
             ArrayList<Config> configs = new ArrayList<>();
             configs.add(new Config(Urls.url_dma, QueryFields.queryFields_dma, OutFields.outFields_dma, Alias.alias_dma, MinScale.minScale_dma, new String[]{}));
             configs.add(new Config(Urls.url_van, QueryFields.queryFields_van, OutFields.outFields_van, Alias.alias_van, MinScale.minScale_van, new String[]{}));
-            configs.add(new Config(Urls.url_diemsuco, QueryFields.queryFields_diemsuco, OutFields.outFields_diemsuco,Name.name_diemsuco, Alias.alias_diemsuco, MinScale.minScale_diemsuco, UpdateFields.updateFields_suco));
+            configs.add(new Config(Urls.url_diemsuco, QueryFields.queryFields_diemsuco, OutFields.outFields_diemsuco, Name.name_diemsuco, Alias.alias_diemsuco, MinScale.minScale_diemsuco, UpdateFields.updateFields_suco));
             configs.add(new Config(Urls.url_donghotong, QueryFields.queryFields_donghotong, OutFields.outFields_donghotong, Alias.alias_donghotong, MinScale.minScale_donghotong, new String[]{}));
             configs.add(new Config(Urls.url_ongnganh, QueryFields.queryFields_ongnganh, OutFields.outFields_ongnganh, Alias.alias_ongnganh, MinScale.minScale_ongnganh, new String[]{}));
             configs.add(new Config(Urls.url_ongphanphoi, QueryFields.queryFields_ongphanphoi, OutFields.outFields_ongphanphoi, Alias.alias_ongphanphoi, MinScale.minScale_ongphanphoi, new String[]{}));
@@ -133,6 +134,10 @@ public class Config {
             configs.add(new Config(Urls.url_diemapluc, QueryFields.queryFields_diemapluc, OutFields.outFields_diemapluc, Alias.alias_diemapluc, MinScale.minScale_diemapluc, new String[]{}));
             configs.add(new Config(Urls.url_diemcuoiong, QueryFields.queryFields_diemcuoiong, OutFields.outFields_diemcuoiong, Alias.alias_diemcuoiong, MinScale.minScale_diemcuoiong, new String[]{}));
             configs.add(new Config(Urls.url_donghokhachhang, QueryFields.queryFields_donghokhachhang, OutFields.outFields_donghokhachhang, Alias.alias_donghokhachhang, MinScale.minScale_donghokhachhang, new String[]{}));
+            configs.add(new Config(Urls.URL_THUA_DAT, null, null, Alias.ALIAS_THUA_DAT, MinScale.MIN_SCALE_THUA_DAT, new String[]{}));
+            configs.add(new Config(Urls.URL_SONG_HO, null, null, Alias.ALIAS_SONG_HO, MinScale.MIN_SCALE_SONG_HO, new String[]{}));
+            configs.add(new Config(Urls.URL_GIAO_THONG, null, null, Alias.ALIAS_GIAO_THONG, MinScale.MIN_SCALE_GIAO_THONG, new String[]{}));
+            configs.add(new Config(Urls.URL_HANH_CHINH, null, null, Alias.ALIAS_HANH_CHINH, MinScale.MIN_SCALE_HANH_CHINH, new String[]{}));
             return configs;
         }
     }
@@ -211,6 +216,10 @@ public class Config {
         private static String url_diemapluc = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9";
         private static String url_diemcuoiong = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10";
         private static String url_dma = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/11";
+        private static String URL_THUA_DAT = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0";
+        private static String URL_SONG_HO = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1";
+        private static String URL_GIAO_THONG = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2";
+        private static String URL_HANH_CHINH = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3";
     }
 
     public static class Alias {
@@ -226,7 +235,12 @@ public class Config {
         public static String alias_diemapluc = "Điểm Áp Lực";
         public static String alias_diemcuoiong = "Điểm Cuối Ống";
         public static String alias_dma = "DMA";
+        public static String ALIAS_THUA_DAT = "Thửa đất";
+        public static String ALIAS_SONG_HO = "Sông hồ";
+        public static String ALIAS_GIAO_THONG = "Giao thông";
+        public static String ALIAS_HANH_CHINH = "Hành chính";
     }
+
     public static class Name {
         public static String name_diemsuco = "DIEMSUCO";
     }
@@ -244,6 +258,10 @@ public class Config {
         private static int minScale_diemapluc = 2000;
         private static int minScale_diemcuoiong = 2000;
         private static int minScale_dma = 20000;
+        private static int MIN_SCALE_THUA_DAT = 2100;
+        private static int MIN_SCALE_SONG_HO = 20000;
+        private static int MIN_SCALE_GIAO_THONG = 20000;
+        private static int MIN_SCALE_HANH_CHINH = 0;
     }
 
 }
