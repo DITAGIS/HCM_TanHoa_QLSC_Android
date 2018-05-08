@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
-import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
@@ -38,11 +37,7 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -54,8 +49,8 @@ import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
-import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAttachmentsAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
+import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class Popup extends AppCompatActivity {
@@ -265,79 +260,79 @@ public class Popup extends AppCompatActivity {
     }
 
     private void viewAttachment() {
-//        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity,mSelectedArcGISFeature);
-//        viewAttachmentAsync.execute();
+        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity,mSelectedArcGISFeature);
+        viewAttachmentAsync.execute();
 //        get attachment
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
-        LayoutInflater layoutInflater = LayoutInflater.from(mMainActivity);
-        final View layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
-        ListView lstViewAttachment = layout.findViewById(R.id.lstView_alertdialog_attachments);
-
-        final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
-        lstViewAttachment.setAdapter(attachmentsAdapter);
-        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
-        attachmentResults.addDoneListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    final List<Attachment> attachments = attachmentResults.get();
-                    int size = attachments.size();
-                    // if selected feature has attachments, display them in a list fashion
-                    if (!attachments.isEmpty()) {
-                        //
-                        for (final Attachment attachment : attachments) {
-                            if (attachment.getContentType().toLowerCase().trim().contains("png")) {
-                                final FeatureViewMoreInfoAttachmentsAdapter.Item item = new FeatureViewMoreInfoAttachmentsAdapter.Item();
-                                item.setName(attachment.getName());
-                                final ListenableFuture<InputStream> inputStreamListenableFuture = attachment.fetchDataAsync();
-                                inputStreamListenableFuture.addDoneListener(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            InputStream inputStream = inputStreamListenableFuture.get();
-                                            item.setImg(IOUtils.toByteArray(inputStream));
-                                            attachmentsAdapter.add(item);
-                                            attachmentsAdapter.notifyDataSetChanged();
-                                            if (attachmentsAdapter.getCount() > 0 && attachments.lastIndexOf(attachment) == attachments.size() - 1) {
-                                                builder.setView(layout);
-                                                builder.setCancelable(false);
-                                                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                                AlertDialog dialog = builder.create();
-                                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-                                                dialog.show();
-                                            } else {
-                                                Toast.makeText(mMainActivity, "Không có file hình ảnh đính kèm", Toast.LENGTH_LONG).show();
-                                            }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        } catch (ExecutionException e) {
-                                            e.printStackTrace();
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                            }
-                        }
-
-                    } else {
-                        size--;
-//                        MySnackBar.make(mCallout, "Không có file hình ảnh đính kèm", true);
-                    }
-
-                } catch (Exception e) {
-                    Log.e("ERROR", e.getMessage());
-                }
-            }
-        });
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
+//        LayoutInflater layoutInflater = LayoutInflater.from(mMainActivity);
+//        final View layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
+//        ListView lstViewAttachment = layout.findViewById(R.id.lstView_alertdialog_attachments);
+//
+//        final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
+//        lstViewAttachment.setAdapter(attachmentsAdapter);
+//        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
+//        attachmentResults.addDoneListener(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                    final List<Attachment> attachments = attachmentResults.get();
+//                    int size = attachments.size();
+//                    // if selected feature has attachments, display them in a list fashion
+//                    if (!attachments.isEmpty()) {
+//                        //
+//                        for (final Attachment attachment : attachments) {
+//                            if (attachment.getContentType().toLowerCase().trim().contains("png")) {
+//                                final FeatureViewMoreInfoAttachmentsAdapter.Item item = new FeatureViewMoreInfoAttachmentsAdapter.Item();
+//                                item.setName(attachment.getName());
+//                                final ListenableFuture<InputStream> inputStreamListenableFuture = attachment.fetchDataAsync();
+//                                inputStreamListenableFuture.addDoneListener(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        try {
+//                                            InputStream inputStream = inputStreamListenableFuture.get();
+//                                            item.setImg(IOUtils.toByteArray(inputStream));
+//                                            attachmentsAdapter.add(item);
+//                                            attachmentsAdapter.notifyDataSetChanged();
+//                                            if (attachmentsAdapter.getCount() > 0 && attachments.lastIndexOf(attachment) == attachments.size() - 1) {
+//                                                builder.setView(layout);
+//                                                builder.setCancelable(false);
+//                                                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(DialogInterface dialog, int which) {
+//                                                        dialog.dismiss();
+//                                                    }
+//                                                });
+//                                                AlertDialog dialog = builder.create();
+//                                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//
+//                                                dialog.show();
+//                                            } else {
+//                                                Toast.makeText(mMainActivity, "Không có file hình ảnh đính kèm", Toast.LENGTH_LONG).show();
+//                                            }
+//                                        } catch (InterruptedException e) {
+//                                            e.printStackTrace();
+//                                        } catch (ExecutionException e) {
+//                                            e.printStackTrace();
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                });
+//
+//                            }
+//                        }
+//
+//                    } else {
+//                        size--;
+////                        MySnackBar.make(mCallout, "Không có file hình ảnh đính kèm", true);
+//                    }
+//
+//                } catch (Exception e) {
+//                    Log.e("ERROR", e.getMessage());
+//                }
+//            }
+//        });
 
 
     }

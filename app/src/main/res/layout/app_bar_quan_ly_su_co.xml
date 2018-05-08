@@ -156,6 +156,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="Ẩn/hiện dữ liệu hành chính"
+                        android:textColor="@color/colorTextColor_1" />
+
+
+                </FrameLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/linnearDisplayLayer1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginBottom="@dimen/fab_margin"
+                    android:background="@android:color/black" />
+
+
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -177,34 +205,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginBottom="@dimen/fab_margin"
-                    android:background="@android:color/black" />
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="Ẩn/hiện dữ liệu hành chính"
-                        android:textColor="@color/colorTextColor_1" />
-
-
-                </FrameLayout>
-
-
-                <LinearLayout
-                    android:id="@+id/linnearDisplayLayer1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
             </LinearLayout>
+
         </ScrollView>
     </LinearLayout>
 

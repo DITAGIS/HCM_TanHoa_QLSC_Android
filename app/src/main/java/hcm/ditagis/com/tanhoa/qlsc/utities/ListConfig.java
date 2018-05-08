@@ -27,6 +27,13 @@ public class ListConfig {
 
     public List<Config> getConfigs() {
         List<Config> configs = new ArrayList<>();
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_DIEM_SU_CO),
+                mContext.getResources().getStringArray(R.array.queryFields_diemsuco),
+                mContext.getResources().getStringArray(R.array.outFields_diemsuco),
+                Name.name_diemsuco, mContext.getResources().getString(R.string.ALIAS_DIEM_SU_CO),
+                mContext.getResources().getInteger(R.integer.minScale_diemsuco),
+                mContext.getResources().getStringArray(R.array.update_fields_arrays)));
+
         configs.add(new Config(mContext.getResources().getString(R.string.URL_DMA),
                 mContext.getResources().getStringArray(R.array.queryFields_dma),
                 mContext.getResources().getStringArray(R.array.outFields_dma),
@@ -39,12 +46,7 @@ public class ListConfig {
                 mContext.getResources().getString(R.string.ALIAS_VAN),
                 mContext.getResources().getInteger(R.integer.minScale_van), new String[]{}));
 
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_DIEM_SU_CO),
-                mContext.getResources().getStringArray(R.array.queryFields_diemsuco),
-                mContext.getResources().getStringArray(R.array.outFields_diemsuco),
-                Name.name_diemsuco, mContext.getResources().getString(R.string.ALIAS_DIEM_SU_CO),
-                mContext.getResources().getInteger(R.integer.minScale_diemsuco),
-                mContext.getResources().getStringArray(R.array.update_fields_arrays)));
+
 
         configs.add(new Config(mContext.getResources().getString(R.string.URL_DONG_HO_TONG),
                 mContext.getResources().getStringArray(R.array.queryFields_donghotong),

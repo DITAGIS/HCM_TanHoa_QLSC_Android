@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -35,6 +34,8 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
     private ProgressDialog mDialog;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
+    private AlertDialog.Builder builder;
+    private View layout;
 
     public ViewAttachmentAsync(QuanLySuCo context, ArcGISFeature selectedArcGISFeature) {
         mMainActivity = context;
@@ -54,9 +55,9 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
+        builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         LayoutInflater layoutInflater = LayoutInflater.from(mMainActivity);
-        final View layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
+        layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
         ListView lstViewAttachment = layout.findViewById(R.id.lstView_alertdialog_attachments);
 
         final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
@@ -85,28 +86,13 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                                             item.setImg(IOUtils.toByteArray(inputStream));
                                             attachmentsAdapter.add(item);
                                             attachmentsAdapter.notifyDataSetChanged();
-
+                                            size[0]--;
                                             //Kiểm tra nếu adapter có phần tử và attachment là phần tử cuối cùng thì show dialog
-                                            if (attachmentsAdapter.getCount() > 0){// && attachments.indexOf(attachment) == attachments.size() - 1) {
-                                                builder.setView(layout);
-                                                builder.setCancelable(false);
-                                                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.dismiss();
-                                                    }
-                                                });
-                                                AlertDialog dialog = builder.create();
-                                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-                                                dialog.show();
-                                                publishProgress(0);
-                                            } else {
-                                                size[0]--;
-                                                publishProgress(size[0]);
 
-                                                Toast.makeText(mMainActivity, "Không có file hình ảnh đính kèm", Toast.LENGTH_LONG).show();
-                                            }
+                                            publishProgress(size[0]);
+
+
                                         } catch (InterruptedException e) {
                                             e.printStackTrace();
                                         } catch (ExecutionException e) {
@@ -136,11 +122,28 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
 
     @Override
     protected void onProgressUpdate(Integer... values) {
-        if (values[0] == 0)
+        if (values[0] == 0) {
+//            if (mDialog != null && mDialog.isShowing()) {
+//                mDialog.dismiss();
+//            }
+//        } else if (values[0] == -1) {
             if (mDialog != null && mDialog.isShowing()) {
                 mDialog.dismiss();
 
+                builder.setView(layout);
+                builder.setCancelable(false);
+                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+                dialog.show();
             }
+        }
         super.onProgressUpdate(values);
 
     }
