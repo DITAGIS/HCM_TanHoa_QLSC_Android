@@ -2,4 +2,23 @@
 <resources>
     <integer name="max_short">32767</integer>
     <integer name="max_int">2147483647</integer>
+
+    <!--MINSCALE START-->
+    <integer name="minScale_donghokhachhang">2000</integer>
+    <integer name="minScale_donghotong">1000000</integer>
+    <integer name="minScale_ongnganh">2000</integer>
+    <integer name="minScale_ongphanphoi">10000</integer>
+    <integer name="minScale_ongtruyendan">1000000</integer>
+    <integer name="minScale_moinoi">2000</integer>
+    <integer name="minScale_diemsuco">10000</integer>
+    <integer name="minScale_truhong">2000</integer>
+    <integer name="minScale_van">2000</integer>
+    <integer name="minScale_diemapluc">2000</integer>
+    <integer name="minScale_diemcuoiong">2000</integer>
+    <integer name="minScale_dma">20000</integer>
+    <integer name="MIN_SCALE_THUA_DAT">2100</integer>
+    <integer name="MIN_SCALE_SONG_HO">20000</integer>
+    <integer name="MIN_SCALE_GIAO_THONG">20000</integer>
+    <integer name="MIN_SCALE_HANH_CHINH">0</integer>
+    <!--MINSCALE END-->
 </resources>

@@ -52,6 +52,7 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAttachmentsAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
@@ -64,11 +65,10 @@ public class Popup extends AppCompatActivity {
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
-    private LinearLayout linearLayout;
+    private LinearLayout mLinearLayout;
     private Uri mUri;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
-
     private DialogInterface mDialog;
 
     public DialogInterface getDialog() {
@@ -89,61 +89,79 @@ public class Popup extends AppCompatActivity {
 
     private void refressPopup() {
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
+        ListView listView = mLinearLayout.findViewById(R.id.lstview_thongtinsuco);
+        FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
+        listView.setAdapter(featureViewInfoAdapter);
+        String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             Object value = attributes.get(field.getName());
-            switch (field.getName()) {
-                case Constant.IDSU_CO:
-                    if (value != null)
-                        ((TextView) linearLayout.findViewById(R.id.txt_id_su_co)).setText(value.toString());
-                    break;
-                case Constant.VI_TRI:
-                    if (value != null)
-                        ((TextView) linearLayout.findViewById(R.id.txt_vi_tri_su_co)).setText(value.toString());
-                    break;
-                case Constant.TRANG_THAI:
-                    if (value != null) {
-                        List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
-                        String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
-                        if (valueFeatureType != null)
-                            ((TextView) linearLayout.findViewById(R.id.txt_trang_thai)).setText(valueFeatureType);
-                    }
-                    break;
-                case Constant.NGAY_CAP_NHAT:
-                    if (value != null)
-                        ((TextView) linearLayout.findViewById(R.id.txt_ngay_cap_nhat)).
-                                setText(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
-                    break;
+            if (value != null) {
+                FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
+                item.setAlias(field.getAlias());
+                item.setFieldName(field.getName());
+                if (item.getFieldName().equals(typeIdField)) {
+                    List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
+                    String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
+                    if (valueFeatureType != null) item.setValue(valueFeatureType);
+                } else if (field.getDomain() != null) {
+                    List<CodedValue> codedValues = ((CodedValueDomain)
+                            this.mSelectedArcGISFeature.getFeatureTable()
+                                    .getField(item.getFieldName()).getDomain()).getCodedValues();
+                    String valueDomain = getValueDomain(codedValues, value.toString()).toString();
+                    if (valueDomain != null) item.setValue(valueDomain);
+                } else switch (field.getFieldType()) {
+                    case DATE:
+                        item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        break;
+                    case OID:
+                    case TEXT:
+                    case GLOBALID:
+                        item.setValue(value.toString());
+                        break;
+                    case SHORT:
+                    case DOUBLE:
+                    case INTEGER:
+                    case FLOAT:
+                        item.setValue(value.toString());
+
+                        break;
+                }
+
+                featureViewInfoAdapter.add(item);
+                featureViewInfoAdapter.notifyDataSetChanged();
             }
         }
     }
 
-    public LinearLayout createPopup(final ArcGISFeature mSelectedArcGISFeature) {
+
+    public LinearLayout createPopup(String name, final ArcGISFeature mSelectedArcGISFeature) {
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
         lstFeatureType = new ArrayList<>();
         for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
             lstFeatureType.add(mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().get(i).getName());
         }
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
-        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
+        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
         refressPopup();
+        ((TextView) mLinearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
         if (mCallout != null) mCallout.dismiss();
 
-        ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
+        ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewMoreInfo();
             }
         });
 
-        ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
+        ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
                 deleteFeature();
             }
         });
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        return linearLayout;
+        mLinearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return mLinearLayout;
     }
 
     private void viewMoreInfo() {
