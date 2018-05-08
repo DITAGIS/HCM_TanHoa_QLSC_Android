@@ -111,6 +111,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private TextView txtTimSuCo;
     private TextView txtTimDiaChi;
     private LinearLayout mLayoutTimKiem;
+    private FloatingActionButton mFloatButtonLayer;
+    private FloatingActionButton mFloatButtonLocation;
+    private FloatingActionButton mFloatButtonAdd;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -296,17 +299,22 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_topo).setOnClickListener(this);
-        findViewById(R.id.floatBtnLayer).setOnClickListener(this);
-        findViewById(R.id.floatBtnAdd).setOnClickListener(this);
+        mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
+        mFloatButtonLayer.setOnClickListener(this);
+        mFloatButtonAdd = findViewById(R.id.floatBtnAdd);
+        mFloatButtonAdd.setOnClickListener(this);
         findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
-        findViewById(R.id.floatBtnLocation).setOnClickListener(this);
+        mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
+        mFloatButtonLocation.setOnClickListener(this);
         txtTimSuCo = findViewById(R.id.txt_tim_su_co);
         txtTimSuCo.setOnClickListener(this);
         txtTimDiaChi = findViewById(R.id.txt_tim_dia_chi);
         txtTimDiaChi.setOnClickListener(this);
         mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
+
+        optionSearchFeature();
     }
 
     private void setLicense() {
@@ -508,6 +516,16 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mGraphicsOverlay.getGraphics().clear();
             mSearchAdapter.clear();
             mSearchAdapter.notifyDataSetChanged();
+        } else if (id == R.id.nav_visible_float_button) {
+            if (mFloatButtonLayer.getVisibility() == View.VISIBLE) {
+                mFloatButtonLayer.setVisibility(View.INVISIBLE);
+                mFloatButtonAdd.setVisibility(View.INVISIBLE);
+                mFloatButtonLocation.setVisibility(View.INVISIBLE);
+            } else {
+                mFloatButtonLayer.setVisibility(View.VISIBLE);
+                mFloatButtonAdd.setVisibility(View.VISIBLE);
+                mFloatButtonLocation.setVisibility(View.VISIBLE);
+            }
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -543,16 +561,20 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         }
     }
 
+    private void optionSearchFeature() {
+        this.isSearchingFeature = true;
+        txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap);
+
+        txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.txt_tim_su_co:
-                this.isSearchingFeature = true;
-                txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap);
-
-                txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+                optionSearchFeature();
                 break;
             case R.id.txt_tim_dia_chi:
                 this.isSearchingFeature = false;
