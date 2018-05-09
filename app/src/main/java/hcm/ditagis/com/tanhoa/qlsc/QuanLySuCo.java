@@ -238,18 +238,22 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                             if (buttonView.isChecked()) {
                                 for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
-                                    if (featureLayerDTG.getTitleLayer().equals(checkBox.getText()) && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
+                                    if (featureLayerDTG.getTitleLayer().equals(checkBox.getText())
+                                            && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
                                         tmpFeatureLayerDTGs.add(featureLayerDTG);
+                                        layer.setVisible(true);
                                         break;
                                     }
-                                layer.setVisible(true);
+
                             } else {
                                 for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
-                                    if (featureLayerDTG.getTitleLayer().equals(checkBox.getText())) {
+                                    if (featureLayerDTG.getTitleLayer().equals(checkBox.getText())
+                                            && tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
                                         tmpFeatureLayerDTGs.remove(featureLayerDTG);
+                                        layer.setVisible(false);
                                         break;
                                     }
-                                layer.setVisible(false);
+
                             }
                             mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
 

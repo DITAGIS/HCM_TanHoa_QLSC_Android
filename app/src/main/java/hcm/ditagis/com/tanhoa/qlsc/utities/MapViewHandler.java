@@ -8,10 +8,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -30,10 +27,8 @@ import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
-import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
-import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
@@ -52,6 +47,7 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapMapViewAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 
@@ -73,7 +69,7 @@ public class MapViewHandler extends Activity {
     private MapView mMapView;
     private boolean isClickBtnAdd = false;
     private ServiceFeatureTable mServiceFeatureTable;
-    private Popup popupInfos;
+    private Popup mPopUp;
     private Context mContext;
     private Uri mUri;
 
@@ -90,7 +86,7 @@ public class MapViewHandler extends Activity {
         this.mCallout = mCallout;
         this.mMapView = mMapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
-        this.popupInfos = popupInfos;
+        this.mPopUp = popupInfos;
         this.mContext = mContext;
         this.mMap = mMapView.getMap();
         this.suCoTanHoaLayer = featureLayerDTG.getFeatureLayer();
@@ -135,7 +131,8 @@ public class MapViewHandler extends Activity {
             query.setGeometry(envelope);
             // add done loading listener to fire when the selection returns
 
-            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext);
+            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext,
+                    mFeatureLayerDTGs, mPopUp, mCallout, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
     }
@@ -259,108 +256,108 @@ public class MapViewHandler extends Activity {
 
     }
 
-    class SingleTapMapViewAsync extends AsyncTask<Point, Integer, Void> {
-        private ProgressDialog mDialog;
-        private Context mContext;
-        private FeatureLayerDTG mFeatureLayerDTG;
-        private Point mPoint;
-
-        public SingleTapMapViewAsync(Context context) {
-            mContext = context;
-            mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mDialog.setMessage("Đang xử lý...");
-            mDialog.setCancelable(false);
-            mDialog.show();
-        }
-
-        @Override
-        protected Void doInBackground(Point... params) {
-            mPoint = params[0];
-            final int[] isIdentified = {mFeatureLayerDTGs.size()};
-            for (final FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
-                if (isIdentified[0] > 1) {
-                    mFeatureLayerDTG = featureLayerDTG;
-                    mFeatureLayerDTG.getFeatureLayer().clearSelection();
-                    final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(mFeatureLayerDTG.getFeatureLayer(), mClickPoint, 5, false, 1);
-                    identifyFuture.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                isIdentified[0]--;
-                                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                                if (mDialog != null && mDialog.isShowing()) {
-                                    mDialog.dismiss();
-                                }
-                                IdentifyLayerResult layerResult = identifyFuture.get();
-                                List<GeoElement> resultGeoElements = layerResult.getElements();
-                                if (resultGeoElements.size() > 0) {
-                                    if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-                                        mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
-                                        publishProgress(isIdentified[0]);
-
-                                    }
-                                } else {
-                                    // none of the features on the map were selected
-
-                                    publishProgress(isIdentified[0]);
-                                }
-
-                            } catch (Exception e) {
-                                Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-                            }
-                        }
-                    });
-                }
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-            if (values[0] == 0) {
-                if (mDialog != null && mDialog.isShowing()) {
-                    mDialog.dismiss();
-                }
-                if (mSelectedArcGISFeature == null || mFeatureLayerDTG == null || mFeatureLayerDTG.getFeatureLayer() == null)
-                    return;
-                // highlight the selected feature
-                FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
-                featureLayer.clearSelection();
-                featureLayer.selectFeature(mSelectedArcGISFeature);
-                popupInfos.setFeatureLayerDTG(mFeatureLayerDTG);
-
-                LinearLayout linearLayout = popupInfos.createPopup(mFeatureLayerDTG.getFeatureLayer().getName(), mSelectedArcGISFeature);
-
-                Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-                Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-                mMapView.setViewpointGeometryAsync(envelope1, 0);
-                // show CallOut
-                mCallout.setLocation(mPoint);
-                mCallout.setContent(linearLayout);
-                popupInfos.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mCallout.refresh();
-                        mCallout.show();
-
-                    }
-                });
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-
-        }
-
-    }
+//    class SingleTapMapViewAsync extends AsyncTask<Point, Integer, Void> {
+//        private ProgressDialog mDialog;
+//        private Context mContext;
+//        private FeatureLayerDTG mFeatureLayerDTG;
+//        private Point mPoint;
+//
+//        public SingleTapMapViewAsync(Context context) {
+//            mContext = context;
+//            mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            mDialog.setMessage("Đang xử lý...");
+//            mDialog.setCancelable(false);
+//            mDialog.show();
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Point... params) {
+//            mPoint = params[0];
+//            final int[] isIdentified = {mFeatureLayerDTGs.size()};
+//            for (final FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
+//                if (isIdentified[0] > 1) {
+//                    mFeatureLayerDTG = featureLayerDTG;
+//                    mFeatureLayerDTG.getFeatureLayer().clearSelection();
+//                    final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(mFeatureLayerDTG.getFeatureLayer(), mClickPoint, 5, false, 1);
+//                    identifyFuture.addDoneListener(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                isIdentified[0]--;
+//                                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+//                                if (mDialog != null && mDialog.isShowing()) {
+//                                    mDialog.dismiss();
+//                                }
+//                                IdentifyLayerResult layerResult = identifyFuture.get();
+//                                List<GeoElement> resultGeoElements = layerResult.getElements();
+//                                if (resultGeoElements.size() > 0) {
+//                                    if (resultGeoElements.get(0) instanceof ArcGISFeature) {
+//                                        mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
+//                                        publishProgress(isIdentified[0]);
+//
+//                                    }
+//                                } else {
+//                                    // none of the features on the map were selected
+//
+//                                    publishProgress(isIdentified[0]);
+//                                }
+//
+//                            } catch (Exception e) {
+//                                Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(Integer... values) {
+//            super.onProgressUpdate(values);
+//            if (values[0] == 0) {
+//                if (mDialog != null && mDialog.isShowing()) {
+//                    mDialog.dismiss();
+//                }
+//                if (mSelectedArcGISFeature == null || mFeatureLayerDTG == null || mFeatureLayerDTG.getFeatureLayer() == null)
+//                    return;
+//                // highlight the selected feature
+//                FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
+//                featureLayer.clearSelection();
+//                featureLayer.selectFeature(mSelectedArcGISFeature);
+//                mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
+//
+//                LinearLayout linearLayout = mPopUp.createPopup(mFeatureLayerDTG.getFeatureLayer().getName(), mSelectedArcGISFeature);
+//
+//                Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+//                Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+//                mMapView.setViewpointGeometryAsync(envelope1, 0);
+//                // show CallOut
+//                mCallout.setLocation(mPoint);
+//                mCallout.setContent(linearLayout);
+//                mPopUp.runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mCallout.refresh();
+//                        mCallout.show();
+//
+//                    }
+//                });
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void result) {
+//            super.onPostExecute(result);
+//
+//        }
+//
+//    }
 
     class SingleTapAdddFeatureAsync extends AsyncTask<Point, Void, Void> {
         private ProgressDialog mDialog;
