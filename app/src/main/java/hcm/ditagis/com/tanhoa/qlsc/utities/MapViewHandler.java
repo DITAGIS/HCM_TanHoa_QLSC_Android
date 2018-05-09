@@ -77,15 +77,11 @@ public class MapViewHandler extends Activity {
     private Context mContext;
     private Uri mUri;
 
-    public void setFeatureLayers(List<FeatureLayer> mFeatureLayers) {
-        this.mFeatureLayers = mFeatureLayers;
-    }
 
     public void setFeatureLayerDTGs(List<FeatureLayerDTG> mFeatureLayerDTGs) {
         this.mFeatureLayerDTGs = mFeatureLayerDTGs;
     }
 
-    private List<FeatureLayer> mFeatureLayers;
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
 
     public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mMapView,
@@ -266,6 +262,8 @@ public class MapViewHandler extends Activity {
     class SingleTapMapViewAsync extends AsyncTask<Point, Integer, Void> {
         private ProgressDialog mDialog;
         private Context mContext;
+        private FeatureLayerDTG mFeatureLayerDTG;
+        private Point mPoint;
 
         public SingleTapMapViewAsync(Context context) {
             mContext = context;
@@ -282,58 +280,42 @@ public class MapViewHandler extends Activity {
 
         @Override
         protected Void doInBackground(Point... params) {
-            final Point clickPoint = params[0];
-            final int[] isIdentified = {mFeatureLayers.size()};
-            for (final FeatureLayer featureLayer : mFeatureLayers) {
-                featureLayer.clearSelection();
-                final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(suCoTanHoaLayer, mClickPoint, 5, false, 1);
-                identifyFuture.addDoneListener(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                            if (mDialog != null && mDialog.isShowing()) {
-                                mDialog.dismiss();
-                            }
-                            IdentifyLayerResult layerResult = identifyFuture.get();
-                            List<GeoElement> resultGeoElements = layerResult.getElements();
-                            if (resultGeoElements.size() > 0) {
-                                if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-                                    mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
-                                    // highlight the selected feature
-                                    FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
-                                    featureLayer.clearSelection();
-//                                    if (mFeatureLayerDTG.getTitleLayer().equals(mContext.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
-                                        featureLayer.selectFeature(mSelectedArcGISFeature);
-                                        popupInfos.setFeatureLayerDTG(mFeatureLayerDTG);
-                                        LinearLayout linearLayout = popupInfos.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
-                                        Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-                                        Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-                                        mMapView.setViewpointGeometryAsync(envelope1, 0);
-                                        // show CallOut
-                                        mCallout.setLocation(clickPoint);
-                                        mCallout.setContent(linearLayout);
-                                        popupInfos.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mCallout.refresh();
-                                                mCallout.show();
-                                                publishProgress(0);
-                                            }
-                                        });
-//                                    }
-                                }
-                            } else {
-                                // none of the features on the map were selected
+            mPoint = params[0];
+            final int[] isIdentified = {mFeatureLayerDTGs.size()};
+            for (final FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
+                if (isIdentified[0] > 1) {
+                    mFeatureLayerDTG = featureLayerDTG;
+                    mFeatureLayerDTG.getFeatureLayer().clearSelection();
+                    final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(mFeatureLayerDTG.getFeatureLayer(), mClickPoint, 5, false, 1);
+                    identifyFuture.addDoneListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
                                 isIdentified[0]--;
-                                publishProgress(isIdentified[0]);
-                            }
+                                LayoutInflater layoutInflater = LayoutInflater.from(mContext);
+                                if (mDialog != null && mDialog.isShowing()) {
+                                    mDialog.dismiss();
+                                }
+                                IdentifyLayerResult layerResult = identifyFuture.get();
+                                List<GeoElement> resultGeoElements = layerResult.getElements();
+                                if (resultGeoElements.size() > 0) {
+                                    if (resultGeoElements.get(0) instanceof ArcGISFeature) {
+                                        mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
+                                        publishProgress(isIdentified[0]);
 
-                        } catch (Exception e) {
-                            Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
+                                    }
+                                } else {
+                                    // none of the features on the map were selected
+
+                                    publishProgress(isIdentified[0]);
+                                }
+
+                            } catch (Exception e) {
+                                Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             return null;
         }
@@ -345,9 +327,32 @@ public class MapViewHandler extends Activity {
                 if (mDialog != null && mDialog.isShowing()) {
                     mDialog.dismiss();
                 }
+                if (mSelectedArcGISFeature == null || mFeatureLayerDTG == null || mFeatureLayerDTG.getFeatureLayer() == null)
+                    return;
+                // highlight the selected feature
+                FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
+                featureLayer.clearSelection();
+                featureLayer.selectFeature(mSelectedArcGISFeature);
+                popupInfos.setFeatureLayerDTG(mFeatureLayerDTG);
+
+                LinearLayout linearLayout = popupInfos.createPopup(mFeatureLayerDTG.getFeatureLayer().getName(), mSelectedArcGISFeature);
+
+                Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+                Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+                mMapView.setViewpointGeometryAsync(envelope1, 0);
+                // show CallOut
+                mCallout.setLocation(mPoint);
+                mCallout.setContent(linearLayout);
+                popupInfos.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mCallout.refresh();
+                        mCallout.show();
+
+                    }
+                });
             }
         }
-
 
         @Override
         protected void onPostExecute(Void result) {

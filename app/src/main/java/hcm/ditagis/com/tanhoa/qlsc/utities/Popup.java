@@ -102,8 +102,9 @@ public class Popup extends AppCompatActivity {
                     List<CodedValue> codedValues = ((CodedValueDomain)
                             this.mSelectedArcGISFeature.getFeatureTable()
                                     .getField(item.getFieldName()).getDomain()).getCodedValues();
-                    String valueDomain = getValueDomain(codedValues, value.toString()).toString();
-                    if (valueDomain != null) item.setValue(valueDomain);
+                    Object valueDomainObject = getValueDomain(codedValues, value.toString());
+                    if (valueDomainObject != null)
+                        item.setValue(valueDomainObject.toString());
                 } else switch (field.getFieldType()) {
                     case DATE:
                         item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
@@ -140,21 +141,26 @@ public class Popup extends AppCompatActivity {
         refressPopup();
         ((TextView) mLinearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
         if (mCallout != null) mCallout.dismiss();
+        if (name.equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
 
-        ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewMoreInfo();
-            }
-        });
+            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewMoreInfo();
+                }
+            });
 
-        ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
-                deleteFeature();
-            }
-        });
+            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
+                    deleteFeature();
+                }
+            });
+        }else{
+            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
+            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
+        }
         mLinearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         return mLinearLayout;
     }
@@ -260,7 +266,7 @@ public class Popup extends AppCompatActivity {
     }
 
     private void viewAttachment() {
-        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity,mSelectedArcGISFeature);
+        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity, mSelectedArcGISFeature);
         viewAttachmentAsync.execute();
 //        get attachment
 //        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);

@@ -185,7 +185,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // create an empty map instance
         final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, LATITUDE, LONGTITUDE, LEVEL_OF_DETAIL);
         mMapView.setMap(mMap);
-        final List<FeatureLayer> featureLayers = new ArrayList<>();
         // config feature layer service
         List<Config> configs = ListConfig.getInstance(this).getConfigs();
         mFeatureLayerDTGS = new ArrayList<>();
@@ -210,16 +209,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
             }
-            featureLayers.add(featureLayer);
 
             mFeatureLayerDTGS.add(mFeatureLayerDTG);
             mMap.getOperationalLayers().add(featureLayer);
 
         }
-        mMapViewHandler.setFeatureLayers(featureLayers);
         mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
-        final List<FeatureLayer> tmpFeatureLayers = new ArrayList<>();
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
             public void run() {
@@ -246,11 +242,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                         tmpFeatureLayerDTGs.add(featureLayerDTG);
                                         break;
                                     }
-                                for (FeatureLayer featureLayer : featureLayers)
-                                    if (featureLayer.getName().equals(checkBox.getText()) && !tmpFeatureLayers.contains(featureLayer)) {
-                                        tmpFeatureLayers.add(featureLayer);
-                                        break;
-                                    }
                                 layer.setVisible(true);
                             } else {
                                 for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
@@ -258,15 +249,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                         tmpFeatureLayerDTGs.remove(featureLayerDTG);
                                         break;
                                     }
-                                for (FeatureLayer featureLayer : tmpFeatureLayers)
-                                    if (featureLayer.getName().equals(checkBox.getText())) {
-                                        tmpFeatureLayers.remove(featureLayer);
-                                        break;
-                                    }
                                 layer.setVisible(false);
                             }
                             mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
-                            mMapViewHandler.setFeatureLayers(tmpFeatureLayers);
 
                         }
                     });
