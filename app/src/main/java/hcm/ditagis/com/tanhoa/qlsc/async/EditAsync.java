@@ -11,11 +11,8 @@ import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
-import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
-import com.esri.arcgisruntime.data.FeatureQueryResult;
 import com.esri.arcgisruntime.data.FeatureType;
-import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
 import java.text.ParseException;
@@ -114,19 +111,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                                 @Override
                                 public void run() {
                                     if (isUpdateAttachment) {
-
-
-                                        String objectId =  mSelectedArcGISFeature.getAttributes().get(Constant.OBJECTID).toString();
-                                        final QueryParameters queryParameters = new QueryParameters();
-                                        final String query = "OBJECTID = " + objectId;
-                                        queryParameters.setWhereClause(query);
-                                        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
-                                        feature.addDoneListener(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                addAttachment(feature);
-                                            }
-                                        });
+                                        addAttachment();
                                     } else {
                                         if (mDialog != null && mDialog.isShowing()) {
                                             mDialog.dismiss();
@@ -145,81 +130,66 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         });
         return null;
     }
+    private void addAttachment() {
 
-    private void addAttachment(ListenableFuture<FeatureQueryResult> feature) {
-        FeatureQueryResult result = null;
-        try {
-            result = feature.get();
-            if (result.iterator().hasNext()) {
-                Feature item = result.iterator().next();
-                mSelectedArcGISFeature = (ArcGISFeature) item;
-                final String attachmentName = mContext.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
-                final ListenableFuture<Attachment> addResult = mSelectedArcGISFeature.addAttachmentAsync(mImage, Bitmap.CompressFormat.PNG.toString(), attachmentName);
-                addResult.addDoneListener(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mDialog != null && mDialog.isShowing()) {
-                            mDialog.dismiss();
-                        }
-                        try {
-                            Attachment attachment = addResult.get();
-                            if (attachment.getSize() > 0) {
-                                final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
-                                tableResult.addDoneListener(new Runnable() {
+        final String attachmentName = mContext.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
+        final ListenableFuture<Attachment> addResult = mSelectedArcGISFeature.addAttachmentAsync(mImage, Bitmap.CompressFormat.PNG.toString(), attachmentName);
+        addResult.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                if (mDialog != null && mDialog.isShowing()) {
+                    mDialog.dismiss();
+                }
+                try {
+                    Attachment attachment = addResult.get();
+                    if (attachment.getSize() > 0) {
+                             final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+                        tableResult.addDoneListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                                updatedServerResult.addDoneListener(new Runnable() {
                                     @Override
                                     public void run() {
-                                        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
-                                        updatedServerResult.addDoneListener(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                List<FeatureEditResult> edits = null;
-                                                try {
-                                                    edits = updatedServerResult.get();
-                                                    if (edits.size() > 0) {
-                                                        if (!edits.get(0).hasCompletedWithErrors()) {
-                                                            //attachmentList.add(fileName);
-                                                            String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
-                                                            // update the attachment list view/ on the control panel
-                                                        } else {
-                                                        }
-                                                    } else {
-                                                    }
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                } catch (ExecutionException e) {
-                                                    e.printStackTrace();
+                                        List<FeatureEditResult> edits = null;
+                                        try {
+                                            edits = updatedServerResult.get();
+                                            if (edits.size() > 0) {
+                                                if (!edits.get(0).hasCompletedWithErrors()) {
+                                                    //attachmentList.add(fileName);
+                                                    String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
+                                                    // update the attachment list view/ on the control panel
+                                                } else {
                                                 }
-                                                if (mDialog != null && mDialog.isShowing()) {
-                                                    mDialog.dismiss();
-                                                }
-
+                                            } else {
                                             }
-                                        });
-
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        } catch (ExecutionException e) {
+                                            e.printStackTrace();
+                                        }
+                                        if (mDialog != null && mDialog.isShowing()) {
+                                            mDialog.dismiss();
+                                        }
 
                                     }
                                 });
-                            }
 
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
-                            e.printStackTrace();
-                        }
+
+                            }
+                        });
                     }
-                });
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 //                Envelope extent = item.getGeometry().getExtent();
 //                mMapView.setViewpointGeometryAsync(extent);
-            }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-
     }
-
     private Object getIdFeatureTypes(List<FeatureType> featureTypes, String value) {
         Object code = null;
         for (FeatureType featureType : featureTypes) {
