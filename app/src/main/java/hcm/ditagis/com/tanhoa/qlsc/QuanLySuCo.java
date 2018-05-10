@@ -168,7 +168,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 //tìm kiếm địa chỉ
                 else {
                     setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
-
+                    Point sourcePoint = new Point(106.6546293, 10.7554041);
+                    Point destinationPoint = new Point(item.getLongtitude(), item.getLatitude());
+                    new FindRoute(sourcePoint, destinationPoint, QuanLySuCo.this, mMapView);
                 }
             }
         });

@@ -106,6 +106,7 @@
 
     <string name="format_day_yearfirst">yyyy-MM-dd HH:mm:ss</string>
     <string name="format_time_day_month_year">dd/MM/yyyy</string>
+    <string name="title_activity_find_route1">Map</string>
 
 
 </resources>
