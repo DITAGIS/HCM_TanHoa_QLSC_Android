@@ -1,6 +1,7 @@
 package hcm.ditagis.com.tanhoa.qlsc.Modules;
 
 import android.os.AsyncTask;
+import android.text.Html;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -102,6 +103,8 @@ public class DirectionFinder {
             JSONObject jsonEndLocation = jsonLeg.getJSONObject("end_location");
             JSONObject jsonStartLocation = jsonLeg.getJSONObject("start_location");
 
+            JSONArray jsonSteps = jsonLeg.getJSONArray("steps");
+
             route.distance = new Distance(jsonDistance.getString("text"), jsonDistance.getInt("value"));
             route.duration = new Duration(jsonDuration.getString("text"), jsonDuration.getInt("value"));
             route.endAddress = jsonLeg.getString("end_address");
@@ -110,12 +113,39 @@ public class DirectionFinder {
             route.endLocation = new LatLng(jsonEndLocation.getDouble("lat"), jsonEndLocation.getDouble("lng"));
             route.points = decodePolyLine(overview_polylineJson.getString("points"));
 
+            List<Step> steps = new ArrayList<>();
+            for (int j = 0; j < jsonSteps.length(); j++) {
+                JSONObject jsonStep = jsonSteps.getJSONObject(i);
+
+                JSONObject jsonStepDistance = jsonStep.getJSONObject("distance");
+                JSONObject jsonStepDuration = jsonStep.getJSONObject("duration");
+                JSONObject jsonStepEndLocation = jsonStep.getJSONObject("end_location");
+                JSONObject jsonStepStartLocation = jsonStep.getJSONObject("start_location");
+
+                Step step = new Step();
+                step.distance = new Distance(jsonStepDistance.getString("text"), jsonStepDistance.getInt("value"));
+                step.duration = new Duration(jsonStepDuration.getString("text"), jsonStepDuration.getInt("value"));
+                step.startLocation = new LatLng(jsonStepStartLocation.getDouble("lat"), jsonStepStartLocation.getDouble("lng"));
+                step.endLocation = new LatLng(jsonStepEndLocation.getDouble("lat"), jsonStepEndLocation.getDouble("lng"));
+                step.html_instructions = stripHtml(jsonStep.getString("html_instructions"));
+                step.travel_mode = jsonStep.getString("travel_mode");
+
+                steps.add(step);
+            }
+            route.steps = steps;
             routes.add(route);
+
         }
 
         listener.onDirectionFinderSuccess(routes);
     }
-
+    public String stripHtml(String html) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
+        } else {
+            return Html.fromHtml(html).toString();
+        }
+    }
     private List<LatLng> decodePolyLine(final String poly) {
         int len = poly.length();
         int index = 0;
