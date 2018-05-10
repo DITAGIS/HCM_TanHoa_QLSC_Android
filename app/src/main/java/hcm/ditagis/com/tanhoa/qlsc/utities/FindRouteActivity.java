@@ -1,11 +1,12 @@
-package hcm.ditagis.com.tanhoa.qlsc;
+package hcm.ditagis.com.tanhoa.qlsc.utities;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,8 +15,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -30,23 +31,28 @@ import java.util.List;
 import hcm.ditagis.com.tanhoa.qlsc.Modules.DirectionFinder;
 import hcm.ditagis.com.tanhoa.qlsc.Modules.DirectionFinderListener;
 import hcm.ditagis.com.tanhoa.qlsc.Modules.Route;
+import hcm.ditagis.com.tanhoa.qlsc.R;
 
-public class FindRoute extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener {
+public class FindRouteActivity extends FragmentActivity implements OnMapReadyCallback, DirectionFinderListener {
+
+    private GoogleMap mMap;
+    private Button btnFindPath;
     private EditText etOrigin;
     private EditText etDestination;
-    private Button btnFindPath;
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
     private ProgressDialog progressDialog;
-    private GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_find_route);
-        MapsInitializer.initialize(getApplicationContext());
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         btnFindPath = (Button) findViewById(R.id.btnFindPath);
         etOrigin = (EditText) findViewById(R.id.etOrigin);
         etDestination = (EditText) findViewById(R.id.etDestination);
@@ -79,6 +85,29 @@ public class FindRoute extends AppCompatActivity implements OnMapReadyCallback, 
     }
 
     @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        LatLng hcmus = new LatLng(10.762963, 106.682394);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 18));
+        originMarkers.add(mMap.addMarker(new MarkerOptions()
+                .title("Đại học Khoa học tự nhiên")
+                .position(hcmus)));
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+    }
+
+
+    @Override
     public void onDirectionFinderStart() {
         progressDialog = ProgressDialog.show(this, "Please wait.",
                 "Finding direction..!", true);
@@ -96,11 +125,12 @@ public class FindRoute extends AppCompatActivity implements OnMapReadyCallback, 
         }
 
         if (polylinePaths != null) {
-            for (Polyline polyline : polylinePaths) {
+            for (Polyline polyline:polylinePaths ) {
                 polyline.remove();
             }
         }
     }
+
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
@@ -110,19 +140,18 @@ public class FindRoute extends AppCompatActivity implements OnMapReadyCallback, 
         destinationMarkers = new ArrayList<>();
 
         for (Route route : routes) {
-//            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
             ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
             ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.title(route.startAddress);
-            markerOptions.position(route.startLocation);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue));
-            originMarkers.add(mMap.addMarker(markerOptions));
-            MarkerOptions markerOptions1 = new MarkerOptions();
-            markerOptions1.title(route.endAddress);
-            markerOptions1.position(route.endLocation);
-            markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green));
-            destinationMarkers.add(mMap.addMarker(markerOptions1));
+
+            originMarkers.add(mMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.start_blue))
+                    .title(route.startAddress)
+                    .position(route.startLocation)));
+            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.end_green))
+                    .title(route.endAddress)
+                    .position(route.endLocation)));
 
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
@@ -134,27 +163,5 @@ public class FindRoute extends AppCompatActivity implements OnMapReadyCallback, 
 
             polylinePaths.add(mMap.addPolyline(polylineOptions));
         }
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        LatLng hcmus = new LatLng(10.762963, 106.682394);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 18));
-        originMarkers.add(mMap.addMarker(new MarkerOptions()
-                .title("Đại học Khoa học tự nhiên")
-                .position(hcmus)));
-
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        mMap.setMyLocationEnabled(true);
     }
 }

@@ -83,6 +83,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
+import hcm.ditagis.com.tanhoa.qlsc.utities.FindRouteActivity;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ListConfig;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
@@ -168,9 +169,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 //tìm kiếm địa chỉ
                 else {
                     setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
-                    Point sourcePoint = new Point(106.6546293, 10.7554041);
-                    Point destinationPoint = new Point(item.getLongtitude(), item.getLatitude());
-                    new FindRoute(sourcePoint, destinationPoint, QuanLySuCo.this, mMapView);
                 }
             }
         });
@@ -597,6 +595,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
+    private void optionFindRoute() {
+        this.isSearchingFeature = false;
+        txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap);
+
+        txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+
+        final Intent intent = new Intent(this, FindRouteActivity.class);
+        this.startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -604,12 +614,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 optionSearchFeature();
                 break;
             case R.id.txt_tim_dia_chi:
-                this.isSearchingFeature = false;
-                txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap);
-
-                txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-                txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+                optionFindRoute();
                 break;
             case R.id.floatBtnLayer:
                 v.setVisibility(View.INVISIBLE);
