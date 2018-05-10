@@ -27,12 +27,23 @@ public class ListConfig {
 
     public List<Config> getConfigs() {
         List<Config> configs = new ArrayList<>();
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_DIEM_SU_CO),
-                mContext.getResources().getStringArray(R.array.queryFields_diemsuco),
-                mContext.getResources().getStringArray(R.array.outFields_diemsuco),
-                Name.name_diemsuco, mContext.getResources().getString(R.string.ALIAS_DIEM_SU_CO),
-                mContext.getResources().getInteger(R.integer.minScale_diemsuco),
-                mContext.getResources().getStringArray(R.array.update_fields_arrays)));
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_HANH_CHINH), null, null,
+                mContext.getResources().getString(R.string.ALIAS_HANH_CHINH),
+                mContext.getResources().getInteger(R.integer.MIN_SCALE_HANH_CHINH), new String[]{}));
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_THUA_DAT), null, null,
+                mContext.getResources().getString(R.string.ALIAS_THUA_DAT),
+                mContext.getResources().getInteger(R.integer.MIN_SCALE_THUA_DAT), new String[]{}));
+
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_SONG_HO), null, null,
+                mContext.getResources().getString(R.string.ALIAS_SONG_HO),
+                mContext.getResources().getInteger(R.integer.MIN_SCALE_SONG_HO), new String[]{}));
+
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_GIAO_THONG), null, null,
+                mContext.getResources().getString(R.string.ALIAS_GIAO_THONG),
+                mContext.getResources().getInteger(R.integer.MIN_SCALE_GIAO_THONG), new String[]{}));
+
+
+
 
         configs.add(new Config(mContext.getResources().getString(R.string.URL_DMA),
                 mContext.getResources().getStringArray(R.array.queryFields_dma),
@@ -102,21 +113,12 @@ public class ListConfig {
                 mContext.getResources().getString(R.string.ALIAS_DONG_HO_KHACH_HANG),
                 mContext.getResources().getInteger(R.integer.minScale_donghokhachhang), new String[]{}));
 
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_THUA_DAT), null, null,
-                mContext.getResources().getString(R.string.ALIAS_THUA_DAT),
-                mContext.getResources().getInteger(R.integer.MIN_SCALE_THUA_DAT), new String[]{}));
-
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_SONG_HO), null, null,
-                mContext.getResources().getString(R.string.ALIAS_SONG_HO),
-                mContext.getResources().getInteger(R.integer.MIN_SCALE_SONG_HO), new String[]{}));
-
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_GIAO_THONG), null, null,
-                mContext.getResources().getString(R.string.ALIAS_GIAO_THONG),
-                mContext.getResources().getInteger(R.integer.MIN_SCALE_GIAO_THONG), new String[]{}));
-
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_HANH_CHINH), null, null,
-                mContext.getResources().getString(R.string.ALIAS_HANH_CHINH),
-                mContext.getResources().getInteger(R.integer.MIN_SCALE_HANH_CHINH), new String[]{}));
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_DIEM_SU_CO),
+                mContext.getResources().getStringArray(R.array.queryFields_diemsuco),
+                mContext.getResources().getStringArray(R.array.outFields_diemsuco),
+                Name.name_diemsuco, mContext.getResources().getString(R.string.ALIAS_DIEM_SU_CO),
+                mContext.getResources().getInteger(R.integer.minScale_diemsuco),
+                mContext.getResources().getStringArray(R.array.update_fields_arrays)));
         return configs;
     }
 

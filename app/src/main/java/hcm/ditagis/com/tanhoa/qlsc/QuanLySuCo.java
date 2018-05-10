@@ -190,9 +190,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mFeatureLayerDTGS = new ArrayList<>();
         for (Config config : configs) {
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
+
             FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH)))
+                featureLayer.setOpacity(0.7f);
             featureLayer.setName(config.getAlias());
             featureLayer.setMaxScale(0);
+
             featureLayer.setMinScale(1000000);
             FeatureLayerDTG featureLayerDTG = new FeatureLayerDTG(featureLayer);
             featureLayerDTG.setOutFields(config.getOutField());
