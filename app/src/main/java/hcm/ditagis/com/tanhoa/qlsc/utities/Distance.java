@@ -1,4 +1,4 @@
-package hcm.ditagis.com.tanhoa.qlsc.Modules;
+package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 /**
  * Created by Mai Thanh Hiep on 4/3/2016.

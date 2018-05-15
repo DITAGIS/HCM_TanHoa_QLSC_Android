@@ -83,7 +83,6 @@ import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
-import hcm.ditagis.com.tanhoa.qlsc.utities.FindRouteActivity;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ListConfig;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
@@ -511,47 +510,61 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        if (id == R.id.nav_thongke) {
-            final Intent intent = new Intent(this, ThongKeActivity.class);
-            this.startActivity(intent);
-        } else if (id == R.id.nav_tracuu) {
-            final Intent intent = new Intent(this, TraCuuActivity.class);
-            this.startActivityForResult(intent, 1);
-        } else if (id == R.id.nav_setting) {
-            final Intent intent = new Intent(this, SettingsActivity.class);
-            this.startActivityForResult(intent, 1);
-        } else if (id == R.id.nav_logOut) {
-            this.finish();
-        } else if (id == R.id.nav_delete_searching) {
-            mGraphicsOverlay.getGraphics().clear();
-            mSearchAdapter.clear();
-            mSearchAdapter.notifyDataSetChanged();
-        } else if (id == R.id.nav_visible_float_button) {
-            if (mFloatButtonLayer.getVisibility() == View.VISIBLE) {
-                mFloatButtonLayer.setVisibility(View.INVISIBLE);
-                mFloatButtonAdd.setVisibility(View.INVISIBLE);
-                mFloatButtonLocation.setVisibility(View.INVISIBLE);
-            } else {
-                mFloatButtonLayer.setVisibility(View.VISIBLE);
-                mFloatButtonAdd.setVisibility(View.VISIBLE);
-                mFloatButtonLocation.setVisibility(View.VISIBLE);
-            }
+        switch (item.getItemId()) {
+            case R.id.nav_thongke:
+                Intent intent = new Intent(this, ThongKeActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.nav_tracuu:
+                intent = new Intent(this, TraCuuActivity.class);
+                this.startActivityForResult(intent, 1);
+                break;
+            case R.id.nav_find_route:
+                intent = new Intent(this, FindRouteActivity.class);
+                this.startActivity(intent);
+                break;
+            case R.id.nav_setting:
+                intent = new Intent(this, SettingsActivity.class);
+                this.startActivityForResult(intent, 1);
+                break;
+            case R.id.nav_logOut:
+                this.finish();
+                break;
+            case R.id.nav_delete_searching:
+                mGraphicsOverlay.getGraphics().clear();
+                mSearchAdapter.clear();
+                mSearchAdapter.notifyDataSetChanged();
+                break;
+            case R.id.nav_visible_float_button:
+                if (mFloatButtonLayer.getVisibility() == View.VISIBLE) {
+                    mFloatButtonLayer.setVisibility(View.INVISIBLE);
+                    mFloatButtonAdd.setVisibility(View.INVISIBLE);
+                    mFloatButtonLocation.setVisibility(View.INVISIBLE);
+                } else {
+                    mFloatButtonLayer.setVisibility(View.VISIBLE);
+                    mFloatButtonAdd.setVisibility(View.VISIBLE);
+                    mFloatButtonLocation.setVisibility(View.VISIBLE);
+                }
+                break;
+            default:
+                break;
         }
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -603,8 +616,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
         txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
 
-        final Intent intent = new Intent(this, FindRouteActivity.class);
-        this.startActivity(intent);
+
     }
 
     @Override

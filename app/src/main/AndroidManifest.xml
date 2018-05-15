@@ -53,7 +53,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".utities.FindRouteActivity"
+            android:name=".FindRouteActivity"
             android:label="@string/title_activity_find_route1"
             android:parentActivityName=".QuanLySuCo">
 

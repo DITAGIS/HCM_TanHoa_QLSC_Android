@@ -34,6 +34,10 @@
                     android:id="@+id/nav_tracuu"
                     android:icon="@drawable/ic_search"
                     android:title="@string/nav_tra_cuu" />
+                <item
+                    android:id="@+id/nav_find_route"
+                    android:icon="@drawable/ic_navigation"
+                    android:title="@string/nav_find_route" />
             </group>
         </menu>
     </item>

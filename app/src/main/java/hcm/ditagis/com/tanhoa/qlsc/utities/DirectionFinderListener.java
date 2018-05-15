@@ -1,4 +1,4 @@
-package hcm.ditagis.com.tanhoa.qlsc.Modules;
+package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import java.util.List;
 

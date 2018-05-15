@@ -1,5 +1,6 @@
-package hcm.ditagis.com.tanhoa.qlsc.Modules;
+package hcm.ditagis.com.tanhoa.qlsc.utities;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.Html;
 
@@ -20,19 +21,20 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Mai Thanh Hiep on 4/3/2016.
- */
+import hcm.ditagis.com.tanhoa.qlsc.R;
+
 public class DirectionFinder {
-    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
-    private static final String GOOGLE_API_KEY = "AIzaSyDnwLF2-WfK8cVZt9OoDYJ9Y8kspXhEHfI";
+//    private static final String DIRECTION_URL_API = "https://maps.googleapis.com/maps/api/directions/json?";
+//    private static final String GOOGLE_API_KEY = "AIzaSyDnwLF2-WfK8cVZt9OoDYJ9Y8kspXhEHfI";
     private DirectionFinderListener listener;
     private String origin;
     private String destination;
+    private Context mContext;
 
-    public DirectionFinder(DirectionFinderListener listener, String origin, String destination) {
+    public DirectionFinder(Context context, DirectionFinderListener listener, String origin, String destination) {
         this.listener = listener;
         this.origin = origin;
+        this.mContext = context;
         this.destination = destination;
     }
 
@@ -45,7 +47,8 @@ public class DirectionFinder {
         String urlOrigin = URLEncoder.encode(origin, "utf-8");
         String urlDestination = URLEncoder.encode(destination, "utf-8");
 
-        return DIRECTION_URL_API + "origin=" + urlOrigin + "&destination=" + urlDestination + "&key=" + GOOGLE_API_KEY;
+        return mContext.getString(R.string.direction_url_api) + "origin=" + urlOrigin +
+                "&destination=" + urlDestination + "&key=" + mContext.getString(R.string.google_api) + "&language=vi";
     }
 
     private class DownloadRawData extends AsyncTask<String, Void, String> {
@@ -115,7 +118,7 @@ public class DirectionFinder {
 
             List<Step> steps = new ArrayList<>();
             for (int j = 0; j < jsonSteps.length(); j++) {
-                JSONObject jsonStep = jsonSteps.getJSONObject(i);
+                JSONObject jsonStep = jsonSteps.getJSONObject(j);
 
                 JSONObject jsonStepDistance = jsonStep.getJSONObject("distance");
                 JSONObject jsonStepDuration = jsonStep.getJSONObject("duration");
@@ -127,7 +130,10 @@ public class DirectionFinder {
                 step.duration = new Duration(jsonStepDuration.getString("text"), jsonStepDuration.getInt("value"));
                 step.startLocation = new LatLng(jsonStepStartLocation.getDouble("lat"), jsonStepStartLocation.getDouble("lng"));
                 step.endLocation = new LatLng(jsonStepEndLocation.getDouble("lat"), jsonStepEndLocation.getDouble("lng"));
-                step.html_instructions = stripHtml(jsonStep.getString("html_instructions"));
+                String[] instructions = translateEnglishToVietnamese(stripHtml(jsonStep.getString("html_instructions"))).split("\n\n");
+                step.html_instructions = instructions[0];
+                if (instructions.length == 2)
+                    step.html_sub_instructions = instructions[1];
                 step.travel_mode = jsonStep.getString("travel_mode");
 
                 steps.add(step);
@@ -139,6 +145,7 @@ public class DirectionFinder {
 
         listener.onDirectionFinderSuccess(routes);
     }
+
     public String stripHtml(String html) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
@@ -146,6 +153,32 @@ public class DirectionFinder {
             return Html.fromHtml(html).toString();
         }
     }
+
+    public String translateEnglishToVietnamese(String eng) {
+        String viet = "";
+        viet = String.valueOf(
+                eng
+                        .replace("Head", "Đi về")
+                        .replace("Pass by", "Băng qua")
+                        .replace("Continue", "Tiếp tục")
+                        .replace("east", "hướng Đông")
+                        .replace("west", "hướng Tây")
+                        .replace("straight", "đi thẳng")
+                        .replace("Turn left", "Rẽ trái")
+                        .replace("Turn right", "Rẽ phải")
+                        .replace("pass", "qua")
+                        .replace("on the right", "ở bên phải")
+                        .replace("on the left", "ở bên trái")
+                        .replace("onto", "vào")
+                        .replace("on", "trên")
+                        .replace("at", "tại")
+                        .replace("toward", "về phía"))
+
+        ;
+
+        return viet;
+    }
+
     private List<LatLng> decodePolyLine(final String poly) {
         int len = poly.length();
         int index = 0;
