@@ -172,6 +172,8 @@ public class Popup extends AppCompatActivity {
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity,
                 new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
+        layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
+        layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,6 +188,7 @@ public class Popup extends AppCompatActivity {
                 edit(parent, view, position, id);
             }
         });
+
         String[] updateFields = mFeatureLayerDTG.getUpdateFields();
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {

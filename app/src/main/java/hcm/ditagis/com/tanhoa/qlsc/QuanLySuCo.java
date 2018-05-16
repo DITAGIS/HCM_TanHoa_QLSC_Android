@@ -37,6 +37,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -108,9 +110,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private TextView txtTimDiaChi;
     private LinearLayout mLayoutTimKiem;
     private FloatingActionButton mFloatButtonLayer;
-    private FloatingActionButton mFloatButtonLocation;
+    private LinearLayout mFloatButtonLocation,
+            mFloatActionButtonAddPoint;
     private FloatingActionButton mFloatButtonAdd;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private LinearLayout mLinearLayoutCover;
+    private boolean isOpenFab = false;
+    private Animation mAnimationFabOpen, mAnimationFabClose, mAnimationClockwise, mAnimationAntiClockwise;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -139,9 +145,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         setContentView(R.layout.activity_quan_ly_su_co);
         // create an empty map instance
         setLicense();
-        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041,  106.6546293,  12);
+        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
         mGeocoder = new Geocoder(this);
-
+        mAnimationFabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        mAnimationFabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        mAnimationClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
+        mAnimationAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anticlock);
         //for camera
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -323,8 +332,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.layout_layer_topo).setOnClickListener(this);
         mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
         mFloatButtonLayer.setOnClickListener(this);
-        mFloatButtonAdd = findViewById(R.id.floatBtnAdd);
+        mFloatButtonAdd = findViewById(R.id.floatBtnView);
         mFloatButtonAdd.setOnClickListener(this);
+        mFloatActionButtonAddPoint = findViewById(R.id.floatBtnAddPoint);
+        mFloatActionButtonAddPoint.setOnClickListener(this);
+        mLinearLayoutCover = findViewById(R.id.layout_cover_quan_ly_su_co);
+        mLinearLayoutCover.setOnClickListener(this);
         findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_layvitri).setOnClickListener(this);
@@ -611,6 +624,35 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     }
 
+    private void expandFloatActionButton() {
+//        mLinearLayoutCover.startAnimation(mAnimationFabOpen);
+        mLinearLayoutCover.setVisibility(View.VISIBLE);
+
+        mFloatButtonAdd.startAnimation(mAnimationFabOpen);
+        mFloatButtonLocation.startAnimation(mAnimationFabOpen);
+        mFloatActionButtonAddPoint.startAnimation(mAnimationFabOpen);
+
+        mFloatButtonAdd.startAnimation(mAnimationClockwise);
+        mFloatButtonLocation.setClickable(true);
+        mFloatActionButtonAddPoint.setClickable(true);
+
+        isOpenFab = true;
+    }
+
+    private void collapseFloatActionButton() {
+//        mLinearLayoutCover.startAnimation(mAnimationFabClose);
+        mLinearLayoutCover.setVisibility(View.GONE);
+        mFloatButtonAdd.startAnimation(mAnimationFabClose);
+        mFloatButtonLocation.startAnimation(mAnimationFabClose);
+        mFloatActionButtonAddPoint.startAnimation(mAnimationFabClose);
+
+
+        mFloatButtonAdd.startAnimation(mAnimationAntiClockwise);
+        mFloatButtonLocation.setClickable(false);
+        mFloatActionButtonAddPoint.setClickable(false);
+        isOpenFab = false;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -655,19 +697,34 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //                mMapViewHandler.capture();
                 capture();
                 break;
-            case R.id.floatBtnAdd:
+            case R.id.floatBtnAddPoint:
                 findViewById(R.id.linear_addfeature).setVisibility(View.VISIBLE);
                 findViewById(R.id.img_map_pin).setVisibility(View.VISIBLE);
-                findViewById(R.id.floatBtnAdd).setVisibility(View.GONE);
+//                findViewById(R.id.floatBtnAdd).setVisibility(View.GONE);
                 mMapViewHandler.setClickBtnAdd(true);
+                if (isOpenFab)
+                    collapseFloatActionButton();
+                break;
+            case R.id.floatBtnView:
+                if (isOpenFab)
+                    collapseFloatActionButton();
+                else
+                    expandFloatActionButton();
+
+                break;
+            case R.id.layout_cover_quan_ly_su_co:
+                if (isOpenFab)
+                    collapseFloatActionButton();
                 break;
             case R.id.btn_add_feature_close:
                 findViewById(R.id.linear_addfeature).setVisibility(View.GONE);
                 findViewById(R.id.img_map_pin).setVisibility(View.GONE);
-                findViewById(R.id.floatBtnAdd).setVisibility(View.VISIBLE);
+                findViewById(R.id.floatBtnView).setVisibility(View.VISIBLE);
                 mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
+                if (isOpenFab)
+                    collapseFloatActionButton();
                 if (!mLocationDisplay.isStarted()) {
                     mLocationDisplay.startAsync();
                     setViewPointCenter(mLocationDisplay.getMapLocation());
@@ -754,9 +811,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.layout_layer_open_street_map:
                 findViewById(R.id.img_layer_open_street_map).setBackgroundResource(R.drawable.layout_shape_basemap);
                 ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-              findViewById(R.id.img_layer_street_map).setBackgroundResource(R.drawable.layout_shape_basemap_none);
+                findViewById(R.id.img_layer_street_map).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-              findViewById(R.id.img_layer_topo).setBackgroundResource(R.drawable.layout_shape_basemap_none);
+                findViewById(R.id.img_layer_topo).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
             case R.id.layout_layer_street_map:
@@ -768,9 +825,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
             case R.id.layout_layer_topo:
-                 findViewById(R.id.img_layer_topo).setBackgroundResource(R.drawable.layout_shape_basemap);
+                findViewById(R.id.img_layer_topo).setBackgroundResource(R.drawable.layout_shape_basemap);
                 ((TextView) findViewById(R.id.txt_layer_topo)).setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-                 findViewById(R.id.img_layer_open_street_map).setBackgroundResource(R.drawable.layout_shape_basemap_none);
+                findViewById(R.id.img_layer_open_street_map).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_open_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 findViewById(R.id.img_layer_street_map).setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 ((TextView) findViewById(R.id.txt_layer_street_map)).setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));

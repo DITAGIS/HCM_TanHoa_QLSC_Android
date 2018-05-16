@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,52 +8,6 @@
     tools:context="hcm.ditagis.com.tanhoa.qlsc.TraCuuActivity">
 
 
-    <EditText
-        android:id="@+id/edit_dia_chi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Tìm theo địa chỉ" />
+   <include layout="@layout/layout_viewmoreinfo_feature" android:id="@+id/layout_tracuu_include"/>
 
-
-    <Spinner
-        android:id="@+id/spin_district"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:entries="@array/district_arrays" />
-
-
-    <Button
-        android:id="@+id/editShowDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_margin"
-        android:onClick="showDateTimePicker"
-        android:text="Ngày thông báo" />
-
-
-    <EditText
-        android:id="@+id/edit_nguoi_sua_chua"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Người cập nhật" />
-
-    <Spinner
-        android:id="@+id/spin_phanloaisuco"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:entries="@array/phanloai_arrays" />
-
-
-    <Button
-        android:id="@+id/btnTraCuu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Tra cứu" />
-
-    <ListView
-        android:id="@+id/lstView_TraCuu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

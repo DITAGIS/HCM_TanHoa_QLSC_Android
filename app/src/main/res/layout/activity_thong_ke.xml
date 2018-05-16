@@ -23,7 +23,7 @@
             android:background="@color/colorPrimary"
             android:clickable="true"
             android:orientation="vertical"
-            >
+            android:focusable="true">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -37,7 +37,8 @@
                     android:text="Tháng này"
                     android:textColor="@color/colorWhite"
                     android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:paddingStart="20dp" />
 
                 <ImageView
                     android:id="@+id/img_selectTime"
