@@ -90,7 +90,7 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
                     }
                     break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-
+                        sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
@@ -143,6 +143,7 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
     private void sendRequest() {
         layoutSheetBehavior.setVisibility(View.GONE);
         layoutBottomSheet.setVisibility(View.GONE);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
         if (origin.isEmpty()) {
