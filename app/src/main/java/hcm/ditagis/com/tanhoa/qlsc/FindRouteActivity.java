@@ -1,6 +1,7 @@
 package hcm.ditagis.com.tanhoa.qlsc;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -8,12 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -22,8 +20,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -38,16 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.RouteAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.entities.CustomLinearLayout;
 import hcm.ditagis.com.tanhoa.qlsc.entities.UserLockBottomSheetBehavior;
 import hcm.ditagis.com.tanhoa.qlsc.utities.DirectionFinder;
 import hcm.ditagis.com.tanhoa.qlsc.utities.DirectionFinderListener;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Route;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Step;
 
-public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener {
+public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCallback, DirectionFinderListener, View.OnClickListener {
 
     private GoogleMap mMap;
-    private Button btnFindPath;
     private EditText etOrigin;
     private EditText etDestination;
     private List<Marker> originMarkers = new ArrayList<>();
@@ -59,7 +55,7 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
     BottomSheetBehavior sheetBehavior;
 
     TextView txtSheetBehavior;
-    LinearLayout layoutSheetBehavior;
+    CustomLinearLayout layoutSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +78,11 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
                     case BottomSheetBehavior.STATE_HIDDEN:
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-                        txtSheetBehavior.setText("Xem bản đồ");
+                        txtSheetBehavior.setText(getString(R.string.find_route_xem_ban_do));
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
-                        txtSheetBehavior.setText("Các bước");
+                        txtSheetBehavior.setText(getString(R.string.find_route_cac_buoc));
                     }
                     break;
                     case BottomSheetBehavior.STATE_DRAGGING:
@@ -103,6 +99,7 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
         layoutSheetBehavior.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);
@@ -115,29 +112,27 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
                 }
                 return false;
             }
+
         });
         layoutSheetBehavior.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                    txtSheetBehavior.setText("Xem bản đồ");
+//                    txtSheetBehavior.setText("Xem bản đồ");
                 } else {
                     sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                    txtSheetBehavior.setText("Các bước");
+//                    txtSheetBehavior.setText("Các bước");
                 }
             }
         });
-        btnFindPath = (Button) findViewById(R.id.btnFindPath);
-        etOrigin = (EditText) findViewById(R.id.etOrigin);
-        etDestination = (EditText) findViewById(R.id.etDestination);
 
-        btnFindPath.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendRequest();
-            }
-        });
+        etOrigin = findViewById(R.id.etOrigin);
+        etDestination = findViewById(R.id.etDestination);
+
+
+        findViewById(R.id.btnFindPath).setOnClickListener(this);
+        findViewById(R.id.imgBtn_find_route_change_location).setOnClickListener(this);
     }
 
     private void sendRequest() {
@@ -147,11 +142,11 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
         String origin = etOrigin.getText().toString();
         String destination = etDestination.getText().toString();
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.find_route_diem_bat_dau), Toast.LENGTH_SHORT).show();
             return;
         }
         if (destination.isEmpty()) {
-            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,getString(R.string.find_route_diem_ket_thuc), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -172,13 +167,6 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
                 .position(capNuocTH)));
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -256,5 +244,19 @@ public class FindRouteActivity extends AppCompatActivity implements OnMapReadyCa
         }
         layoutSheetBehavior.setVisibility(View.VISIBLE);
         layoutBottomSheet.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btnFindPath:
+                sendRequest();
+                break;
+            case R.id.imgBtn_find_route_change_location:
+                String temp = etDestination.getText().toString().trim();
+                etDestination.setText(etOrigin.getText().toString().trim());
+                etOrigin.setText(temp);
+                break;
+        }
     }
 }

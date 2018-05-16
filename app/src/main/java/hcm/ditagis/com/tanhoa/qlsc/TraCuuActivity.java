@@ -22,7 +22,6 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -33,7 +32,6 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 public class TraCuuActivity extends AppCompatActivity {
     private ServiceFeatureTable mServiceFeatureTable;
     private TraCuuAdapter mTraCuuAdapter;
-    private ListView mListView;
     private DatePicker datePicker;
 
     @Override
@@ -42,8 +40,8 @@ public class TraCuuActivity extends AppCompatActivity {
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
 
         setContentView(R.layout.activity_tra_cuu);
-        this.mListView = findViewById(R.id.lstView_TraCuu);
-        this.mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView listView = findViewById(R.id.lstView_TraCuu);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent returnIntent = new Intent();
@@ -54,7 +52,7 @@ public class TraCuuActivity extends AppCompatActivity {
         });
         List<TraCuuAdapter.Item> items = new ArrayList<>();
         mTraCuuAdapter = new TraCuuAdapter(this, items);
-        this.mListView.setAdapter(this.mTraCuuAdapter);
+        listView.setAdapter(this.mTraCuuAdapter);
         findViewById(R.id.btnTraCuu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,11 +60,10 @@ public class TraCuuActivity extends AppCompatActivity {
                 mTraCuuAdapter.notifyDataSetChanged();
                 Parameter paras = new Parameter();
                 paras.setDate(datePicker);
-                EditText diachi = (EditText) findViewById(R.id.edit_dia_chi);
-                EditText nguoicapnhat = (EditText) findViewById(R.id.edit_nguoi_sua_chua);
-                Spinner quan = (Spinner) findViewById(R.id.spin_district);
-                Spinner loai = (Spinner) findViewById(R.id.spin_phanloaisuco);
-                int selectedItemId = (int) quan.getSelectedItemId();
+                EditText diachi = findViewById(R.id.edit_dia_chi);
+                EditText nguoicapnhat =  findViewById(R.id.edit_nguoi_sua_chua);
+                Spinner quan = findViewById(R.id.spin_district);
+                Spinner loai =  findViewById(R.id.spin_phanloaisuco);
                 paras.setDiaChi(diachi.getText().toString());
                 paras.setNguoicapnhat(nguoicapnhat.getText().toString());
                 paras.setQuanHuyen(Constant.CODEID_DISTRICT[(int) quan.getSelectedItemId()]);
@@ -88,12 +85,11 @@ public class TraCuuActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                datePicker =  dialogView.findViewById(R.id.date_picker);
 
-                Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
 
                 String s = datePicker.getDayOfMonth() + "/" + (datePicker.getMonth() + 1) + "/" + datePicker.getYear();
-                Button editText = (Button) findViewById(R.id.editShowDate);
+                Button editText = findViewById(R.id.editShowDate);
                 editText.setText(s);
                 alertDialog.dismiss();
             }
@@ -143,22 +139,20 @@ public class TraCuuActivity extends AppCompatActivity {
                 try {
 
                     FeatureQueryResult result = feature.get();
-                    Iterator iterator = result.iterator();
 
-                    while (iterator.hasNext()) {
-                        Feature item = (Feature) iterator.next();
-
+                    for (Object i : result) {
+                        Feature item = (Feature) i;
                         Map<String, Object> attributes = item.getAttributes();
                         String format_date = "", viTri = "";
-                        try{
-                            viTri =  attributes.get(Constant.VI_TRI).toString();
-                        }catch (Exception e){
+                        try {
+                            viTri = attributes.get(Constant.VI_TRI).toString();
+                        } catch (Exception ignored) {
 
                         }
-                        if ((Calendar) attributes.get(Constant.NGAY_CAP_NHAT) != null)
+                        if ( attributes.get(Constant.NGAY_CAP_NHAT) != null)
                             format_date = Constant.DATE_FORMAT.format(((Calendar) attributes.get(Constant.NGAY_CAP_NHAT)).getTime());
 
-                        mTraCuuAdapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date,viTri));
+                        mTraCuuAdapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()), attributes.get(Constant.IDSU_CO).toString(), Integer.parseInt(attributes.get(Constant.TRANG_THAI).toString()), format_date, viTri));
                         mTraCuuAdapter.notifyDataSetChanged();
 
                     }
@@ -179,18 +173,12 @@ public class TraCuuActivity extends AppCompatActivity {
         String nguoicapnhat;
         String phanloaisuco;
 
-        public Parameter() {
+        Parameter() {
         }
 
-        public Parameter(String diaChi, String quanHuyen, String date, String nguoicapnhat, String phanloaisuco) {
-            this.diaChi = diaChi;
-            this.quanHuyen = quanHuyen;
-            this.date = date;
-            this.nguoicapnhat = nguoicapnhat;
-            this.phanloaisuco = phanloaisuco;
-        }
 
-        public String getDiaChi() {
+
+        String getDiaChi() {
             return diaChi;
         }
 
@@ -201,7 +189,7 @@ public class TraCuuActivity extends AppCompatActivity {
 
         }
 
-        public String getQuanHuyen() {
+        String getQuanHuyen() {
             return quanHuyen;
         }
 
@@ -222,7 +210,7 @@ public class TraCuuActivity extends AppCompatActivity {
 //                this.date = "NgayCapNhat >= '" + datePicker.getYear() + "/" + datePicker.getMonth() + "/" + datePicker.getDayOfMonth() + "'";
         }
 
-        public String getNguoicapnhat() {
+        String getNguoicapnhat() {
             return nguoicapnhat;
         }
 
@@ -232,7 +220,7 @@ public class TraCuuActivity extends AppCompatActivity {
             }
         }
 
-        public String getPhanloaisuco() {
+        String getPhanloaisuco() {
             return phanloaisuco;
         }
 

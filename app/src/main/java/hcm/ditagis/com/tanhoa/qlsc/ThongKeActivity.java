@@ -1,5 +1,6 @@
 package hcm.ditagis.com.tanhoa.qlsc;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -42,10 +43,8 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 public class ThongKeActivity extends AppCompatActivity {
     private TextView txtTongSuCo, txtChuaSua, txtDangSua, txtDaSua;
     private TextView txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
-    private QuanLySuCo mQuanLySuCo;
     private ServiceFeatureTable mServiceFeatureTable;
     private ThongKeAdapter thongKeAdapter;
-    private PieChart mChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +52,7 @@ public class ThongKeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_thong_ke);
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
         TimePeriodReport timePeriodReport = new TimePeriodReport(this);
-        List<ThongKeAdapter.Item> items = new ArrayList<>();
-        items = timePeriodReport.getItems();
+        List<ThongKeAdapter.Item> items = timePeriodReport.getItems();
         thongKeAdapter = new ThongKeAdapter(this, items);
 
         this.txtTongSuCo = this.findViewById(R.id.txtTongSuCo);
@@ -64,7 +62,7 @@ public class ThongKeActivity extends AppCompatActivity {
         this.txtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
         this.txtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
         this.txtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
-        ((LinearLayout) ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian)).setOnClickListener(new View.OnClickListener() {
+        ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialogSelectTime();
@@ -75,9 +73,8 @@ public class ThongKeActivity extends AppCompatActivity {
 
     private void showDialogSelectTime() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
-        View layout = getLayoutInflater().inflate(R.layout.layout_listview_thongketheothoigian, null);
-        final View layoutDateTimePicker = View.inflate(this, R.layout.date_time_picker, null);
-        ListView listView = (ListView) layout.findViewById(R.id.lstView_thongketheothoigian);
+        @SuppressLint("InflateParams") View layout = getLayoutInflater().inflate(R.layout.layout_listview_thongketheothoigian, null);
+        ListView listView = layout.findViewById(R.id.lstView_thongketheothoigian);
         listView.setAdapter(thongKeAdapter);
         builder.setView(layout);
         final AlertDialog selectTimeDialog = builder.create();
@@ -91,13 +88,13 @@ public class ThongKeActivity extends AppCompatActivity {
                 selectTimeDialog.dismiss();
                 if (itemAtPosition.getId() == finalItems.size()) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(ThongKeActivity.this, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
-                    View layout = getLayoutInflater().inflate(R.layout.layout_thongke_thoigiantuychinh, null);
+                    @SuppressLint("InflateParams") View layout = getLayoutInflater().inflate(R.layout.layout_thongke_thoigiantuychinh, null);
                     builder.setView(layout);
                     final AlertDialog tuychinhDateDialog = builder.create();
                     tuychinhDateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     tuychinhDateDialog.show();
-                    final EditText edit_thongke_tuychinh_ngaybatdau = (EditText) layout.findViewById(R.id.edit_thongke_tuychinh_ngaybatdau);
-                    final EditText edit_thongke_tuychinh_ngayketthuc = (EditText) layout.findViewById(R.id.edit_thongke_tuychinh_ngayketthuc);
+                    final EditText edit_thongke_tuychinh_ngaybatdau = layout.findViewById(R.id.edit_thongke_tuychinh_ngaybatdau);
+                    final EditText edit_thongke_tuychinh_ngayketthuc = layout.findViewById(R.id.edit_thongke_tuychinh_ngayketthuc);
                     if (itemAtPosition.getThoigianbatdau() != null)
                         edit_thongke_tuychinh_ngaybatdau.setText(itemAtPosition.getThoigianbatdau());
                     if (itemAtPosition.getThoigianketthuc() != null)
@@ -142,8 +139,8 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private boolean kiemTraThoiGianNhapVao(String startDate, String endDate) {
-        if (startDate == "" || endDate == "") return false;
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        if (startDate.equals("") || endDate.equals("")) return false;
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         try {
             Date date1 = dateFormat.parse(startDate);
             Date date2 = dateFormat.parse(endDate);
@@ -151,7 +148,6 @@ public class ThongKeActivity extends AppCompatActivity {
                 return false;
             } else return true;
         } catch (ParseException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return false;
@@ -164,10 +160,10 @@ public class ThongKeActivity extends AppCompatActivity {
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
                 Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                 String displaytime = (String) DateFormat.format(getString(R.string.format_time_day_month_year), calendar.getTime());
-                String format = null;
+                String format;
                 if (typeInput.equals("START")) {
                     calendar.set(Calendar.HOUR_OF_DAY, 0); // ! clear would not reset the hour of day !
                     calendar.clear(Calendar.MINUTE);
@@ -177,9 +173,9 @@ public class ThongKeActivity extends AppCompatActivity {
                     calendar.set(Calendar.HOUR_OF_DAY, 23);
                     calendar.set(Calendar.MINUTE, 59);
                     calendar.set(Calendar.SECOND, 59);
-                    calendar.set(Calendar.MILLISECOND,999);
+                    calendar.set(Calendar.MILLISECOND, 999);
                 }
-                SimpleDateFormat dateFormatGmt = new SimpleDateFormat(getString(R.string.format_day_yearfirst));
+                @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormatGmt = new SimpleDateFormat(getString(R.string.format_day_yearfirst));
                 dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
                 format = dateFormatGmt.format(calendar.getTime());
                 editText.setText(displaytime);
@@ -201,10 +197,10 @@ public class ThongKeActivity extends AppCompatActivity {
             txtThoiGian.setVisibility(View.VISIBLE);
         }
         final int[] tongloaitrangthai = {0, 0, 0, 0};// tong, chuasua, dangsua, dasua
-        String whereClause = "1 = 1";
-        if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
+        String whereClause;
+        if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null)
             whereClause = "1 = 1";
-        } else
+        else
             whereClause = "NgayCapNhat" + " >= date '" + item.getThoigianbatdau() + "' and " + "NgayCapNhat" + " <= date '" + item.getThoigianketthuc() + "'";
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(whereClause);
@@ -214,10 +210,9 @@ public class ThongKeActivity extends AppCompatActivity {
             public void run() {
                 try {
                     FeatureQueryResult result = feature.get();
-                    Iterator iterator = result.iterator();
-                    while (iterator.hasNext()) {
-                        Feature item = (Feature) iterator.next();
+                    for (Object i : result) {
                         tongloaitrangthai[0] += 1;
+                        Feature item = (Feature) i;
                         int trangthai = Integer.parseInt(item.getAttributes().get(Constant.TRANG_THAI).toString());
                         if (trangthai == 0) tongloaitrangthai[1] += 1;
                         else if (trangthai == 2) tongloaitrangthai[2] += 1;
@@ -236,6 +231,7 @@ public class ThongKeActivity extends AppCompatActivity {
 
     }
 
+    @SuppressLint("SetTextI18n")
     private void displayReport(int[] tongloaitrangthai) {
         txtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai[0]);
         txtChuaSua.setText(tongloaitrangthai[1] + "");
@@ -253,7 +249,7 @@ public class ThongKeActivity extends AppCompatActivity {
         txtPhanTramChuaSua.setText(percentChuaSua + "%");
         txtPhanTramDangSua.setText(percentDangSua + "%");
         txtPhanTramDaSua.setText(percentDaSua + "%");
-        mChart = (PieChart) findViewById(R.id.piechart);
+        PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
         mChart = setData(mChart, tongloaitrangthai);
         mChart.animateXY(1500, 1500);
@@ -277,18 +273,18 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private PieChart setData(PieChart chart, int[] tongloaitrangthai) {
-        ArrayList<Entry> yVals1 = new ArrayList<Entry>();
+        ArrayList<Entry> yVals1 = new ArrayList<>();
 
         yVals1.add(new Entry(tongloaitrangthai[1], 0));
         yVals1.add(new Entry(tongloaitrangthai[2], 1));
         yVals1.add(new Entry(tongloaitrangthai[3], 2));
-        ArrayList<String> xVals = new ArrayList<String>();
+        ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.nav_thong_ke_chua_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_dang_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_da_sua_chua));
         PieDataSet set1 = new PieDataSet(yVals1, "");
         set1.setSliceSpace(0f);
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(android.R.color.holo_red_light));
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
         colors.add(getResources().getColor(android.R.color.holo_green_light));

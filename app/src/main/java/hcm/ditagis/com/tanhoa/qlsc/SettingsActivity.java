@@ -1,7 +1,10 @@
 package hcm.ditagis.com.tanhoa.qlsc;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -17,7 +20,6 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class SettingsActivity extends AppCompatActivity {
-    private ListView mLstViewSettings;
     private SettingsAdapter mSettingsAdapter;
 
     @Override
@@ -26,10 +28,11 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         Preference.getInstance().setContext(SettingsActivity.this);
 
-        mLstViewSettings = findViewById(R.id.lstView_Settings);
+        ListView mLstViewSettings = findViewById(R.id.lstView_Settings);
         mSettingsAdapter = new SettingsAdapter(this, Constant.getInstance().getSettingsItems());
         mLstViewSettings.setAdapter(mSettingsAdapter);
         mLstViewSettings.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
@@ -63,6 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
         return Preference.getInstance().loadPreference(key);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void showPhuongThucThemDiemSuCo() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
@@ -76,8 +80,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         LayoutInflater inflater = getLayoutInflater();
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_phuong_thuc_them_diem_su_co, null);
-        final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings);
+        @SuppressLint("InflateParams") LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_phuong_thuc_them_diem_su_co, null);
+        final RadioGroup group =  layout.findViewById(R.id.rdgr_layout_settings);
         final String key = getString(R.string.preference_settings_phuong_thuc_them_diem_su_co);
         String type_Add_Point = getPhuongThucThemDiemSuCo();
         if (type_Add_Point.equals("") || type_Add_Point.equals(getString(R.string.preference_settings_phuong_thuc_them_diem_su_co_cham_diem)))
@@ -117,6 +121,7 @@ public class SettingsActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void showOptionTimKiem() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Light_Dialog_Alert);
@@ -130,8 +135,8 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         LayoutInflater inflater = getLayoutInflater();
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_tuy_chon_tim_kiem, null);
-        final RadioGroup group = (RadioGroup) layout.findViewById(R.id.rdgr_layout_settings_tim_kiem);
+        @SuppressLint("InflateParams") LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_settings_tuy_chon_tim_kiem, null);
+        final RadioGroup group =  layout.findViewById(R.id.rdgr_layout_settings_tim_kiem);
         final String key = getString(R.string.preference_settings_tuy_chon_tim_kiem);
         String type_Add_Point = getOptionTimKiem();
         if (type_Add_Point.equals("") || type_Add_Point.equals(this.getResources().getString(R.string.preference_settings_tuy_chon_tim_kiem_chua_co)))

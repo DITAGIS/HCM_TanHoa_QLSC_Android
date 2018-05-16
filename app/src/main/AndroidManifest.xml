@@ -54,7 +54,7 @@
 
         <activity
             android:name=".FindRouteActivity"
-            android:label="@string/title_activity_find_route1"
+            android:label="@string/title_activity_find_route"
             android:parentActivityName=".QuanLySuCo">
 
         </activity>
