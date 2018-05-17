@@ -122,5 +122,9 @@
     <string name="find_route_textview_time">0 min</string>
     <string name="find_route_textview_begin">Từ</string>
     <string name="find_route_textview_end">Đến</string>
+    <string name="todo">TODO</string>
+    <string name="title_layer_default">Mặc định</string>
+    <string name="title_layer_street">Đường phố</string>
+    <string name="title_layer_satellite">Vệ tinh</string>
     <!--Route end-->
 </resources>

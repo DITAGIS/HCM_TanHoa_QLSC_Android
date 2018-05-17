@@ -111,7 +111,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLayoutTimKiem;
     private FloatingActionButton mFloatButtonLayer;
     private LinearLayout mFloatButtonLocation,
-            mFloatActionButtonAddPoint;
+            mFloatActionButtonAddPoint, mFloatButtonClosePopup;
     private FloatingActionButton mFloatButtonAdd;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private LinearLayout mLinearLayoutCover;
@@ -343,6 +343,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.img_layvitri).setOnClickListener(this);
         mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
         mFloatButtonLocation.setOnClickListener(this);
+        mFloatButtonClosePopup = findViewById(R.id.floatBtnClosePopUp);
+        mFloatButtonClosePopup.setOnClickListener(this);
         txtTimSuCo = findViewById(R.id.txt_tim_su_co);
         txtTimSuCo.setOnClickListener(this);
         txtTimDiaChi = findViewById(R.id.txt_tim_dia_chi);
@@ -631,11 +633,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mFloatButtonAdd.startAnimation(mAnimationFabOpen);
         mFloatButtonLocation.startAnimation(mAnimationFabOpen);
         mFloatActionButtonAddPoint.startAnimation(mAnimationFabOpen);
+        mFloatButtonClosePopup.startAnimation(mAnimationFabOpen);
 
         mFloatButtonAdd.startAnimation(mAnimationClockwise);
+
         mFloatButtonLocation.setClickable(true);
         mFloatActionButtonAddPoint.setClickable(true);
-
+        mFloatButtonClosePopup.setClickable(true);
         isOpenFab = true;
     }
 
@@ -645,11 +649,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mFloatButtonAdd.startAnimation(mAnimationFabClose);
         mFloatButtonLocation.startAnimation(mAnimationFabClose);
         mFloatActionButtonAddPoint.startAnimation(mAnimationFabClose);
+        mFloatButtonClosePopup.startAnimation(mAnimationFabClose);
 
 
         mFloatButtonAdd.startAnimation(mAnimationAntiClockwise);
         mFloatButtonLocation.setClickable(false);
         mFloatActionButtonAddPoint.setClickable(false);
+        mFloatButtonClosePopup.setClickable(false);
         isOpenFab = false;
     }
 
@@ -704,6 +710,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mMapViewHandler.setClickBtnAdd(true);
                 if (isOpenFab)
                     collapseFloatActionButton();
+                break;
+            case R.id.floatBtnClosePopUp:
+                if (isOpenFab)
+                    collapseFloatActionButton();
+                if (mCallout != null && mCallout.isShowing())
+                    mCallout.dismiss();
+                //TODO close popup
                 break;
             case R.id.floatBtnView:
                 if (isOpenFab)
