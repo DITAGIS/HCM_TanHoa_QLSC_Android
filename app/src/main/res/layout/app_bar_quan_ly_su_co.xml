@@ -296,7 +296,7 @@
                 android:layout_marginRight="20dp"
                 android:background="@android:color/black"
                 android:padding="5dp"
-                android:text="Báo sự cố"
+                android:text="Vị trí của tôi"
                 android:textColor="@color/colorWhite"
                 android:textSize="17sp" />
 
