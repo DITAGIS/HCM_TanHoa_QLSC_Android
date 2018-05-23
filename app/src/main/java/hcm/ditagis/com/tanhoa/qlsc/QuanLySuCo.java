@@ -194,6 +194,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // config feature layer service
         List<Config> configs = ListConfig.getInstance(this).getConfigs();
         mFeatureLayerDTGS = new ArrayList<>();
+        mCallout = mMapView.getCallout();
         for (Config config : configs) {
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
 
@@ -214,7 +215,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 featureLayer.setId(config.getName());
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
-                mCallout = mMapView.getCallout();
+
                 popupInfos = new Popup(QuanLySuCo.this,mMapView, serviceFeatureTable, mCallout);
                 traCuu = new TraCuu(featureLayerDTG, QuanLySuCo.this);
                 mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mMapView, popupInfos, QuanLySuCo.this);

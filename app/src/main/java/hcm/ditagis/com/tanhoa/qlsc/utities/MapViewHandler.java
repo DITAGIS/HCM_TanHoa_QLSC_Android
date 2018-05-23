@@ -69,8 +69,7 @@ public class MapViewHandler extends Activity {
 
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
 
-    public MapViewHandler(FeatureLayerDTG featureLayerDTG, MapView mMapView,
-                          Popup popupInfos, Context mContext) {
+    public MapViewHandler(FeatureLayerDTG featureLayerDTG, MapView mMapView, Popup popupInfos, Context mContext) {
         this.mFeatureLayerDTG = featureLayerDTG;
         this.mMapView = mMapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
@@ -85,8 +84,7 @@ public class MapViewHandler extends Activity {
     }
 
     public void addFeature(byte[] image) {
-        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mContext,
-                image, mServiceFeatureTable, loc, mMapView);
+        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mContext, image, mServiceFeatureTable, loc, mMapView);
         Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         singleTapAdddFeatureAsync.execute(add_point);
     }
@@ -117,8 +115,7 @@ public class MapViewHandler extends Activity {
             query.setGeometry(envelope);
             // add done loading listener to fire when the selection returns
 
-            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext,
-                    mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
+            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
     }
@@ -149,11 +146,11 @@ public class MapViewHandler extends Activity {
                 try {
                     FeatureQueryResult result = feature.get();
                     if (result.iterator().hasNext()) {
-                        Feature item = result.iterator().next();
-                        Envelope extent = item.getGeometry().getExtent();
-
-                        mMapView.setViewpointGeometryAsync(extent);
-                        suCoTanHoaLayer.selectFeature(item);
+                        mSelectedArcGISFeature = (ArcGISFeature) result.iterator().next();
+                        mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
+                        if (mSelectedArcGISFeature != null)
+                            mPopUp.showPopup(mSelectedArcGISFeature);
+                        else mPopUp.dimissCallout();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
