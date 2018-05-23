@@ -54,7 +54,6 @@ public class MapViewHandler extends Activity {
     private final FeatureLayer suCoTanHoaLayer;
     LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
     private FeatureLayerDTG mFeatureLayerDTG;
-    private Callout mCallout;
     private android.graphics.Point mClickPoint;
     private ArcGISFeature mSelectedArcGISFeature;
     private MapView mMapView;
@@ -62,7 +61,6 @@ public class MapViewHandler extends Activity {
     private ServiceFeatureTable mServiceFeatureTable;
     private Popup mPopUp;
     private Context mContext;
-    private Uri mUri;
 
 
     public void setFeatureLayerDTGs(List<FeatureLayerDTG> mFeatureLayerDTGs) {
@@ -71,10 +69,9 @@ public class MapViewHandler extends Activity {
 
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
 
-    public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mMapView,
+    public MapViewHandler(FeatureLayerDTG featureLayerDTG, MapView mMapView,
                           Popup popupInfos, Context mContext) {
         this.mFeatureLayerDTG = featureLayerDTG;
-        this.mCallout = mCallout;
         this.mMapView = mMapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
         this.mPopUp = popupInfos;
@@ -109,9 +106,6 @@ public class MapViewHandler extends Activity {
             mMapView.setViewpointCenterAsync(clickPoint, 10);
         } else {
             suCoTanHoaLayer.clearSelection();
-            if (mCallout.isShowing()) {
-                mCallout.dismiss();
-            }
             mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
             mSelectedArcGISFeature = null;
             // get the point that was clicked and convert it to a point in map coordinates
@@ -124,7 +118,7 @@ public class MapViewHandler extends Activity {
             // add done loading listener to fire when the selection returns
 
             SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext,
-                    mFeatureLayerDTGs, mPopUp, mCallout, mClickPoint, mMapView);
+                    mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
     }
@@ -174,8 +168,6 @@ public class MapViewHandler extends Activity {
     public void querySearch(String searchStr, ListView listView, final TraCuuAdapter adapter) {
         adapter.clear();
         adapter.notifyDataSetChanged();
-        mCallout.dismiss();
-
         suCoTanHoaLayer.clearSelection();
         QueryParameters queryParameters = new QueryParameters();
         StringBuilder builder = new StringBuilder();

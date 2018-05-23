@@ -82,6 +82,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+import hcm.ditagis.com.tanhoa.qlsc.tools.TraCuu;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
@@ -117,7 +118,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLinearLayoutCover;
     private boolean isOpenFab = false;
     private Animation mAnimationFabOpen, mAnimationFabClose, mAnimationClockwise, mAnimationAntiClockwise;
-
+    private TraCuu traCuu;
     public void setUri(Uri uri) {
         this.mUri = uri;
     }
@@ -211,12 +212,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
                 featureLayer.setId(config.getName());
-                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 mCallout = mMapView.getCallout();
-
-                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
+                popupInfos = new Popup(QuanLySuCo.this,mMapView, serviceFeatureTable, mCallout);
+                traCuu = new TraCuu(featureLayerDTG, QuanLySuCo.this);
+                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mMapView, popupInfos, QuanLySuCo.this);
             }
 
             mFeatureLayerDTGS.add(mFeatureLayerDTG);
@@ -224,6 +225,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         }
         mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
+        traCuu.setPopupInfos(popupInfos);
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
@@ -538,8 +540,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 this.startActivity(intent);
                 break;
             case R.id.nav_tracuu:
-                intent = new Intent(this, TraCuuActivity.class);
-                this.startActivityForResult(intent, 1);
+                traCuu.start();
                 break;
             case R.id.nav_find_route:
                 intent = new Intent(this, FindRouteActivity.class);

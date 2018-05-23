@@ -4,13 +4,13 @@
     <string name="license">runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169</string>
     <string name="action_search">Tìm kiếm</string>
 
-    <string name="app_name">Quản lý sự cố TH</string>
+    <string name="app_name">QLSC Tân Hòa</string>
     <string name="dialog_title_add">Thêm sự cố</string>
     <string name="btn_OK">OK</string>
     <string name="btn_save">Lưu thay đổi</string>
     <string name="btn_cancel">Hủy</string>
     <string name="quit">THOÁT</string>
-    <string name="title_su_co">Sự cố</string>
+    <string name="title_layer">Điểm sự cố</string>
     <string name="people_info_title">Thông tin liên hệ</string>
     <string name="hoten_field">Họ và tên</string>
     <string name="sdt_field">Số điện thoại</string>
@@ -90,7 +90,7 @@
     <string name="nav_thong_ke_chua_sua_chua">Chưa sửa chữa</string>
     <string name="nav_thong_ke_dang_sua_chua">Đang sửa chữa</string>
     <string name="nav_thong_ke_da_sua_chua">Đã sửa chữa</string>
-
+    <string name="nav_thong_ke_tong_diem">Tổng số lượng: </string>
     <!--async-->
     <string name="async_dang_xu_ly">Đang xử lý…</string>
     <string name="async_dang_lay_hinh_anh_dinh_kem">Đang tải hình ảnh đính kèm…</string>
@@ -107,6 +107,13 @@
 
     <string name="format_day_yearfirst">yyyy-MM-dd HH:mm:ss</string>
     <string name="format_time_day_month_year">dd/MM/yyyy</string>
+
+    <!--Attribute-->
+    <string name="OBJECTID">OBJECTID</string>
+    <string name="IDSUCO">IDSuCo</string>
+    <string name="NGAYXAYRA">NgayXayRa</string>
+    <string name="VITRI">ViTri</string>
+
 
     <!--Route begin-->
     <string name="title_activity_find_route">Tìm đường đi</string>
@@ -127,4 +134,13 @@
     <string name="title_layer_street">Đường phố</string>
     <string name="title_layer_satellite">Vệ tinh</string>
     <!--Route end-->
+
+    <!--display process status -->
+    <string name="DATA_SUCCESSFULLY_INSERTED">Thêm dữ liệu thành công</string>
+    <string name="FAILED_TO_INSERT_DATA">Thêm dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_DELETED">Xóa dữ liệu thành công </string>
+    <string name="FAILED_TO_DELETE_DATA">Xóa dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_UPDATED">Cập nhật dữ liệu thành công </string>
+    <string name="FAILED_TO_UPDATE_DATA">Cập nhật dữ liệu không thành công</string>
+    <string name="INCORRECT_INPUT_FORMAT">Số liệu nhập vào không đúng định dạng!!!</string>
 </resources>

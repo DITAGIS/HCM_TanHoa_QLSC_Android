@@ -35,19 +35,15 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     private MapView mMapView;
     private ArcGISFeature mSelectedArcGISFeature;
     private Popup mPopUp;
-    private Callout mCallOut;
-    private static double DELTA_MOVE_Y = 0;//7000;
     private android.graphics.Point mClickPoint;
-    private boolean isFound = false;
 
 
     public SingleTapMapViewAsync(Context context, List<FeatureLayerDTG> featureLayerDTGS,
-                                 Popup popup, Callout callout, android.graphics.Point clickPoint,
+                                 Popup popup, android.graphics.Point clickPoint,
                                  MapView mapview) {
         this.mMapView = mapview;
         this.mFeatureLayerDTGs = featureLayerDTGS;
         this.mPopUp = popup;
-        this.mCallOut = callout;
         this.mClickPoint = clickPoint;
         this.mContext = context;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
@@ -105,36 +101,12 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     protected void onProgressUpdate(FeatureLayer... values) {
         super.onProgressUpdate(values);
 
-        FeatureLayer featureLayer = null;
-        if (values != null)
-            featureLayer = values[0];
-        if (mSelectedArcGISFeature != null && featureLayer != null) {
-            // highlight the selected feature
-
-            featureLayer.clearSelection();
-            featureLayer.selectFeature(mSelectedArcGISFeature);
-            mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
-
-            LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
-
-            Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-            Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-            mMapView.setViewpointGeometryAsync(envelope1, 0);
-            // show CallOut
-            mCallOut.setLocation(mPoint);
-            mCallOut.setContent(linearLayout);
-//        mPopUp.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-            mCallOut.refresh();
-            mCallOut.show();
-        }
+        mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
+        if (mSelectedArcGISFeature != null) mPopUp.showPopup(mSelectedArcGISFeature);
+        else mPopUp.dimissCallout();
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
-//            }
-//        });
-//        }
     }
 
     @Override
