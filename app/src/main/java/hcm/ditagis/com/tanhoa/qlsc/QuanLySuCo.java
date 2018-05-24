@@ -465,11 +465,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quan_ly_su_co, menu);
-        SearchView mTxtSearch = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        final SearchView mTxtSearch = (SearchView) menu.findItem(R.id.action_search).getActionView();
         mTxtSearch.setQueryHint(getString(R.string.title_search));
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+
             @Override
             public boolean onQueryTextSubmit(String query) {
+                mTxtSearch.clearFocus();
                 if (isSearchingFeature)
                     mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                 return false;
