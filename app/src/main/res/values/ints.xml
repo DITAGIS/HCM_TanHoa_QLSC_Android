@@ -23,5 +23,12 @@
     <integer name="MIN_SCALE_SONG_HO">20000</integer>
     <integer name="MIN_SCALE_GIAO_THONG">20000</integer>
     <integer name="MIN_SCALE_HANH_CHINH">0</integer>
+
+
     <!--MINSCALE END-->
+
+    <integer name="trang_thai_chua_sua_chua">0</integer>
+    <integer name="trang_thai_dang_sua_chua">1</integer>
+    <integer name="trang_thai_da_sua_chua">2</integer>
+    <integer name="trang_thai_hoan_thanh">3</integer>
 </resources>

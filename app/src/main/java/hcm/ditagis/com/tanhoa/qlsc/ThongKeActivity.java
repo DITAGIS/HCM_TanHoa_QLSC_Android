@@ -10,7 +10,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -31,37 +30,39 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
-import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
-    private TextView txtTongSuCo, txtChuaSua, txtDangSua, txtDaSua;
-    private TextView txtPhanTramChuaSua, txtPhanTramDangSua, txtPhanTramDaSua;
+    private TextView mTxtTongSuCo, mTxtChuaSua, mTxtDangSua, mTxtDaSua, mTxtHoanThanh;
+    private TextView mTxtPhanTramChuaSua, mTxtPhanTramDangSua, mTxtPhanTramDaSua, mTxtPhanTramHoanThanh;
     private ServiceFeatureTable mServiceFeatureTable;
-    private ThongKeAdapter thongKeAdapter;
+    private ThongKeAdapter mThongKeAdapter;
+    private int mChuaSuaChua, mDangSuaChua, mDaSuaChua, mHoanThanh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_ke);
+        mChuaSuaChua = mDangSuaChua = mDaSuaChua = mHoanThanh = 0;
         mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
         TimePeriodReport timePeriodReport = new TimePeriodReport(this);
         List<ThongKeAdapter.Item> items = timePeriodReport.getItems();
-        thongKeAdapter = new ThongKeAdapter(this, items);
+        mThongKeAdapter = new ThongKeAdapter(this, items);
 
-        this.txtTongSuCo = this.findViewById(R.id.txtTongSuCo);
-        this.txtChuaSua = this.findViewById(R.id.txtChuaSua);
-        this.txtDangSua = this.findViewById(R.id.txtDangSua);
-        this.txtDaSua = this.findViewById(R.id.txtDaSua);
-        this.txtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
-        this.txtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
-        this.txtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
+        this.mTxtTongSuCo = this.findViewById(R.id.txtTongSuCo);
+        this.mTxtChuaSua = this.findViewById(R.id.txtChuaSua);
+        this.mTxtDangSua = this.findViewById(R.id.txtDangSua);
+        this.mTxtDaSua = this.findViewById(R.id.txtDaSua);
+        this.mTxtHoanThanh = this.findViewById(R.id.txtHoanThanh);
+        this.mTxtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
+        this.mTxtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
+        this.mTxtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
+        this.mTxtPhanTramHoanThanh = this.findViewById(R.id.txtPhanTramHoanThanh);
         ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,12 +76,12 @@ public class ThongKeActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, android.R.style.Theme_Holo_Light_NoActionBar_Fullscreen);
         @SuppressLint("InflateParams") View layout = getLayoutInflater().inflate(R.layout.layout_listview_thongketheothoigian, null);
         ListView listView = layout.findViewById(R.id.lstView_thongketheothoigian);
-        listView.setAdapter(thongKeAdapter);
+        listView.setAdapter(mThongKeAdapter);
         builder.setView(layout);
         final AlertDialog selectTimeDialog = builder.create();
         selectTimeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         selectTimeDialog.show();
-        final List<ThongKeAdapter.Item> finalItems = thongKeAdapter.getItems();
+        final List<ThongKeAdapter.Item> finalItems = mThongKeAdapter.getItems();
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -125,7 +126,7 @@ public class ThongKeActivity extends AppCompatActivity {
                                 itemAtPosition.setThoigianbatdau(finalThoigianbatdau.toString());
                                 itemAtPosition.setThoigianketthuc(finalThoigianketthuc.toString());
                                 itemAtPosition.setThoigianhienthi(edit_thongke_tuychinh_ngaybatdau.getText() + " - " + edit_thongke_tuychinh_ngayketthuc.getText());
-                                thongKeAdapter.notifyDataSetChanged();
+                                mThongKeAdapter.notifyDataSetChanged();
                                 query(itemAtPosition);
                             }
                         }
@@ -196,7 +197,6 @@ public class ThongKeActivity extends AppCompatActivity {
             txtThoiGian.setText(item.getThoigianhienthi());
             txtThoiGian.setVisibility(View.VISIBLE);
         }
-        final int[] tongloaitrangthai = {0, 0, 0, 0};// tong, chuasua, dangsua, dasua
         String whereClause;
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null)
             whereClause = "1 = 1";
@@ -211,14 +211,22 @@ public class ThongKeActivity extends AppCompatActivity {
                 try {
                     FeatureQueryResult result = feature.get();
                     for (Object i : result) {
-                        tongloaitrangthai[0] += 1;
                         Feature item = (Feature) i;
-                        int trangthai = Integer.parseInt(item.getAttributes().get(Constant.TRANG_THAI).toString());
-                        if (trangthai == 0) tongloaitrangthai[1] += 1;
-                        else if (trangthai == 2) tongloaitrangthai[2] += 1;
-                        else if (trangthai == 1) tongloaitrangthai[3] += 1;
+                        Object value = item.getAttributes().get(getString(R.string.trangthai));
+                        int trangThai = getResources().getInteger(R.integer.trang_thai_chua_sua_chua);
+                        if (value != null)
+                            trangThai = Integer.parseInt(value.toString());
+
+                        if (trangThai == getResources().getInteger(R.integer.trang_thai_chua_sua_chua))
+                            mChuaSuaChua++;
+                        if (trangThai == getResources().getInteger(R.integer.trang_thai_dang_sua_chua))
+                            mDangSuaChua++;
+                        if (trangThai == getResources().getInteger(R.integer.trang_thai_da_sua_chua))
+                            mDaSuaChua++;
+                        if (trangThai == getResources().getInteger(R.integer.trang_thai_hoan_thanh))
+                            mHoanThanh++;
                     }
-                    displayReport(tongloaitrangthai);
+                    displayReport();
 
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -232,26 +240,29 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void displayReport(int[] tongloaitrangthai) {
-        txtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai[0]);
-        txtChuaSua.setText(tongloaitrangthai[1] + "");
-        txtDangSua.setText(tongloaitrangthai[2] + "");
-        txtDaSua.setText(tongloaitrangthai[3] + "");
-
-        double percentChuaSua, percentDangSua, percentDaSua;
-        if (tongloaitrangthai[0] > 0) {
-            percentChuaSua = tongloaitrangthai[1] * 100 / tongloaitrangthai[0];
-            percentDangSua = tongloaitrangthai[2] * 100 / tongloaitrangthai[0];
-            percentDaSua = tongloaitrangthai[3] * 100 / tongloaitrangthai[0];
-        } else {
-            percentChuaSua = percentDangSua = percentDaSua = 0.00;
+    private void displayReport() {
+        int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mDangSuaChua + mHoanThanh;
+        mTxtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai);
+        mTxtChuaSua.setText(mChuaSuaChua + "");
+        mTxtDangSua.setText(mDangSuaChua + "");
+        mTxtDaSua.setText(mDaSuaChua + "");
+        mTxtHoanThanh.setText(mHoanThanh + "");
+        double percentChuaSua, percentDangSua, percentDaSua, percentHoanThanh;
+        percentChuaSua = percentDangSua = percentDaSua = percentHoanThanh = 0.0;
+        if (tongloaitrangthai > 0) {
+            percentChuaSua = mChuaSuaChua * 100 / tongloaitrangthai;
+            percentDangSua = mDangSuaChua * 100 / tongloaitrangthai;
+            percentDaSua = mDaSuaChua * 100 / tongloaitrangthai;
+            percentHoanThanh = mHoanThanh * 100 / tongloaitrangthai;
         }
-        txtPhanTramChuaSua.setText(percentChuaSua + "%");
-        txtPhanTramDangSua.setText(percentDangSua + "%");
-        txtPhanTramDaSua.setText(percentDaSua + "%");
+        mTxtPhanTramChuaSua.setText(percentChuaSua + "%");
+        mTxtPhanTramDangSua.setText(percentDangSua + "%");
+        mTxtPhanTramDaSua.setText(percentDaSua + "%");
+        mTxtPhanTramHoanThanh.setText(percentHoanThanh + "%");
         PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
-        mChart = setData(mChart, tongloaitrangthai);
+
+        mChart = setData(mChart);
         mChart.animateXY(1500, 1500);
     }
 
@@ -272,21 +283,26 @@ public class ThongKeActivity extends AppCompatActivity {
         return chart;
     }
 
-    private PieChart setData(PieChart chart, int[] tongloaitrangthai) {
+    private PieChart setData(PieChart chart) {
         ArrayList<Entry> yVals1 = new ArrayList<>();
 
-        yVals1.add(new Entry(tongloaitrangthai[1], 0));
-        yVals1.add(new Entry(tongloaitrangthai[2], 1));
-        yVals1.add(new Entry(tongloaitrangthai[3], 2));
+        yVals1.add(new Entry(mChuaSuaChua, 0));
+        yVals1.add(new Entry(mDangSuaChua, 1));
+        yVals1.add(new Entry(mDaSuaChua, 2));
+        yVals1.add(new Entry(mHoanThanh, 2));
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.nav_thong_ke_chua_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_dang_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_da_sua_chua));
+        xVals.add(getString(R.string.nav_thong_ke_hoan_thanh));
+
+
         PieDataSet set1 = new PieDataSet(yVals1, "");
         set1.setSliceSpace(0f);
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(android.R.color.holo_red_light));
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
+        colors.add(getResources().getColor(android.R.color.holo_blue_light));
         colors.add(getResources().getColor(android.R.color.holo_green_light));
         set1.setColors(colors);
         PieData data = new PieData(xVals, set1);

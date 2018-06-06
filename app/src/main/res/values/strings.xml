@@ -94,6 +94,7 @@
     <string name="nav_thong_ke_chua_sua_chua">Chưa sửa chữa</string>
     <string name="nav_thong_ke_dang_sua_chua">Đang sửa chữa</string>
     <string name="nav_thong_ke_da_sua_chua">Đã sửa chữa</string>
+    <string name="nav_thong_ke_hoan_thanh">Hoàn thành</string>
 
     <!--async-->
     <string name="async_dang_xu_ly">Đang xử lý…</string>
@@ -221,7 +222,7 @@
     <string name="format_monthyear">%02d/%d</string>
     <!--string format end-->
 
-
+    <string name="trangthai">TrangThai</string>
     <string name="giabieu">Giá biểu</string>
     <string name="dinhmuc">Đinh mức</string>
     <string name="cscu">Chỉ số cũ</string>

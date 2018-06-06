@@ -199,6 +199,38 @@
                     android:text=""
                     android:textSize="17sp" />
             </TableRow>
+
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:padding="3dip"
+                    android:text="Hoàn thành"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtHoanThanh"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
+                    android:textSize="17sp" />
+
+
+                <TextView
+                    android:id="@+id/txtPhanTramHoanThanh"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:text=""
+                    android:textSize="17sp" />
+            </TableRow>
         </TableLayout>
 
         <TextView
