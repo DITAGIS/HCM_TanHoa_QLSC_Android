@@ -68,6 +68,7 @@ import com.esri.arcgisruntime.mapping.view.Graphic;
 import com.esri.arcgisruntime.mapping.view.GraphicsOverlay;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
+import com.esri.arcgisruntime.symbology.PictureMarkerSymbol;
 import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol;
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer;
 
@@ -189,7 +190,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mMapView = findViewById(R.id.mapView);
 
 
-        mMapView.setMap(mMap);
         // config feature layer service
         List<Config> configs = ListConfig.getInstance(this).getConfigs();
         mFeatureLayerDTGS = new ArrayList<>();
@@ -217,12 +217,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mCallout = mMapView.getCallout();
 
                 mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
+                mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();
             }
 
             mFeatureLayerDTGS.add(mFeatureLayerDTG);
             mMap.getOperationalLayers().add(featureLayer);
 
         }
+        mMapView.setMap(mMap);
         mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
         mMap.addDoneLoadingListener(new Runnable() {
@@ -379,26 +381,43 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         uniqueValueRenderer.getFieldNames().add("TrangThai");
-        SimpleMarkerSymbol defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 15);
-        SimpleMarkerSymbol chuaxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 15);
-        SimpleMarkerSymbol dangxyly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.YELLOW, 15);
-        SimpleMarkerSymbol daxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.GREEN, 15);
-        uniqueValueRenderer.setDefaultSymbol(defaultSymbol);
+//        SimpleMarkerSymbol defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 15);
+//        SimpleMarkerSymbol chuaxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 15);
+//        SimpleMarkerSymbol dangxyly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.YELLOW, 15);
+//        SimpleMarkerSymbol daxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.GREEN, 15);
+
+        PictureMarkerSymbol chuaXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_chuasuachua));
+        chuaXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        chuaXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol dangXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_dangsuachua));
+        dangXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        dangXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol daXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_dasuachua));
+        daXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        daXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol hoanThanh = new PictureMarkerSymbol(getString(R.string.url_image_symbol_hoanthanh));
+        hoanThanh.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        hoanThanh.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        uniqueValueRenderer.setDefaultSymbol(chuaXuLy);
         uniqueValueRenderer.setDefaultLabel("Chưa xác định");
 
-        List<Object> chuaxulyValue = new ArrayList<>();
-        chuaxulyValue.add(0);
-        List<Object> dangxylyValue = new ArrayList<>();
-        dangxylyValue.add(2);
-        List<Object> daxulyValue = new ArrayList<>();
-        daxulyValue.add(1);
+        List<Object> chuaXuLyValue = new ArrayList<>();
+        chuaXuLyValue.add(0);
+        List<Object> dangXuLyValue = new ArrayList<>();
+        dangXuLyValue.add(1);
+        List<Object> daXuLyValue = new ArrayList<>();
+        daXuLyValue.add(2);
 
+        List<Object> hoanThanhValue = new ArrayList<>();
+        hoanThanhValue.add(3);
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", chuaxuly, chuaxulyValue));
+                "Chưa xử lý", "Chưa xử lý", chuaXuLy, chuaXuLyValue));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", dangxyly, dangxylyValue));
+                "Chưa xử lý", "Chưa xử lý", dangXuLy, dangXuLyValue));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", daxuly, daxulyValue));
+                "Chưa xử lý", "Chưa xử lý", daXuLy, daXuLyValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Chưa xử lý", "Chưa xử lý", hoanThanh, hoanThanhValue));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
     }
 

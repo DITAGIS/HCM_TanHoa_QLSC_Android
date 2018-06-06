@@ -111,7 +111,7 @@ public class Popup extends AppCompatActivity {
                         break;
                     case OID:
                     case TEXT:
-                    case GLOBALID:
+//                    case GLOBALID:
                         item.setValue(value.toString());
                         break;
                     case SHORT:

@@ -5,6 +5,7 @@
 
     <integer name="LEVEL_OF_DETAIL">12</integer>
 
+    <integer name="size_feature_renderer">15</integer>
     <!--MINSCALE START-->
     <integer name="minScale_donghokhachhang">2000</integer>
     <integer name="minScale_donghotong">1000000</integer>

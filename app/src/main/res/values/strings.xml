@@ -1,3 +1,4 @@
+<!DOCTYPE resources [<!ENTITY table_temp_docso "#docsotemp"><!ENTITY table_docso "Docso"><!ENTITY table_lichsuds "LichSuDS"><!ENTITY table_khachhang "KhachHang1"><!ENTITY table_hinhdhn "Docsoth_hinh..HinhDHN">]>
 <resources>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -40,31 +41,34 @@
     <string name="ALIAS_GIAO_THONG">Giao thông</string>
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
-    <string name="URL_DONG_HO_KHACH_HANG">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
-    <string name="URL_DONG_HO_TONG">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
-    <string name="URL_ONG_NGANH">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
-    <string name="URL_ONG_PHAN_PHOI">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
-    <string name="URL_ONG_TRUYEN_DAN">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
-    <string name="URL_MOI_NOI">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
-    <string name="URL_DIEM_SU_CO">http://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
-    <string name="URL_TRU_HONG">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
-    <string name="URL_VAN">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
-    <string name="URL_DIEM_AP_LUC">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DIEM_CUOI_ONG">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
-    <string name="URL_DMA">http://sawagis.vn/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/11</string>
+    <string name="URL_DONG_HO_KHACH_HANG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
+    <string name="URL_DONG_HO_TONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
+    <string name="URL_ONG_NGANH">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
+    <string name="URL_ONG_PHAN_PHOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
+    <string name="URL_ONG_TRUYEN_DAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
+    <string name="URL_MOI_NOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
+    <string name="URL_DIEM_SU_CO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <string name="URL_TRU_HONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
+    <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
+    <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
+    <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
+    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/11</string>
     <string name="URL_THUA_DAT">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
     <string name="URL_SONG_HO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
     <string name="URL_GIAO_THONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
     <string name="URL_HANH_CHINH">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3</string>
     <!--URL START-->
-
+    <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
+    <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
+    <string name="url_image_symbol_dasuachua">http://sawagis.vn/tanhoa/Content/images/map/2.png</string>
+    <string name="url_image_symbol_hoanthanh">http://sawagis.vn/tanhoa/Content/images/map/3.png</string>
     <!--URL END-->
     <string name="path_saveImage">.qlsc</string>
     <string name="attachment">attachment</string>
     <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
-    <!--<string name="service_feature_table">https://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
-    <string name="world_elevation_service">http://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
-    <string name="service_feature_table">http://sawagis.vn/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <!--<string name="service_feature_table">https://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
+    <string name="world_elevation_service">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
+    <string name="service_feature_table">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
 
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
@@ -127,4 +131,106 @@
     <string name="title_layer_street">Đường phố</string>
     <string name="title_layer_satellite">Vệ tinh</string>
     <!--Route end-->
+
+
+    <string name="action_logout">Đăng xuất</string>
+    <string name="validate_no_connect">Không có kết nối internet</string>
+    <string name="info_login_empty">Danh bạ hoặc mật khẩu không được để trống</string>
+    <string name="validate_login_fail">Sai danh bạ hoặc mật khẩu</string>
+    <string name="validate_hieuluc">Đồng hồ của khách hàng đã không còn hiệu lực\nVui lòng liên hệ công ty Cấp nước Tân Hòa\nđể biết thêm thông tin</string>
+    <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
+
+    <!--activity end-->
+
+    <!--preference begin-->
+    <string name="preference_username">username</string>
+    <string name="preference_password">pasword</string>
+    <!--preference end-->
+
+    <!--sql begin-->
+    <string name="sql_table_name_docso">&table_docso;</string>
+    <string name="sql_table_name_khachhang">&table_khachhang;</string>
+    <string name="sql_table_name_hinhdhn">&table_hinhdhn;</string>
+    <string name="sql_table_name_lichsuds">&table_lichsuds;</string>
+
+    <!--sql column khachhang begin-->
+    <string name="sql_coloumn_khachhang_hieuluc">hieuluc</string>
+    <string name="sql_coloumn_khachhang_tenkh">tenkh</string>
+    <string name="sql_coloumn_khachhang_so">so</string>
+    <string name="sql_coloumn_khachhang_duong">duong</string>
+    <string name="sql_coloumn_khachhang_phuong">phuong</string>
+    <string name="sql_coloumn_khachhang_quan">quan</string>
+    <string name="sql_coloumn_khachhang_sdt">sdt</string>
+    <string name="sql_coloumn_khachhang_hopdong">hopdong</string>
+    <string name="sql_coloumn_khachhang_gb">gb</string>
+    <string name="sql_coloumn_khachhang_dm">dm</string>
+    <string name="sql_coloumn_khachhang_sh">sh</string>
+    <string name="sql_coloumn_khachhang_sx">sx</string>
+    <string name="sql_coloumn_khachhang_dv">dv</string>
+    <string name="sql_coloumn_khachhang_hc">hc</string>
+    <string name="sql_coloumn_khachhang_hieu">hieu</string>
+    <string name="sql_coloumn_khachhang_co">co</string>
+    <string name="sql_coloumn_khachhang_sothan">sothan</string>
+    <string name="sql_coloumn_khachhang_chithan">chithan</string>
+    <string name="sql_coloumn_khachhang_dot">dot</string>
+    <string name="sql_coloumn_khachhang_may">may</string>
+    <!--sql column khachhang end-->
+
+    <!--sql column docso start-->
+    <string name="sql_coloumn_docso_cscu">cscu</string>
+    <string name="sql_coloumn_docso_csmoi">csmoi</string>
+    <string name="sql_coloumn_docso_tieuthucu">tieuthucu</string>
+    <string name="sql_coloumn_docso_tieuthumoi">tieuthumoi</string>
+    <string name="sql_coloumn_docso_tiennuoc">tiennuoc</string>
+    <string name="sql_coloumn_docso_thuevat">thue</string>
+    <string name="sql_coloumn_docso_phibvmt">bvmt</string>
+    <string name="sql_coloumn_docso_tongtien">tongtien</string>
+    <!--sql column docso end-->
+
+    <!--sql column lichsuds begin-->
+    <string name="sql_coloumn_lichsuds_nam">nam</string>
+    <string name="sql_coloumn_lichsuds_ky">ky</string>
+    <string name="sql_coloumn_lichsuds_nhanviends">nhanviends</string>
+    <!--sql column lichsuds end-->
+    <string name="sql_get_lichsuds">select top 1 * from &table_lichsuds; where dot = ? and may = ? order by nam desc, ky desc</string>
+    <string name="sql_get_khachhang">select * from &table_khachhang;
+        where danhba = ? and pin = ?</string>
+    <string name="sql_login">select danhba from &table_khachhang;
+        where danhba = ? and pin = ?</string>
+    <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
+    <!--sql end-->
+    <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
+    <string name="connect_message">Đang kết nối cơ sở dữ liệu...</string>
+    <string name="login_message">Đang kiểm tra thông tin đăng nhập...</string>
+
+    <!--string format begin-->
+    <string name="format_content_trangchu_danhbo">Danh bộ: %s</string>
+    <string name="format_content_trangchu_diachi">%s %s</string>
+    <string name="format_content_trangchu_sh">SH: %d%%</string>
+    <string name="format_content_trangchu_sx">SX: %d%%</string>
+    <string name="format_content_trangchu_dv">DV: %d%%</string>
+    <string name="format_content_trangchu_hc">HC: %d%%</string>
+    <string name="format_number">%d</string>
+    <string name="format_nav_tenkh_over">Xin chào %s...</string>
+    <string name="format_nav_tenkh">Xin chào %s</string>
+    <string name="format_number_two">%02d</string>
+    <string name="format_number_money">%s đ</string>
+    <string name="format_number_m3">%d m3</string>
+    <string name="format_new_line">\n%s</string>
+    <string name="format_newline_address">\n%s %s</string>
+    <string name="format_monthyear">%02d/%d</string>
+    <!--string format end-->
+
+
+    <string name="giabieu">Giá biểu</string>
+    <string name="dinhmuc">Đinh mức</string>
+    <string name="cscu">Chỉ số cũ</string>
+    <string name="csmoi">Chỉ số mới</string>
+    <string name="tieuthu">Tiêu thụ</string>
+    <string name="tongtien">Tổng tiền</string>
+    <string name="validate_tracuutiennuoc">Vui lòng chọn thời gian cần tra cứu</string>
+    <string name="tiennuoc">Tiền nước</string>
+    <string name="thueVAT">Thuế VAT</string>
+    <string name="phiBVMT">Phí BVMT</string>
+
 </resources>

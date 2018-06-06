@@ -87,9 +87,15 @@ public class HoaDonDB implements IDB<HoaDon, Boolean, String> {
     }
 
     @Override
-    public HoaDon find(String k) {
+    public HoaDon find(String s, String k1) {
         return null;
     }
+
+    @Override
+    public HoaDon find(String s, String k1, String k2) {
+        return null;
+    }
+
 
     @Override
     public List<HoaDon> getAll() {

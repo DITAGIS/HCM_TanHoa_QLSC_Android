@@ -117,9 +117,9 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
 
             LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
 
-            Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-            Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-            mMapView.setViewpointGeometryAsync(envelope1, 0);
+//            Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+//            Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
+//            mMapView.setViewpointGeometryAsync(envelope1, 0);
             // show CallOut
             mCallOut.setLocation(mPoint);
             mCallOut.setContent(linearLayout);

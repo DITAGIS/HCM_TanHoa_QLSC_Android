@@ -49,5 +49,28 @@
         <item name="android:background">@color/colorGray</item>
 
     </style>
+    <!--textview begin-->
+    <style name="MyTextAppearance.White" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+    </style>
+
+    <style name="MyTextAppearance.White.Bold" parent="@android:style/TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyTextAppearance.Black" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MyTextAppearance.Red" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">italic</item>
+        <item name="android:textColor">@color/colorRed</item>
+    </style>
+    <!--textview end-->
 
 </resources>

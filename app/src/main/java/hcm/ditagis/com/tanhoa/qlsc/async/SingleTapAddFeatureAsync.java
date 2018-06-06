@@ -293,7 +293,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
     @Override
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
 }

@@ -50,7 +50,6 @@ public class MapViewHandler extends Activity {
 
     private static final int REQUEST_ID_IMAGE_CAPTURE = 1;
     private static double DELTA_MOVE_Y = 0;//7000;
-    private final ArcGISMap mMap;
     private final FeatureLayer suCoTanHoaLayer;
     LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
     private FeatureLayerDTG mFeatureLayerDTG;
@@ -79,7 +78,6 @@ public class MapViewHandler extends Activity {
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
         this.mPopUp = popupInfos;
         this.mContext = mContext;
-        this.mMap = mMapView.getMap();
         this.suCoTanHoaLayer = featureLayerDTG.getFeatureLayer();
     }
 
@@ -118,7 +116,7 @@ public class MapViewHandler extends Activity {
             int tolerance = 10;
             double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
             // create objects required to do a selection with a query
-            Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, mMap.getSpatialReference());
+            Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, mMapView.getMap().getSpatialReference());
             QueryParameters query = new QueryParameters();
             query.setGeometry(envelope);
             // add done loading listener to fire when the selection returns

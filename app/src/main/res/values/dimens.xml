@@ -24,5 +24,8 @@
     <dimen name="margin_popup">20dp</dimen>
     <dimen name="width_title_item_docso">100dp</dimen>
     <dimen name="width_title_item_popup">100dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="padding_layout">20dp</dimen>
 
 </resources>
