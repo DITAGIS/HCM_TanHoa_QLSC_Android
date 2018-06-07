@@ -44,6 +44,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_reload"
+            android:icon="@drawable/ic_refresh"
+            android:title="@string/nav_refresh" />
+        <item
             android:id="@+id/nav_delete_searching"
             android:icon="@drawable/ic_delete"
             android:title="@string/nav_xoa_tim_kiem" />

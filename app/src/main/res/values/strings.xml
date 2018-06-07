@@ -49,18 +49,18 @@
     <string name="ALIAS_GIAO_THONG">Giao thông</string>
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
+    <string name="URL_DIEM_SU_CO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
     <string name="URL_DONG_HO_KHACH_HANG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
     <string name="URL_DONG_HO_TONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
     <string name="URL_ONG_NGANH">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
     <string name="URL_ONG_PHAN_PHOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
     <string name="URL_ONG_TRUYEN_DAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
     <string name="URL_MOI_NOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
-    <string name="URL_DIEM_SU_CO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
-    <string name="URL_TRU_HONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
-    <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
-    <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
-    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/11</string>
+    <string name="URL_TRU_HONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/6</string>
+    <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
+    <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
+    <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
+    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
     <string name="URL_THUA_DAT">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
     <string name="URL_SONG_HO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
     <string name="URL_GIAO_THONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
@@ -89,6 +89,7 @@
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
 
     <!--navigation-->
+    <string name="nav_refresh">Làm mới dữ liệu</string>
     <string name="nav_tra_cuu">Tra cứu</string>
     <string name="nav_find_route">Tìm đường đi</string>
     <string name="nav_xoa_tim_kiem">Xóa các tìm kiếm</string>
@@ -153,6 +154,7 @@
     <!--activity end-->
     <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ...</string>
     <string name="change_password_message">Đang đổi mật khẩu...</string>
+    <string name="preparing">Đang khởi tạo bản đồ...</string>
     <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
@@ -199,6 +201,8 @@
 					 where u.username = ? and u.pass = ?</string>
     <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
     <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
+
+    <string name="sql_select_ma_dma">  select madma from dma  order by madma asc</string>
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
     <string name="connect_message">Đang kết nối cơ sở dữ liệu...</string>
@@ -234,5 +238,6 @@
     <string name="thueVAT">Thuế VAT</string>
     <string name="phiBVMT">Phí BVMT</string>
     <string name="encode_string">DITAGIS*#</string>
+
 
 </resources>

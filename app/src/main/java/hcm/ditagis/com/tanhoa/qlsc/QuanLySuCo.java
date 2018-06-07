@@ -82,7 +82,9 @@ import java.util.List;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
+import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
@@ -91,11 +93,12 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
-public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
-
+public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
+    private List<String> mListDMA;
     private Uri mUri;
     private Popup popupInfos;
     private MapView mMapView;
+    private ArcGISMap mMap;
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private MapViewHandler mMapViewHandler;
@@ -144,151 +147,64 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
+
+        requestPermisson();
+
+        final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
+            @Override
+            public void processFinish(List<String> output) {
+                if (output != null) {
+                    mListDMA = output;
+                    prepare();
+                }
+            }
+        });
+        if (CheckConnectInternet.isOnline(this))
+            preparingAsycn.execute();
+
+
+    }
+
+    private void prepare() {
         // create an empty map instance
         setLicense();
-        final ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
-        mGeocoder = new Geocoder(this);
+        mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
+        mGeocoder = new Geocoder(QuanLySuCo.this);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         mAnimationFabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
         mAnimationFabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         mAnimationClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
         mAnimationAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anticlock);
-        //for camera
+
+        //for camera begin
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        this.mListViewSearch = findViewById(R.id.lstview_search);
+        //for camera end
+        mListViewSearch = findViewById(R.id.lstview_search);
         //đưa listview search ra phía sau
-        this.mListViewSearch.invalidate();
+        mListViewSearch.invalidate();
         List<TraCuuAdapter.Item> items = new ArrayList<>();
-        this.mSearchAdapter = new TraCuuAdapter(QuanLySuCo.this, items);
-        this.mListViewSearch.setAdapter(mSearchAdapter);
-        this.mListViewSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));
-                int objectID = item.getObjectID();
-                if (objectID != -1) {
-                    mMapViewHandler.queryByObjectID(objectID);
-                    mSearchAdapter.clear();
-                    mSearchAdapter.notifyDataSetChanged();
-                }
-                //tìm kiếm địa chỉ
-                else {
-                    setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
-                }
-            }
-        });
-        requestPermisson();
+        mSearchAdapter = new TraCuuAdapter(QuanLySuCo.this, items);
+        mListViewSearch.setAdapter(mSearchAdapter);
+        mListViewSearch.setOnItemClickListener(QuanLySuCo.this);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(QuanLySuCo.this,
+                drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(QuanLySuCo.this);
         mMapView = findViewById(R.id.mapView);
 
-
-        // config feature layer service
-        List<Config> configs = ListConfig.getInstance(this).getConfigs();
-        mFeatureLayerDTGS = new ArrayList<>();
-        for (Config config : configs) {
-            ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
-
-            FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH)))
-                featureLayer.setOpacity(0.7f);
-            featureLayer.setName(config.getAlias());
-            featureLayer.setMaxScale(0);
-
-            featureLayer.setMinScale(1000000);
-            FeatureLayerDTG featureLayerDTG = new FeatureLayerDTG(featureLayer);
-            featureLayerDTG.setOutFields(config.getOutField());
-            featureLayerDTG.setQueryFields(config.getQueryField());
-            featureLayerDTG.setTitleLayer(featureLayer.getName());
-            featureLayerDTG.setUpdateFields(config.getUpdateField());
-            mFeatureLayerDTG = featureLayerDTG;
-            if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
-                featureLayer.setId(config.getName());
-                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
-                featureLayer.setPopupEnabled(true);
-                setRendererSuCoFeatureLayer(featureLayer);
-                mCallout = mMapView.getCallout();
-
-                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
-                mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();
-            }
-
-            mFeatureLayerDTGS.add(mFeatureLayerDTG);
-            mMap.getOperationalLayers().add(featureLayer);
-
-        }
-        mMapView.setMap(mMap);
-        mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
-        final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
+        setService();
         mMap.addDoneLoadingListener(new Runnable() {
             @Override
             public void run() {
-                LinearLayout linnearDisplayLayer = findViewById(R.id.linnearDisplayLayer);
-                LinearLayout linnearDisplayLayer1 = findViewById(R.id.linnearDisplayLayer1);
-                LayerList layers = mMap.getOperationalLayers();
-                int states[][] = {{android.R.attr.state_checked}, {}};
-                int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
-                for (final Layer layer : layers) {
-                    final CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
-                    checkBox.setText(layer.getName());
-                    checkBox.setChecked(false);
-                    layer.setVisible(false);
-                    CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
-                    checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                        @Override
-                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                            if (buttonView.isChecked()) {
-                                for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
-                                    if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
-                                            && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
-                                        tmpFeatureLayerDTGs.add(featureLayerDTG);
-                                        layer.setVisible(true);
-                                        break;
-                                    }
-
-                            } else {
-                                for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
-                                    if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
-                                            && tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
-                                        tmpFeatureLayerDTGs.remove(featureLayerDTG);
-                                        layer.setVisible(false);
-                                        break;
-                                    }
-
-                            }
-                            mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
-
-                        }
-                    });
-                    if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
-                            || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
-                            || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
-                            || layer.getName().equals(getString(R.string.ALIAS_HANH_CHINH)))
-                        linnearDisplayLayer1.addView(checkBox);
-                    else
-                        linnearDisplayLayer.addView(checkBox);
-                }
-//                for (int i = 0; i < linnearDisplayLayer.getChildCount(); i++) {
-//                    View v = linnearDisplayLayer.getChildAt(i);
-//                    if (v instanceof CheckBox) {
-//                        if (((CheckBox) v).getText().equals(getString(R.string.ALIAS_DIEM_SU_CO)))
-//                            ((CheckBox) v).setChecked(true);
-//                        else ((CheckBox) v).setChecked(false);
-//                    }
-//                }
+                handleArcgisMapDoneLoading();
             }
         });
         changeStatusOfLocationDataSource();
-
         final EditText edit_latitude_vido = findViewById(R.id.edit_latitude_vido);
         final EditText edit_longtitude_kinhdo = findViewById(R.id.edit_longtitude_kinhdo);
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
@@ -354,6 +270,96 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
 
         optionSearchFeature();
+    }
+
+    private void setService() {
+        // config feature layer service
+        List<Config> configs = ListConfig.getInstance(this).getConfigs();
+        mFeatureLayerDTGS = new ArrayList<>();
+        for (Config config : configs) {
+            ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
+
+            FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH)))
+                featureLayer.setOpacity(0.7f);
+            featureLayer.setName(config.getAlias());
+            featureLayer.setMaxScale(0);
+
+            featureLayer.setMinScale(1000000);
+            FeatureLayerDTG featureLayerDTG = new FeatureLayerDTG(featureLayer);
+            featureLayerDTG.setOutFields(config.getOutField());
+            featureLayerDTG.setQueryFields(config.getQueryField());
+            featureLayerDTG.setTitleLayer(featureLayer.getName());
+            featureLayerDTG.setUpdateFields(config.getUpdateField());
+            mFeatureLayerDTG = featureLayerDTG;
+            if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
+                featureLayer.setId(config.getName());
+                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
+                featureLayer.setPopupEnabled(true);
+                setRendererSuCoFeatureLayer(featureLayer);
+                mCallout = mMapView.getCallout();
+
+                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
+                mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();
+            }
+
+            mFeatureLayerDTGS.add(mFeatureLayerDTG);
+            mMap.getOperationalLayers().add(featureLayer);
+
+        }
+        mMapView.setMap(mMap);
+        mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
+    }
+
+    private void handleArcgisMapDoneLoading() {
+        final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
+        LinearLayout linnearDisplayLayer = findViewById(R.id.linnearDisplayLayer);
+        LinearLayout linnearDisplayLayer1 = findViewById(R.id.linnearDisplayLayer1);
+        LayerList layers = mMap.getOperationalLayers();
+        int states[][] = {{android.R.attr.state_checked}, {}};
+        int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
+        for (final Layer layer : layers) {
+            final CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
+            checkBox.setText(layer.getName());
+            checkBox.setChecked(false);
+            layer.setVisible(false);
+            CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                    if (buttonView.isChecked()) {
+                        for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
+                            if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
+                                    && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
+                                tmpFeatureLayerDTGs.add(featureLayerDTG);
+                                layer.setVisible(true);
+                                break;
+                            }
+
+                    } else {
+                        for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
+                            if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
+                                    && tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
+                                tmpFeatureLayerDTGs.remove(featureLayerDTG);
+                                layer.setVisible(false);
+                                break;
+                            }
+
+                    }
+                    mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
+
+                }
+            });
+            if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
+                    || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
+                    || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
+                    || layer.getName().equals(getString(R.string.ALIAS_HANH_CHINH)))
+                linnearDisplayLayer1.addView(checkBox);
+            else
+                linnearDisplayLayer.addView(checkBox);
+        }
     }
 
     private void setLicense() {
@@ -571,6 +577,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.nav_change_password:
                 Intent intentChangePassword = new Intent(this, DoiMatKhauActivity.class);
                 startActivity(intentChangePassword);
+                break;
+            case R.id.nav_reload:
+                if (CheckConnectInternet.isOnline(this))
+                    prepare();
                 break;
             case R.id.nav_logOut:
                 this.finish();
@@ -938,6 +948,21 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             } else {
                 MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
             }
+        }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));
+        int objectID = item.getObjectID();
+        if (objectID != -1) {
+            mMapViewHandler.queryByObjectID(objectID);
+            mSearchAdapter.clear();
+            mSearchAdapter.notifyDataSetChanged();
+        }
+        //tìm kiếm địa chỉ
+        else {
+            setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
         }
     }
 }

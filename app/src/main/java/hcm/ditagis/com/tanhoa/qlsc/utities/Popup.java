@@ -82,16 +82,19 @@ public class Popup extends AppCompatActivity {
         this.mFeatureLayerDTG = layerDTG;
     }
 
-    private void refressPopup() {
+    private void refreshPopup() {
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
         ListView listView = mLinearLayout.findViewById(R.id.lstview_thongtinsuco);
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
+            if (field.getFieldType() == Field.Type.GLOBALID)
+                continue;
             Object value = attributes.get(field.getName());
             if (value != null) {
                 FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
+
                 item.setAlias(field.getAlias());
                 item.setFieldName(field.getName());
                 if (item.getFieldName().equals(typeIdField)) {
@@ -111,7 +114,6 @@ public class Popup extends AppCompatActivity {
                         break;
                     case OID:
                     case TEXT:
-//                    case GLOBALID:
                         item.setValue(value.toString());
                         break;
                     case SHORT:
@@ -138,7 +140,7 @@ public class Popup extends AppCompatActivity {
         }
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
         mLinearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
-        refressPopup();
+        refreshPopup();
         ((TextView) mLinearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
         if (mCallout != null) mCallout.dismiss();
         if (name.equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
@@ -157,7 +159,7 @@ public class Popup extends AppCompatActivity {
                     deleteFeature();
                 }
             });
-        }else{
+        } else {
             ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
             ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
         }
@@ -256,7 +258,7 @@ public class Popup extends AppCompatActivity {
 //
 //                editAsync.execute(mFeatureViewMoreInfoAdapter);
                 mDialog = dialog;
-//                        refressPopup();
+//                        refreshPopup();
 //                dialog.dismiss();
             }
         });
