@@ -4,6 +4,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="license">runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169</string>
     <string name="action_search">Tìm kiếm</string>
+    <string name="changepassword_oldpassword">Nhập mật khẩu cũ</string>
+    <string name="changepassword_newpassword">Nhập mật khẩu mới</string>
+    <string name="changepassword_newpasswordconfirm">Nhập lại mật khẩu mới</string>
+
+    <string name="validate_change_password">Mật khẩu mới không khớp</string>
+    <string name="validate_change_password_fail">Đổi mật khẩu thất bại</string>
+    <string name="validate_change_password_lack">Mật khẩu phải đủ 6 ký tự</string>
+    <string name="validate_password_old">Mật khẩu cũ không đúng</string>
 
     <string name="app_name">Quản lý sự cố TH</string>
     <string name="dialog_title_add">Thêm sự cố</string>
@@ -86,6 +94,7 @@
     <string name="nav_xoa_tim_kiem">Xóa các tìm kiếm</string>
     <string name="nav_an_hien_nut_chuc_nang">Ẩn/hiện nút chức năng</string>
     <string name="nav_cai_dat">Cài đặt</string>
+    <string name="nav_change_password">Đổi mật khẩu</string>
     <string name="nav_log_out">Đăng xuất</string>
     <string name="nav_cai_dat_them_su_co_title">Phương thức thêm điểm sự cố</string>
     <string name="nav_cai_dat_tim_kiem_title">Tùy chọn tìm kiếm</string>
@@ -142,7 +151,8 @@
     <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
 
     <!--activity end-->
-
+    <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ...</string>
+    <string name="change_password_message">Đang đổi mật khẩu...</string>
     <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
@@ -187,6 +197,7 @@
 					 left join GroupRole gr
 					 on ug.GroupID = gr.GroupID
 					 where u.username = ? and u.pass = ?</string>
+    <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
     <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>

@@ -568,6 +568,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 intent = new Intent(this, SettingsActivity.class);
                 this.startActivityForResult(intent, 1);
                 break;
+            case R.id.nav_change_password:
+                Intent intentChangePassword = new Intent(this, DoiMatKhauActivity.class);
+                startActivity(intentChangePassword);
+                break;
             case R.id.nav_logOut:
                 this.finish();
                 break;

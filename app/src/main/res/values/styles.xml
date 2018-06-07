@@ -7,9 +7,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <style name="generalnotitle" parent="Theme.AppCompat.Light" >
+
+    <style name="generalnotitle" parent="Theme.AppCompat.Light">
         <item name="android:windowNoTitle">true</item>   <!-- //this -->
     </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -70,6 +72,16 @@
         <item name="android:textSize">17sp</item>
         <item name="android:textStyle">italic</item>
         <item name="android:textColor">@color/colorRed</item>
+    </style>
+
+    <style name="MyTextAppearance.Blue" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="MyTextAppearance.Blue.Big" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
     <!--textview end-->
 
