@@ -7,13 +7,17 @@
     <string name="changepassword_oldpassword">Nhập mật khẩu cũ</string>
     <string name="changepassword_newpassword">Nhập mật khẩu mới</string>
     <string name="changepassword_newpasswordconfirm">Nhập lại mật khẩu mới</string>
-
+    <string name="title_layer">Điểm sự cố</string>
     <string name="validate_change_password">Mật khẩu mới không khớp</string>
     <string name="validate_change_password_fail">Đổi mật khẩu thất bại</string>
     <string name="validate_change_password_lack">Mật khẩu phải đủ 6 ký tự</string>
     <string name="validate_password_old">Mật khẩu cũ không đúng</string>
 
     <string name="app_name">Quản lý sự cố TH</string>
+    <string name="OBJECTID">OBJECTID</string>
+    <string name="IDSUCO">IDSuCo</string>
+    <string name="NGAYXAYRA">NgayXayRa</string>
+    <string name="VITRI">ViTri</string>
     <string name="dialog_title_add">Thêm sự cố</string>
     <string name="btn_OK">OK</string>
     <string name="btn_save">Lưu thay đổi</string>
@@ -239,5 +243,16 @@
     <string name="phiBVMT">Phí BVMT</string>
     <string name="encode_string">DITAGIS*#</string>
 
+    <string name="nav_thong_ke_tong_diem">Tổng số lượng: </string>
+    <!--async-->
+    <!--Route end-->
 
+    <!--display process status -->
+    <string name="DATA_SUCCESSFULLY_INSERTED">Thêm dữ liệu thành công</string>
+    <string name="FAILED_TO_INSERT_DATA">Thêm dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_DELETED">Xóa dữ liệu thành công </string>
+    <string name="FAILED_TO_DELETE_DATA">Xóa dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_UPDATED">Cập nhật dữ liệu thành công </string>
+    <string name="FAILED_TO_UPDATE_DATA">Cập nhật dữ liệu không thành công</string>
+    <string name="INCORRECT_INPUT_FORMAT">Số liệu nhập vào không đúng định dạng!!!</string>
 </resources>
