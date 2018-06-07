@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -48,8 +49,8 @@ public class ThongKeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_ke);
-        mChuaSuaChua = mDangSuaChua = mDaSuaChua = mHoanThanh = 0;
-        mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.service_feature_table));
+
+        mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.URL_DIEM_SU_CO));
         TimePeriodReport timePeriodReport = new TimePeriodReport(this);
         List<ThongKeAdapter.Item> items = timePeriodReport.getItems();
         mThongKeAdapter = new ThongKeAdapter(this, items);
@@ -190,6 +191,7 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private void query(ThongKeAdapter.Item item) {
+        mChuaSuaChua = mDangSuaChua = mDaSuaChua = mHoanThanh = 0;
         ((TextView) ThongKeActivity.this.findViewById(R.id.txt_thongke_mota)).setText(item.getMota());
         TextView txtThoiGian = ThongKeActivity.this.findViewById(R.id.txt_thongke_thoigian);
         if (item.getThoigianhienthi() == null) txtThoiGian.setVisibility(View.GONE);
@@ -202,16 +204,27 @@ public class ThongKeActivity extends AppCompatActivity {
             whereClause = "1 = 1";
         else
             whereClause = "NgayCapNhat" + " >= date '" + item.getThoigianbatdau() + "' and " + "NgayCapNhat" + " <= date '" + item.getThoigianketthuc() + "'";
+
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(whereClause);
-        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+
+        List<String> outFields = new ArrayList<>();
+        outFields.add(getString(R.string.trangthai));
+
+//        final ListenableFuture<FeatureQueryResult> feature =
+//                mServiceFeatureTable.populateFromServiceAsync(queryParameters, true, outFields);
+        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {
                 try {
                     FeatureQueryResult result = feature.get();
-                    for (Object i : result) {
-                        Feature item = (Feature) i;
+                    Iterator<Feature> iterator = result.iterator();
+                    Feature item;
+                    while (iterator.hasNext()){
+                        item = iterator.next();
+//                    for (Object i : result) {
+//                        Feature item = (Feature) i;
                         Object value = item.getAttributes().get(getString(R.string.trangthai));
                         int trangThai = getResources().getInteger(R.integer.trang_thai_chua_sua_chua);
                         if (value != null)
@@ -219,11 +232,11 @@ public class ThongKeActivity extends AppCompatActivity {
 
                         if (trangThai == getResources().getInteger(R.integer.trang_thai_chua_sua_chua))
                             mChuaSuaChua++;
-                        if (trangThai == getResources().getInteger(R.integer.trang_thai_dang_sua_chua))
+                        else if (trangThai == getResources().getInteger(R.integer.trang_thai_dang_sua_chua))
                             mDangSuaChua++;
-                        if (trangThai == getResources().getInteger(R.integer.trang_thai_da_sua_chua))
+                        else if (trangThai == getResources().getInteger(R.integer.trang_thai_da_sua_chua))
                             mDaSuaChua++;
-                        if (trangThai == getResources().getInteger(R.integer.trang_thai_hoan_thanh))
+                        else if (trangThai == getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                             mHoanThanh++;
                     }
                     displayReport();
@@ -241,7 +254,7 @@ public class ThongKeActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void displayReport() {
-        int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mDangSuaChua + mHoanThanh;
+        int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mDaSuaChua + mHoanThanh;
         mTxtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai);
         mTxtChuaSua.setText(mChuaSuaChua + "");
         mTxtDangSua.setText(mDangSuaChua + "");

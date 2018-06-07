@@ -3,7 +3,6 @@ package hcm.ditagis.com.tanhoa.qlsc.connectDB;
 import android.content.Context;
 import android.os.StrictMode;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.EncodeMD5;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 
 public class LoginDB implements IDB<KhachHang, Boolean, String> {
@@ -22,6 +22,7 @@ public class LoginDB implements IDB<KhachHang, Boolean, String> {
     public LoginDB(Context mContext) {
         this.mContext = mContext;
     }
+
     @Override
     public Boolean add(KhachHang khachHang) {
         return null;
@@ -38,10 +39,8 @@ public class LoginDB implements IDB<KhachHang, Boolean, String> {
     }
 
 
-
-
     @Override
-    public KhachHang find(String danhBo, String pin) {
+    public KhachHang find(String userName, String passWord) {
         Connection cnn = ConnectionDB.getInstance().getConnection();
         KhachHang khachHang = null;
         ResultSet rs = null;
@@ -52,14 +51,23 @@ public class LoginDB implements IDB<KhachHang, Boolean, String> {
             StrictMode.setThreadPolicy(policy);
             String query = mContext.getString(R.string.sql_login);
             PreparedStatement mStatement = cnn.prepareStatement(query);
-            mStatement.setString(1, danhBo);
-            mStatement.setString(2, pin);
+
+            String passEncoded1 = (new EncodeMD5()).encode(passWord);
+            String passEncoded2 = (new EncodeMD5()).encode(passEncoded1 + mContext.getString(R.string.encode_string));
+            String passEncoded = (passEncoded1 + ":" + passEncoded2).replace("-", "");
+
+
+            mStatement.setString(1, userName);
+            mStatement.setString(2, passEncoded);
             rs = mStatement.executeQuery();
 
             while (rs.next()) {
 
                 khachHang = new KhachHang();
-                khachHang.setDanhBa(danhBo);
+                khachHang.setDisplayName(rs.getString(mContext.getString(R.string.sql_coloumn_login_displayname)));
+                khachHang.setTanBinh(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanbinh)));
+                khachHang.setTanPhu(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanphu)));
+                khachHang.setPhuNhuan(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_phunhuan)));
             }
         } catch (SQLException e1) {
             e1.printStackTrace();

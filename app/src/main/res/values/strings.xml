@@ -154,28 +154,12 @@
     <string name="sql_table_name_hinhdhn">&table_hinhdhn;</string>
     <string name="sql_table_name_lichsuds">&table_lichsuds;</string>
 
-    <!--sql column khachhang begin-->
-    <string name="sql_coloumn_khachhang_hieuluc">hieuluc</string>
-    <string name="sql_coloumn_khachhang_tenkh">tenkh</string>
-    <string name="sql_coloumn_khachhang_so">so</string>
-    <string name="sql_coloumn_khachhang_duong">duong</string>
-    <string name="sql_coloumn_khachhang_phuong">phuong</string>
-    <string name="sql_coloumn_khachhang_quan">quan</string>
-    <string name="sql_coloumn_khachhang_sdt">sdt</string>
-    <string name="sql_coloumn_khachhang_hopdong">hopdong</string>
-    <string name="sql_coloumn_khachhang_gb">gb</string>
-    <string name="sql_coloumn_khachhang_dm">dm</string>
-    <string name="sql_coloumn_khachhang_sh">sh</string>
-    <string name="sql_coloumn_khachhang_sx">sx</string>
-    <string name="sql_coloumn_khachhang_dv">dv</string>
-    <string name="sql_coloumn_khachhang_hc">hc</string>
-    <string name="sql_coloumn_khachhang_hieu">hieu</string>
-    <string name="sql_coloumn_khachhang_co">co</string>
-    <string name="sql_coloumn_khachhang_sothan">sothan</string>
-    <string name="sql_coloumn_khachhang_chithan">chithan</string>
-    <string name="sql_coloumn_khachhang_dot">dot</string>
-    <string name="sql_coloumn_khachhang_may">may</string>
-    <!--sql column khachhang end-->
+    <!--sql column login begin-->
+    <string name="sql_coloumn_login_displayname">namedisplay</string>
+    <string name="sql_coloumn_login_tanbinh">tanbinh</string>
+    <string name="sql_coloumn_login_tanphu">tanphu</string>
+    <string name="sql_coloumn_login_phunhuan">phunhuan</string>
+    <!--sql column login end-->
 
     <!--sql column docso start-->
     <string name="sql_coloumn_docso_cscu">cscu</string>
@@ -196,8 +180,13 @@
     <string name="sql_get_lichsuds">select top 1 * from &table_lichsuds; where dot = ? and may = ? order by nam desc, ky desc</string>
     <string name="sql_get_khachhang">select * from &table_khachhang;
         where danhba = ? and pin = ?</string>
-    <string name="sql_login">select danhba from &table_khachhang;
-        where danhba = ? and pin = ?</string>
+    <string name="sql_login">select *
+					 from Users u
+					 left join UserInGroup ug
+					 on ug.UserID = u.id
+					 left join GroupRole gr
+					 on ug.GroupID = gr.GroupID
+					 where u.username = ? and u.pass = ?</string>
     <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
@@ -233,5 +222,6 @@
     <string name="tiennuoc">Tiền nước</string>
     <string name="thueVAT">Thuế VAT</string>
     <string name="phiBVMT">Phí BVMT</string>
+    <string name="encode_string">DITAGIS*#</string>
 
 </resources>
