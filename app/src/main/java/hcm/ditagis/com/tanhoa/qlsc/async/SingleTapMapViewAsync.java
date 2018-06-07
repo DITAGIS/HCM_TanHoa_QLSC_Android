@@ -8,7 +8,6 @@ import android.widget.LinearLayout;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
-import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.GeoElement;
@@ -64,6 +63,10 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     @Override
     protected Void doInBackground(Point... params) {
         mPoint = params[0];
+        if (mFeatureLayerDTGs == null) {
+            publishProgress(null);
+            return null;
+        }
         final int[] isIdentified = {mFeatureLayerDTGs.size()};
         for (final FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
             if (isIdentified[0] > 0) {
@@ -96,7 +99,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
                         }
                     }
                 });
-            }
+            } else
+                publishProgress(null);
         }
         return null;
     }

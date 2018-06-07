@@ -7,17 +7,13 @@
     <string name="changepassword_oldpassword">Nhập mật khẩu cũ</string>
     <string name="changepassword_newpassword">Nhập mật khẩu mới</string>
     <string name="changepassword_newpasswordconfirm">Nhập lại mật khẩu mới</string>
-    <string name="title_layer">Điểm sự cố</string>
+
     <string name="validate_change_password">Mật khẩu mới không khớp</string>
     <string name="validate_change_password_fail">Đổi mật khẩu thất bại</string>
     <string name="validate_change_password_lack">Mật khẩu phải đủ 6 ký tự</string>
     <string name="validate_password_old">Mật khẩu cũ không đúng</string>
 
     <string name="app_name">Quản lý sự cố TH</string>
-    <string name="OBJECTID">OBJECTID</string>
-    <string name="IDSUCO">IDSuCo</string>
-    <string name="NGAYXAYRA">NgayXayRa</string>
-    <string name="VITRI">ViTri</string>
     <string name="dialog_title_add">Thêm sự cố</string>
     <string name="btn_OK">OK</string>
     <string name="btn_save">Lưu thay đổi</string>
@@ -64,7 +60,7 @@
     <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
     <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
     <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
+    <string name="URL_DMA">https://sawagis.vn/arcgis/rest/services/ChoLon/ChoLonGIS/FeatureServer/15</string>
     <string name="URL_THUA_DAT">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
     <string name="URL_SONG_HO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
     <string name="URL_GIAO_THONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
@@ -243,16 +239,5 @@
     <string name="phiBVMT">Phí BVMT</string>
     <string name="encode_string">DITAGIS*#</string>
 
-    <string name="nav_thong_ke_tong_diem">Tổng số lượng: </string>
-    <!--async-->
-    <!--Route end-->
 
-    <!--display process status -->
-    <string name="DATA_SUCCESSFULLY_INSERTED">Thêm dữ liệu thành công</string>
-    <string name="FAILED_TO_INSERT_DATA">Thêm dữ liệu không thành công</string>
-    <string name="DATA_SUCCESSFULLY_DELETED">Xóa dữ liệu thành công </string>
-    <string name="FAILED_TO_DELETE_DATA">Xóa dữ liệu không thành công</string>
-    <string name="DATA_SUCCESSFULLY_UPDATED">Cập nhật dữ liệu thành công </string>
-    <string name="FAILED_TO_UPDATE_DATA">Cập nhật dữ liệu không thành công</string>
-    <string name="INCORRECT_INPUT_FORMAT">Số liệu nhập vào không đúng định dạng!!!</string>
 </resources>

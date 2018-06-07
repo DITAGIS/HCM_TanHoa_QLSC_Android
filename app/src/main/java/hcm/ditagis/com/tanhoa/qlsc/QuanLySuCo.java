@@ -308,13 +308,15 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         }
         mMapView.setMap(mMap);
-        mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
+//        mMapViewHandler.setFeatureLayerDTGs(mFeatureLayerDTGS);
     }
 
     private void handleArcgisMapDoneLoading() {
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
         LinearLayout linnearDisplayLayer = findViewById(R.id.linnearDisplayLayer);
+        linnearDisplayLayer.removeAllViews();
         LinearLayout linnearDisplayLayer1 = findViewById(R.id.linnearDisplayLayer1);
+        linnearDisplayLayer1.removeAllViews();
         LayerList layers = mMap.getOperationalLayers();
         int states[][] = {{android.R.attr.state_checked}, {}};
         int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
@@ -562,10 +564,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 Intent intent = new Intent(this, ThongKeActivity.class);
                 this.startActivity(intent);
                 break;
-            case R.id.nav_tracuu:
-                intent = new Intent(this, TraCuuActivity.class);
-                this.startActivityForResult(intent, 1);
-                break;
+//            case R.id.nav_tracuu:
+//                intent = new Intent(this, TraCuuActivity.class);
+//                this.startActivityForResult(intent, 1);
+//                break;
             case R.id.nav_find_route:
                 intent = new Intent(this, FindRouteActivity.class);
                 this.startActivity(intent);

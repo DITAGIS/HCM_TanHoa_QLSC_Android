@@ -7,9 +7,9 @@
     <LinearLayout
         android:id="@+id/layout_edit_viewmoreinfo_Editext"
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/etxt_edit_viewmoreinfo"
@@ -20,6 +20,7 @@
 
 
     </LinearLayout>
+
     <FrameLayout
 
         android:id="@+id/layout_edit_viewmoreinfo_TextView"
@@ -36,78 +37,24 @@
             android:paddingLeft="20dp"
             android:text="ádfdasf"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-        <ImageView
-            android:id="@+id/img_selectTime"
+
+        <Button
+            android:id="@+id/btn_edit_viewmoreinfo"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="right|end"
             android:layout_marginRight="20dp"
-            android:src="@drawable/ic_calendar" />
+            android:text="..."
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
     </FrameLayout>
-    <LinearLayout
-        android:id="@+id/layout_edit_queryDateTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/txt_edit_viewmoreinfoBegin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:paddingLeft="20dp"
-                android:text="Từ ngày"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ImageView
-                android:id="@+id/img_selectTimeBegin"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="right|end"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/ic_calendar" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/txt_edit_viewmoreinfoEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1"
-                android:paddingLeft="20dp"
-                android:text="Đến ngày"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <ImageView
-                android:id="@+id/img_selectTimeEnd"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="right|end"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/ic_calendar" />
-        </LinearLayout>
-
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_edit_viewmoreinfo_Spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:orientation="vertical">
 
         <Spinner
             android:id="@+id/spin_edit_viewmoreinfo"

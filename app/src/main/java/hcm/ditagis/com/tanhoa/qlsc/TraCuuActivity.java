@@ -62,7 +62,7 @@ private List<String> mLstFeatureType;
                 builder.setView(layout);
                 final android.widget.FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
                 final android.widget.TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
-//                final Button button = layout.findViewById(R.id.);
+                final Button button = layout.findViewById(R.id.btn_edit_viewmoreinfo);
                 final android.widget.LinearLayout layoutEditText = layout.findViewById(R.id.layout_edit_viewmoreinfo_Editext);
                 final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
                 final android.widget.LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
@@ -93,27 +93,27 @@ private List<String> mLstFeatureType;
                     case DATE:
                         layoutTextView.setVisibility(View.VISIBLE);
                         textView.setText(item.getValue());
-//                        button.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                final View dialogView = View.inflate(TraCuuActivity.this, R.layout.date_time_picker, null);
-//                                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(TraCuuActivity.this).create();
-//                                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View view) {
-//                                        DatePicker datePicker =  dialogView.findViewById(R.id.date_picker);
-//
-//                                        String s = String.format("%02d_%02d_%d",
-//                                                datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
-//
-//                                        textView.setText(s);
-//                                        alertDialog.dismiss();
-//                                    }
-//                                });
-//                                alertDialog.setView(dialogView);
-//                                alertDialog.show();
-//                            }
-//                        });
+                        button.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                final View dialogView = View.inflate(TraCuuActivity.this, R.layout.date_time_picker, null);
+                                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(TraCuuActivity.this).create();
+                                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        DatePicker datePicker =  dialogView.findViewById(R.id.date_picker);
+
+                                        String s = String.format("%02d_%02d_%d",
+                                                datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+
+                                        textView.setText(s);
+                                        alertDialog.dismiss();
+                                    }
+                                });
+                                alertDialog.setView(dialogView);
+                                alertDialog.show();
+                            }
+                        });
                         break;
                     case TEXT:
                         layoutEditText.setVisibility(View.VISIBLE);
