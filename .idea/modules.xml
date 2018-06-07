@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/HCM_TanHoa_QLSC_Android.iml" filepath="$PROJECT_DIR$/HCM_TanHoa_QLSC_Android.iml" />
+      <module fileurl="file://D:\congviec\ditagis\TanHoa\TanHoa_QuanLySuCo_Android\HCM_TanHoa_QLSC_Android.iml" filepath="D:\congviec\ditagis\TanHoa\TanHoa_QuanLySuCo_Android\HCM_TanHoa_QLSC_Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TanHoa_QuanLySuCo_Android.iml" filepath="$PROJECT_DIR$/TanHoa_QuanLySuCo_Android.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
