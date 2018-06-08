@@ -740,7 +740,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 break;
             case R.id.img_layvitri:
 //                mMapViewHandler.capture();
-                kiemTraQuyenCapNhat();
                 ServiceFeatureTable layerHanhChinh = null;
                 for (FeatureLayerDTG feature:
                         this.mFeatureLayerDTGS) {
@@ -760,7 +759,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     queryParam.setGeometry(diemBaoSuCo);
 
 
-                    StringBuilder queryBuilder = new StringBuilder();
                     //nếu tài khoản có quyền truy cập vào
                     List<String> wheres = new ArrayList<>();
                     if(khachHangDangNhap.isPhuNhuan()){
@@ -785,7 +783,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 if(soLuong > 0){
                                     capture();
                                 }else{
-                                    Toast.makeText(QuanLySuCo.this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG);
+                                    Toast.makeText(QuanLySuCo.this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG).show();
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -795,7 +793,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         }
                     });
                 }else{
-                    Toast.makeText(this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG);
+                    Toast.makeText(this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG).show();
                 }
 
 
@@ -843,9 +841,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         }
     }
 
-    private boolean kiemTraQuyenCapNhat() {
-       return false;
-    }
 
     public void capture() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);

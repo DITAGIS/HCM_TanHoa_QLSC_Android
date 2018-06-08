@@ -33,8 +33,11 @@ import com.esri.arcgisruntime.data.Domain;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
+import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 
 import java.io.File;
@@ -51,6 +54,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class Popup extends AppCompatActivity {
@@ -89,8 +93,7 @@ public class Popup extends AppCompatActivity {
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            if (field.getFieldType() == Field.Type.GLOBALID)
-                continue;
+            if (field.getFieldType() == Field.Type.GLOBALID) continue;
             Object value = attributes.get(field.getName());
             if (value != null) {
                 FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
@@ -102,12 +105,9 @@ public class Popup extends AppCompatActivity {
                     String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
                     if (valueFeatureType != null) item.setValue(valueFeatureType);
                 } else if (field.getDomain() != null) {
-                    List<CodedValue> codedValues = ((CodedValueDomain)
-                            this.mSelectedArcGISFeature.getFeatureTable()
-                                    .getField(item.getFieldName()).getDomain()).getCodedValues();
+                    List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                     Object valueDomainObject = getValueDomain(codedValues, value.toString());
-                    if (valueDomainObject != null)
-                        item.setValue(valueDomainObject.toString());
+                    if (valueDomainObject != null) item.setValue(valueDomainObject.toString());
                 } else switch (field.getFieldType()) {
                     case DATE:
                         item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
@@ -148,7 +148,22 @@ public class Popup extends AppCompatActivity {
             ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    viewMoreInfo();
+                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+                    if (khachHangDangNhap != null) {
+                        Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
+                        Object maQuan = attributes.get("MaQuan");
+                        //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
+
+                        if (maQuan != null && maQuan != "" && ((khachHangDangNhap.isTanBinh() && maQuan.equals(Constant.MA_QUAN.TAN_BINH)) || (khachHangDangNhap.isTanPhu() && maQuan.equals(Constant.MA_QUAN.TAN_PHU)) || (khachHangDangNhap.isPhuNhuan() && maQuan.equals(Constant.MA_QUAN.PHU_NHUAN))))
+                            viewMoreInfo();
+                        else
+
+                            Toast.makeText(mMainActivity, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(mMainActivity, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
+                    }
+
+
                 }
             });
 
@@ -171,8 +186,7 @@ public class Popup extends AppCompatActivity {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
-        mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity,
-                new ArrayList<FeatureViewMoreInfoAdapter.Item>());
+        mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
@@ -208,9 +222,7 @@ public class Popup extends AppCompatActivity {
                         String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
                         if (valueFeatureType != null) item.setValue(valueFeatureType);
                     } else if (field.getDomain() != null) {
-                        List<CodedValue> codedValues = ((CodedValueDomain)
-                                this.mSelectedArcGISFeature.getFeatureTable()
-                                        .getField(item.getFieldName()).getDomain()).getCodedValues();
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                         String valueDomain = getValueDomain(codedValues, value.toString()).toString();
                         if (valueDomain != null) item.setValue(valueDomain);
                     } else switch (field.getFieldType()) {
@@ -375,8 +387,7 @@ public class Popup extends AppCompatActivity {
         if (parent.getItemAtPosition(position) instanceof FeatureViewMoreInfoAdapter.Item) {
             final FeatureViewMoreInfoAdapter.Item item = (FeatureViewMoreInfoAdapter.Item) parent.getItemAtPosition(position);
             if (item.isEdit()) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity,
-                        android.R.style.Theme_Material_Light_Dialog_Alert);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
                 builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -399,8 +410,7 @@ public class Popup extends AppCompatActivity {
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
                 if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                     layoutSpin.setVisibility(View.VISIBLE);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(),
-                            android.R.layout.simple_list_item_1, lstFeatureType);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
                     spin.setAdapter(adapter);
                     if (item.getValue() != null)
                         spin.setSelection(lstFeatureType.indexOf(item.getValue()));
@@ -430,10 +440,8 @@ public class Popup extends AppCompatActivity {
                                     @Override
                                     public void onClick(View view) {
                                         DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(),
-                                                datePicker.getMonth(), datePicker.getDayOfMonth());
-                                        String s = String.format("%02d_%02d_%d",
-                                                datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
+                                        String s = String.format("%02d_%02d_%d", datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
 
                                         textView.setText(s);
                                         alertDialog.dismiss();
