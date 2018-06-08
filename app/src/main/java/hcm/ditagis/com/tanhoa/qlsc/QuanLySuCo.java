@@ -741,16 +741,16 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.img_layvitri:
 //                mMapViewHandler.capture();
                 ServiceFeatureTable layerHanhChinh = null;
-                for (FeatureLayerDTG feature:
+                for (FeatureLayerDTG feature :
                         this.mFeatureLayerDTGS) {
-                    if(feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
+                    if (feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
                         layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
                         break;
                     }
 
                 }
 
-                if(layerHanhChinh != null){
+                if (layerHanhChinh != null) {
                     KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
                     //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
                     QueryParameters queryParam = new QueryParameters();
@@ -758,21 +758,24 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     //lấy hành chính của điểm báo sự cố
                     queryParam.setGeometry(diemBaoSuCo);
 
-
+                    StringBuilder builder = new StringBuilder();
                     //nếu tài khoản có quyền truy cập vào
                     List<String> wheres = new ArrayList<>();
-                    if(khachHangDangNhap.isPhuNhuan()){
-                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.PHU_NHUAN);
+                    if (khachHangDangNhap.isPhuNhuan()) {
+                        builder.append("MaHuyen = " + Constant.MA_QUAN.PHU_NHUAN);
+                        builder.append(" or ");
                     }
-                    if(khachHangDangNhap.isTanBinh()){
-                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.TAN_BINH);
+                    if (khachHangDangNhap.isTanBinh()) {
+                        builder.append("MaHuyen = " + Constant.MA_QUAN.TAN_BINH);
+                        builder.append(" or ");
                     }
-                    if(khachHangDangNhap.isTanPhu()){
-                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.TAN_PHU);
+                    if (khachHangDangNhap.isTanPhu()) {
+                        builder.append("MaHuyen = " + Constant.MA_QUAN.TAN_PHU);
+                        builder.append(" or ");
                     }
-
-                    if(wheres.size() > 0)
-                        queryParam.setWhereClause(String.join(" OR ",wheres));
+                    builder.append(" 1 = 2 ");
+                    if (wheres.size() > 0)
+                        queryParam.setWhereClause(builder.toString());
                     final ListenableFuture<Long> countAsync = layerHanhChinh.queryFeatureCountAsync(queryParam);
 
                     countAsync.addDoneListener(new Runnable() {
@@ -780,10 +783,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         public void run() {
                             try {
                                 Long soLuong = countAsync.get();
-                                if(soLuong > 0){
+                                if (soLuong > 0) {
                                     capture();
-                                }else{
-                                    Toast.makeText(QuanLySuCo.this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG).show();
+                                } else {
+                                    Toast.makeText(QuanLySuCo.this, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -792,8 +795,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             }
                         }
                     });
-                }else{
-                    Toast.makeText(this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
                 }
 
 
