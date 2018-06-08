@@ -7,6 +7,7 @@ public class KhachHang {
     private boolean isTanBinh;
     private boolean isTanPhu;
     private boolean isPhuNhuan;
+    public static KhachHang khachHangDangNhap;
 
     public KhachHang() {
 

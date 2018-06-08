@@ -50,7 +50,9 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
+import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -78,11 +80,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
@@ -736,7 +740,65 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 break;
             case R.id.img_layvitri:
 //                mMapViewHandler.capture();
-                capture();
+                kiemTraQuyenCapNhat();
+                ServiceFeatureTable layerHanhChinh = null;
+                for (FeatureLayerDTG feature:
+                        this.mFeatureLayerDTGS) {
+                    if(feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
+                        layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
+                        break;
+                    }
+
+                }
+
+                if(layerHanhChinh != null){
+                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+                    //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
+                    QueryParameters queryParam = new QueryParameters();
+                    Point diemBaoSuCo = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+                    //lấy hành chính của điểm báo sự cố
+                    queryParam.setGeometry(diemBaoSuCo);
+
+
+                    StringBuilder queryBuilder = new StringBuilder();
+                    //nếu tài khoản có quyền truy cập vào
+                    List<String> wheres = new ArrayList<>();
+                    if(khachHangDangNhap.isPhuNhuan()){
+                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.PHU_NHUAN);
+                    }
+                    if(khachHangDangNhap.isTanBinh()){
+                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.TAN_BINH);
+                    }
+                    if(khachHangDangNhap.isTanPhu()){
+                        wheres.add("MaHuyen = "+ Constant.MA_QUAN.TAN_PHU);
+                    }
+
+                    if(wheres.size() > 0)
+                        queryParam.setWhereClause(String.join(" OR ",wheres));
+                    final ListenableFuture<Long> countAsync = layerHanhChinh.queryFeatureCountAsync(queryParam);
+
+                    countAsync.addDoneListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Long soLuong = countAsync.get();
+                                if(soLuong > 0){
+                                    capture();
+                                }else{
+                                    Toast.makeText(QuanLySuCo.this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG);
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }else{
+                    Toast.makeText(this,"Vị trí không thuộc địa bàn quản lý",Toast.LENGTH_LONG);
+                }
+
+
                 break;
             case R.id.floatBtnAddPoint:
                 findViewById(R.id.linear_addfeature).setVisibility(View.VISIBLE);
@@ -779,6 +841,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 } else mLocationDisplay.stop();
                 break;
         }
+    }
+
+    private boolean kiemTraQuyenCapNhat() {
+       return false;
     }
 
     public void capture() {

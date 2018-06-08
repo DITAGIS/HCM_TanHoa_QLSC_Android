@@ -44,6 +44,7 @@ public class LoginAsycn extends AsyncTask<String, Void, KhachHang> {
             publishProgress();
             LoginDB loginDB = new LoginDB(mContext);
             KhachHang khachHang = loginDB.find(danhBo, pin);
+            KhachHang.khachHangDangNhap = khachHang;
             return khachHang;
         } catch (Exception e) {
             Log.e("Lỗi đăng nhập", e.toString());

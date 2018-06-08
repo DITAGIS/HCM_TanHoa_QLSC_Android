@@ -21,6 +21,11 @@ public class Constant {
     public static final int REQUEST_CODE = 99;
     public static final String[] CODEID_DISTRICT = {null, "768", "766", "767"};
     public static final String[] CODE_PHANLOAI = {null, "1", "2"};
+    public static class MA_QUAN{
+        public static final String PHU_NHUAN = "768";
+        public static final String TAN_BINH = "766";
+        public static final String TAN_PHU = "767";
+    }
 
     public static final String NAME_DIEMSUCO = "DIEMSUCO";
 
