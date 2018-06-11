@@ -1,28 +1,28 @@
 package hcm.ditagis.com.tanhoa.qlsc.async;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 
 public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     private Geocoder mGeocoder;
     private AsyncResponse mDelegate;
-
+private Context mContext;
     public interface AsyncResponse {
         void processFinish(List<Address> output);
     }
 
     public FindLocationAsycn(Context context, AsyncResponse delegate) {
         this.mDelegate = delegate;
+        this.mContext = context;
         this.mGeocoder = new Geocoder(context);
     }
 
@@ -34,7 +34,10 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     @Override
     protected List<Address> doInBackground(String... params) {
         String text = params[0];
-
+        if (!mGeocoder.isPresent()) {
+            Toast.makeText(mContext, R.string.message_no_geocoder_available, Toast.LENGTH_LONG).show();
+            return null;
+        }
         List<Address> lstLocation = new ArrayList<>();
 
 
