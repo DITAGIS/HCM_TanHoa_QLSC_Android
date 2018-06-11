@@ -33,11 +33,8 @@ import com.esri.arcgisruntime.data.Domain;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
-import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
-import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.loadable.LoadStatus;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 
 import java.io.File;
@@ -54,7 +51,6 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class Popup extends AppCompatActivity {
@@ -148,22 +144,7 @@ public class Popup extends AppCompatActivity {
             ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-                    if (khachHangDangNhap != null) {
-                        Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
-                        Object maQuan = attributes.get("MaQuan");
-                        //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
-
-                        if (maQuan != null && maQuan != "" && ((khachHangDangNhap.isTanBinh() && maQuan.equals(Constant.MA_QUAN.TAN_BINH)) || (khachHangDangNhap.isTanPhu() && maQuan.equals(Constant.MA_QUAN.TAN_PHU)) || (khachHangDangNhap.isPhuNhuan() && maQuan.equals(Constant.MA_QUAN.PHU_NHUAN))))
-                            viewMoreInfo();
-                        else
-
-                            Toast.makeText(mMainActivity, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(mMainActivity, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
-                    }
-
-
+                    viewMoreInfo();
                 }
             });
 
@@ -209,7 +190,7 @@ public class Popup extends AppCompatActivity {
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             Object value = attr.get(field.getName());
-            if (field.getName().equals(Constant.IDSU_CO)) {
+            if (field.getName().equals(mMainActivity.getString(R.string.IDSuCo))) {
                 if (value != null)
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
             } else {

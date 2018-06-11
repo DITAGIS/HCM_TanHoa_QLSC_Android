@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -16,8 +17,10 @@ import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.List;
+import java.util.Map;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
@@ -108,33 +111,53 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     @Override
     protected void onProgressUpdate(FeatureLayer... values) {
         super.onProgressUpdate(values);
+        if (values == null) {
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
+        } else {
+            FeatureLayer featureLayer = values[0];
+            if (mSelectedArcGISFeature != null) {
+                // highlight the selected feature
+                featureLayer.clearSelection();
+                featureLayer.selectFeature(mSelectedArcGISFeature);
+                mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
+                if (mFeatureLayerDTG.getTitleLayer().equals(mContext.getString(R.string.ALIAS_DIEM_SU_CO))) {
+                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+                    if (khachHangDangNhap != null) {
+                        Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
+                        Object maQuan = attributes.get("MaQuan");
+                        //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
 
-        FeatureLayer featureLayer = null;
-        if (values != null)
-            featureLayer = values[0];
-        if (mSelectedArcGISFeature != null && featureLayer != null) {
-            // highlight the selected feature
+                        if (maQuan != null && maQuan != "" &&
+                                ((khachHangDangNhap.isTanBinh() && maQuan.equals(mContext.getString(R.string.QuanTanBinh))) ||
+                                        (khachHangDangNhap.isTanPhu() && maQuan.equals(mContext.getString(R.string.QuanTanPhu))) ||
+                                        (khachHangDangNhap.isPhuNhuan() && maQuan.equals(mContext.getString(R.string.QuanPhuNhuan))))) {
+                            LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
+                            // show CallOut
+                            mCallOut.setLocation(mPoint);
+                            mCallOut.setContent(linearLayout);
+                            mCallOut.refresh();
+                            mCallOut.show();
+                        } else
 
-            featureLayer.clearSelection();
-            featureLayer.selectFeature(mSelectedArcGISFeature);
-            mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
+                            Toast.makeText(mContext, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(mContext, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
+                    // show CallOut
+                    mCallOut.setLocation(mPoint);
+                    mCallOut.setContent(linearLayout);
+                    mCallOut.refresh();
+                    mCallOut.show();
+                }
+                if (mDialog != null && mDialog.isShowing()) {
+                    mDialog.dismiss();
+                }
+            }
 
-            LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
-
-//            Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
-//            Envelope envelope1 = new Envelope(new Point(envelope.getXMin(), envelope.getYMin() + DELTA_MOVE_Y), new Point(envelope.getXMax(), envelope.getYMax() + DELTA_MOVE_Y));
-//            mMapView.setViewpointGeometryAsync(envelope1, 0);
-            // show CallOut
-            mCallOut.setLocation(mPoint);
-            mCallOut.setContent(linearLayout);
-//        mPopUp.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-            mCallOut.refresh();
-            mCallOut.show();
-        }
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
         }
 //            }
 //        });

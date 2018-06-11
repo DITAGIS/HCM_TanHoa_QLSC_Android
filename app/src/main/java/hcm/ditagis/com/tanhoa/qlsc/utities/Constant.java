@@ -2,6 +2,7 @@ package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import java.text.SimpleDateFormat;
 
+import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.SettingsAdapter;
 
 /**
@@ -9,25 +10,8 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.SettingsAdapter;
  */
 
 public class Constant {
-    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat("dd-MM-yyyy HH:mm:SS");
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
     private SettingsAdapter.Item[] mSettingsItems;
-    public static final String OBJECTID = "OBJECTID";
-    public static final String IDSU_CO = "IDSuCo";
-    public static final String VI_TRI = "ViTri";
-    public static final String TRANG_THAI = "TrangThai";
-    public static final String NGAY_CAP_NHAT = "NgayCapNhat";
-    public static final String NGAY_THONG_BAO = "NgayThongBao";
-    public static final int REQUEST_CODE = 99;
-    public static final String[] CODEID_DISTRICT = {null, "768", "766", "767"};
-    public static final String[] CODE_PHANLOAI = {null, "1", "2"};
-    public static class MA_QUAN{
-        public static final String PHU_NHUAN = "768";
-        public static final String TAN_BINH = "766";
-        public static final String TAN_PHU = "767";
-    }
-
-    public static final String NAME_DIEMSUCO = "DIEMSUCO";
 
     private static Constant mInstance = null;
 

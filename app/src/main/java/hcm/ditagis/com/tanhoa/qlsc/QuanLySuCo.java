@@ -296,7 +296,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             featureLayerDTG.setTitleLayer(featureLayer.getName());
             featureLayerDTG.setUpdateFields(config.getUpdateField());
             mFeatureLayerDTG = featureLayerDTG;
-            if (config.getName() != null && config.getName().equals(Constant.NAME_DIEMSUCO)) {
+            if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
                 popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
                 featureLayer.setPopupEnabled(true);
@@ -393,11 +393,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         uniqueValueRenderer.getFieldNames().add("TrangThai");
-//        SimpleMarkerSymbol defaultSymbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.BLACK, 15);
-//        SimpleMarkerSymbol chuaxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.RED, 15);
-//        SimpleMarkerSymbol dangxyly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.YELLOW, 15);
-//        SimpleMarkerSymbol daxuly = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CIRCLE, Color.GREEN, 15);
-
         PictureMarkerSymbol chuaXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_chuasuachua));
         chuaXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         chuaXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
@@ -762,15 +757,15 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     //nếu tài khoản có quyền truy cập vào
                     List<String> wheres = new ArrayList<>();
                     if (khachHangDangNhap.isPhuNhuan()) {
-                        builder.append("MaHuyen = " + Constant.MA_QUAN.PHU_NHUAN);
+                        builder.append("MaHuyen = " + getString(R.string.QuanPhuNhuan));
                         builder.append(" or ");
                     }
                     if (khachHangDangNhap.isTanBinh()) {
-                        builder.append("MaHuyen = " + Constant.MA_QUAN.TAN_BINH);
+                        builder.append("MaHuyen = " + getString(R.string.QuanTanBinh));
                         builder.append(" or ");
                     }
                     if (khachHangDangNhap.isTanPhu()) {
-                        builder.append("MaHuyen = " + Constant.MA_QUAN.TAN_PHU);
+                        builder.append("MaHuyen = " + getString(R.string.QuanTanPhu));
                         builder.append(" or ");
                     }
                     builder.append(" 1 = 2 ");
@@ -786,7 +781,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 if (soLuong > 0) {
                                     capture();
                                 } else {
-                                    Toast.makeText(QuanLySuCo.this, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -796,7 +791,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         }
                     });
                 } else {
-                    Toast.makeText(this, "Vị trí không thuộc địa bàn quản lý", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                 }
 
 

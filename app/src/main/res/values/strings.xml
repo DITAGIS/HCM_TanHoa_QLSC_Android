@@ -238,6 +238,17 @@
     <string name="thueVAT">Thuế VAT</string>
     <string name="phiBVMT">Phí BVMT</string>
     <string name="encode_string">DITAGIS*#</string>
+    <string name="OBJECTID">OBJECTID</string>
+    <string name="IDSuCo">IDSuCo</string>
+    <string name="ViTri">ViTri</string>
+    <string name="TrangThai">TrangThai</string>
+    <string name="NgayCapNhat">NgayCapNhat</string>
+    <string name="NgayThongBao">NgayThongBao</string>
+    <string name="QuanPhuNhuan">768</string>
+    <string name="QuanTanBinh">766</string>
+    <string name="QuanTanPhu">767</string>
+    <string name="Name_DiemSuCo">DIEMSUCO</string>
+    <string name="message_not_area_management">Vị trí không thuộc địa bàn quản lý</string>
 
 
 </resources>

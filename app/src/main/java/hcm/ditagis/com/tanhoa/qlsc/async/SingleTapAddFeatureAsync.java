@@ -88,10 +88,10 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
                                 attrs.put(key, geocodeResult.getAttributes().get(key));
                             }
                             String address = geocodeResult.getAttributes().get("LongLabel").toString();
-                            feature.getAttributes().put(Constant.VI_TRI, address);
+                            feature.getAttributes().put(mContext.getString(R.string.ViTri), address);
                         }
                         Short intObj = new Short((short) 0);
-                        feature.getAttributes().put(Constant.TRANG_THAI, intObj);
+                        feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
 
                         String searchStr = "";
                         String dateTime = "";
@@ -99,7 +99,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                             dateTime = getDateString();
                             timeID = getTimeID();
-                            searchStr = Constant.IDSU_CO + " like '%" + timeID + "'";
+                            searchStr = mContext.getString(R.string.IDSuCo) + " like '%" + timeID + "'";
                         }
                         QueryParameters queryParameters = new QueryParameters();
                         queryParameters.setWhereClause(searchStr);
@@ -156,16 +156,16 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
             Iterator iterator = result.iterator();
             while (iterator.hasNext()) {
                 Feature item = (Feature) iterator.next();
-                id_tmp = Integer.parseInt(item.getAttributes().get(Constant.IDSU_CO).toString().split("_")[0]);
+                id_tmp = Integer.parseInt(item.getAttributes().get(mContext.getString(R.string.IDSuCo)).toString().split("_")[0]);
                 if (id_tmp > id) id = id_tmp;
             }
             id++;
-            feature.getAttributes().put(Constant.IDSU_CO, id + "_" + finalTimeID);
+            feature.getAttributes().put(mContext.getString(R.string.IDSuCo), id + "_" + finalTimeID);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                 Calendar c = Calendar.getInstance();
-                feature.getAttributes().put(Constant.NGAY_CAP_NHAT, c);
-                feature.getAttributes().put(Constant.NGAY_THONG_BAO, c);
+                feature.getAttributes().put(mContext.getString(R.string.NgayCapNhat), c);
+                feature.getAttributes().put(mContext.getString(R.string.NgayThongBao), c);
             }
             ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
             mapViewResult.addDoneListener(new Runnable() {
