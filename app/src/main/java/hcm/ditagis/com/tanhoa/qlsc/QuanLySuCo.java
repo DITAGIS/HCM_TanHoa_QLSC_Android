@@ -90,7 +90,6 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
-import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ListConfig;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
@@ -123,6 +122,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private FloatingActionButton mFloatButtonAdd;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private LinearLayout mLinearLayoutCover;
+    private LinearLayout mLayoutDisplayLayerFeature, mLayoutDisplayLayerAdministration, mLayoutDisplayLayerDiemSuCo;
     private boolean isOpenFab = false;
     private Animation mAnimationFabOpen, mAnimationFabClose, mAnimationClockwise, mAnimationAntiClockwise;
 
@@ -151,7 +151,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
-
+        findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
         requestPermisson();
 
         final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
@@ -317,15 +317,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     private void handleArcgisMapDoneLoading() {
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
-        LinearLayout linnearDisplayLayer = findViewById(R.id.linnearDisplayLayer);
-        linnearDisplayLayer.removeAllViews();
-        LinearLayout linnearDisplayLayer1 = findViewById(R.id.linnearDisplayLayer1);
-        linnearDisplayLayer1.removeAllViews();
+        mLayoutDisplayLayerFeature = findViewById(R.id.linnearDisplayLayerFeature);
+        mLayoutDisplayLayerFeature.removeAllViews();
+        mLayoutDisplayLayerAdministration = findViewById(R.id.linnearDisplayLayerAdministration);
+        mLayoutDisplayLayerAdministration.removeAllViews();
+        mLayoutDisplayLayerDiemSuCo = findViewById(R.id.linnearDisplayLayerDiemSuCo);
+        mLayoutDisplayLayerDiemSuCo.removeAllViews();
+
         LayerList layers = mMap.getOperationalLayers();
         int states[][] = {{android.R.attr.state_checked}, {}};
         int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
         for (final Layer layer : layers) {
-            final CheckBox checkBox = new CheckBox(linnearDisplayLayer.getContext());
+            final CheckBox checkBox = new CheckBox(mLayoutDisplayLayerFeature.getContext());
             checkBox.setText(layer.getName());
             checkBox.setChecked(false);
             layer.setVisible(false);
@@ -358,13 +361,15 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 }
             });
-            if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
+            if (layer.getName().equals(getString(R.string.ALIAS_DIEM_SU_CO)))
+                mLayoutDisplayLayerDiemSuCo.addView(checkBox);
+            else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
                     || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
                     || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
                     || layer.getName().equals(getString(R.string.ALIAS_HANH_CHINH)))
-                linnearDisplayLayer1.addView(checkBox);
+                mLayoutDisplayLayerAdministration.addView(checkBox);
             else
-                linnearDisplayLayer.addView(checkBox);
+                mLayoutDisplayLayerFeature.addView(checkBox);
         }
     }
 
@@ -691,6 +696,23 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mFloatActionButtonAddPoint.setClickable(false);
         mFloatButtonClosePopup.setClickable(false);
         isOpenFab = false;
+    }
+
+    public void onClickTextView(View v) {
+        switch (v.getId()) {
+            case R.id.txt_quanlysuco_hanhchinh:
+                if (mLayoutDisplayLayerAdministration.getVisibility() == View.VISIBLE)
+                    mLayoutDisplayLayerAdministration.setVisibility(View.GONE);
+                else
+                    mLayoutDisplayLayerAdministration.setVisibility(View.VISIBLE);
+                break;
+            case R.id.txt_quanlysuco_dulieu:
+                if (mLayoutDisplayLayerFeature.getVisibility() == View.VISIBLE)
+                    mLayoutDisplayLayerFeature.setVisibility(View.GONE);
+                else
+                    mLayoutDisplayLayerFeature.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 
     @Override
