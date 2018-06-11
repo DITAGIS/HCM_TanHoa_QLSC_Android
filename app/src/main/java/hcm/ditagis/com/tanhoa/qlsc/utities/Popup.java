@@ -34,8 +34,11 @@ import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
+import com.esri.arcgisruntime.geometry.Envelope;
+import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
+import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,14 +68,17 @@ public class Popup extends AppCompatActivity {
     private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
     private DialogInterface mDialog;
+    private LinearLayout linearLayout;
+    private MapView mMapView;
 
     public DialogInterface getDialog() {
         return mDialog;
     }
 
-    public Popup(QuanLySuCo mainActivity, ServiceFeatureTable mServiceFeatureTable, Callout callout) {
+    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout) {
         this.mMainActivity = mainActivity;
-        this.mServiceFeatureTable = mServiceFeatureTable;
+        this.mMapView = mapView;
+        this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
 
     }
@@ -251,7 +257,7 @@ public class Popup extends AppCompatActivity {
 //
 //                editAsync.execute(mFeatureViewMoreInfoAdapter);
                 mDialog = dialog;
-//                        refreshPopup();
+                refreshPopup();
 //                dialog.dismiss();
             }
         });
@@ -579,6 +585,69 @@ public class Popup extends AppCompatActivity {
 //        this.mUri = Uri.fromFile(photo);
         mMainActivity.startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
 
+    }
+
+    public void clearSelection() {
+        if (mFeatureLayerDTG != null) {
+            FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
+            featureLayer.clearSelection();
+        }
+    }
+
+    public void dimissCallout() {
+        if (mCallout != null && mCallout.isShowing()) {
+            mCallout.dismiss();
+        }
+    }
+
+    public LinearLayout showPopup(final ArcGISFeature mSelectedArcGISFeature) {
+        dimissCallout();
+        this.mSelectedArcGISFeature = mSelectedArcGISFeature;
+        FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
+        featureLayer.selectFeature(mSelectedArcGISFeature);
+        lstFeatureType = new ArrayList<>();
+        for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
+            lstFeatureType.add(mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().get(i).getName());
+        }
+        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
+        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
+        refreshPopup();
+        ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
+        if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
+
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    viewMoreInfo();
+                }
+            });
+
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
+                    deleteFeature();
+                }
+            });
+        } else {
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
+        }
+
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
+        mMapView.setViewpointGeometryAsync(envelope, 0);
+        // show CallOut
+        mCallout.setLocation(envelope.getCenter());
+        mCallout.setContent(linearLayout);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCallout.refresh();
+                mCallout.show();
+            }
+        });
+        return linearLayout;
     }
 
 }

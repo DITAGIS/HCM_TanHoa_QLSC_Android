@@ -60,7 +60,7 @@
     <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
     <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
     <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DMA">https://sawagis.vn/arcgis/rest/services/ChoLon/ChoLonGIS/FeatureServer/15</string>
+    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
     <string name="URL_THUA_DAT">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
     <string name="URL_SONG_HO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
     <string name="URL_GIAO_THONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>

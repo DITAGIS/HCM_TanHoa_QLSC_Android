@@ -11,7 +11,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +84,7 @@ import java.util.concurrent.ExecutionException;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
+import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
@@ -110,7 +110,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
     private Point mCurrentPoint;
-    private Geocoder mGeocoder;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean isSearchingFeature = false;
     private TextView txtTimSuCo;
@@ -173,7 +172,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         // create an empty map instance
         setLicense();
         mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
-        mGeocoder = new Geocoder(QuanLySuCo.this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mAnimationFabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
@@ -298,7 +296,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
-                popupInfos = new Popup(QuanLySuCo.this, serviceFeatureTable, mCallout);
+                popupInfos = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, mCallout);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 mCallout = mMapView.getCallout();
@@ -509,38 +507,44 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
                 } else if (!isSearchingFeature) {
+                    FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, new FindLocationAsycn.AsyncResponse() {
+                        @Override
+                        public void processFinish(List<Address> output) {
+                            if (output != null) {
+                                mSearchAdapter.clear();
+                                mSearchAdapter.notifyDataSetChanged();
+                                for (Address address : output) {
+                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
+                                    item.setLatitude(address.getLatitude());
+                                    item.setLongtitude(address.getLongitude());
+                                    mSearchAdapter.add(item);
+                                }
+                                mSearchAdapter.notifyDataSetChanged();
+                            }
 
-                    try {
-                        mSearchAdapter.clear();
-                        List<Address> addressList = mGeocoder.getFromLocationName(newText, 5);
-                        for (Address address : addressList) {
-                            TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
-                            item.setLatitude(address.getLatitude());
-                            item.setLongtitude(address.getLongitude());
-                            mSearchAdapter.add(item);
                         }
-                        mSearchAdapter.notifyDataSetChanged();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    });
+                    findLocationAsycn.execute(newText);
                 }
                 return false;
             }
         });
-        menu.findItem(R.id.action_search).setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
+        menu.findItem(R.id.action_search).
 
-                mLayoutTimKiem.setVisibility(View.VISIBLE);
-                return true;
-            }
+                setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                    @Override
+                    public boolean onMenuItemActionExpand(MenuItem item) {
 
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                mLayoutTimKiem.setVisibility(View.INVISIBLE);
-                return true;
-            }
-        });
+                        mLayoutTimKiem.setVisibility(View.VISIBLE);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemActionCollapse(MenuItem item) {
+                        mLayoutTimKiem.setVisibility(View.INVISIBLE);
+                        return true;
+                    }
+                });
         return true;
     }
 
@@ -636,7 +640,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mLocationDisplay.startAsync();
 

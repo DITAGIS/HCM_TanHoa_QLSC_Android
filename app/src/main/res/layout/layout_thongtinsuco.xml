@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -9,14 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding_title_popup"
-        android:text="Tên"
         android:textSize="20sp" />
 
 
     <ListView
         android:id="@+id/lstview_thongtinsuco"
         android:layout_width="match_parent"
-        android:layout_height="250dp"></ListView>
+        android:layout_height="250dp" />
 
 
     <!--<LinearLayout-->
@@ -65,7 +65,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="right"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="RtlHardcoded">
 
         <ImageButton
             android:id="@+id/imgBtn_ViewMoreInfo"
@@ -73,7 +74,10 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:paddingRight="@dimen/padding_title_popup"
-            android:src="@drawable/ic_info" />
+            android:src="@drawable/ic_info"
+            android:contentDescription="Xem thông tin chi tiết"
+            android:paddingEnd="@dimen/padding_title_popup"
+            tools:ignore="RtlSymmetry" />
 
         <ImageButton
             android:id="@+id/imgBtn_delete"
@@ -81,7 +85,9 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:paddingRight="@dimen/padding_title_popup"
-            android:src="@drawable/ic_delete" />
+            android:src="@drawable/ic_delete"
+            tools:ignore="RtlSymmetry"
+            android:contentDescription="Xóa" />
     </LinearLayout>
 
 </LinearLayout>
