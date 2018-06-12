@@ -99,7 +99,7 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private List<String> mListDMA;
     private Uri mUri;
-    private Popup popupInfos;
+    private Popup mPopUp;
     private MapView mMapView;
     private ArcGISMap mMap;
     private Callout mCallout;
@@ -112,8 +112,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Point mCurrentPoint;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean isSearchingFeature = false;
-    private TextView txtTimSuCo;
-    private TextView txtTimDiaChi;
+    private LinearLayout mLayoutTimSuCo;
+    private LinearLayout mLayoutTimDiaChi;
     private LinearLayout mLayoutTimKiem;
     private FloatingActionButton mFloatButtonLayer;
     private LinearLayout mFloatButtonLocation,
@@ -265,10 +265,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mFloatButtonLocation.setOnClickListener(this);
         mFloatButtonClosePopup = findViewById(R.id.floatBtnClosePopUp);
         mFloatButtonClosePopup.setOnClickListener(this);
-        txtTimSuCo = findViewById(R.id.txt_tim_su_co);
-        txtTimSuCo.setOnClickListener(this);
-        txtTimDiaChi = findViewById(R.id.txt_tim_dia_chi);
-        txtTimDiaChi.setOnClickListener(this);
+        mLayoutTimSuCo = findViewById(R.id.layout_tim_su_co);
+        mLayoutTimSuCo.setOnClickListener(this);
+        mLayoutTimDiaChi = findViewById(R.id.layout_tim_dia_chi);
+        mLayoutTimDiaChi.setOnClickListener(this);
         mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
 
         optionSearchFeature();
@@ -296,12 +296,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
-                popupInfos = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, mCallout);
+                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, mCallout);
+                mPopUp.setmListDMA(mListDMA);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 mCallout = mMapView.getCallout();
 
-                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, popupInfos, QuanLySuCo.this);
+                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, mPopUp, QuanLySuCo.this);
                 mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();
             }
 
@@ -513,10 +514,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             if (output != null) {
                                 mSearchAdapter.clear();
                                 mSearchAdapter.notifyDataSetChanged();
+                                int count = 0;
                                 for (Address address : output) {
-                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
+
+                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", "", address.getAddressLine(0));
                                     item.setLatitude(address.getLatitude());
                                     item.setLongtitude(address.getLongitude());
+
+                                    //
+                                    count++;
+                                    if (count % 2 == 0)
+                                        item.setTrangThai(3);
+                                    else item.setTrangThai(4);
                                     mSearchAdapter.add(item);
                                 }
                                 mSearchAdapter.notifyDataSetChanged();
@@ -652,22 +661,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     private void optionSearchFeature() {
         this.isSearchingFeature = true;
-        txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap);
-
-        txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-        txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_border_bottom);
+//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
     private void optionFindRoute() {
         this.isSearchingFeature = false;
-        txtTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        txtTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap);
-
-        txtTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-        txtTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-
-
+//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_border_bottom);
+//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
     private void expandFloatActionButton() {
@@ -723,10 +728,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.txt_tim_su_co:
+            case R.id.layout_tim_su_co:
                 optionSearchFeature();
                 break;
-            case R.id.txt_tim_dia_chi:
+            case R.id.layout_tim_dia_chi:
                 optionFindRoute();
                 break;
             case R.id.floatBtnLayer:
@@ -1024,7 +1029,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
 //                            mMapViewHandler.addFeature(image);
-                            popupInfos.getDialog().dismiss();
+                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, image);
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }

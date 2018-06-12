@@ -48,7 +48,6 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
  */
 
 public class MapViewHandler extends Activity {
-
     private static final int REQUEST_ID_IMAGE_CAPTURE = 1;
     private static double DELTA_MOVE_Y = 0;//7000;
     private final FeatureLayer suCoTanHoaLayer;

@@ -249,7 +249,7 @@
     <string name="QuanTanPhu">767</string>
     <string name="Name_DiemSuCo">DIEMSUCO</string>
     <string name="message_not_area_management">Vị trí không thuộc địa bàn quản lý</string>
-    <string name="message_no_geocoder_available">Tính năng tìm địa chỉ không có sẵn trên phiên bản android này</string>
+    <string name="message_no_geocoder_available">Cần cập nhật phiên bản Google+ mới nhất để dùng tính năng này</string>
 
 
 </resources>

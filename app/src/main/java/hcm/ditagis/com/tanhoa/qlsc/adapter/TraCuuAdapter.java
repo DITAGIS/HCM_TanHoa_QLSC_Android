@@ -67,19 +67,35 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             case 2:
                 layout.setBackgroundColor(ContextCompat.getColor(context, R.color.color_dang_sua_chua));
                 break;
+            case 3:
+                layout.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight));
+                break;
+            case 4:
+                layout.setBackgroundColor(ContextCompat.getColor(context, R.color.colorWhite));
+                break;
         }
 
         TextView txtID = (TextView) convertView.findViewById(R.id.txt_tracuu_id);
         //todo
-        txtID.setText(item.getId());
+        if (item.getId() == null || item.getId().isEmpty())
+            txtID.setVisibility(View.GONE);
+        else
+            txtID.setText(item.getId());
 
         TextView txtDiaChi = (TextView) convertView.findViewById(R.id.txt_tracuu_diachi);
         //todo
-        txtDiaChi.setText(item.getDiaChi());
+        if (item.getDiaChi() == null || item.getDiaChi().isEmpty())
+            txtDiaChi.setVisibility(View.GONE);
+        else
+            txtDiaChi.setText(item.getDiaChi());
 
         TextView txtNgayCapNhat = (TextView) convertView.findViewById(R.id.txt_tracuu_ngaycapnhat);
         //todo
-        txtNgayCapNhat.setText(item.getNgayCapNhat());
+        if (item.getNgayCapNhat() == null || item.getNgayCapNhat().isEmpty())
+            txtNgayCapNhat.setVisibility(View.GONE);
+        else
+            txtNgayCapNhat.setText(item.getNgayCapNhat());
+
 
 
         return convertView;
@@ -101,6 +117,13 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             this.objectID = objectID;
             this.id = id;
             this.trangThai = trangThai;
+            this.ngayCapNhat = ngayCapNhat;
+            this.diaChi = diaChi;
+        }
+
+        public Item(int objectID, String id, String ngayCapNhat, String diaChi) {
+            this.objectID = objectID;
+            this.id = id;
             this.ngayCapNhat = ngayCapNhat;
             this.diaChi = diaChi;
         }

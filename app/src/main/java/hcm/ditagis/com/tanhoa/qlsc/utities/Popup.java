@@ -57,6 +57,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class Popup extends AppCompatActivity {
+    private List<String> mListDMA;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
     private ServiceFeatureTable mServiceFeatureTable;
@@ -73,6 +74,10 @@ public class Popup extends AppCompatActivity {
 
     public DialogInterface getDialog() {
         return mDialog;
+    }
+
+    public void setmListDMA(List<String> mListDMA) {
+        this.mListDMA = mListDMA;
     }
 
     public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout) {

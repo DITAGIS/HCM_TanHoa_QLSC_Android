@@ -15,7 +15,8 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     private Geocoder mGeocoder;
     private AsyncResponse mDelegate;
-private Context mContext;
+    private Context mContext;
+
     public interface AsyncResponse {
         void processFinish(List<Address> output);
     }
@@ -34,10 +35,8 @@ private Context mContext;
     @Override
     protected List<Address> doInBackground(String... params) {
         String text = params[0];
-        if (!mGeocoder.isPresent()) {
-            Toast.makeText(mContext, R.string.message_no_geocoder_available, Toast.LENGTH_LONG).show();
+        if (!Geocoder.isPresent())
             return null;
-        }
         List<Address> lstLocation = new ArrayList<>();
 
 
@@ -58,6 +57,8 @@ private Context mContext;
     @Override
     protected void onPostExecute(List<Address> addressList) {
 //        if (khachHang != null) {
+        if (addressList == null)
+            Toast.makeText(mContext, R.string.message_no_geocoder_available, Toast.LENGTH_LONG).show();
         this.mDelegate.processFinish(addressList);
 //        }
     }
