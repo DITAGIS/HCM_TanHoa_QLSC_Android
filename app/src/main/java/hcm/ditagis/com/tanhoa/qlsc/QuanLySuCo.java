@@ -120,6 +120,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFloatActionButtonAddPoint, mFloatButtonClosePopup;
     private FloatingActionButton mFloatButtonAdd;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    public static FeatureLayerDTG FeatureLayerDTGDiemSuCo;
     private LinearLayout mLinearLayoutCover;
     private LinearLayout mLayoutDisplayLayerFeature, mLayoutDisplayLayerAdministration, mLayoutDisplayLayerDiemSuCo;
     private boolean isOpenFab = false;
@@ -296,11 +297,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
+                mCallout = mMapView.getCallout();
                 mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, mCallout);
                 mPopUp.setmListDMA(mListDMA);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
-                mCallout = mMapView.getCallout();
+                FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;
 
                 mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, mPopUp, QuanLySuCo.this);
                 mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();

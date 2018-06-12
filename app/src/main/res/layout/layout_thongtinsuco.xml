@@ -3,15 +3,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txt_thongtin_ten"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <FrameLayout android:background="@color/colorWhite"
         android:padding="@dimen/padding_title_popup"
-        android:textSize="20sp" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/txt_thongtin_ten"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:textSize="20sp" />
+        <ImageButton
+            android:id="@+id/imgBtn_layout_thongtinsuco"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_gravity="right"
+            android:contentDescription="Đóng popup"
+            android:src="@drawable/ic_cancel"
+            tools:ignore="RtlSymmetry" />
+    </FrameLayout>
 
     <ListView
         android:id="@+id/lstview_thongtinsuco"
@@ -73,10 +88,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:paddingRight="@dimen/padding_title_popup"
-            android:src="@drawable/ic_info"
             android:contentDescription="Xem thông tin chi tiết"
             android:paddingEnd="@dimen/padding_title_popup"
+            android:paddingRight="@dimen/padding_title_popup"
+            android:src="@drawable/ic_info"
             tools:ignore="RtlSymmetry" />
 
         <ImageButton
@@ -84,10 +99,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
+            android:contentDescription="Xóa"
             android:paddingRight="@dimen/padding_title_popup"
             android:src="@drawable/ic_delete"
-            tools:ignore="RtlSymmetry"
-            android:contentDescription="Xóa" />
+            tools:ignore="RtlSymmetry" />
     </LinearLayout>
 
 </LinearLayout>

@@ -21,7 +21,6 @@ import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
-import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -36,6 +35,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
+import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapAddFeatureAsync;
@@ -166,10 +166,23 @@ public class MapViewHandler extends Activity {
 
                         mMapView.setViewpointGeometryAsync(extent);
                         suCoTanHoaLayer.selectFeature(item);
+                        if (QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
+                            mSelectedArcGISFeature = (ArcGISFeature) item;
+                            mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
+                            if (mSelectedArcGISFeature != null)
+                                mPopUp.showPopup(mSelectedArcGISFeature);
+                        }
                     }
-                } catch (InterruptedException e) {
+
+                } catch (
+                        InterruptedException e)
+
+                {
                     e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (
+                        ExecutionException e)
+
+                {
                     e.printStackTrace();
                 }
             }

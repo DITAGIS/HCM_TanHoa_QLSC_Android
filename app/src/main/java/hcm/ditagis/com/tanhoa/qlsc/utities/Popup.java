@@ -56,7 +56,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
-public class Popup extends AppCompatActivity {
+public class Popup extends AppCompatActivity implements View.OnClickListener {
     private List<String> mListDMA;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
@@ -64,7 +64,6 @@ public class Popup extends AppCompatActivity {
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
-    private LinearLayout mLinearLayout;
     private Uri mUri;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
@@ -95,7 +94,7 @@ public class Popup extends AppCompatActivity {
 
     private void refreshPopup() {
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
-        ListView listView = mLinearLayout.findViewById(R.id.lstview_thongtinsuco);
+        ListView listView = linearLayout.findViewById(R.id.lstview_thongtinsuco);
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
@@ -146,32 +145,23 @@ public class Popup extends AppCompatActivity {
             lstFeatureType.add(mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().get(i).getName());
         }
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
-        mLinearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
+        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
         refreshPopup();
-        ((TextView) mLinearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
+        ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
+
+        linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (mCallout != null) mCallout.dismiss();
         if (name.equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
 
-            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewMoreInfo();
-                }
-            });
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
 
-            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
-                    deleteFeature();
-                }
-            });
+            linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
         } else {
-            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
-            ((ImageButton) mLinearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
+            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
         }
-        mLinearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        return mLinearLayout;
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return linearLayout;
     }
 
     private void viewMoreInfo() {
@@ -592,20 +582,21 @@ public class Popup extends AppCompatActivity {
 
     }
 
-    public void clearSelection() {
+    private void clearSelection() {
         if (mFeatureLayerDTG != null) {
             FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
             featureLayer.clearSelection();
         }
     }
 
-    public void dimissCallout() {
+    private void dimissCallout() {
         if (mCallout != null && mCallout.isShowing()) {
             mCallout.dismiss();
         }
     }
 
     public LinearLayout showPopup(final ArcGISFeature mSelectedArcGISFeature) {
+        clearSelection();
         dimissCallout();
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
         FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
@@ -618,25 +609,15 @@ public class Popup extends AppCompatActivity {
         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
         refreshPopup();
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
+        linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
 
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    viewMoreInfo();
-                }
-            });
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
 
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
-                    deleteFeature();
-                }
-            });
+            linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
         } else {
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
+             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
+             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
         }
 
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -655,4 +636,20 @@ public class Popup extends AppCompatActivity {
         return linearLayout;
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.imgBtn_layout_thongtinsuco:
+                if (mCallout != null && mCallout.isShowing())
+                    mCallout.dismiss();
+                break;
+            case R.id.imgBtn_ViewMoreInfo:
+                viewMoreInfo();
+                break;
+            case R.id.imgBtn_delete:
+                mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
+                deleteFeature();
+                break;
+        }
+    }
 }
