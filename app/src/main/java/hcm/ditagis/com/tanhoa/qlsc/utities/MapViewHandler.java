@@ -86,8 +86,16 @@ public class MapViewHandler extends Activity {
     }
 
     public void addFeature(byte[] image) {
-        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mContext,
-                image, mServiceFeatureTable, loc, mMapView);
+        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint,mContext,
+                image, mServiceFeatureTable, loc, mMapView, new SingleTapAddFeatureAsync.AsyncResponse() {
+            @Override
+            public void processFinish(Feature output) {
+                if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
+                    mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
+                    mPopUp.showPopup((ArcGISFeature) output, true);
+                }
+            }
+        });
         Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         singleTapAdddFeatureAsync.execute(add_point);
     }
@@ -97,16 +105,18 @@ public class MapViewHandler extends Activity {
         Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
         double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+        mClickPoint = new android.graphics.Point((int)e2.getX(), (int)e2.getY());
 //        Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
         return location;
     }
 
     public void onSingleTapMapView(MotionEvent e) {
         final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
+        mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
         if (isClickBtnAdd) {
             mMapView.setViewpointCenterAsync(clickPoint, 10);
         } else {
-            mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
+
             SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
@@ -170,7 +180,7 @@ public class MapViewHandler extends Activity {
                             mSelectedArcGISFeature = (ArcGISFeature) item;
                             mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
                             if (mSelectedArcGISFeature != null)
-                                mPopUp.showPopup(mSelectedArcGISFeature);
+                                mPopUp.showPopup(mSelectedArcGISFeature, false);
                         }
                     }
 

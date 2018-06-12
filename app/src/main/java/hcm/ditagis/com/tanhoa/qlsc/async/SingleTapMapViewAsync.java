@@ -3,26 +3,19 @@ package hcm.ditagis.com.tanhoa.qlsc.async;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ArcGISFeatureTable;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
-import hcm.ditagis.com.tanhoa.qlsc.R;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
@@ -39,7 +32,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
     private MapView mMapView;
     private ArcGISFeature mSelectedArcGISFeature;
     private Popup mPopUp;
-//    private Callout mCallOut;
+    //    private Callout mCallOut;
     private static double DELTA_MOVE_Y = 0;//7000;
     private android.graphics.Point mClickPoint;
     private boolean isFound = false;
@@ -52,6 +45,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         this.mContext = context;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
     }
+
     public SingleTapMapViewAsync(Context context, List<FeatureLayerDTG> featureLayerDTGS,
                                  Popup popup, Callout callout, android.graphics.Point clickPoint,
                                  MapView mapview) {
@@ -81,7 +75,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
                                     mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
                                     long serviceLayerId = ((ArcGISFeatureTable) mSelectedArcGISFeature.getFeatureTable()).getServiceLayerId();
                                     FeatureLayerDTG featureLayerDTG = getmFeatureLayerDTG(serviceLayerId);
-                                    publishProgress(featureLayerDTG);
+                                    if (!isFound)
+                                        publishProgress(featureLayerDTG);
                                 }
                             }
                         }
@@ -98,6 +93,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         });
         return null;
     }
+
     public FeatureLayerDTG getmFeatureLayerDTG(long serviceLayerId) {
         for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
             long serviceLayerDTGId = ((ArcGISFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable()).getServiceLayerId();
@@ -105,6 +101,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         }
         return null;
     }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -113,7 +110,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         mDialog.show();
     }
 
-//    @Override
+    //    @Override
 //    protected Void doInBackground(Point... params) {
 //        mPoint = params[0];
 //        if (mFeatureLayerDTGs == null) {
@@ -157,20 +154,23 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
 //        }
 //        return null;
 //    }
-@Override
-protected void onProgressUpdate(FeatureLayerDTG... values) {
-    super.onProgressUpdate(values);
+    @Override
+    protected void onProgressUpdate(FeatureLayerDTG... values) {
+        super.onProgressUpdate(values);
 //    mPopUp.clearSelection();
 //    mPopUp.dimissCallout();
-    if (values != null) {
-        FeatureLayerDTG featureLayerDTG = values[0];
-        mPopUp.setFeatureLayerDTG(featureLayerDTG);
-        if (mSelectedArcGISFeature != null) mPopUp.showPopup(mSelectedArcGISFeature);
+
+        if (values != null) {
+            FeatureLayerDTG featureLayerDTG = values[0];
+            mPopUp.setFeatureLayerDTG(featureLayerDTG);
+            if (mSelectedArcGISFeature != null && !isFound)
+                mPopUp.showPopup(mSelectedArcGISFeature, false);
+            isFound = true;
+        }
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
-    if (mDialog != null && mDialog.isShowing()) {
-        mDialog.dismiss();
-    }
-}
 //    @Override
 //    protected void onProgressUpdate(FeatureLayer... values) {
 //        super.onProgressUpdate(values);

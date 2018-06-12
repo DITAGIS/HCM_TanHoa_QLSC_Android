@@ -14,9 +14,9 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 
 public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     private Geocoder mGeocoder;
-    private AsyncResponse mDelegate;
-    private Context mContext;
 
+    private Context mContext;
+    private AsyncResponse mDelegate;
     public interface AsyncResponse {
         void processFinish(List<Address> output);
     }

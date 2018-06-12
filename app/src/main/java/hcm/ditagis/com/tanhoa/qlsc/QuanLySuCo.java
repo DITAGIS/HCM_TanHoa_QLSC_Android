@@ -283,7 +283,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
 
             FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH)))
+            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH))
+                    || config.getAlias().equals(getString(R.string.ALIAS_DMA)))
                 featureLayer.setOpacity(0.7f);
             featureLayer.setName(config.getAlias());
             featureLayer.setMaxScale(0);
@@ -468,7 +469,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
     }
 
-    private void setViewPointCenterLongLat(Point position) {
+    private void setViewPointCenterLongLat(Point position, String location) {
         Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWgs84());
         Geometry geometry1 = GeometryEngine.project(geometry, SpatialReferences.getWebMercator());
         Point point = geometry1.getExtent().getCenter();
@@ -478,6 +479,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mGraphicsOverlay.getGraphics().add(graphic);
 
         mMapView.setViewpointCenterAsync(point);
+        mPopUp.showPopupFindLocation(location);
     }
 
     @Override
@@ -501,6 +503,26 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             public boolean onQueryTextSubmit(String query) {
                 if (isSearchingFeature)
                     mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
+                else if (!isSearchingFeature) {
+                    mGraphicsOverlay.getGraphics().clear();
+                    FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, new FindLocationAsycn.AsyncResponse() {
+                        @Override
+                        public void processFinish(List<Address> output) {
+                            if (output != null) {
+                                mSearchAdapter.clear();
+                                mSearchAdapter.notifyDataSetChanged();
+                                if (output.size() > 0) {
+                                    Address address = output.get(0);
+                                    setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
+//                                    }
+                                }
+                            }
+
+                        }
+                    });
+                    findLocationAsycn.execute(query);
+
+                }
                 return false;
             }
 
@@ -510,6 +532,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
                 } else if (!isSearchingFeature) {
+                    mGraphicsOverlay.getGraphics().clear();
                     FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, new FindLocationAsycn.AsyncResponse() {
                         @Override
                         public void processFinish(List<Address> output) {
@@ -517,20 +540,34 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 mSearchAdapter.clear();
                                 mSearchAdapter.notifyDataSetChanged();
                                 int count = 0;
-                                for (Address address : output) {
-
-                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", "", address.getAddressLine(0));
-                                    item.setLatitude(address.getLatitude());
-                                    item.setLongtitude(address.getLongitude());
-
-                                    //
-                                    count++;
-                                    if (count % 2 == 0)
-                                        item.setTrangThai(3);
-                                    else item.setTrangThai(4);
-                                    mSearchAdapter.add(item);
+//                                for (Address address : output) {
+//
+//                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", "", address.getAddressLine(0));
+//                                    item.setLatitude(address.getLatitude());
+//                                    item.setLongtitude(address.getLongitude());
+//
+//                                    //
+//                                    count++;
+//                                    if (count % 2 == 0)
+//                                        item.setTrangThai(3);
+//                                    else item.setTrangThai(4);
+//                                    mSearchAdapter.add(item);
+//                                }
+//                                mSearchAdapter.notifyDataSetChanged();
+                                if (output.size() > 0) {
+//                                    TraCuuAdapter.Item item = mSearchAdapter.getItem(0);
+//                                    int objectID = item.getObjectID();
+//                                    if (objectID != -1) {
+//                                        mMapViewHandler.queryByObjectID(objectID);
+//                                        mSearchAdapter.clear();
+//                                        mSearchAdapter.notifyDataSetChanged();
+//                                    }
+//                                    //tìm kiếm địa chỉ
+//                                    else {
+                                    Address address = output.get(0);
+                                    setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
+//                                    }
                                 }
-                                mSearchAdapter.notifyDataSetChanged();
                             }
 
                         }
@@ -1057,7 +1094,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         }
         //tìm kiếm địa chỉ
         else {
-            setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
+//            setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
         }
     }
 }

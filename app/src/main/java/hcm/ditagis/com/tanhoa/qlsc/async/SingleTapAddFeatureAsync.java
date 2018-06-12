@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.ArcGISFeatureTable;
 import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
@@ -17,6 +18,8 @@ import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.mapping.GeoElement;
+import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
@@ -33,6 +36,8 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
+import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
@@ -40,7 +45,7 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
  * Created by ThanLe on 4/16/2018.
  */
 
-public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
+public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     private ProgressDialog mDialog;
     private Context mContext;
     private byte[] mImage;
@@ -48,15 +53,23 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
     private LocatorTask mLocatorTask;
     private ArcGISFeature mSelectedArcGISFeature;
     private MapView mMapView;
+    private AsyncResponse mDelegate;
+    private android.graphics.Point mClickPoint;
 
-    public SingleTapAddFeatureAsync(Context context, byte[] image, ServiceFeatureTable serviceFeatureTable,
-                                    LocatorTask locatorTask, MapView mapView) {
+    public interface AsyncResponse {
+        void processFinish(Feature output);
+    }
+
+    public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image, ServiceFeatureTable serviceFeatureTable,
+                                    LocatorTask locatorTask, MapView mapView, AsyncResponse delegate) {
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mLocatorTask = locatorTask;
         this.mMapView = mapView;
         this.mImage = image;
         this.mContext = context;
+        this.mClickPoint = clickPoint;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
+        this.mDelegate = delegate;
     }
 
     @Override
@@ -147,7 +160,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
     }
 
     private void addFeatureAsync(ListenableFuture<FeatureQueryResult> featureQuery,
-                                 Feature feature, String finalTimeID, String finalDateTime) {
+                                 final Feature feature, String finalTimeID, String finalDateTime) {
         try {
             // lấy id lớn nhất
             int id_tmp;
@@ -167,6 +180,37 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
                 feature.getAttributes().put(mContext.getString(R.string.NgayCapNhat), c);
                 feature.getAttributes().put(mContext.getString(R.string.NgayThongBao), c);
             }
+            feature.getAttributes().put(mContext.getString(R.string.NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
+
+            //---get DMA begin
+            final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
+            listListenableFuture.addDoneListener(new Runnable() {
+                @Override
+                public void run() {
+                    List<IdentifyLayerResult> identifyLayerResults = null;
+                    try {
+                        identifyLayerResults = listListenableFuture.get();
+                        for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
+                            {
+                                List<GeoElement> elements = identifyLayerResult.getElements();
+                                if (elements.size() > 0) {
+                                    if (elements.get(0) instanceof ArcGISFeature) {
+                                        mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
+                                    }
+                                }
+                            }
+
+                        }
+                        publishProgress(null);
+
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            //---get DMA end
             ListenableFuture<Void> mapViewResult = mServiceFeatureTable.addFeatureAsync(feature);
             mapViewResult.addDoneListener(new Runnable() {
                 @Override
@@ -182,11 +226,11 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
                                     final QueryParameters queryParameters = new QueryParameters();
                                     final String query = "OBJECTID = " + objectId;
                                     queryParameters.setWhereClause(query);
-                                    final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
-                                    feature.addDoneListener(new Runnable() {
+                                    final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+                                    featuresAsync.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-                                            addAttachment(feature);
+                                            addAttachment(featuresAsync, feature);
                                         }
                                     });
                                 }
@@ -209,10 +253,11 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
         }
     }
 
-    private void addAttachment(ListenableFuture<FeatureQueryResult> feature) {
+    private void addAttachment(ListenableFuture<FeatureQueryResult> listenableFuture, final Feature feature) {
         FeatureQueryResult result = null;
         try {
-            result = feature.get();
+
+            result = listenableFuture.get();
             if (result.iterator().hasNext()) {
                 Feature item = result.iterator().next();
                 mSelectedArcGISFeature = (ArcGISFeature) item;
@@ -242,6 +287,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
                                                         if (!edits.get(0).hasCompletedWithErrors()) {
                                                             //attachmentList.add(fileName);
                                                             String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
+                                                            publishProgress(feature);
                                                             // update the attachment list view/ on the control panel
                                                         } else {
                                                         }
@@ -284,18 +330,20 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Void, Void> {
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
+    protected void onProgressUpdate(Feature... values) {
 
+
+        this.mDelegate.processFinish(values[0]);
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
 
 
     @Override
     protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
+
+
     }
 
 }

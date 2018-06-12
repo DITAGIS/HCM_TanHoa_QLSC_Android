@@ -37,6 +37,7 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
@@ -595,7 +596,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    public LinearLayout showPopup(final ArcGISFeature mSelectedArcGISFeature) {
+    public void showPopup(final ArcGISFeature mSelectedArcGISFeature, final boolean isAddFeature) {
         clearSelection();
         dimissCallout();
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
@@ -616,8 +617,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
             linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
         } else {
-             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
-             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
+            linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
         }
 
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -631,15 +632,44 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             public void run() {
                 mCallout.refresh();
                 mCallout.show();
+                if (isAddFeature)
+                    viewMoreInfo();
             }
         });
-        return linearLayout;
+
+    }
+
+    public void showPopupFindLocation(String location) {
+        clearSelection();
+        dimissCallout();
+
+        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
+        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
+
+        ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(location);
+
+        linearLayout.findViewById(R.id.imgBtn_timkiemdiachi).setOnClickListener(this);
+
+
+        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        // show CallOut
+        mCallout.setLocation(mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter());
+        mCallout.setContent(linearLayout);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCallout.refresh();
+                mCallout.show();
+            }
+        });
+
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgBtn_layout_thongtinsuco:
+            case R.id.imgBtn_timkiemdiachi:
                 if (mCallout != null && mCallout.isShowing())
                     mCallout.dismiss();
                 break;

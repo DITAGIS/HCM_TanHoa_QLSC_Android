@@ -27,9 +27,16 @@ public class ListConfig {
 
     public List<Config> getConfigs() {
         List<Config> configs = new ArrayList<>();
+
+
         configs.add(new Config(mContext.getResources().getString(R.string.URL_HANH_CHINH), null, null,
                 mContext.getResources().getString(R.string.ALIAS_HANH_CHINH),
                 mContext.getResources().getInteger(R.integer.MIN_SCALE_HANH_CHINH), new String[]{}));
+        configs.add(new Config(mContext.getResources().getString(R.string.URL_DMA),
+                mContext.getResources().getStringArray(R.array.queryFields_dma),
+                mContext.getResources().getStringArray(R.array.outFields_dma),
+                mContext.getResources().getString(R.string.ALIAS_DMA),
+                mContext.getResources().getInteger(R.integer.minScale_dma), new String[]{}));
         configs.add(new Config(mContext.getResources().getString(R.string.URL_THUA_DAT), null, null,
                 mContext.getResources().getString(R.string.ALIAS_THUA_DAT),
                 mContext.getResources().getInteger(R.integer.MIN_SCALE_THUA_DAT), new String[]{}));
@@ -45,11 +52,7 @@ public class ListConfig {
 
 
 
-        configs.add(new Config(mContext.getResources().getString(R.string.URL_DMA),
-                mContext.getResources().getStringArray(R.array.queryFields_dma),
-                mContext.getResources().getStringArray(R.array.outFields_dma),
-                mContext.getResources().getString(R.string.ALIAS_DMA),
-                mContext.getResources().getInteger(R.integer.minScale_dma), new String[]{}));
+
 
         configs.add(new Config(mContext.getResources().getString(R.string.URL_VAN),
                 mContext.getResources().getStringArray(R.array.queryFields_van),
@@ -112,7 +115,6 @@ public class ListConfig {
                 mContext.getResources().getStringArray(R.array.outFields_donghokhachhang),
                 mContext.getResources().getString(R.string.ALIAS_DONG_HO_KHACH_HANG),
                 mContext.getResources().getInteger(R.integer.minScale_donghokhachhang), new String[]{}));
-
         configs.add(new Config(mContext.getResources().getString(R.string.URL_DIEM_SU_CO),
                 mContext.getResources().getStringArray(R.array.queryFields_diemsuco),
                 mContext.getResources().getStringArray(R.array.outFields_diemsuco),
