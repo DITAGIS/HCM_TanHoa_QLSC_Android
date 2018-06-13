@@ -2,6 +2,7 @@ package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -53,6 +54,7 @@ import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
@@ -665,6 +667,46 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     mCallout.show();
                 }
             });
+        } catch (Exception e) {
+            Log.e("Popup tìm kiếm", e.toString());
+        }
+
+    }
+
+    public void showPopupFindLocation(final Point position) {
+        try {
+            if (position == null)
+                return;
+
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false, new FindLocationAsycn.AsyncResponse() {
+                @Override
+                public void processFinish(List<Address> output) {
+                    if (output != null) {
+                        clearSelection();
+                        dimissCallout();
+
+                        LayoutInflater inflater = LayoutInflater.from(mMainActivity.getApplicationContext());
+                        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
+                        ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(output.get(0).getAddressLine(0));
+                        linearLayout.findViewById(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(Popup.this);
+                        linearLayout.findViewById(R.id.imgBtn_timkiemdiachi).setOnClickListener(Popup.this);
+                        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                        // show CallOut
+                        mCallout.setLocation(position);
+                        mCallout.setContent(linearLayout);
+                        Popup.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mCallout.refresh();
+                                mCallout.show();
+                            }
+                        });
+                    }
+                }
+            });
+            findLocationAsycn.setmLongtitude(position.getX());
+            findLocationAsycn.setmLatitude(position.getY());
+            findLocationAsycn.execute();
         } catch (Exception e) {
             Log.e("Popup tìm kiếm", e.toString());
         }

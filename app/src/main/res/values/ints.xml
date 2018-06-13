@@ -26,7 +26,7 @@
 
 
     <!--MINSCALE END-->
-
+    <integer name="trang_thai_chua_xac_dinh">-1</integer>
     <integer name="trang_thai_chua_sua_chua">0</integer>
     <integer name="trang_thai_dang_sua_chua">1</integer>
     <integer name="trang_thai_da_sua_chua">2</integer>

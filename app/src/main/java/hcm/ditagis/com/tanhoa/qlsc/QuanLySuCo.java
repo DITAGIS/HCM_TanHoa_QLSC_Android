@@ -36,8 +36,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -449,9 +447,24 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         });
     }
 
-    private void setViewPointCenter(Point position) {
-        Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
-        mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
+    private void setViewPointCenter(final Point position) {
+        final Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
+        final ListenableFuture<Boolean> booleanListenableFuture = mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
+        booleanListenableFuture.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    if(booleanListenableFuture.get().booleanValue())
+                        mPopUp.showPopupFindLocation(position);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
     }
 
     private void setViewPointCenterLongLat(Point position, String location) {
@@ -791,10 +804,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
-                    if (!mLocationDisplay.isStarted()) {
-                        mLocationDisplay.startAsync();
-                        setViewPointCenter(mLocationDisplay.getMapLocation());
-                    } else mLocationDisplay.stop();
+                if (!mLocationDisplay.isStarted()) {
+                    mLocationDisplay.startAsync();
+                    setViewPointCenter(mLocationDisplay.getMapLocation());
+
+                } else mLocationDisplay.stop();
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
                 themDiemSuCo();
