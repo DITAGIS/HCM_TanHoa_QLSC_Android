@@ -70,23 +70,29 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
                     for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
                         {
                             List<GeoElement> elements = identifyLayerResult.getElements();
-                            if (elements.size() > 0) {
-                                if (elements.get(0) instanceof ArcGISFeature) {
-                                    mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
-                                    long serviceLayerId = ((ArcGISFeatureTable) mSelectedArcGISFeature.getFeatureTable()).getServiceLayerId();
-                                    FeatureLayerDTG featureLayerDTG = getmFeatureLayerDTG(serviceLayerId);
-                                    if (!isFound)
-                                        publishProgress(featureLayerDTG);
-                                }
+                            if (elements.size() > 0 && elements.get(0) instanceof ArcGISFeature && !isFound) {
+                                isFound = true;
+                                mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
+                                long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
+                                        getServiceLayerId();
+                                FeatureLayerDTG featureLayerDTG = getmFeatureLayerDTG(serviceLayerId);
+                                publishProgress(featureLayerDTG);
                             }
+
                         }
 
                     }
                     publishProgress(null);
 
-                } catch (InterruptedException e) {
+                } catch (
+                        InterruptedException e)
+
+                {
                     e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (
+                        ExecutionException e)
+
+                {
                     e.printStackTrace();
                 }
             }
@@ -110,122 +116,18 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         mDialog.show();
     }
 
-    //    @Override
-//    protected Void doInBackground(Point... params) {
-//        mPoint = params[0];
-//        if (mFeatureLayerDTGs == null) {
-//            publishProgress(null);
-//            return null;
-//        }
-//        final int[] isIdentified = {mFeatureLayerDTGs.size()};
-//        for (final FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
-//            if (isIdentified[0] > 0) {
-//                mFeatureLayerDTG = featureLayerDTG;
-//                mFeatureLayerDTG.getFeatureLayer().clearSelection();
-//                final ListenableFuture<IdentifyLayerResult> identifyFuture = mMapView.identifyLayerAsync(featureLayerDTG.getFeatureLayer(), mClickPoint, 5, false, 1);
-//                identifyFuture.addDoneListener(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            isIdentified[0]--;
-//                            IdentifyLayerResult layerResult = identifyFuture.get();
-//                            List<GeoElement> resultGeoElements = layerResult.getElements();
-//                            if (resultGeoElements.size() > 0) {
-//                                if (resultGeoElements.get(0) instanceof ArcGISFeature) {
-//                                    mSelectedArcGISFeature = (ArcGISFeature) resultGeoElements.get(0);
-//                                    publishProgress(featureLayerDTG.getFeatureLayer());
-////                                    if (mDialog != null && mDialog.isShowing()) {
-////                                        mDialog.dismiss();
-////                                    }
-//                                }
-//                            } else {
-//                                if (isIdentified[0] == 0)
-//                                    // none of the features on the map were selected
-//                                    publishProgress(null);
-//                            }
-//
-//                        } catch (Exception e) {
-//                            Log.e(mContext.getResources().getString(R.string.app_name), "Select feature failed: " + e.getMessage());
-//                        }
-//                    }
-//                });
-//            } else
-//                publishProgress(null);
-//        }
-//        return null;
-//    }
     @Override
     protected void onProgressUpdate(FeatureLayerDTG... values) {
         super.onProgressUpdate(values);
-//    mPopUp.clearSelection();
-//    mPopUp.dimissCallout();
-
-        if (values != null) {
+        if (values != null && mSelectedArcGISFeature != null) {
             FeatureLayerDTG featureLayerDTG = values[0];
             mPopUp.setFeatureLayerDTG(featureLayerDTG);
-            if (mSelectedArcGISFeature != null && !isFound)
-                mPopUp.showPopup(mSelectedArcGISFeature, false);
-            isFound = true;
+            mPopUp.showPopup(mSelectedArcGISFeature, false);
         }
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
     }
-//    @Override
-//    protected void onProgressUpdate(FeatureLayer... values) {
-//        super.onProgressUpdate(values);
-//        if (values == null) {
-//            if (mDialog != null && mDialog.isShowing()) {
-//                mDialog.dismiss();
-//            }
-//        } else {
-//            FeatureLayer featureLayer = values[0];
-//            if (mSelectedArcGISFeature != null) {
-//                // highlight the selected feature
-//                featureLayer.clearSelection();
-//                featureLayer.selectFeature(mSelectedArcGISFeature);
-//                mPopUp.setFeatureLayerDTG(mFeatureLayerDTG);
-//                if (featureLayer.getName().equals(mContext.getString(R.string.ALIAS_DIEM_SU_CO))) {
-//                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-//                    if (khachHangDangNhap != null) {
-//                        Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
-//                        Object maQuan = attributes.get("MaQuan");
-//                        //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
-//
-//                        if (maQuan != null && maQuan != "" &&
-//                                ((khachHangDangNhap.isTanBinh() && maQuan.equals(mContext.getString(R.string.QuanTanBinh))) ||
-//                                        (khachHangDangNhap.isTanPhu() && maQuan.equals(mContext.getString(R.string.QuanTanPhu))) ||
-//                                        (khachHangDangNhap.isPhuNhuan() && maQuan.equals(mContext.getString(R.string.QuanPhuNhuan))))) {
-//                            LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
-//                            // show CallOut
-////                            mCallOut.setLocation(mPoint);
-////                            mCallOut.setContent(linearLayout);
-////                            mCallOut.refresh();
-////                            mCallOut.show();
-//                        } else
-//
-//                            Toast.makeText(mContext, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-//                    } else {
-//                        Toast.makeText(mContext, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-//                    }
-//                }else{
-//                    LinearLayout linearLayout = mPopUp.createPopup(featureLayer.getName(), mSelectedArcGISFeature);
-//                    // show CallOut
-////                    mCallOut.setLocation(mPoint);
-////                    mCallOut.setContent(linearLayout);
-////                    mCallOut.refresh();
-////                    mCallOut.show();
-//                }
-//                if (mDialog != null && mDialog.isShowing()) {
-//                    mDialog.dismiss();
-//                }
-//            }
-//
-//        }
-////            }
-////        });
-////        }
-//    }
 
     @Override
     protected void onPostExecute(Void result) {

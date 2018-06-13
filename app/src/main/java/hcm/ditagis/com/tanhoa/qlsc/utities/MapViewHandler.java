@@ -121,29 +121,6 @@ public class MapViewHandler extends Activity {
             SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
-//        final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
-//        if (isClickBtnAdd) {
-//            mMapView.setViewpointCenterAsync(clickPoint, 10);
-//        } else {
-//            suCoTanHoaLayer.clearSelection();
-//            if (mCallout.isShowing()) {
-//                mCallout.dismiss();
-//            }
-//            mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
-//            mSelectedArcGISFeature = null;
-//            // get the point that was clicked and convert it to a point in map coordinates
-//            int tolerance = 10;
-//            double mapTolerance = tolerance * mMapView.getUnitsPerDensityIndependentPixel();
-//            // create objects required to do a selection with a query
-//            Envelope envelope = new Envelope(clickPoint.getX() - mapTolerance, clickPoint.getY() - mapTolerance, clickPoint.getX() + mapTolerance, clickPoint.getY() + mapTolerance, mMapView.getMap().getSpatialReference());
-//            QueryParameters query = new QueryParameters();
-//            query.setGeometry(envelope);
-//            // add done loading listener to fire when the selection returns
-//
-//            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext,
-//                    mFeatureLayerDTGs, mPopUp, mCallout, mClickPoint, mMapView);
-//            singleTapMapViewAsync.execute(clickPoint);
-//        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -185,20 +162,11 @@ public class MapViewHandler extends Activity {
                         }
                     }
 
-                } catch (
-                        InterruptedException e)
-
-                {
-                    e.printStackTrace();
-                } catch (
-                        ExecutionException e)
-
-                {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         });
-
     }
 
     public void querySearch(String searchStr, ListView listView, final TraCuuAdapter adapter) {
