@@ -35,9 +35,9 @@ import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
+import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
-import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
@@ -639,29 +639,35 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    public void showPopupFindLocation(String location) {
-        clearSelection();
-        dimissCallout();
+    public void showPopupFindLocation(Point position, String location) {
+        try {
+            if (position == null)
+                return;
+            clearSelection();
+            dimissCallout();
 
-        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
-        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
+            LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
+            linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
 
-        ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(location);
+            ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(location);
+            linearLayout.findViewById(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(this);
+            linearLayout.findViewById(R.id.imgBtn_timkiemdiachi).setOnClickListener(this);
 
-        linearLayout.findViewById(R.id.imgBtn_timkiemdiachi).setOnClickListener(this);
 
-
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        // show CallOut
-        mCallout.setLocation(mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter());
-        mCallout.setContent(linearLayout);
-        this.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mCallout.refresh();
-                mCallout.show();
-            }
-        });
+            linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            // show CallOut
+            mCallout.setLocation(position);
+            mCallout.setContent(linearLayout);
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCallout.refresh();
+                    mCallout.show();
+                }
+            });
+        } catch (Exception e) {
+            Log.e("Popup tìm kiếm", e.toString());
+        }
 
     }
 
@@ -679,6 +685,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();
                 deleteFeature();
+                break;
+            case R.id.imgBtn_timkiemdiachi_themdiemsuco:
+                mMainActivity.onClick(view);
+                Toast.makeText(mMainActivity, "Thêm điểm", Toast.LENGTH_LONG).show();
                 break;
         }
     }

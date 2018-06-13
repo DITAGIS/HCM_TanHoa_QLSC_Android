@@ -125,6 +125,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLayoutDisplayLayerFeature, mLayoutDisplayLayerAdministration, mLayoutDisplayLayerDiemSuCo;
     private boolean isOpenFab = false;
     private Animation mAnimationFabOpen, mAnimationFabClose, mAnimationClockwise, mAnimationAntiClockwise;
+    private Point mPointFindLocation;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -141,7 +142,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private ArcGISFeature mSelectedArcGISFeature;
-    private static final int REQUEST_ID_IMAGE_CAPTURE = 55;
+    private static final int REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE = 55;
     private static final int REQUEST_ID_IMAGE_CAPTURE_POPUP = 44;
     String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
@@ -251,6 +252,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_street_map).setOnClickListener(this);
         findViewById(R.id.layout_layer_topo).setOnClickListener(this);
+
         mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
         mFloatButtonLayer.setOnClickListener(this);
         mFloatButtonAdd = findViewById(R.id.floatBtnView);
@@ -261,7 +263,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mLinearLayoutCover.setOnClickListener(this);
         findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
-        findViewById(R.id.img_layvitri).setOnClickListener(this);
+        findViewById(R.id.img_chonvitri_themdiemsuco).setOnClickListener(this);
         mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
         mFloatButtonLocation.setOnClickListener(this);
         mFloatButtonClosePopup = findViewById(R.id.floatBtnClosePopUp);
@@ -479,8 +481,156 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mGraphicsOverlay.getGraphics().add(graphic);
 
         mMapView.setViewpointCenterAsync(point);
-        mPopUp.showPopupFindLocation(location);
+        mPopUp.showPopupFindLocation(point, location);
+        this.mPointFindLocation = point;
     }
+
+
+    public void requestPermisson() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
+                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+                        != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE,
+                    Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE);
+        }
+//        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
+//                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
+//                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+//        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mLocationDisplay.startAsync();
+
+        } else {
+            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void optionSearchFeature() {
+        this.isSearchingFeature = true;
+//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_border_bottom);
+//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+    }
+
+    private void optionFindRoute() {
+        this.isSearchingFeature = false;
+//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_border_bottom);
+//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
+    }
+
+    private void expandFloatActionButton() {
+//        mLinearLayoutCover.startAnimation(mAnimationFabOpen);
+        mLinearLayoutCover.setVisibility(View.VISIBLE);
+
+        mFloatButtonAdd.startAnimation(mAnimationFabOpen);
+        mFloatButtonLocation.startAnimation(mAnimationFabOpen);
+//        mFloatActionButtonAddPoint.startAnimation(mAnimationFabOpen);
+        mFloatButtonClosePopup.startAnimation(mAnimationFabOpen);
+
+        mFloatButtonAdd.startAnimation(mAnimationClockwise);
+
+        mFloatButtonLocation.setClickable(true);
+//        mFloatActionButtonAddPoint.setClickable(true);
+        mFloatButtonClosePopup.setClickable(true);
+        isOpenFab = true;
+    }
+
+    private void deleteSearching() {
+        mGraphicsOverlay.getGraphics().clear();
+        mSearchAdapter.clear();
+        mSearchAdapter.notifyDataSetChanged();
+    }
+
+    private void collapseFloatActionButton() {
+//        mLinearLayoutCover.startAnimation(mAnimationFabClose);
+        mLinearLayoutCover.setVisibility(View.GONE);
+        mFloatButtonAdd.startAnimation(mAnimationFabClose);
+        mFloatButtonLocation.startAnimation(mAnimationFabClose);
+        mFloatActionButtonAddPoint.startAnimation(mAnimationFabClose);
+        mFloatButtonClosePopup.startAnimation(mAnimationFabClose);
+
+
+        mFloatButtonAdd.startAnimation(mAnimationAntiClockwise);
+        mFloatButtonLocation.setClickable(false);
+        mFloatActionButtonAddPoint.setClickable(false);
+        mFloatButtonClosePopup.setClickable(false);
+        isOpenFab = false;
+    }
+
+    private void themDiemSuCo() {
+        ServiceFeatureTable layerHanhChinh = null;
+        for (FeatureLayerDTG feature :
+                this.mFeatureLayerDTGS) {
+            if (feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
+                layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
+                break;
+            }
+
+        }
+
+        if (layerHanhChinh != null) {
+            KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+            //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
+            QueryParameters queryParam = new QueryParameters();
+            Point diemBaoSuCo = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+            //lấy hành chính của điểm báo sự cố
+            queryParam.setGeometry(diemBaoSuCo);
+
+            StringBuilder builder = new StringBuilder();
+            //nếu tài khoản có quyền truy cập vào
+            List<String> wheres = new ArrayList<>();
+            if (khachHangDangNhap.isPhuNhuan()) {
+                builder.append("MaHuyen = " + getString(R.string.QuanPhuNhuan));
+                builder.append(" or ");
+            }
+            if (khachHangDangNhap.isTanBinh()) {
+                builder.append("MaHuyen = " + getString(R.string.QuanTanBinh));
+                builder.append(" or ");
+            }
+            if (khachHangDangNhap.isTanPhu()) {
+                builder.append("MaHuyen = " + getString(R.string.QuanTanPhu));
+                builder.append(" or ");
+            }
+            builder.append(" 1 = 2 ");
+            if (wheres.size() > 0)
+                queryParam.setWhereClause(builder.toString());
+            final ListenableFuture<Long> countAsync = layerHanhChinh.queryFeatureCountAsync(queryParam);
+
+            countAsync.addDoneListener(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Long soLuong = countAsync.get();
+                        if (soLuong > 0) {
+                            capture();
+                        } else {
+                            Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -501,79 +651,38 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mTxtSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if (isSearchingFeature)
-                    mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
-                else if (!isSearchingFeature) {
-                    mGraphicsOverlay.getGraphics().clear();
-                    FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, new FindLocationAsycn.AsyncResponse() {
-                        @Override
-                        public void processFinish(List<Address> output) {
-                            if (output != null) {
-                                mSearchAdapter.clear();
-                                mSearchAdapter.notifyDataSetChanged();
-                                if (output.size() > 0) {
-                                    Address address = output.get(0);
-                                    setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
+                try {
+                    if (isSearchingFeature)
+                        mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
+                    else {
+                        deleteSearching();
+                        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, true, new FindLocationAsycn.AsyncResponse() {
+                            @Override
+                            public void processFinish(List<Address> output) {
+                                if (output != null) {
+                                    mSearchAdapter.clear();
+                                    mSearchAdapter.notifyDataSetChanged();
+                                    if (output.size() > 0) {
+                                        Address address = output.get(0);
+                                        setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
+                                        Log.d("Tọa độ tìm kiếm", String.format("[% ,.9f;% ,.9f]", address.getLongitude(), address.getLatitude()));
 //                                    }
+                                    }
                                 }
+
                             }
+                        });
+                        findLocationAsycn.execute(query);
 
-                        }
-                    });
-                    findLocationAsycn.execute(query);
-
+                    }
+                } catch (Exception e) {
+                    Log.e("Lỗi tìm kiếm", e.toString());
                 }
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.length() == 0) {
-                    mSearchAdapter.clear();
-                    mSearchAdapter.notifyDataSetChanged();
-                } else if (!isSearchingFeature) {
-                    mGraphicsOverlay.getGraphics().clear();
-                    FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, new FindLocationAsycn.AsyncResponse() {
-                        @Override
-                        public void processFinish(List<Address> output) {
-                            if (output != null) {
-                                mSearchAdapter.clear();
-                                mSearchAdapter.notifyDataSetChanged();
-                                int count = 0;
-//                                for (Address address : output) {
-//
-//                                    TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", "", address.getAddressLine(0));
-//                                    item.setLatitude(address.getLatitude());
-//                                    item.setLongtitude(address.getLongitude());
-//
-//                                    //
-//                                    count++;
-//                                    if (count % 2 == 0)
-//                                        item.setTrangThai(3);
-//                                    else item.setTrangThai(4);
-//                                    mSearchAdapter.add(item);
-//                                }
-//                                mSearchAdapter.notifyDataSetChanged();
-                                if (output.size() > 0) {
-//                                    TraCuuAdapter.Item item = mSearchAdapter.getItem(0);
-//                                    int objectID = item.getObjectID();
-//                                    if (objectID != -1) {
-//                                        mMapViewHandler.queryByObjectID(objectID);
-//                                        mSearchAdapter.clear();
-//                                        mSearchAdapter.notifyDataSetChanged();
-//                                    }
-//                                    //tìm kiếm địa chỉ
-//                                    else {
-                                    Address address = output.get(0);
-                                    setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
-//                                    }
-                                }
-                            }
-
-                        }
-                    });
-                    findLocationAsycn.execute(newText);
-                }
                 return false;
             }
         });
@@ -644,9 +753,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 this.finish();
                 break;
             case R.id.nav_delete_searching:
-                mGraphicsOverlay.getGraphics().clear();
-                mSearchAdapter.clear();
-                mSearchAdapter.notifyDataSetChanged();
+                deleteSearching();
                 break;
             case R.id.nav_visible_float_button:
                 if (mFloatButtonLayer.getVisibility() == View.VISIBLE) {
@@ -667,84 +774,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public void requestPermisson() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE,
-                    Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE);
-        }
-//        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
-//                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-//                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            mLocationDisplay.startAsync();
-
-        } else {
-            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void optionSearchFeature() {
-        this.isSearchingFeature = true;
-//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_border_bottom);
-//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-    }
-
-    private void optionFindRoute() {
-        this.isSearchingFeature = false;
-//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
-        mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_border_bottom);
-//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
-        mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-    }
-
-    private void expandFloatActionButton() {
-//        mLinearLayoutCover.startAnimation(mAnimationFabOpen);
-        mLinearLayoutCover.setVisibility(View.VISIBLE);
-
-        mFloatButtonAdd.startAnimation(mAnimationFabOpen);
-        mFloatButtonLocation.startAnimation(mAnimationFabOpen);
-        mFloatActionButtonAddPoint.startAnimation(mAnimationFabOpen);
-        mFloatButtonClosePopup.startAnimation(mAnimationFabOpen);
-
-        mFloatButtonAdd.startAnimation(mAnimationClockwise);
-
-        mFloatButtonLocation.setClickable(true);
-        mFloatActionButtonAddPoint.setClickable(true);
-        mFloatButtonClosePopup.setClickable(true);
-        isOpenFab = true;
-    }
-
-    private void collapseFloatActionButton() {
-//        mLinearLayoutCover.startAnimation(mAnimationFabClose);
-        mLinearLayoutCover.setVisibility(View.GONE);
-        mFloatButtonAdd.startAnimation(mAnimationFabClose);
-        mFloatButtonLocation.startAnimation(mAnimationFabClose);
-        mFloatActionButtonAddPoint.startAnimation(mAnimationFabClose);
-        mFloatButtonClosePopup.startAnimation(mAnimationFabClose);
-
-
-        mFloatButtonAdd.startAnimation(mAnimationAntiClockwise);
-        mFloatButtonLocation.setClickable(false);
-        mFloatActionButtonAddPoint.setClickable(false);
-        mFloatButtonClosePopup.setClickable(false);
-        isOpenFab = false;
     }
 
     public void onClickTextView(View v) {
@@ -804,67 +833,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
                 findViewById(R.id.floatBtnLayer).setVisibility(View.VISIBLE);
                 break;
-            case R.id.img_layvitri:
-//                mMapViewHandler.capture();
-                ServiceFeatureTable layerHanhChinh = null;
-                for (FeatureLayerDTG feature :
-                        this.mFeatureLayerDTGS) {
-                    if (feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
-                        layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
-                        break;
-                    }
-
-                }
-
-                if (layerHanhChinh != null) {
-                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-                    //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
-                    QueryParameters queryParam = new QueryParameters();
-                    Point diemBaoSuCo = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
-                    //lấy hành chính của điểm báo sự cố
-                    queryParam.setGeometry(diemBaoSuCo);
-
-                    StringBuilder builder = new StringBuilder();
-                    //nếu tài khoản có quyền truy cập vào
-                    List<String> wheres = new ArrayList<>();
-                    if (khachHangDangNhap.isPhuNhuan()) {
-                        builder.append("MaHuyen = " + getString(R.string.QuanPhuNhuan));
-                        builder.append(" or ");
-                    }
-                    if (khachHangDangNhap.isTanBinh()) {
-                        builder.append("MaHuyen = " + getString(R.string.QuanTanBinh));
-                        builder.append(" or ");
-                    }
-                    if (khachHangDangNhap.isTanPhu()) {
-                        builder.append("MaHuyen = " + getString(R.string.QuanTanPhu));
-                        builder.append(" or ");
-                    }
-                    builder.append(" 1 = 2 ");
-                    if (wheres.size() > 0)
-                        queryParam.setWhereClause(builder.toString());
-                    final ListenableFuture<Long> countAsync = layerHanhChinh.queryFeatureCountAsync(queryParam);
-
-                    countAsync.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                Long soLuong = countAsync.get();
-                                if (soLuong > 0) {
-                                    capture();
-                                } else {
-                                    Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } else {
-                    Toast.makeText(this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                }
-
+            case R.id.img_chonvitri_themdiemsuco:
+                themDiemSuCo();
 
                 break;
             case R.id.floatBtnAddPoint:
@@ -907,9 +877,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     setViewPointCenter(mLocationDisplay.getMapLocation());
                 } else mLocationDisplay.stop();
                 break;
+            case R.id.imgBtn_timkiemdiachi_themdiemsuco:
+                themDiemSuCo();
+                break;
+
         }
     }
-
 
     public void capture() {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
@@ -920,8 +893,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         this.mUri = Uri.fromFile(photo);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.mUri);
 //        this.mUri = Uri.fromFile(photo);
-        startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
+        startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE);
     }
+
 
     @Nullable
     private Bitmap getBitmap(String path) {
@@ -1024,7 +998,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         } catch (Exception ignored) {
         }
 
-        if (requestCode == REQUEST_ID_IMAGE_CAPTURE)
+        if (requestCode == REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE)
 
         {
             if (resultCode == RESULT_OK) {
@@ -1041,7 +1015,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-                            mMapViewHandler.addFeature(image);
+                            mMapViewHandler.addFeature(image, mPointFindLocation);
+                            deleteSearching();
                         }
                     } catch (Exception ignored) {
                     }

@@ -3,13 +3,13 @@ package hcm.ditagis.com.tanhoa.qlsc.async;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.location.Address;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
-import com.esri.arcgisruntime.data.ArcGISFeatureTable;
 import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
@@ -17,27 +17,26 @@ import com.esri.arcgisruntime.data.FeatureQueryResult;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
+import com.esri.arcgisruntime.geometry.Geometry;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.tasks.geocode.GeocodeResult;
 import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
@@ -83,26 +82,17 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     @Override
     protected Void doInBackground(Point... params) {
         final Point clickPoint = params[0];
+        Geometry project = GeometryEngine.project(clickPoint, SpatialReferences.getWgs84());
+        double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
         final Feature feature;
         try {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
-            final ListenableFuture<List<GeocodeResult>> listListenableFuture =
-                    mLocatorTask.reverseGeocodeAsync(clickPoint);
-            listListenableFuture.addDoneListener(new Runnable() {
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false, new FindLocationAsycn.AsyncResponse() {
                 @Override
-                public void run() {
-                    try {
-                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
-                        if (geocodeResults.size() > 0) {
-                            GeocodeResult geocodeResult = geocodeResults.get(0);
-                            Map<String, Object> attrs = new HashMap<>();
-                            for (String key : geocodeResult.getAttributes().keySet()) {
-                                attrs.put(key, geocodeResult.getAttributes().get(key));
-                            }
-                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
-                            feature.getAttributes().put(mContext.getString(R.string.ViTri), address);
-                        }
+                public void processFinish(List<Address> output) {
+                    if (output != null) {
+                        feature.getAttributes().put(mContext.getString(R.string.ViTri), output.get(0).getAddressLine(0));
                         Short intObj = new Short((short) 0);
                         feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
 
@@ -126,15 +116,61 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                 addFeatureAsync(featureQuery, feature, finalTimeID, finalDateTime);
                             }
                         });
-                    } catch (InterruptedException e1) {
-                        e1.printStackTrace();
-                    } catch (ExecutionException e1) {
-                        e1.printStackTrace();
                     }
-
-
                 }
             });
+            findLocationAsycn.setmLongtitude(location[0]);
+            findLocationAsycn.setmLatitude(location[1]);
+
+            findLocationAsycn.execute();
+//            final ListenableFuture<List<GeocodeResult>> listListenableFuture =
+//                    mLocatorTask.reverseGeocodeAsync(clickPoint);
+//            listListenableFuture.addDoneListener(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
+//                        if (geocodeResults.size() > 0) {
+//                            GeocodeResult geocodeResult = geocodeResults.get(0);
+//                            Map<String, Object> attrs = new HashMap<>();
+//                            for (String key : geocodeResult.getAttributes().keySet()) {
+//                                attrs.put(key, geocodeResult.getAttributes().get(key));
+//                            }
+//                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
+//                            feature.getAttributes().put(mContext.getString(R.string.ViTri), address);
+//                        }
+//                        Short intObj = new Short((short) 0);
+//                        feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
+//
+//                        String searchStr = "";
+//                        String dateTime = "";
+//                        String timeID = "";
+//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//                            dateTime = getDateString();
+//                            timeID = getTimeID();
+//                            searchStr = mContext.getString(R.string.IDSuCo) + " like '%" + timeID + "'";
+//                        }
+//                        QueryParameters queryParameters = new QueryParameters();
+//                        queryParameters.setWhereClause(searchStr);
+//                        final ListenableFuture<FeatureQueryResult> featureQuery =
+//                                mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+//                        final String finalDateTime = dateTime;
+//                        final String finalTimeID = timeID;
+//                        featureQuery.addDoneListener(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                addFeatureAsync(featureQuery, feature, finalTimeID, finalDateTime);
+//                            }
+//                        });
+//                    } catch (InterruptedException e1) {
+//                        e1.printStackTrace();
+//                    } catch (ExecutionException e1) {
+//                        e1.printStackTrace();
+//                    }
+//
+//
+//                }
+//            });
 
         } catch (Exception e) {
             MySnackBar.make(mMapView, "Không tạo được thuộc tính. Vui lòng thử lại sau", true);
@@ -201,7 +237,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                             }
 
                         }
-                        publishProgress(null);
+//                        publishProgress(null);
 
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -331,8 +367,6 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
 
     @Override
     protected void onProgressUpdate(Feature... values) {
-
-
         this.mDelegate.processFinish(values[0]);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();

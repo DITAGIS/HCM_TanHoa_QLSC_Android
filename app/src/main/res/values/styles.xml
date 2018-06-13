@@ -83,6 +83,11 @@
         <item name="android:textSize">17sp</item>
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
+    <style name="MyTextAppearance.Blue.Big.Bold" parent="@android:style/TextAppearance">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
     <!--textview end-->
 
 </resources>

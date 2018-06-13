@@ -85,8 +85,9 @@ public class MapViewHandler extends Activity {
         isClickBtnAdd = clickBtnAdd;
     }
 
-    public void addFeature(byte[] image) {
-        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint,mContext,
+    public void addFeature(byte[] image, Point pointFindLocation) {
+        mClickPoint = mMapView.locationToScreen(pointFindLocation);
+        SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
                 image, mServiceFeatureTable, loc, mMapView, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
@@ -96,8 +97,8 @@ public class MapViewHandler extends Activity {
                 }
             }
         });
-        Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
-        singleTapAdddFeatureAsync.execute(add_point);
+//        Point add_point = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+        singleTapAdddFeatureAsync.execute(pointFindLocation);
     }
 
 
@@ -105,7 +106,7 @@ public class MapViewHandler extends Activity {
         Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
         double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
-        mClickPoint = new android.graphics.Point((int)e2.getX(), (int)e2.getY());
+        mClickPoint = new android.graphics.Point((int) e2.getX(), (int) e2.getY());
 //        Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
         return location;
     }

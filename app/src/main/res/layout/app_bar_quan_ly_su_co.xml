@@ -472,7 +472,7 @@
                 tools:ignore="RtlHardcoded">
 
                 <ImageView
-                    android:id="@+id/img_layvitri"
+                    android:id="@+id/img_chonvitri_themdiemsuco"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:gravity="center_vertical"

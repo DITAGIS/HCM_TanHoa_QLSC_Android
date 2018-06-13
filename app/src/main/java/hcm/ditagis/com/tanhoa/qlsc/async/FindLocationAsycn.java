@@ -14,16 +14,27 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 
 public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     private Geocoder mGeocoder;
-
+    private boolean mIsFromLocationName;
     private Context mContext;
     private AsyncResponse mDelegate;
+    private double mLongtitude, mLatitude;
+
     public interface AsyncResponse {
         void processFinish(List<Address> output);
     }
 
-    public FindLocationAsycn(Context context, AsyncResponse delegate) {
+    public void setmLongtitude(double mLongtitude) {
+        this.mLongtitude = mLongtitude;
+    }
+
+    public void setmLatitude(double mLatitude) {
+        this.mLatitude = mLatitude;
+    }
+
+    public FindLocationAsycn(Context context, boolean isFromLocationName, AsyncResponse delegate) {
         this.mDelegate = delegate;
         this.mContext = context;
+        this.mIsFromLocationName = isFromLocationName;
         this.mGeocoder = new Geocoder(context);
     }
 
@@ -34,17 +45,24 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
 
     @Override
     protected List<Address> doInBackground(String... params) {
-        String text = params[0];
         if (!Geocoder.isPresent())
             return null;
         List<Address> lstLocation = new ArrayList<>();
-
-
-        try {
-            List<Address> addressList = mGeocoder.getFromLocationName(text, 5);
-            lstLocation.addAll(addressList);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (mIsFromLocationName) {
+            String text = params[0];
+            try {
+                List<Address> addressList = mGeocoder.getFromLocationName(text, 1);
+                lstLocation.addAll(addressList);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try {
+                List<Address> fromLocation = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
+                lstLocation.addAll(fromLocation);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return lstLocation;
     }
