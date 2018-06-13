@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/padding_title_popup"
             android:background="@drawable/layout_border_bottom_thin"
-            android:text="Thêm điểm sự cố"
+            android:text="Báo sự cố"
             tools:ignore="KeyboardInaccessibleWidget,RtlSymmetry" />
     </LinearLayout>
 

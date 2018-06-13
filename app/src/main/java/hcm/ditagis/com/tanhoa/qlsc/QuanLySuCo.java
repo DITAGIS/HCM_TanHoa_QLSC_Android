@@ -49,7 +49,6 @@ import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
-import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -454,8 +453,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void run() {
                 try {
-                    if(booleanListenableFuture.get().booleanValue())
-                        mPopUp.showPopupFindLocation(position);
+                    if (booleanListenableFuture.get().booleanValue())
+                        QuanLySuCo.this.mPointFindLocation = position;
+                    mPopUp.showPopupFindLocation(position);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -534,64 +534,32 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void themDiemSuCo() {
-        ServiceFeatureTable layerHanhChinh = null;
-        for (FeatureLayerDTG feature :
-                this.mFeatureLayerDTGS) {
-            if (feature.getTitleLayer().equals(this.getResources().getString(R.string.ALIAS_HANH_CHINH))) {
-                layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
-                break;
-            }
-
-        }
-
-        if (layerHanhChinh != null) {
-            KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-            //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
-            QueryParameters queryParam = new QueryParameters();
-            Point diemBaoSuCo = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
-            //lấy hành chính của điểm báo sự cố
-            queryParam.setGeometry(diemBaoSuCo);
-
-            StringBuilder builder = new StringBuilder();
-            //nếu tài khoản có quyền truy cập vào
-            List<String> wheres = new ArrayList<>();
-            if (khachHangDangNhap.isPhuNhuan()) {
-                builder.append("MaHuyen = " + getString(R.string.QuanPhuNhuan));
-                builder.append(" or ");
-            }
-            if (khachHangDangNhap.isTanBinh()) {
-                builder.append("MaHuyen = " + getString(R.string.QuanTanBinh));
-                builder.append(" or ");
-            }
-            if (khachHangDangNhap.isTanPhu()) {
-                builder.append("MaHuyen = " + getString(R.string.QuanTanPhu));
-                builder.append(" or ");
-            }
-            builder.append(" 1 = 2 ");
-            if (wheres.size() > 0)
-                queryParam.setWhereClause(builder.toString());
-            final ListenableFuture<Long> countAsync = layerHanhChinh.queryFeatureCountAsync(queryParam);
-
-            countAsync.addDoneListener(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        Long soLuong = countAsync.get();
-                        if (soLuong > 0) {
-                            capture();
-                        } else {
-                            Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
+        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false, new FindLocationAsycn.AsyncResponse() {
+            @Override
+            public void processFinish(List<Address> output) {
+                if (output != null) {
+                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+                    Address address = output.get(0);
+                    String subAdminArea = address.getSubAdminArea();
+                    //nếu tài khoản có quyền truy cập vào
+                    if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.Quan_Phu_Nhuan))) ||
+                            (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.Quan_Tan_Binh))) ||
+                            (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.Quan_Tan_Phu)))) {
+                        capture();
+                    } else {
+                        Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                     }
+                } else {
+                    Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                 }
-            });
-        } else {
-            Toast.makeText(this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-        }
+
+            }
+        });
+        Geometry project = GeometryEngine.project(mPointFindLocation, SpatialReferences.getWgs84());
+        double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+        findLocationAsycn.setmLongtitude(location[0]);
+        findLocationAsycn.setmLatitude(location[1]);
+        findLocationAsycn.execute();
     }
 
 

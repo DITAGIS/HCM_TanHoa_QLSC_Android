@@ -251,6 +251,9 @@
     <string name="Name_DiemSuCo">DIEMSUCO</string>
     <string name="message_not_area_management">Vị trí không thuộc địa bàn quản lý</string>
     <string name="message_no_geocoder_available">Cần cập nhật phiên bản Google+ mới nhất để dùng tính năng này</string>
+    <string name="Quan_Phu_Nhuan">Phú Nhuận</string>
+    <string name="Quan_Tan_Binh">Tân Bình</string>
+    <string name="Quan_Tan_Phu">Tân Phú</string>
 
 
 </resources>
