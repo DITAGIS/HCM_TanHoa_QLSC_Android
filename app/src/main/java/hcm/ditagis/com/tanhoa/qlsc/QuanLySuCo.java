@@ -116,15 +116,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLayoutTimDiaChi;
     private LinearLayout mLayoutTimKiem;
     private FloatingActionButton mFloatButtonLayer;
-    private LinearLayout mFloatButtonLocation,
-            mFloatActionButtonAddPoint, mFloatButtonClosePopup;
-    private FloatingActionButton mFloatButtonAdd;
+    private FloatingActionButton mFloatButtonLocation;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     public static FeatureLayerDTG FeatureLayerDTGDiemSuCo;
-    private LinearLayout mLinearLayoutCover;
     private LinearLayout mLayoutDisplayLayerFeature, mLayoutDisplayLayerAdministration, mLayoutDisplayLayerDiemSuCo;
-    private boolean isOpenFab = false;
-    private Animation mAnimationFabOpen, mAnimationFabClose, mAnimationClockwise, mAnimationAntiClockwise;
     private Point mPointFindLocation;
 
     public void setUri(Uri uri) {
@@ -176,10 +171,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mAnimationFabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        mAnimationFabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
-        mAnimationClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clockwise);
-        mAnimationAntiClockwise = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anticlock);
 
         //for camera begin
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -255,19 +246,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
         mFloatButtonLayer.setOnClickListener(this);
-        mFloatButtonAdd = findViewById(R.id.floatBtnView);
-        mFloatButtonAdd.setOnClickListener(this);
-        mFloatActionButtonAddPoint = findViewById(R.id.floatBtnAddPoint);
-        mFloatActionButtonAddPoint.setOnClickListener(this);
-        mLinearLayoutCover = findViewById(R.id.layout_cover_quan_ly_su_co);
-        mLinearLayoutCover.setOnClickListener(this);
         findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
         findViewById(R.id.img_chonvitri_themdiemsuco).setOnClickListener(this);
         mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
         mFloatButtonLocation.setOnClickListener(this);
-        mFloatButtonClosePopup = findViewById(R.id.floatBtnClosePopUp);
-        mFloatButtonClosePopup.setOnClickListener(this);
         mLayoutTimSuCo = findViewById(R.id.layout_tim_su_co);
         mLayoutTimSuCo.setOnClickListener(this);
         mLayoutTimDiaChi = findViewById(R.id.layout_tim_dia_chi);
@@ -531,43 +514,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
-    private void expandFloatActionButton() {
-//        mLinearLayoutCover.startAnimation(mAnimationFabOpen);
-        mLinearLayoutCover.setVisibility(View.VISIBLE);
-
-        mFloatButtonAdd.startAnimation(mAnimationFabOpen);
-        mFloatButtonLocation.startAnimation(mAnimationFabOpen);
-//        mFloatActionButtonAddPoint.startAnimation(mAnimationFabOpen);
-        mFloatButtonClosePopup.startAnimation(mAnimationFabOpen);
-
-        mFloatButtonAdd.startAnimation(mAnimationClockwise);
-
-        mFloatButtonLocation.setClickable(true);
-//        mFloatActionButtonAddPoint.setClickable(true);
-        mFloatButtonClosePopup.setClickable(true);
-        isOpenFab = true;
-    }
-
     private void deleteSearching() {
         mGraphicsOverlay.getGraphics().clear();
         mSearchAdapter.clear();
         mSearchAdapter.notifyDataSetChanged();
-    }
-
-    private void collapseFloatActionButton() {
-//        mLinearLayoutCover.startAnimation(mAnimationFabClose);
-        mLinearLayoutCover.setVisibility(View.GONE);
-        mFloatButtonAdd.startAnimation(mAnimationFabClose);
-        mFloatButtonLocation.startAnimation(mAnimationFabClose);
-        mFloatActionButtonAddPoint.startAnimation(mAnimationFabClose);
-        mFloatButtonClosePopup.startAnimation(mAnimationFabClose);
-
-
-        mFloatButtonAdd.startAnimation(mAnimationAntiClockwise);
-        mFloatButtonLocation.setClickable(false);
-        mFloatActionButtonAddPoint.setClickable(false);
-        mFloatButtonClosePopup.setClickable(false);
-        isOpenFab = false;
     }
 
     private void themDiemSuCo() {
@@ -758,11 +708,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.nav_visible_float_button:
                 if (mFloatButtonLayer.getVisibility() == View.VISIBLE) {
                     mFloatButtonLayer.setVisibility(View.INVISIBLE);
-                    mFloatButtonAdd.setVisibility(View.INVISIBLE);
                     mFloatButtonLocation.setVisibility(View.INVISIBLE);
                 } else {
                     mFloatButtonLayer.setVisibility(View.VISIBLE);
-                    mFloatButtonAdd.setVisibility(View.VISIBLE);
                     mFloatButtonLocation.setVisibility(View.VISIBLE);
                 }
                 break;
@@ -837,45 +785,16 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 themDiemSuCo();
 
                 break;
-            case R.id.floatBtnAddPoint:
-                findViewById(R.id.linear_addfeature).setVisibility(View.VISIBLE);
-                findViewById(R.id.img_map_pin).setVisibility(View.VISIBLE);
-//                findViewById(R.id.floatBtnAdd).setVisibility(View.GONE);
-                mMapViewHandler.setClickBtnAdd(true);
-                if (isOpenFab)
-                    collapseFloatActionButton();
-                break;
-            case R.id.floatBtnClosePopUp:
-                if (isOpenFab)
-                    collapseFloatActionButton();
-                if (mCallout != null && mCallout.isShowing())
-                    mCallout.dismiss();
-                //TODO close popup
-                break;
-            case R.id.floatBtnView:
-                if (isOpenFab)
-                    collapseFloatActionButton();
-                else
-                    expandFloatActionButton();
-
-                break;
-            case R.id.layout_cover_quan_ly_su_co:
-                if (isOpenFab)
-                    collapseFloatActionButton();
-                break;
             case R.id.btn_add_feature_close:
                 findViewById(R.id.linear_addfeature).setVisibility(View.GONE);
                 findViewById(R.id.img_map_pin).setVisibility(View.GONE);
-                findViewById(R.id.floatBtnView).setVisibility(View.VISIBLE);
                 mMapViewHandler.setClickBtnAdd(false);
                 break;
             case R.id.floatBtnLocation:
-                if (isOpenFab)
-                    collapseFloatActionButton();
-                if (!mLocationDisplay.isStarted()) {
-                    mLocationDisplay.startAsync();
-                    setViewPointCenter(mLocationDisplay.getMapLocation());
-                } else mLocationDisplay.stop();
+                    if (!mLocationDisplay.isStarted()) {
+                        mLocationDisplay.startAsync();
+                        setViewPointCenter(mLocationDisplay.getMapLocation());
+                    } else mLocationDisplay.stop();
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
                 themDiemSuCo();

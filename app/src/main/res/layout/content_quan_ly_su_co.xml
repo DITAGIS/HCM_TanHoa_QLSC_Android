@@ -100,13 +100,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_cover_quan_ly_su_co"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.9"
-        android:animateLayoutChanges="true"
-        android:background="@color/colorWhite"
-        android:orientation="horizontal"
-        android:visibility="gone"></LinearLayout>
 </FrameLayout>
