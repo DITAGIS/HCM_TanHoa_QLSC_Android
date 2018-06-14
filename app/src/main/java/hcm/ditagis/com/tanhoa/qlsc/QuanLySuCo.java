@@ -565,6 +565,35 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findLocationAsycn.setmLatitude(location[1]);
         findLocationAsycn.execute();
     }
+  private void themDiemSuCoNoCapture() {
+        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false, new FindLocationAsycn.AsyncResponse() {
+            @Override
+            public void processFinish(List<Address> output) {
+                if (output != null) {
+                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
+                    Address address = output.get(0);
+                    String subAdminArea = address.getSubAdminArea();
+                    //nếu tài khoản có quyền truy cập vào
+                    if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
+                            (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
+                            (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.QuanTanPhuName)))) {
+                         mMapViewHandler.addFeature(null, mPointFindLocation);
+                            deleteSearching();
+                    } else {
+                        Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                }
+
+            }
+        });
+        Geometry project = GeometryEngine.project(mPointFindLocation, SpatialReferences.getWgs84());
+        double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+        findLocationAsycn.setmLongtitude(location[0]);
+        findLocationAsycn.setmLatitude(location[1]);
+        findLocationAsycn.execute();
+    }
 
 
     @Override
@@ -767,8 +796,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 findViewById(R.id.floatBtnLayer).setVisibility(View.VISIBLE);
                 break;
             case R.id.img_chonvitri_themdiemsuco:
-                themDiemSuCo();
-
+//                themDiemSuCo();
+themDiemSuCoNoCapture();
                 break;
             case R.id.btn_add_feature_close:
                 if (mMapViewHandler != null) {
@@ -785,7 +814,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 } else mLocationDisplay.stop();
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
-                themDiemSuCo();
+//                themDiemSuCo();
+themDiemSuCoNoCapture();
                 break;
 
         }
@@ -905,7 +935,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         } catch (Exception ignored) {
         }
 
-        //todo cho option chụp ảnh hoặc không khi thêm sự cố
         if (requestCode == REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE)
 
         {

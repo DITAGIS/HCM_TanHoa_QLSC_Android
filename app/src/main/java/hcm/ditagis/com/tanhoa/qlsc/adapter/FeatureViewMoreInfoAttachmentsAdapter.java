@@ -55,7 +55,6 @@ public class FeatureViewMoreInfoAttachmentsAdapter extends ArrayAdapter<FeatureV
         Item item = items.get(position);
 
         TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_attachment_name);
-        //todo
         txtValue.setText(item.getName());
 
         ImageView imageView = convertView.findViewById(R.id.img_viewmoreinfo_attachment);

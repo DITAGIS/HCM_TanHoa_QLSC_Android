@@ -273,7 +273,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                     featuresAsync.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-                                            addAttachment(featuresAsync, feature);
+                                            if (mImage != null)
+                                                addAttachment(featuresAsync, feature);
+                                            else publishProgress(feature);
                                         }
                                     });
                                 }

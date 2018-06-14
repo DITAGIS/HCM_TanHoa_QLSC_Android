@@ -64,7 +64,6 @@ public class RouteAdapter extends ArrayAdapter<RouteAdapter.Item> {
         else
             txtSubInstruction.setVisibility(View.GONE);
         TextView txtDistance = (TextView) convertView.findViewById(R.id.txt_route_distance);
-        //todo
         txtDistance.setText(item.getDistance().value + "m");
         return convertView;
     }

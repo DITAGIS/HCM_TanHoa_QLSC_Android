@@ -110,12 +110,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                             mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (isUpdateAttachment) {
+                                    if (isUpdateAttachment && mImage != null) {
                                         addAttachment();
                                     } else {
-                                        if (mDialog != null && mDialog.isShowing()) {
-                                            mDialog.dismiss();
-                                        }
+                                        publishProgress();
                                     }
 
 
@@ -124,12 +122,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                         }
                     });
 
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         });
         return null;
     }
+
     private void addAttachment() {
 
         final String attachmentName = mContext.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
@@ -143,7 +142,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                 try {
                     Attachment attachment = addResult.get();
                     if (attachment.getSize() > 0) {
-                             final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+                        final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
                         tableResult.addDoneListener(new Runnable() {
                             @Override
                             public void run() {
@@ -190,6 +189,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 //                Envelope extent = item.getGeometry().getExtent();
 //                mMapView.setViewpointGeometryAsync(extent);
     }
+
     private Object getIdFeatureTypes(List<FeatureType> featureTypes, String value) {
         Object code = null;
         for (FeatureType featureType : featureTypes) {
@@ -216,6 +216,9 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
+        if (mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
 
     }
 

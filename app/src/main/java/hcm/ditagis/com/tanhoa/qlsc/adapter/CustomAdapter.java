@@ -69,7 +69,6 @@ public class CustomAdapter extends ArrayAdapter<CustomAdapter.Item> {
 
 
         TextView txtDanhBo = (TextView) convertView.findViewById(R.id.txt_tracuu_id);
-        //todo
         txtDanhBo.setText(item.getNam() + "_" + item.getKy() + "_" + item.getDot() + "_" + item.getMay());
 
 

@@ -52,11 +52,9 @@ public class SettingsAdapter extends ArrayAdapter<SettingsAdapter.Item> {
 
 
         TextView txtTitle = (TextView) convertView.findViewById(R.id.txt_settings_title);
-        //todo
         txtTitle.setText(item.getTitle());
 
         TextView txtSubTitle = (TextView) convertView.findViewById(R.id.txt_settings_subtitle);
-        //todo
         txtSubTitle.setText(item.getSubTitle());
 
 

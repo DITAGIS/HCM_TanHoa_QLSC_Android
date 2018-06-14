@@ -57,14 +57,12 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
 
         LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.layout_viewmoreinfo);
         TextView txtAlias = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_alias);
-        //todo
         txtAlias.setText(item.getAlias());
 
         TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_value);
         if (item.getFieldName().equals("ViTri") || item.getFieldName().equals("GhiChu") || item.getFieldName().equals("GhiChuVatTu")) {
             txtValue.setWidth(550);
         }
-        //todo
         txtValue.setText(item.getValue());
         if (item.isEdit()) {
             convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorAccent_1));

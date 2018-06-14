@@ -55,11 +55,9 @@ public class FeatureViewInfoAdapter extends ArrayAdapter<FeatureViewInfoAdapter.
         Item item = items.get(position);
 
         TextView txtAlias = (TextView) convertView.findViewById(R.id.txt_viewinfo_alias);
-        //todo
         txtAlias.setText(item.getAlias());
 
         TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewinfo_value);
-        //todo
         txtValue.setText(item.getValue());
         if (item.getValue() == null)
             txtValue.setVisibility(View.GONE);

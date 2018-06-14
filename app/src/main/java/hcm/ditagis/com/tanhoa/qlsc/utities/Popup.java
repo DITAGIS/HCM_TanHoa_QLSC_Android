@@ -54,6 +54,7 @@ import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
@@ -120,7 +121,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     if (valueDomainObject != null) item.setValue(valueDomainObject.toString());
                 } else switch (field.getFieldType()) {
                     case DATE:
-                        item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                         break;
                     case OID:
                     case TEXT:
@@ -237,7 +238,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         if (valueDomain != null) item.setValue(valueDomain);
                     } else switch (field.getFieldType()) {
                         case DATE:
-                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                            item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                             break;
                         case OID:
                         case TEXT:
@@ -266,9 +267,24 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         builder.setView(layout);
         builder.setCancelable(false);
 
-        //todo thêm nút "lưu" với trường hợp thêm sự cố
         if (isAddFeature) {
+            builder.setPositiveButton("Lưu", new DialogInterface.OnClickListener()
 
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    EditAsync editAsync = new EditAsync(mMainActivity, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, null);
+                    editAsync.execute(mFeatureViewMoreInfoAdapter);
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("Chụp ảnh và lưu", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    capture();
+                    mDialog = dialog;
+                    refreshPopup();
+                }
+            });
         } else {
             builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener()
 
