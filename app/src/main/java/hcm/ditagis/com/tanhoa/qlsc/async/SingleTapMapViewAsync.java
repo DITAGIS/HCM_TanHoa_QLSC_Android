@@ -78,12 +78,9 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
                                 FeatureLayerDTG featureLayerDTG = getmFeatureLayerDTG(serviceLayerId);
                                 publishProgress(featureLayerDTG);
                             }
-
                         }
-
                     }
                     publishProgress(null);
-
                 } catch (
                         InterruptedException e)
 

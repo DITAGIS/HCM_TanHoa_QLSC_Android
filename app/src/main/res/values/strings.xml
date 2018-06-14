@@ -244,16 +244,17 @@
     <string name="TrangThai">TrangThai</string>
     <string name="NgayCapNhat">NgayCapNhat</string>
     <string name="NgayThongBao">NgayThongBao</string>
+    <string name="MaQuan">MaQuan</string>
     <string name="NGUOICAPNHAT">NGUOICAPNHAT</string>
-    <string name="QuanPhuNhuan">768</string>
-    <string name="QuanTanBinh">766</string>
-    <string name="QuanTanPhu">767</string>
+    <string name="QuanPhuNhuanCode">768</string>
+    <string name="QuanTanBinhCode">766</string>
+    <string name="QuanTanPhuCode">767</string>
     <string name="Name_DiemSuCo">DIEMSUCO</string>
     <string name="message_not_area_management">Vị trí không thuộc địa bàn quản lý</string>
     <string name="message_no_geocoder_available">Cần cập nhật phiên bản Google+ mới nhất để dùng tính năng này</string>
-    <string name="Quan_Phu_Nhuan">Phú Nhuận</string>
-    <string name="Quan_Tan_Binh">Tân Bình</string>
-    <string name="Quan_Tan_Phu">Tân Phú</string>
+    <string name="QuanPhuNhuanName">Phú Nhuận</string>
+    <string name="QuanTanBinhName">Tân Bình</string>
+    <string name="QuanTanPhuName">Tân Phú</string>
 
 
 </resources>

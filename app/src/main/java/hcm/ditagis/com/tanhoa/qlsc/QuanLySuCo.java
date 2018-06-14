@@ -203,6 +203,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
                 try {
+                    if(mMapViewHandler!=null)
                     mMapViewHandler.onSingleTapMapView(e);
                 } catch (ArcGISRuntimeException ex) {
                     Log.d("", ex.toString());
@@ -213,9 +214,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                if(mMapViewHandler!=null){
                 double[] location = mMapViewHandler.onScroll(e1, e2, distanceX, distanceY);
                 edit_longtitude_kinhdo.setText(location[0] + "");
-                edit_latitude_vido.setText(location[1] + "");
+                edit_latitude_vido.setText(location[1] + "");}
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
 
@@ -341,6 +343,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             }
 
                     }
+                    if(mMapViewHandler != null)
                     mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
 
                 }
@@ -542,9 +545,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     Address address = output.get(0);
                     String subAdminArea = address.getSubAdminArea();
                     //nếu tài khoản có quyền truy cập vào
-                    if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.Quan_Phu_Nhuan))) ||
-                            (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.Quan_Tan_Binh))) ||
-                            (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.Quan_Tan_Phu)))) {
+                    if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
+                            (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
+                            (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.QuanTanPhuName)))) {
                         capture();
                     } else {
                         Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
@@ -583,7 +586,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
-                    if (isSearchingFeature)
+                    if (isSearchingFeature && mMapViewHandler != null)
                         mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
                     else {
                         deleteSearching();
@@ -767,9 +770,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 break;
             case R.id.btn_add_feature_close:
+                if(mMapViewHandler!= null){
                 findViewById(R.id.linear_addfeature).setVisibility(View.GONE);
                 findViewById(R.id.img_map_pin).setVisibility(View.GONE);
-                mMapViewHandler.setClickBtnAdd(false);
+                mMapViewHandler.setClickBtnAdd(false);}
                 break;
             case R.id.floatBtnLocation:
                 if (!mLocationDisplay.isStarted()) {
@@ -892,7 +896,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         try {
             final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
             if (requestCode == 1) {
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && mMapViewHandler != null) {
                     mMapViewHandler.queryByObjectID(objectid);
                 }
             }
@@ -908,7 +912,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //                    getContentResolver().notifyChange(selectedImage, null);
                     Bitmap bitmap = getBitmap(mUri.getPath());
                     try {
-                        if (bitmap != null) {
+                        if (bitmap != null && mMapViewHandler != null) {
                             Matrix matrix = new Matrix();
                             matrix.postRotate(90);
                             Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -963,7 +967,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));
         int objectID = item.getObjectID();
-        if (objectID != -1) {
+        if (objectID != -1 && mMapViewHandler!= null) {
             mMapViewHandler.queryByObjectID(objectID);
             mSearchAdapter.clear();
             mSearchAdapter.notifyDataSetChanged();

@@ -36,6 +36,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
@@ -199,12 +200,29 @@ public class ThongKeActivity extends AppCompatActivity {
             txtThoiGian.setText(item.getThoigianhienthi());
             txtThoiGian.setVisibility(View.VISIBLE);
         }
-        String whereClause;
-        if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null)
-            whereClause = "1 = 1";
-        else
-            whereClause = "NgayCapNhat" + " >= date '" + item.getThoigianbatdau() + "' and " + "NgayCapNhat" + " <= date '" + item.getThoigianketthuc() + "'";
+        KhachHang khachHang = KhachHang.khachHangDangNhap;
+        String whereClause = "";
+        if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
+            if (khachHang.isPhuNhuan())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanPhuNhuanCode));
+            if (khachHang.isTanBinh())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanBinhCode));
+            if (khachHang.isTanPhu())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanPhuCode));
+            whereClause += " 1 = 1";
+        } else {
 
+            whereClause = String.format("(%s >= date '%s' and %s <= date '%s') and (",
+                    getString(R.string.NgayThongBao), item.getThoigianbatdau(),
+                    getString(R.string.NgayThongBao), item.getThoigianketthuc());
+            if (khachHang.isPhuNhuan())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanPhuNhuanCode));
+            if (khachHang.isTanBinh())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanBinhCode));
+            if (khachHang.isTanPhu())
+                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanPhuCode));
+            whereClause += " 1 = 1)";
+        }
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(whereClause);
 
@@ -221,7 +239,7 @@ public class ThongKeActivity extends AppCompatActivity {
                     FeatureQueryResult result = feature.get();
                     Iterator<Feature> iterator = result.iterator();
                     Feature item;
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         item = iterator.next();
 //                    for (Object i : result) {
 //                        Feature item = (Feature) i;
