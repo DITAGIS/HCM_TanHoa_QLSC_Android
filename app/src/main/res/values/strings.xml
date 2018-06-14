@@ -205,7 +205,7 @@
     <string name="sql_select_ma_dma">  select madma from dma  order by madma asc</string>
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
-    <string name="connect_message">Đang kết nối cơ sở dữ liệu...</string>
+    <string name="connect_message">Đang kết nối đến máy chủ...</string>
     <string name="login_message">Đang kiểm tra thông tin đăng nhập...</string>
 
     <!--string format begin-->
@@ -256,6 +256,7 @@
     <string name="QuanPhuNhuanName">Phú Nhuận</string>
     <string name="QuanTanBinhName">Tân Bình</string>
     <string name="QuanTanPhuName">Tân Phú</string>
+    <string name="format_date_month_year">%02d_%02d_%d</string>
 
 
 </resources>

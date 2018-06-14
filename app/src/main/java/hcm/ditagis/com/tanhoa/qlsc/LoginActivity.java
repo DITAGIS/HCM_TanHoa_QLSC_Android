@@ -15,10 +15,8 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button btnLogin;
     private TextView mTxtUsername;
     private TextView mTxtPassword;
-    private TextView mTxtChangeAccount;
     private boolean isLastLogin;
     private TextView mTxtValidation;
 
@@ -27,10 +25,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogin = (findViewById(R.id.btnLogin));
-        mTxtChangeAccount = findViewById(R.id.txt_login_changeAccount);
+        Button btnLogin = (findViewById(R.id.btnLogin));
         btnLogin.setOnClickListener(this);
-        mTxtChangeAccount.setOnClickListener(this);
+        findViewById(R.id.txt_login_changeAccount).setOnClickListener(this);
 
         mTxtUsername = findViewById(R.id.txtUsername);
         mTxtPassword = findViewById(R.id.txtPassword);
@@ -68,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         mTxtValidation.setVisibility(View.GONE);
 
-        String userName = "";
+        String userName;
         if (isLastLogin)
             userName = Preference.getInstance().loadPreference(getString(R.string.preference_username));
         else
@@ -78,19 +75,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             handleInfoLoginEmpty();
             return;
         }
-        handleLoginSuccess(userName,passWord);
-//        final String finalUserName = userName;
-//        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
-//
-//            @Override
-//            public void processFinish(KhachHang output) {
-//                if (output != null)
-//                    handleLoginSuccess(finalUserName, passWord);
-//                else
-//                    handleLoginFail();
-//            }
-//        });
-//        loginAsycn.execute(userName, passWord);
+//        handleLoginSuccess(userName,passWord);
+        final String finalUserName = userName;
+        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
+
+            @Override
+            public void processFinish(KhachHang output) {
+                if (output != null)
+                    handleLoginSuccess(finalUserName, passWord);
+                else
+                    handleLoginFail();
+            }
+        });
+        loginAsycn.execute(userName, passWord);
     }
 
     private void handleInfoLoginEmpty() {

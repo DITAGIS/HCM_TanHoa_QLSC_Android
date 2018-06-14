@@ -1,8 +1,10 @@
 package hcm.ditagis.com.tanhoa.qlsc.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,15 +48,18 @@ public class FeatureViewMoreInfoAttachmentsAdapter extends ArrayAdapter<FeatureV
         return 0;
     }
 
+    @SuppressLint("InflateParams")
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert inflater != null;
             convertView = inflater.inflate(R.layout.item_viewmoreinfo_attachment, null);
         }
         Item item = items.get(position);
 
-        TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_attachment_name);
+        TextView txtValue = convertView.findViewById(R.id.txt_viewmoreinfo_attachment_name);
         txtValue.setText(item.getName());
 
         ImageView imageView = convertView.findViewById(R.id.img_viewmoreinfo_attachment);
@@ -82,7 +87,7 @@ public class FeatureViewMoreInfoAttachmentsAdapter extends ArrayAdapter<FeatureV
             this.name = name;
         }
 
-        public byte[] getImg() {
+        byte[] getImg() {
             return img;
         }
 

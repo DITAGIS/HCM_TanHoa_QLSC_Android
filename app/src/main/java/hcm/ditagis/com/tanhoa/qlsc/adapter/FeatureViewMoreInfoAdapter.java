@@ -1,12 +1,13 @@
 package hcm.ditagis.com.tanhoa.qlsc.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.esri.arcgisruntime.data.Field;
@@ -47,19 +48,21 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         return 0;
     }
 
+    @SuppressLint("InflateParams")
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert inflater != null;
             convertView = inflater.inflate(R.layout.item_viewmoreinfo, null);
         }
         Item item = items.get(position);
 
-        LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.layout_viewmoreinfo);
-        TextView txtAlias = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_alias);
+        TextView txtAlias =  convertView.findViewById(R.id.txt_viewmoreinfo_alias);
         txtAlias.setText(item.getAlias());
 
-        TextView txtValue = (TextView) convertView.findViewById(R.id.txt_viewmoreinfo_value);
+        TextView txtValue = convertView.findViewById(R.id.txt_viewmoreinfo_value);
         if (item.getFieldName().equals("ViTri") || item.getFieldName().equals("GhiChu") || item.getFieldName().equals("GhiChuVatTu")) {
             txtValue.setWidth(550);
         }

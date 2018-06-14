@@ -1,5 +1,6 @@
 package hcm.ditagis.com.tanhoa.qlsc.utities;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
@@ -19,7 +20,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -45,7 +45,6 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -61,6 +60,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
+@SuppressLint("Registered")
 public class Popup extends AppCompatActivity implements View.OnClickListener {
     private List<String> mListDMA;
     private QuanLySuCo mMainActivity;
@@ -69,7 +69,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
-    private Uri mUri;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
     private DialogInterface mDialog;
@@ -89,10 +88,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
-
     }
-
-
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
     }
@@ -103,8 +99,18 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
+        String[] noDisplayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
+        boolean isFoundField = false;
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            if (field.getFieldType() == Field.Type.GLOBALID) continue;
+            for (String noDisplayField : noDisplayFields)
+                if (noDisplayField.equals(field.getName())) {
+                    isFoundField = true;
+                    break;
+                }
+            if (isFoundField) {
+                isFoundField = false;
+                continue;
+            }
             Object value = attributes.get(field.getName());
             if (value != null) {
                 FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
@@ -132,47 +138,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     case INTEGER:
                     case FLOAT:
                         item.setValue(value.toString());
-
                         break;
                 }
-
                 featureViewInfoAdapter.add(item);
                 featureViewInfoAdapter.notifyDataSetChanged();
             }
         }
     }
-
-
-    public LinearLayout createPopup(String name, final ArcGISFeature mSelectedArcGISFeature) {
-        this.mSelectedArcGISFeature = mSelectedArcGISFeature;
-        lstFeatureType = new ArrayList<>();
-        for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
-            lstFeatureType.add(mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().get(i).getName());
-        }
-        LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
-        linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
-        refreshPopup();
-        ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(name);
-
-        linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
-        if (mCallout != null) mCallout.dismiss();
-        if (name.equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
-
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-
-            linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
-        } else {
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo)).setVisibility(View.INVISIBLE);
-            ((ImageButton) linearLayout.findViewById(R.id.imgBtn_delete)).setVisibility(View.INVISIBLE);
-        }
-        linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        return linearLayout;
-    }
-
     private void viewMoreInfo(boolean isAddFeature) {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
-        View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
+        @SuppressLint("InflateParams") View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
@@ -188,7 +164,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         lstViewInfo.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                edit(parent, view, position, id);
+                edit(parent, position);
             }
         });
 
@@ -302,91 +278,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 }
             });
         }
-
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         dialog.show();
-
-
     }
-
     private void viewAttachment() {
         ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity, mSelectedArcGISFeature);
         viewAttachmentAsync.execute();
-//        get attachment
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
-//        LayoutInflater layoutInflater = LayoutInflater.from(mMainActivity);
-//        final View layout = layoutInflater.inflate(R.layout.layout_viewmoreinfo_feature_attachment, null);
-//        ListView lstViewAttachment = layout.findViewById(R.id.lstView_alertdialog_attachments);
-//
-//        final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
-//        lstViewAttachment.setAdapter(attachmentsAdapter);
-//        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
-//        attachmentResults.addDoneListener(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//
-//                    final List<Attachment> attachments = attachmentResults.get();
-//                    int size = attachments.size();
-//                    // if selected feature has attachments, display them in a list fashion
-//                    if (!attachments.isEmpty()) {
-//                        //
-//                        for (final Attachment attachment : attachments) {
-//                            if (attachment.getContentType().toLowerCase().trim().contains("png")) {
-//                                final FeatureViewMoreInfoAttachmentsAdapter.Item item = new FeatureViewMoreInfoAttachmentsAdapter.Item();
-//                                item.setName(attachment.getName());
-//                                final ListenableFuture<InputStream> inputStreamListenableFuture = attachment.fetchDataAsync();
-//                                inputStreamListenableFuture.addDoneListener(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        try {
-//                                            InputStream inputStream = inputStreamListenableFuture.get();
-//                                            item.setImg(IOUtils.toByteArray(inputStream));
-//                                            attachmentsAdapter.add(item);
-//                                            attachmentsAdapter.notifyDataSetChanged();
-//                                            if (attachmentsAdapter.getCount() > 0 && attachments.lastIndexOf(attachment) == attachments.size() - 1) {
-//                                                builder.setView(layout);
-//                                                builder.setCancelable(false);
-//                                                builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener() {
-//                                                    @Override
-//                                                    public void onClick(DialogInterface dialog, int which) {
-//                                                        dialog.dismiss();
-//                                                    }
-//                                                });
-//                                                AlertDialog dialog = builder.create();
-//                                                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//
-//                                                dialog.show();
-//                                            } else {
-//                                                Toast.makeText(mMainActivity, "Không có file hình ảnh đính kèm", Toast.LENGTH_LONG).show();
-//                                            }
-//                                        } catch (InterruptedException e) {
-//                                            e.printStackTrace();
-//                                        } catch (ExecutionException e) {
-//                                            e.printStackTrace();
-//                                        } catch (IOException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
-//                                });
-//
-//                            }
-//                        }
-//
-//                    } else {
-//                        size--;
-////                        MySnackBar.make(mCallout, "Không có file hình ảnh đính kèm", true);
-//                    }
-//
-//                } catch (Exception e) {
-//                    Log.e("ERROR", e.getMessage());
-//                }
-//            }
-//        });
-
-
     }
 
     private Object getValueDomain(List<CodedValue> codedValues, String code) {
@@ -412,7 +311,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return value;
     }
 
-    private void edit(final AdapterView<?> parent, View view, int position, long id) {
+    private void edit(final AdapterView<?> parent, int position) {
         if (parent.getItemAtPosition(position) instanceof FeatureViewMoreInfoAdapter.Item) {
             final FeatureViewMoreInfoAdapter.Item item = (FeatureViewMoreInfoAdapter.Item) parent.getItemAtPosition(position);
             if (item.isEdit()) {
@@ -425,7 +324,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         dialog.dismiss();
                     }
                 });
-                final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().
+                @SuppressLint("InflateParams") final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().
                         inflate(R.layout.layout_dialog_update_feature_listview, null);
                 builder.setView(layout);
                 final FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
@@ -439,7 +338,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
                 if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                     layoutSpin.setVisibility(View.VISIBLE);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
                     spin.setAdapter(adapter);
                     if (item.getValue() != null)
                         spin.setSelection(lstFeatureType.indexOf(item.getValue()));
@@ -450,7 +349,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         List<String> codes = new ArrayList<>();
                         for (CodedValue codedValue : codedValues)
                             codes.add(codedValue.getName());
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
                         spin.setAdapter(adapter);
                         if (item.getValue() != null)
                             spin.setSelection(codes.indexOf(item.getValue()));
@@ -468,9 +367,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                 dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
-                                        DatePicker datePicker = (DatePicker) dialogView.findViewById(R.id.date_picker);
-                                        Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-                                        String s = String.format("%02d_%02d_%d", datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+                                        DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                                        String s = String.format(getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
 
                                         textView.setText(s);
                                         alertDialog.dismiss();
@@ -511,7 +409,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                 case DOUBLE:
                                     try {
                                         double x = Double.parseDouble(editText.getText().toString());
-                                        item.setValue(editText.getText().toString());
+                                        item.setValue(String.format("%s", x));
                                     } catch (Exception e) {
                                         Toast.makeText(mMainActivity, "Số liệu nhập vào không đúng định dạng!!!", Toast.LENGTH_LONG).show();
                                     }
@@ -522,7 +420,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                 case SHORT:
                                     try {
                                         short x = Short.parseShort(editText.getText().toString());
-                                        item.setValue(editText.getText().toString());
+                                        item.setValue(String.format("%s", x));
                                     } catch (Exception e) {
                                         Toast.makeText(mMainActivity, "Số liệu nhập vào không đúng định dạng!!!", Toast.LENGTH_LONG).show();
                                     }
@@ -574,7 +472,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     serverResult.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-                                            List<FeatureEditResult> edits = null;
+                                            List<FeatureEditResult> edits;
                                             try {
                                                 edits = serverResult.get();
                                                 if (edits.size() > 0) {
@@ -582,9 +480,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                                         Log.e("", "Feature successfully updated");
                                                     }
                                                 }
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            } catch (ExecutionException e) {
+                                            } catch (InterruptedException | ExecutionException e) {
                                                 e.printStackTrace();
                                             }
 
@@ -619,11 +515,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         File photo = ImageFile.getFile(mMainActivity);
 //        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
-        this.mUri = Uri.fromFile(photo);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.mUri);
+        Uri uri = Uri.fromFile(photo);
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         mMainActivity.setSelectedArcGISFeature(mSelectedArcGISFeature);
         mMainActivity.setFeatureViewMoreInfoAdapter(mFeatureViewMoreInfoAdapter);
-        mMainActivity.setUri(mUri);
+        mMainActivity.setUri(uri);
 //        this.mUri = Uri.fromFile(photo);
         mMainActivity.startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
 
@@ -642,6 +538,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    @SuppressLint("InflateParams")
     public void showPopup(final ArcGISFeature mSelectedArcGISFeature, final boolean isAddFeature) {
         clearSelection();
         dimissCallout();
@@ -692,6 +589,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     }
 
+    @SuppressLint("InflateParams")
     public void showPopupFindLocation(Point position, String location) {
         try {
             if (position == null)
@@ -730,6 +628,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 return;
 
             FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false, new FindLocationAsycn.AsyncResponse() {
+                @SuppressLint("InflateParams")
                 @Override
                 public void processFinish(List<Address> output) {
                     if (output != null) {
@@ -782,7 +681,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
                 mMainActivity.onClick(view);
-                Toast.makeText(mMainActivity, "Thêm điểm", Toast.LENGTH_LONG).show();
                 break;
         }
     }

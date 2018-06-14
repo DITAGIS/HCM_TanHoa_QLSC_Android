@@ -1,5 +1,6 @@
 package hcm.ditagis.com.tanhoa.qlsc.async;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -46,11 +47,12 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
 public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     private ProgressDialog mDialog;
+    @SuppressLint("StaticFieldLeak")
     private Context mContext;
     private byte[] mImage;
     private ServiceFeatureTable mServiceFeatureTable;
-    private LocatorTask mLocatorTask;
     private ArcGISFeature mSelectedArcGISFeature;
+    @SuppressLint("StaticFieldLeak")
     private MapView mMapView;
     private AsyncResponse mDelegate;
     private android.graphics.Point mClickPoint;
@@ -59,10 +61,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         void processFinish(Feature output);
     }
 
-    public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image, ServiceFeatureTable serviceFeatureTable,
-                                    LocatorTask locatorTask, MapView mapView, AsyncResponse delegate) {
+    public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image,
+                                    ServiceFeatureTable serviceFeatureTable, MapView mapView, AsyncResponse delegate) {
         this.mServiceFeatureTable = serviceFeatureTable;
-        this.mLocatorTask = locatorTask;
         this.mMapView = mapView;
         this.mImage = image;
         this.mContext = context;
@@ -100,7 +101,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                             feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanTanPhuCode));
                         else if (subAdminArea.equals(mContext.getString(R.string.QuanTanBinhName)))
                             feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanTanBinhCode));
-                        Short intObj = new Short((short) 0);
+                        Short intObj = (short) 0;
                         feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
 
                         String searchStr = "";
@@ -193,13 +194,11 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
 
         SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
         writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
-        String timeStamp1 = writeDate.format(Calendar.getInstance().getTime());
-        return timeStamp1;
+        return writeDate.format(Calendar.getInstance().getTime());
     }
 
     private String getTimeID() {
-        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-        return timeStamp;
+        return Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
     }
 
     private void addFeatureAsync(ListenableFuture<FeatureQueryResult> featureQuery,
@@ -279,9 +278,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                         }
                                     });
                                 }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (ExecutionException e) {
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
 
@@ -289,17 +286,13 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                     });
                 }
             });
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | ExecutionException | ParseException e) {
             e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (ParseException e1) {
-            e1.printStackTrace();
         }
     }
 
     private void addAttachment(ListenableFuture<FeatureQueryResult> listenableFuture, final Feature feature) {
-        FeatureQueryResult result = null;
+        FeatureQueryResult result ;
         try {
 
             result = listenableFuture.get();
@@ -325,22 +318,15 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                         updatedServerResult.addDoneListener(new Runnable() {
                                             @Override
                                             public void run() {
-                                                List<FeatureEditResult> edits = null;
+                                                List<FeatureEditResult> edits;
                                                 try {
                                                     edits = updatedServerResult.get();
                                                     if (edits.size() > 0) {
                                                         if (!edits.get(0).hasCompletedWithErrors()) {
-                                                            //attachmentList.add(fileName);
-                                                            String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
                                                             publishProgress(feature);
-                                                            // update the attachment list view/ on the control panel
-                                                        } else {
                                                         }
-                                                    } else {
                                                     }
-                                                } catch (InterruptedException e) {
-                                                    e.printStackTrace();
-                                                } catch (ExecutionException e) {
+                                                } catch (InterruptedException | ExecutionException e) {
                                                     e.printStackTrace();
                                                 }
                                                 if (mDialog != null && mDialog.isShowing()) {
@@ -355,9 +341,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                 });
                             }
 
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        } catch (ExecutionException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                         }
                     }
@@ -365,9 +349,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                 Envelope extent = item.getGeometry().getExtent();
                 mMapView.setViewpointGeometryAsync(extent);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 

@@ -82,6 +82,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
+import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
@@ -98,14 +99,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Popup mPopUp;
     private MapView mMapView;
     private ArcGISMap mMap;
-    private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private MapViewHandler mMapViewHandler;
-    private ListView mListViewSearch;
     private TraCuuAdapter mSearchAdapter;
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
-    private Point mCurrentPoint;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean isSearchingFeature = false;
     private LinearLayout mLayoutTimSuCo;
@@ -115,7 +113,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private FloatingActionButton mFloatButtonLocation;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     public static FeatureLayerDTG FeatureLayerDTGDiemSuCo;
-    private LinearLayout mLayoutDisplayLayerFeature, mLayoutDisplayLayerAdministration, mLayoutDisplayLayerDiemSuCo;
+    private LinearLayout mLayoutDisplayLayerFeature;
+    private LinearLayout mLayoutDisplayLayerAdministration;
     private Point mPointFindLocation;
 
     public void setUri(Uri uri) {
@@ -146,22 +145,21 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
         requestPermisson();
 
-        prepare();
-//        final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
-//            @Override
-//            public void processFinish(List<String> output) {
-//                if (output != null) {
-//                    mListDMA = output;
-//                    prepare();
-//                }
-//            }
-//        });
-//        if (CheckConnectInternet.isOnline(this))
-//            preparingAsycn.execute();
-
-
+//        prepare();
+        final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
+            @Override
+            public void processFinish(List<String> output) {
+                if (output != null) {
+                    mListDMA = output;
+                    prepare();
+                }
+            }
+        });
+        if (CheckConnectInternet.isOnline(this))
+            preparingAsycn.execute();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void prepare() {
         // create an empty map instance
         setLicense();
@@ -173,13 +171,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         //for camera end
-        mListViewSearch = findViewById(R.id.lstview_search);
+        ListView listViewSearch = findViewById(R.id.lstview_search);
         //đưa listview search ra phía sau
-        mListViewSearch.invalidate();
+        listViewSearch.invalidate();
         List<TraCuuAdapter.Item> items = new ArrayList<>();
         mSearchAdapter = new TraCuuAdapter(QuanLySuCo.this, items);
-        mListViewSearch.setAdapter(mSearchAdapter);
-        mListViewSearch.setOnItemClickListener(QuanLySuCo.this);
+        listViewSearch.setAdapter(mSearchAdapter);
+        listViewSearch.setOnItemClickListener(QuanLySuCo.this);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(QuanLySuCo.this,
                 drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -283,14 +281,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
-                mCallout = mMapView.getCallout();
-                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, mCallout);
+                Callout callout = mMapView.getCallout();
+                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout);
                 mPopUp.setmListDMA(mListDMA);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;
 
-                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, mCallout, mMapView, mPopUp, QuanLySuCo.this);
+                mMapViewHandler = new MapViewHandler(mFeatureLayerDTG, callout, mMapView, mPopUp, QuanLySuCo.this);
                 mFeatureLayerDTG.getFeatureLayer().getFeatureTable().loadAsync();
             }
 
@@ -308,8 +306,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mLayoutDisplayLayerFeature.removeAllViews();
         mLayoutDisplayLayerAdministration = findViewById(R.id.linnearDisplayLayerAdministration);
         mLayoutDisplayLayerAdministration.removeAllViews();
-        mLayoutDisplayLayerDiemSuCo = findViewById(R.id.linnearDisplayLayerDiemSuCo);
-        mLayoutDisplayLayerDiemSuCo.removeAllViews();
+        LinearLayout layoutDisplayLayerDiemSuCo = findViewById(R.id.linnearDisplayLayerDiemSuCo);
+        layoutDisplayLayerDiemSuCo.removeAllViews();
 
         LayerList layers = mMap.getOperationalLayers();
         int states[][] = {{android.R.attr.state_checked}, {}};
@@ -350,7 +348,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 }
             });
             if (layer.getName().equals(getString(R.string.ALIAS_DIEM_SU_CO)))
-                mLayoutDisplayLayerDiemSuCo.addView(checkBox);
+                layoutDisplayLayerDiemSuCo.addView(checkBox);
             else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
                     || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
                     || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
@@ -457,12 +455,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void run() {
                 try {
-                    if (booleanListenableFuture.get().booleanValue())
+                    if (booleanListenableFuture.get()) {
                         QuanLySuCo.this.mPointFindLocation = position;
+                    }
                     mPopUp.showPopupFindLocation(position);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
 
@@ -618,7 +615,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             public boolean onQueryTextSubmit(String query) {
                 try {
                     if (isSearchingFeature && mMapViewHandler != null)
-                        mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
+                        mMapViewHandler.querySearch(query, mSearchAdapter);
                     else if (query.length() > 0) {
                         deleteSearching();
                         FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, true, new FindLocationAsycn.AsyncResponse() {
@@ -768,7 +765,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             case R.id.floatBtnLayer:
                 v.setVisibility(View.INVISIBLE);
                 findViewById(R.id.layout_layer).setVisibility(View.VISIBLE);
-                mCurrentPoint = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+//                mCurrentPoint = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
                 break;
             case R.id.layout_layer_open_street_map:
                 mMapView.getMap().setMaxScale(1128.497175);
@@ -1001,10 +998,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mMapViewHandler.queryByObjectID(objectID);
             mSearchAdapter.clear();
             mSearchAdapter.notifyDataSetChanged();
-        }
-        //tìm kiếm địa chỉ
-        else {
-//            setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()));
         }
     }
 }

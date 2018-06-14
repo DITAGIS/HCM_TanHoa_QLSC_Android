@@ -2,7 +2,6 @@ package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
@@ -24,7 +23,6 @@ import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -41,8 +39,6 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapAddFeatureAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapMapViewAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
-
-
 /**
  * Created by ThanLe on 2/2/2018.
  */
@@ -51,8 +47,6 @@ public class MapViewHandler extends Activity {
     private static final int REQUEST_ID_IMAGE_CAPTURE = 1;
     private static double DELTA_MOVE_Y = 0;//7000;
     private final FeatureLayer suCoTanHoaLayer;
-    LocatorTask loc = new LocatorTask("http://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer");
-    private FeatureLayerDTG mFeatureLayerDTG;
     private Callout mCallout;
     private android.graphics.Point mClickPoint;
     private ArcGISFeature mSelectedArcGISFeature;
@@ -61,7 +55,6 @@ public class MapViewHandler extends Activity {
     private ServiceFeatureTable mServiceFeatureTable;
     private Popup mPopUp;
     private Context mContext;
-    private Uri mUri;
 
 
     public void setFeatureLayerDTGs(List<FeatureLayerDTG> mFeatureLayerDTGs) {
@@ -70,11 +63,10 @@ public class MapViewHandler extends Activity {
 
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
 
-    public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mMapView,
+    public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mapView,
                           Popup popupInfos, Context mContext) {
-        this.mFeatureLayerDTG = featureLayerDTG;
         this.mCallout = mCallout;
-        this.mMapView = mMapView;
+        this.mMapView = mapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
         this.mPopUp = popupInfos;
         this.mContext = mContext;
@@ -88,7 +80,7 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTable, loc, mMapView, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTable, mMapView, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
                 if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
@@ -103,7 +95,7 @@ public class MapViewHandler extends Activity {
 
 
     public double[] onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+        Point center =  mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
         double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
         mClickPoint = new android.graphics.Point((int) e2.getX(), (int) e2.getY());
@@ -125,17 +117,13 @@ public class MapViewHandler extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getDateString() {
-        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-
         SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
         writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
-        String timeStamp1 = writeDate.format(Calendar.getInstance().getTime());
-        return timeStamp1;
+        return writeDate.format(Calendar.getInstance().getTime());
     }
 
     private String getTimeID() {
-        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-        return timeStamp;
+        return Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
     }
 
     public void queryByObjectID(int objectID) {
@@ -169,7 +157,7 @@ public class MapViewHandler extends Activity {
         });
     }
 
-    public void querySearch(String searchStr, ListView listView, final TraCuuAdapter adapter) {
+    public void querySearch(String searchStr, final TraCuuAdapter adapter) {
         adapter.clear();
         adapter.notifyDataSetChanged();
         mCallout.dismiss();
@@ -186,7 +174,7 @@ public class MapViewHandler extends Activity {
                         int search = Integer.parseInt(searchStr);
                         builder.append(String.format("%s = %s", field.getName(), search));
                         builder.append(" or ");
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                     break;
@@ -196,12 +184,12 @@ public class MapViewHandler extends Activity {
                         double search = Double.parseDouble(searchStr);
                         builder.append(String.format("%s = %s", field.getName(), search));
                         builder.append(" or ");
-                    } catch (Exception e) {
+                    } catch (Exception ignored) {
 
                     }
                     break;
                 case TEXT:
-                    builder.append(field.getName() + " like N'%" + searchStr + "%'");
+                    builder.append(field.getName()).append(" like N'%").append(searchStr).append("%'");
                     builder.append(" or ");
                     break;
             }
@@ -222,13 +210,13 @@ public class MapViewHandler extends Activity {
                         String[] split = attributes.get(mContext.getString(R.string.IDSuCo)).toString().split("_");
                         try {
                             format_date = Constant.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
 
                         }
                         String viTri = "";
                         try {
                             viTri = attributes.get(mContext.getString(R.string.ViTri)).toString();
-                        } catch (Exception e) {
+                        } catch (Exception ignored) {
 
                         }
                         adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(mContext.getString(R.string.OBJECTID)).toString()),
@@ -238,9 +226,7 @@ public class MapViewHandler extends Activity {
 
 //                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
