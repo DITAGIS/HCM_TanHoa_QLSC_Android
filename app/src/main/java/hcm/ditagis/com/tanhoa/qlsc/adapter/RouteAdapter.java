@@ -1,6 +1,8 @@
 package hcm.ditagis.com.tanhoa.qlsc.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,36 +49,39 @@ public class RouteAdapter extends ArrayAdapter<RouteAdapter.Item> {
         return 0;
     }
 
+    @SuppressLint("InflateParams")
+    @NonNull
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert inflater != null;
             convertView = inflater.inflate(R.layout.item_route, null);
         }
         Item item = items.get(position);
 
-        TextView txtInstruction = (TextView) convertView.findViewById(R.id.txt_route_instruction);
+        TextView txtInstruction =  convertView.findViewById(R.id.txt_route_instruction);
         txtInstruction.setText(item.getHtml_instructions());
 
-        TextView txtSubInstruction = (TextView) convertView.findViewById(R.id.txt_route_sub_instruction);
+        TextView txtSubInstruction =  convertView.findViewById(R.id.txt_route_sub_instruction);
         if (item.getHtml_sub_instructions() != null)
             txtSubInstruction.setText(item.getHtml_sub_instructions());
         else
             txtSubInstruction.setVisibility(View.GONE);
-        TextView txtDistance = (TextView) convertView.findViewById(R.id.txt_route_distance);
-        txtDistance.setText(item.getDistance().value + "m");
+        TextView txtDistance =  convertView.findViewById(R.id.txt_route_distance);
+        txtDistance.setText(String.format("%dm", item.getDistance().value));
         return convertView;
     }
 
 
     public static class Item {
-        public Distance distance;
+        private Distance distance;
         public Duration duration;
-        public LatLng endLocation;
-        public LatLng startLocation;
-        public String html_instructions;
-        public String html_sub_instructions;
-        public String travel_mode;
+        private LatLng endLocation;
+        private LatLng startLocation;
+        private String html_instructions;
+        private String html_sub_instructions;
+        private String travel_mode;
 
         public Item() {
         }

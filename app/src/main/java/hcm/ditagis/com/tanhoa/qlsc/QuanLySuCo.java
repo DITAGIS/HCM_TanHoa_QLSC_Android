@@ -82,7 +82,6 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
-import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
@@ -147,17 +146,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
         requestPermisson();
 
-        final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
-            @Override
-            public void processFinish(List<String> output) {
-                if (output != null) {
-                    mListDMA = output;
-                    prepare();
-                }
-            }
-        });
-        if (CheckConnectInternet.isOnline(this))
-            preparingAsycn.execute();
+        prepare();
+//        final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
+//            @Override
+//            public void processFinish(List<String> output) {
+//                if (output != null) {
+//                    mListDMA = output;
+//                    prepare();
+//                }
+//            }
+//        });
+//        if (CheckConnectInternet.isOnline(this))
+//            preparingAsycn.execute();
 
 
     }
@@ -565,7 +565,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         findLocationAsycn.setmLatitude(location[1]);
         findLocationAsycn.execute();
     }
-  private void themDiemSuCoNoCapture() {
+
+    private void themDiemSuCoNoCapture() {
         FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false, new FindLocationAsycn.AsyncResponse() {
             @Override
             public void processFinish(List<Address> output) {
@@ -577,8 +578,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
                             (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
                             (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.QuanTanPhuName)))) {
-                         mMapViewHandler.addFeature(null, mPointFindLocation);
-                            deleteSearching();
+                        mMapViewHandler.addFeature(null, mPointFindLocation);
+                        deleteSearching();
                     } else {
                         Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                     }
@@ -618,7 +619,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 try {
                     if (isSearchingFeature && mMapViewHandler != null)
                         mMapViewHandler.querySearch(query, mListViewSearch, mSearchAdapter);
-                    else {
+                    else if (query.length() > 0) {
                         deleteSearching();
                         FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, true, new FindLocationAsycn.AsyncResponse() {
                             @Override
@@ -775,21 +776,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
                 mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
 
-                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.layout_layer_street_map:
                 mMapView.getMap().setMaxScale(1128.497176);
                 mMapView.getMap().setBasemap(Basemap.createStreets());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
 
-                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.layout_layer_topo:
                 mMapView.getMap().setMaxScale(5);
                 mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_topo);
 
-                setViewPointCenter(mCurrentPoint);
                 break;
             case R.id.btn_layer_close:
                 findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
@@ -797,7 +795,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 break;
             case R.id.img_chonvitri_themdiemsuco:
 //                themDiemSuCo();
-themDiemSuCoNoCapture();
+                themDiemSuCoNoCapture();
                 break;
             case R.id.btn_add_feature_close:
                 if (mMapViewHandler != null) {
@@ -815,7 +813,7 @@ themDiemSuCoNoCapture();
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
 //                themDiemSuCo();
-themDiemSuCoNoCapture();
+                themDiemSuCoNoCapture();
                 break;
 
         }

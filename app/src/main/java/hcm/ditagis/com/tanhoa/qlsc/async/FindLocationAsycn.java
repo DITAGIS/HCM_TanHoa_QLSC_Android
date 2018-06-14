@@ -53,15 +53,13 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
             try {
                 List<Address> addressList = mGeocoder.getFromLocationName(text, 1);
                 lstLocation.addAll(addressList);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
         } else {
             try {
                 List<Address> fromLocation = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
                 lstLocation.addAll(fromLocation);
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (IOException ignored) {
             }
         }
         return lstLocation;

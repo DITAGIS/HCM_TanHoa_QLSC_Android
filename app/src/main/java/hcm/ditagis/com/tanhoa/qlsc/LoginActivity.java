@@ -78,21 +78,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             handleInfoLoginEmpty();
             return;
         }
-        final String finalUserName = userName;
-        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
-
-            @Override
-            public void processFinish(KhachHang output) {
-                if (output != null)
-                    handleLoginSuccess(finalUserName, passWord);
-                else
-                    handleLoginFail();
-            }
-        });
-        loginAsycn.execute(userName, passWord);
-//        if (userName.equals("12101860725") && passWord.equals("123456")) {
-
-//        }
+        handleLoginSuccess(userName,passWord);
+//        final String finalUserName = userName;
+//        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
+//
+//            @Override
+//            public void processFinish(KhachHang output) {
+//                if (output != null)
+//                    handleLoginSuccess(finalUserName, passWord);
+//                else
+//                    handleLoginFail();
+//            }
+//        });
+//        loginAsycn.execute(userName, passWord);
     }
 
     private void handleInfoLoginEmpty() {
