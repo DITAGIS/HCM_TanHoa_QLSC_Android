@@ -57,6 +57,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class Popup extends AppCompatActivity implements View.OnClickListener {
@@ -167,7 +168,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return linearLayout;
     }
 
-    private void viewMoreInfo() {
+    private void viewMoreInfo(boolean isAddFeature) {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
@@ -191,9 +192,33 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         });
 
         String[] updateFields = mFeatureLayerDTG.getUpdateFields();
+        String[] addFields = mMainActivity.getResources().getStringArray(R.array.add_fields_arrays);
+        String[] no_displayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
+        boolean isFoundContinue = false;
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             Object value = attr.get(field.getName());
+            for (String noDisplayField : no_displayFields)
+                if (field.getName().equals(noDisplayField)) {
+                    isFoundContinue = true;
+                    break;
+                }
+            if (isFoundContinue) {
+                isFoundContinue = false;
+                continue;
+            }
+            if (isAddFeature) {
+                isFoundContinue = true;
+                for (String addField : addFields)
+                    if (field.getName().equals(addField)) {
+                        isFoundContinue = false;
+                        break;
+                    }
+            }
+            if (isFoundContinue) {
+                isFoundContinue = false;
+                continue;
+            }
             if (field.getName().equals(mMainActivity.getString(R.string.IDSuCo))) {
                 if (value != null)
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
@@ -240,25 +265,28 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         builder.setView(layout);
         builder.setCancelable(false);
-        builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener()
 
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).setNegativeButton("Chụp ảnh và cập nhật", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                capture();
-//                EditAsync editAsync = new EditAsync(mMainActivity, mServiceFeatureTable, mSelectedArcGISFeature);
-//
-//                editAsync.execute(mFeatureViewMoreInfoAdapter);
-                mDialog = dialog;
-                refreshPopup();
-//                dialog.dismiss();
-            }
-        });
+        //todo thêm nút "lưu" với trường hợp thêm sự cố
+        if (isAddFeature) {
+
+        } else {
+            builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener()
+
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).setNegativeButton("Chụp ảnh và cập nhật", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    capture();
+                    mDialog = dialog;
+                    refreshPopup();
+                }
+            });
+        }
+
         AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -614,10 +642,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
         linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
+            //user admin mới có quyền xóa
+            if (KhachHang.khachHangDangNhap.getUserName().equals("admin")) {
+                linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
+            } else {
+                linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
+            }
 
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-
-            linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
+            //khi hoàn thành rồi thì không chỉnh sửa được
+            if (Integer.parseInt(mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.TrangThai)).toString())
+                    != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
+                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         } else {
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
@@ -635,7 +670,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 mCallout.refresh();
                 mCallout.show();
                 if (isAddFeature)
-                    viewMoreInfo();
+                    viewMoreInfo(true);
             }
         });
 
@@ -684,10 +719,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     if (output != null) {
                         clearSelection();
                         dimissCallout();
-
+                        Address address = output.get(0);
+                        String addressLine = address.getAddressLine(0);
                         LayoutInflater inflater = LayoutInflater.from(mMainActivity.getApplicationContext());
                         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
-                        ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(output.get(0).getAddressLine(0));
+                        ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(addressLine);
                         linearLayout.findViewById(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(Popup.this);
                         linearLayout.findViewById(R.id.imgBtn_timkiemdiachi).setOnClickListener(Popup.this);
                         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -722,7 +758,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     mCallout.dismiss();
                 break;
             case R.id.imgBtn_ViewMoreInfo:
-                viewMoreInfo();
+                viewMoreInfo(false);
                 break;
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();

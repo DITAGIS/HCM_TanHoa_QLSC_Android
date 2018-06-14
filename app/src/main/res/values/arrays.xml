@@ -23,7 +23,7 @@
         <item>NguyenNhan</item>
         <item>NguoiSuaChua</item>
         <item>GhiChuVatTu</item>
-        <item>ViTri</item>
+        <item>SoNha</item>
         <item>GhiChu</item>
         <item>NgayCapNhat</item>
         <item>PhanLoaiSuCo</item>
@@ -31,7 +31,6 @@
         <item>DuongKinhOng</item>
         <item>HinhThucPhatHien</item>
         <item>VatLieu</item>
-        <item>SoNha</item>
         <item>TrangThai</item>
         <item>NGUOICAPNHAT</item>
         <item>KetQuaKiemTra</item>
@@ -40,8 +39,21 @@
         <item>CONGNHANTHUCHIEN</item>
         <item>VatLieuOng</item>
         <item>LoaiSuCo</item>
+        <item>SDTNguoiBao</item>
     </string-array>
-
+    <string-array name="add_fields_arrays">
+        <item>IDSuCo</item>
+        <item>NgayXayRa</item>
+        <item>HinhThucPhatHien</item>
+        <item>ViTri</item>
+        <item>SDTNguoiBao</item>
+    </string-array>
+    <string-array name="no_display_fields_arrays">
+        <item>OBJECTID</item>
+        <item>ToaDo_X</item>
+        <item>ToaDo_Y</item>
+        <item>GlobalID</item>
+    </string-array>
     <!--Query field begin-->
     <string-array name="queryFields_dma">
         <item>OBJECTID</item>

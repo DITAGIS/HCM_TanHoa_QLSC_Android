@@ -220,7 +220,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                 Calendar c = Calendar.getInstance();
-                feature.getAttributes().put(mContext.getString(R.string.NgayCapNhat), c);
+                feature.getAttributes().put(mContext.getString(R.string.NgayXayRa), c);
                 feature.getAttributes().put(mContext.getString(R.string.NgayThongBao), c);
             }
             feature.getAttributes().put(mContext.getString(R.string.NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
