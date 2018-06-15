@@ -36,9 +36,16 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     private ArcGISFeature mSelectedArcGISFeature = null;
     private boolean isUpdateAttachment;
     private byte[] mImage;
+    private AsyncResponse mDelegate;
 
-    public EditAsync(Context context, ServiceFeatureTable serviceFeatureTable, ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image) {
+    public interface AsyncResponse {
+        void processFinish(Void output);
+    }
+
+    public EditAsync(Context context, ServiceFeatureTable serviceFeatureTable,
+                     ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image, AsyncResponse delegate) {
         mContext = context;
+        this.mDelegate = delegate;
         mServiceFeatureTable = serviceFeatureTable;
         mSelectedArcGISFeature = selectedArcGISFeature;
         mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
@@ -218,6 +225,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         super.onProgressUpdate(values);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
+            this.mDelegate.processFinish(values[0]);
         }
 
     }

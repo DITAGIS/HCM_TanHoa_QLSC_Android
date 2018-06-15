@@ -181,7 +181,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             listListenableFuture.addDoneListener(new Runnable() {
                 @Override
                 public void run() {
-                    List<IdentifyLayerResult> identifyLayerResults = null;
+                    List<IdentifyLayerResult> identifyLayerResults;
                     try {
                         identifyLayerResults = listListenableFuture.get();
                         for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
@@ -193,13 +193,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                     }
                                 }
                             }
-
                         }
 //                        publishProgress(null);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
+                    } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
                 }

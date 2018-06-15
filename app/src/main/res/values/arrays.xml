@@ -40,6 +40,7 @@
         <item>VatLieuOng</item>
         <item>LoaiSuCo</item>
         <item>SDTNguoiBao</item>
+        <item>MADMA</item>
     </string-array>
     <string-array name="add_fields_arrays">
         <item>IDSuCo</item>
@@ -53,6 +54,7 @@
         <item>ToaDo_X</item>
         <item>ToaDo_Y</item>
         <item>GlobalID</item>
+        <item>TENDMA</item>
     </string-array>
     <!--Query field begin-->
     <string-array name="queryFields_dma">

@@ -282,8 +282,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
                 Callout callout = mMapView.getCallout();
-                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay);
-                mPopUp.setmListDMA(mListDMA);
+                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListDMA);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;
@@ -976,7 +975,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
 //                            mMapViewHandler.addFeature(image);
                             mPopUp.getDialog().dismiss();
-                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, image);
+                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
+                                    mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
+                                    true, image, new EditAsync.AsyncResponse() {
+                                @Override
+                                public void processFinish(Void output) {
+                                    mPopUp.refreshPopup();
+                                }
+                            });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }
                     } catch (Exception ignored) {

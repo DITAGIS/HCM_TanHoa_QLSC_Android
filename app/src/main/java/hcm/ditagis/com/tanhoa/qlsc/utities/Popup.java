@@ -84,23 +84,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return mDialog;
     }
 
-    public void setmListDMA(List<String> mListDMA) {
-        this.mListDMA = mListDMA;
-    }
-
-    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay) {
+    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<String> listDMA) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
+        this.mListDMA = listDMA;
     }
 
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
     }
 
-    private void refreshPopup() {
+    public void refreshPopup() {
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
         ListView listView = linearLayout.findViewById(R.id.lstview_thongtinsuco);
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
@@ -126,8 +123,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 item.setFieldName(field.getName());
                 if (item.getFieldName().equals(typeIdField)) {
                     List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
-                    String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
-                    if (valueFeatureType != null) item.setValue(valueFeatureType);
+                    Object valueFeatureType = getValueFeatureType(featureTypes, value.toString());
+                    if (valueFeatureType != null) item.setValue(valueFeatureType.toString());
+                    else continue;
                 } else if (field.getDomain() != null) {
                     List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                     Object valueDomainObject = getValueDomain(codedValues, value.toString());
@@ -214,8 +212,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 if (value != null) {
                     if (item.getFieldName().equals(typeIdField)) {
                         List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
-                        String valueFeatureType = getValueFeatureType(featureTypes, value.toString()).toString();
-                        if (valueFeatureType != null) item.setValue(valueFeatureType);
+                        Object valueFeatureType = getValueFeatureType(featureTypes, value.toString());
+                        if (valueFeatureType != null) item.setValue(valueFeatureType.toString());
+
                     } else if (field.getDomain() != null) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                         String valueDomain = getValueDomain(codedValues, value.toString()).toString();
@@ -257,7 +256,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    EditAsync editAsync = new EditAsync(mMainActivity, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, null);
+                    EditAsync editAsync = new EditAsync(mMainActivity, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, null, new EditAsync.AsyncResponse() {
+                        @Override
+                        public void processFinish(Void output) {
+                            refreshPopup();
+                        }
+                    });
                     editAsync.execute(mFeatureViewMoreInfoAdapter);
                     dialog.dismiss();
                 }
@@ -266,7 +270,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 public void onClick(DialogInterface dialog, int which) {
                     capture();
                     mDialog = dialog;
-                    refreshPopup();
                 }
             });
         } else {
@@ -282,7 +285,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 public void onClick(DialogInterface dialog, int which) {
                     capture();
                     mDialog = dialog;
-                    refreshPopup();
                 }
             });
         }
@@ -345,70 +347,81 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
-                if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
+                if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                     layoutSpin.setVisibility(View.VISIBLE);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListDMA);
                     spin.setAdapter(adapter);
                     if (item.getValue() != null)
-                        spin.setSelection(lstFeatureType.indexOf(item.getValue()));
-                } else if (domain != null) {
-                    layoutSpin.setVisibility(View.VISIBLE);
-                    List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
-                    if (codedValues != null) {
-                        List<String> codes = new ArrayList<>();
-                        for (CodedValue codedValue : codedValues)
-                            codes.add(codedValue.getName());
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                        spin.setSelection(mListDMA.indexOf(item.getValue()));
+                } else {
+
+                    if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
+                        layoutSpin.setVisibility(View.VISIBLE);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
                         spin.setAdapter(adapter);
                         if (item.getValue() != null)
-                            spin.setSelection(codes.indexOf(item.getValue()));
+                            spin.setSelection(lstFeatureType.indexOf(item.getValue()));
+                    } else if (domain != null) {
+                        layoutSpin.setVisibility(View.VISIBLE);
+                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                        if (codedValues != null) {
+                            List<String> codes = new ArrayList<>();
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+                            if (item.getValue() != null)
+                                spin.setSelection(codes.indexOf(item.getValue()));
 
+                        }
+                    } else switch (item.getFieldType()) {
+                        case DATE:
+                            layoutTextView.setVisibility(View.VISIBLE);
+                            textView.setText(item.getValue());
+                            button.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    final View dialogView = View.inflate(mMainActivity, R.layout.date_time_picker, null);
+                                    final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(mMainActivity).create();
+                                    dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
+                                            String s = String.format(getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+
+                                            textView.setText(s);
+                                            alertDialog.dismiss();
+                                        }
+                                    });
+                                    alertDialog.setView(dialogView);
+                                    alertDialog.show();
+                                }
+                            });
+                            break;
+                        case TEXT:
+                            layoutEditText.setVisibility(View.VISIBLE);
+                            editText.setText(item.getValue());
+                            break;
+                        case SHORT:
+                            layoutEditText.setVisibility(View.VISIBLE);
+                            editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                            editText.setText(item.getValue());
+
+
+                            break;
+                        case DOUBLE:
+                            layoutEditText.setVisibility(View.VISIBLE);
+                            editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+                            editText.setText(item.getValue());
+                            break;
                     }
-                } else switch (item.getFieldType()) {
-                    case DATE:
-                        layoutTextView.setVisibility(View.VISIBLE);
-                        textView.setText(item.getValue());
-                        button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                final View dialogView = View.inflate(mMainActivity, R.layout.date_time_picker, null);
-                                final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(mMainActivity).create();
-                                dialogView.findViewById(R.id.date_time_set).setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
-                                        String s = String.format(getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
-
-                                        textView.setText(s);
-                                        alertDialog.dismiss();
-                                    }
-                                });
-                                alertDialog.setView(dialogView);
-                                alertDialog.show();
-                            }
-                        });
-                        break;
-                    case TEXT:
-                        layoutEditText.setVisibility(View.VISIBLE);
-                        editText.setText(item.getValue());
-                        break;
-                    case SHORT:
-                        layoutEditText.setVisibility(View.VISIBLE);
-                        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
-                        editText.setText(item.getValue());
-
-
-                        break;
-                    case DOUBLE:
-                        layoutEditText.setVisibility(View.VISIBLE);
-                        editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
-                        editText.setText(item.getValue());
-                        break;
                 }
                 builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
+                        if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
+                            item.setValue(spin.getSelectedItem().toString());
+                        } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
                             item.setValue(spin.getSelectedItem().toString());
                         } else {
                             switch (item.getFieldType()) {
@@ -548,7 +561,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     @SuppressLint("InflateParams")
-    public void showPopup(final ArcGISFeature mSelectedArcGISFeature, final boolean isAddFeature) {
+    public void showPopup(final ArcGISFeature mSelectedArcGISFeature,
+                          final boolean isAddFeature) {
         clearSelection();
         dimissCallout();
         this.mSelectedArcGISFeature = mSelectedArcGISFeature;
