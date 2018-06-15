@@ -247,6 +247,7 @@
     <string name="NgayThongBao">NgayThongBao</string>
     <string name="MaQuan">MaQuan</string>
     <string name="NGUOICAPNHAT">NGUOICAPNHAT</string>
+    <string name="LoaiSuCo">LoaiSuCo</string>
     <string name="QuanPhuNhuanCode">768</string>
     <string name="QuanTanBinhCode">766</string>
     <string name="QuanTanPhuCode">767</string>

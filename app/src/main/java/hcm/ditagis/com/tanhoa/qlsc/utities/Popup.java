@@ -36,10 +36,14 @@ import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
+import com.esri.arcgisruntime.geometry.Geometry;
+import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
+import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.io.File;
@@ -74,6 +78,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private DialogInterface mDialog;
     private LinearLayout linearLayout;
     private MapView mMapView;
+    private LocationDisplay mLocationDisplay;
 
     public DialogInterface getDialog() {
         return mDialog;
@@ -83,12 +88,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         this.mListDMA = mListDMA;
     }
 
-    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout) {
+    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
+        this.mLocationDisplay = locationDisplay;
     }
+
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
     }
@@ -145,6 +152,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
         }
     }
+
     private void viewMoreInfo(boolean isAddFeature) {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
@@ -283,6 +291,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         dialog.show();
     }
+
     private void viewAttachment() {
         ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity, mSelectedArcGISFeature);
         viewAttachmentAsync.execute();
@@ -631,7 +640,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 @SuppressLint("InflateParams")
                 @Override
                 public void processFinish(List<Address> output) {
-                    if (output != null) {
+                    if (output != null && output.size() > 0) {
                         clearSelection();
                         dimissCallout();
                         Address address = output.get(0);
@@ -655,8 +664,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
             });
-            findLocationAsycn.setmLongtitude(position.getX());
-            findLocationAsycn.setmLatitude(position.getY());
+            Geometry project = GeometryEngine.project(position, SpatialReferences.getWgs84());
+            double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+            findLocationAsycn.setmLongtitude(location[0]);
+            findLocationAsycn.setmLatitude(location[1]);
             findLocationAsycn.execute();
         } catch (Exception e) {
             Log.e("Popup tìm kiếm", e.toString());

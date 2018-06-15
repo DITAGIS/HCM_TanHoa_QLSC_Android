@@ -25,7 +25,6 @@ import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
-import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -83,8 +82,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     @Override
     protected Void doInBackground(Point... params) {
         final Point clickPoint = params[0];
-        Geometry project = GeometryEngine.project(clickPoint, SpatialReferences.getWgs84());
-        double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+
         final Feature feature;
         try {
             feature = mServiceFeatureTable.createFeature();
@@ -127,58 +125,12 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                     }
                 }
             });
+            Geometry project = GeometryEngine.project(clickPoint, SpatialReferences.getWgs84());
+            double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
             findLocationAsycn.setmLongtitude(location[0]);
             findLocationAsycn.setmLatitude(location[1]);
 
             findLocationAsycn.execute();
-//            final ListenableFuture<List<GeocodeResult>> listListenableFuture =
-//                    mLocatorTask.reverseGeocodeAsync(clickPoint);
-//            listListenableFuture.addDoneListener(new Runnable() {
-//                @Override
-//                public void run() {
-//                    try {
-//                        List<GeocodeResult> geocodeResults = listListenableFuture.get();
-//                        if (geocodeResults.size() > 0) {
-//                            GeocodeResult geocodeResult = geocodeResults.get(0);
-//                            Map<String, Object> attrs = new HashMap<>();
-//                            for (String key : geocodeResult.getAttributes().keySet()) {
-//                                attrs.put(key, geocodeResult.getAttributes().get(key));
-//                            }
-//                            String address = geocodeResult.getAttributes().get("LongLabel").toString();
-//                            feature.getAttributes().put(mContext.getString(R.string.ViTri), address);
-//                        }
-//                        Short intObj = new Short((short) 0);
-//                        feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
-//
-//                        String searchStr = "";
-//                        String dateTime = "";
-//                        String timeID = "";
-//                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//                            dateTime = getDateString();
-//                            timeID = getTimeID();
-//                            searchStr = mContext.getString(R.string.IDSuCo) + " like '%" + timeID + "'";
-//                        }
-//                        QueryParameters queryParameters = new QueryParameters();
-//                        queryParameters.setWhereClause(searchStr);
-//                        final ListenableFuture<FeatureQueryResult> featureQuery =
-//                                mServiceFeatureTable.queryFeaturesAsync(queryParameters);
-//                        final String finalDateTime = dateTime;
-//                        final String finalTimeID = timeID;
-//                        featureQuery.addDoneListener(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                addFeatureAsync(featureQuery, feature, finalTimeID, finalDateTime);
-//                            }
-//                        });
-//                    } catch (InterruptedException e1) {
-//                        e1.printStackTrace();
-//                    } catch (ExecutionException e1) {
-//                        e1.printStackTrace();
-//                    }
-//
-//
-//                }
-//            });
 
         } catch (Exception e) {
             MySnackBar.make(mMapView, "Không tạo được thuộc tính. Vui lòng thử lại sau", true);
@@ -223,7 +175,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                 feature.getAttributes().put(mContext.getString(R.string.NgayThongBao), c);
             }
             feature.getAttributes().put(mContext.getString(R.string.NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
-
+            feature.getAttributes().put(mContext.getString(R.string.LoaiSuCo), (short) 0);
             //---get DMA begin
             final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
             listListenableFuture.addDoneListener(new Runnable() {
@@ -292,7 +244,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     }
 
     private void addAttachment(ListenableFuture<FeatureQueryResult> listenableFuture, final Feature feature) {
-        FeatureQueryResult result ;
+        FeatureQueryResult result;
         try {
 
             result = listenableFuture.get();
