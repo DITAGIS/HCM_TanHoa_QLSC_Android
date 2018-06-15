@@ -11,7 +11,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.SettingsAdapter;
 
 public class Constant {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
-    public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd_MM_yyyy");
+    public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     private SettingsAdapter.Item[] mSettingsItems;
 
     private static Constant mInstance = null;

@@ -66,6 +66,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         FeatureViewMoreInfoAdapter adapter = params[0];
+        Calendar c = Calendar.getInstance();
+        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.NgayCapNhat), c);
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getValue() == null) continue;
             Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
@@ -84,7 +86,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     Date date = null;
                     try {
                         date = Constant.DATE_FORMAT.parse(item.getValue());
-                        Calendar c = Calendar.getInstance();
+
                         c.setTime(date);
                         mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c);
                     } catch (ParseException e) {

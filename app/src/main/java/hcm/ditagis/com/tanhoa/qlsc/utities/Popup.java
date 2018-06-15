@@ -235,12 +235,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
                 item.setEdit(false);
-                for (String updateField : updateFields) {
-                    if (item.getFieldName().equals(updateField)) {
-                        item.setEdit(true);
+                boolean isAddField = false;
+                for (String addField : addFields) {
+                    if (addField.equals(item.getFieldName())) {
+                        isAddField = true;
                         break;
                     }
                 }
+                if (!isAddField)
+                    for (String updateField : updateFields) {
+                        if (item.getFieldName().equals(updateField)) {
+                            item.setEdit(true);
+                            break;
+                        }
+                    }
                 item.setFieldType(field.getFieldType());
                 mFeatureViewMoreInfoAdapter.add(item);
                 mFeatureViewMoreInfoAdapter.notifyDataSetChanged();

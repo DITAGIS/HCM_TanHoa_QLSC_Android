@@ -25,14 +25,12 @@
         <item>GhiChuVatTu</item>
         <item>SoNha</item>
         <item>GhiChu</item>
-        <item>NgayCapNhat</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
         <item>DuongKinhOng</item>
         <item>HinhThucPhatHien</item>
         <item>VatLieu</item>
         <item>TrangThai</item>
-        <item>NGUOICAPNHAT</item>
         <item>KetQuaKiemTra</item>
         <item>ApLuc</item>
         <item>THOIGIANTHUCHIEN</item>
@@ -41,6 +39,7 @@
         <item>LoaiSuCo</item>
         <item>SDTNguoiBao</item>
         <item>MADMA</item>
+        <item>TIETDIENBE</item>
     </string-array>
     <string-array name="add_fields_arrays">
         <item>IDSuCo</item>
@@ -51,6 +50,8 @@
     </string-array>
     <string-array name="no_display_fields_arrays">
         <item>OBJECTID</item>
+        <item>VatLieuOng</item>
+        <item>NgaySuaChua</item>
         <item>ToaDo_X</item>
         <item>ToaDo_Y</item>
         <item>GlobalID</item>
