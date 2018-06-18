@@ -203,6 +203,12 @@
     <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
 
     <string name="sql_select_ma_dma">  select madma from dma  order by madma asc</string>
+    <string name="sql_select_nguyennhan_ongchinh">  SELECT *  FROM NguyenNhanOngChinh</string>
+    <string name="sql_select_nguyennhan_ongnganh">  SELECT *  FROM NguyenNhanOngNganh</string>
+    <string name="sql_select_vatlieu_ongchinh">  SELECT *  FROM VatLieuOngChinh</string>
+    <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
+
+
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
     <string name="connect_message">Đang kết nối đến máy chủ...</string>
@@ -262,4 +268,6 @@
     <string name="SoNha">SoNha</string>
     <string name="LoaiSuCo_OngNganh">Ống ngánh</string>
     <string name="LoaiSuCo_OngChinh">Ống chính</string>
+    <string name="NguyenNhan">NguyenNhan</string>
+    <string name="VatLieu">VatLieu</string>
 </resources>

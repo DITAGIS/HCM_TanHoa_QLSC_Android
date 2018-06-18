@@ -24,7 +24,6 @@
         <item>NguoiSuaChua</item>
         <item>GhiChuVatTu</item>
         <item>ViTri</item>
-
         <item>GhiChu</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
@@ -75,7 +74,53 @@
         <item>Ống lười lòng đường BTXM</item>
         <item>Ống dưới lòng đường đất đá</item>
     </string-array>
-
+    <string-array name="nguyennhan_ongnganh_array">
+        <item>Tét ống</item>
+        <item>Gãy ống</item>
+        <item>Mục ống</item>
+        <item>Xì joint ĐHN</item>
+        <item>Xì joint van góc</item>
+        <item>Xì joint khóa góc</item>
+        <item>Hư van góc</item>
+        <item>Hư khóa góc</item>
+        <item>Hư Van cóc</item>
+        <item>Hư Con cóc</item>
+    </string-array>
+    <string-array name="nguyennhan_ongchinh_array">
+        <item>Nứt ống theo chiều dọc</item>
+        <item>Nứt ống theo chiều ngang</item>
+        <item>Do bị ăn mòn ống</item>
+        <item>Rò rì tại đầu cái (mối nối)</item>
+        <item>Rò rỉ tại mặt bích</item>
+        <item>Rò rỉ tại đai khởi thủy</item>
+        <item>Hư van</item>
+        <item>Hư Tê</item>
+        <item>Hư Khuỷu 1/4</item>
+        <item>Hư Khuỷu 1/8</item>
+        <item>Hư Khuỷu 1/16</item>
+        <item>Hư Khuỷu 1/32</item>
+        <item>Hư Bù Manchon</item>
+        <item>Hư Kiềng</item>
+        <item>Hư joint kiềng</item>
+        <item>Hư Joint mặt bích</item>
+    </string-array>
+    <string-array name="vatlieu_ongnganh_array">
+        <item>HDPE</item>
+        <item>PE</item>
+        <item>Gang</item>
+        <item>Pb</item>
+        <item>PVC</item>
+        <item>STK</item>
+    </string-array>
+    <string-array name="vatlieu_ongchinh_array">
+        <item>uPVC</item>
+        <item>HDPE</item>
+        <item>Gang dẻo</item>
+        <item>Gang xám</item>
+        <item>AC</item>
+        <item>Bêtông</item>
+        <item>Thép</item>
+    </string-array>
     <!--Query field begin-->
     <string-array name="queryFields_dma">
         <item>OBJECTID</item>

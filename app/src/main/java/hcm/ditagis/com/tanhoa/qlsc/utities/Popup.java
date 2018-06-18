@@ -49,6 +49,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -67,6 +68,11 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 @SuppressLint("Registered")
 public class Popup extends AppCompatActivity implements View.OnClickListener {
     private List<String> mListDMA;
+    private HashMap<String, String> mHashMapNguyenNhanOngChinh, mHashMapNguyenNhanOngNganh;
+    private HashMap<Integer, String> mHashMapVatLieuOngChinh, mHashMapVatLieuOngNganh;
+    private List<String> mListNguyenNhanOngChinh, mListNguyenNhanOngNganh,
+            mListVatLieuOngChinh, mListVatLieuOngNganh;
+    private List<Object> mListObjectDB;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
     private ServiceFeatureTable mServiceFeatureTable;
@@ -80,20 +86,27 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
     private String mLoaiSuCo;
-    private String[] mPhanLoaiArray;
 
     public DialogInterface getDialog() {
         return mDialog;
     }
 
-    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<String> listDMA) {
+    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
-        this.mListDMA = listDMA;
-        mPhanLoaiArray = mMainActivity.getResources().getStringArray(R.array.phanloai_arrays);
+        this.mListObjectDB = listObjectDB;
+        mListDMA = (List<String>) mListObjectDB.get(0);
+        mHashMapNguyenNhanOngChinh = (HashMap<String, String>) mListObjectDB.get(1);
+        mHashMapNguyenNhanOngNganh = (HashMap<String, String>) mListObjectDB.get(2);
+        mHashMapVatLieuOngChinh = (HashMap<Integer, String>) mListObjectDB.get(3);
+        mHashMapVatLieuOngNganh = (HashMap<Integer, String>) mListObjectDB.get(4);
+        mListNguyenNhanOngChinh = new ArrayList<>(mHashMapNguyenNhanOngChinh.values());
+        mListNguyenNhanOngNganh = new ArrayList<>(mHashMapNguyenNhanOngNganh.values());
+        mListVatLieuOngChinh = new ArrayList<>(mHashMapVatLieuOngChinh.values());
+        mListVatLieuOngNganh = new ArrayList<>(mHashMapVatLieuOngNganh.values());
     }
 
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
@@ -229,8 +242,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                     } else if (field.getDomain() != null) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
-                        String valueDomain = getValueDomain(codedValues, value.toString()).toString();
-                        if (valueDomain != null) item.setValue(valueDomain);
+                        Object valueDomain = getValueDomain(codedValues, value.toString());
+                        if (valueDomain != null) item.setValue(valueDomain.toString());
                     } else switch (field.getFieldType()) {
                         case DATE:
                             item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
@@ -372,14 +385,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
-
                 //Load danh sách madma từ csdl
                 if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListDMA);
                     spin.setAdapter(adapter);
                     if (item.getValue() != null)
-                        spin.setSelection(mListDMA.indexOf(item.getValue()));
+                        spin.setSelection(mListObjectDB.indexOf(item.getValue()));
                 }
                 //Trường hợp số nhà (vị trí) thì không dùng domain, vì còn có nhập khoảng cách
                 else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
@@ -394,7 +406,44 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         spin.setAdapter(adapter);
                     }
                     if (item.getValue() != null)
-                        spin.setSelection(mListDMA.indexOf(item.getValue()));
+                        spin.setSelection(mListObjectDB.indexOf(item.getValue()));
+                }
+                //Trường hợp nguyên nhân, không tự động lấy được domain
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.NguyenNhan))) {
+                    layoutSpin.setVisibility(View.VISIBLE);
+                    if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
+                                android.R.layout.simple_list_item_1, mListNguyenNhanOngNganh);
+                        spin.setAdapter(adapter);
+                        if (item.getValue() != null)
+                            spin.setSelection(mListNguyenNhanOngNganh.indexOf(item.getValue()));
+
+                    } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
+                                android.R.layout.simple_list_item_1, mListNguyenNhanOngChinh);
+                        spin.setAdapter(adapter);
+                        if (item.getValue() != null)
+                            spin.setSelection(mListNguyenNhanOngChinh.indexOf(item.getValue()));
+                    }
+
+                }
+                //Trường hợp vật liệu, không tự động lấy được domain
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.VatLieu))) {
+                    layoutSpin.setVisibility(View.VISIBLE);
+                    if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
+                                android.R.layout.simple_list_item_1, mListVatLieuOngNganh);
+                        spin.setAdapter(adapter);
+                        if (item.getValue() != null)
+                            spin.setSelection(mListVatLieuOngNganh.indexOf(item.getValue()));
+                    } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
+                                android.R.layout.simple_list_item_1, mListVatLieuOngChinh);
+                        spin.setAdapter(adapter);
+                        if (item.getValue() != null)
+                            spin.setSelection(mListVatLieuOngChinh.indexOf(item.getValue()));
+                    }
+
                 } else {
 
                     if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
@@ -466,7 +515,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             item.setValue(spin.getSelectedItem().toString());
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
                             item.setValue(spin.getSelectedItem().toString());
-                            mLoaiSuCo = item.getValue();
+                            if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()))
+                                mLoaiSuCo = item.getValue();
                         } else {
                             switch (item.getFieldType()) {
                                 case DATE:
@@ -493,8 +543,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     break;
                             }
                         }
-
-
                         dialog.dismiss();
                         FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();
                         new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);

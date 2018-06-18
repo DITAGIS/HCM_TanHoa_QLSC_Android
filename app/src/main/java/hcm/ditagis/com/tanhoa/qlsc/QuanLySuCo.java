@@ -75,6 +75,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -94,7 +95,7 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
 public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
-    private List<String> mListDMA;
+    private List<Object> mListObjectDB;
     private Uri mUri;
     private Popup mPopUp;
     private MapView mMapView;
@@ -148,13 +149,15 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //        prepare();
         final PreparingAsycn preparingAsycn = new PreparingAsycn(this, new PreparingAsycn.AsyncResponse() {
             @Override
-            public void processFinish(List<String> output) {
+            public void processFinish(List<Object> output) {
                 if (output != null) {
-                    mListDMA = output;
+                    mListObjectDB = output;
                     prepare();
                 }
             }
         });
+
+
         if (CheckConnectInternet.isOnline(this))
             preparingAsycn.execute();
     }
@@ -282,7 +285,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
                 Callout callout = mMapView.getCallout();
-                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListDMA);
+                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListObjectDB);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;

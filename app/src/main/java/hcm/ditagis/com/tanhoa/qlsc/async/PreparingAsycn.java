@@ -10,14 +10,18 @@ import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListDMADB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListNguyenNhanOngChinhDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListNguyenNhanOngNganhDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListVatLieuOngChinhDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListVatLieuOngNganhDB;
 
-public class PreparingAsycn extends AsyncTask<Void, Void, List<String>> {
+public class PreparingAsycn extends AsyncTask<Void, Void, List<Object>> {
     private ProgressDialog mDialog;
     private Context mContext;
     private AsyncResponse mDelegate;
 
     public interface AsyncResponse {
-        void processFinish(List<String> output);
+        void processFinish(List<Object> output);
     }
 
     public PreparingAsycn(Context context, AsyncResponse delegate) {
@@ -35,15 +39,27 @@ public class PreparingAsycn extends AsyncTask<Void, Void, List<String>> {
     }
 
     @Override
-    protected List<String> doInBackground(Void... params) {
-        List<String> lstDMA = new ArrayList<>();
+    protected List<Object> doInBackground(Void... params) {
+        List<Object> lst = new ArrayList<>();
         try {
             GetListDMADB getListDMADB = new GetListDMADB(mContext);
-            lstDMA = getListDMADB.find();
+            lst.add(getListDMADB.find());
+
+            GetListNguyenNhanOngChinhDB getListNguyenNhanOngChinhDB = new GetListNguyenNhanOngChinhDB(mContext);
+            lst.add(getListNguyenNhanOngChinhDB.find());
+
+            GetListNguyenNhanOngNganhDB getListNguyenNhanOngNganhDB = new GetListNguyenNhanOngNganhDB(mContext);
+            lst.add(getListNguyenNhanOngNganhDB.find());
+
+            GetListVatLieuOngChinhDB getListVatLieuOngChinhDB = new GetListVatLieuOngChinhDB(mContext);
+            lst.add(getListVatLieuOngChinhDB.find());
+
+            GetListVatLieuOngNganhDB getListVatLieuOngNganhDB = new GetListVatLieuOngNganhDB(mContext);
+            lst.add(getListVatLieuOngNganhDB.find());
         } catch (Exception e) {
             Log.e("Lỗi lấy danh sách DMA", e.toString());
         }
-        return lstDMA;
+        return lst;
     }
 
     @Override
@@ -54,7 +70,7 @@ public class PreparingAsycn extends AsyncTask<Void, Void, List<String>> {
     }
 
     @Override
-    protected void onPostExecute(List<String> value) {
+    protected void onPostExecute(List<Object> value) {
 //        if (khachHang != null) {
         mDialog.dismiss();
         this.mDelegate.processFinish(value);

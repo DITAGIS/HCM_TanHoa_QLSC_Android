@@ -103,7 +103,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     if (codeDomain != null) {
                         mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(codeDomain.toString()));
                     } else
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(item.getValue()));
+                        try {
+                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(item.getValue()));
+                        } catch (NumberFormatException e) {
+                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
+                        }
                     break;
             }
         }
