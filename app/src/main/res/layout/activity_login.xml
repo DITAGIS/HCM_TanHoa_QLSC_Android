@@ -38,15 +38,16 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_small"
             android:layout_weight="0.5"
             android:src="@drawable/ic_user" />
 
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="0dp"
-            android:layout_weight="3"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
+            android:layout_weight="3"
             android:background="@drawable/layout_edittext_none_border"
             android:hint="Nhập tên đăng nhập"
             android:inputType="text"
@@ -72,6 +73,7 @@
             android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_small"
             android:layout_weight="0.5"
             android:src="@drawable/ic_password" />
 
