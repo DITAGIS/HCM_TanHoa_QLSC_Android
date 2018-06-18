@@ -8,6 +8,7 @@
     <string-array name="field_subtype_array">
         <item>@string/NguyenNhan</item>
         <item>@string/VatLieu</item>
+        <item>@string/ViTri</item>
     </string-array>
     <string-array name="update_fields_arrays">
         <item>NgayKhacPhuc</item>

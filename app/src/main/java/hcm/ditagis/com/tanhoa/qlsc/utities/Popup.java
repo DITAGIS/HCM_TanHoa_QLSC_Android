@@ -421,41 +421,66 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 //Trường hợp nguyên nhân, không tự động lấy được domain
                 else if (item.getFieldName().equals(mMainActivity.getString(R.string.NguyenNhan))) {
                     layoutSpin.setVisibility(View.VISIBLE);
+                    List<String> codes = new ArrayList<>();
+
+
+//
                     if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
-                                android.R.layout.simple_list_item_1, mListNguyenNhanOngNganh);
-                        spin.setAdapter(adapter);
-                        if (item.getValue() != null)
-                            spin.setSelection(mListNguyenNhanOngNganh.indexOf(item.getValue()));
-
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(0).getDomains().get(mMainActivity.getString(R.string.NguyenNhan))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+//
+                        }
                     } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
-                                android.R.layout.simple_list_item_1, mListNguyenNhanOngChinh);
-                        spin.setAdapter(adapter);
-                        if (item.getValue() != null)
-                            spin.setSelection(mListNguyenNhanOngChinh.indexOf(item.getValue()));
-                    }
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(1).getDomains().get(mMainActivity.getString(R.string.NguyenNhan))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+                        }
 
+                    } else {
+                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                        }
+                        if (item.getValue() != null)
+                            spin.setSelection(codes.indexOf(item.getValue()));
+                    }
                 }
                 //Trường hợp vật liệu, không tự động lấy được domain
                 else if (item.getFieldName().equals(mMainActivity.getString(R.string.VatLieu))) {
                     layoutSpin.setVisibility(View.VISIBLE);
+                    List<String> codes = new ArrayList<>();
                     if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
-                                android.R.layout.simple_list_item_1, mListVatLieuOngNganh);
-                        spin.setAdapter(adapter);
-                        if (item.getValue() != null)
-                            spin.setSelection(mListVatLieuOngNganh.indexOf(item.getValue()));
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(0).getDomains().get(mMainActivity.getString(R.string.VatLieu))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+                        }
                     } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
-                                android.R.layout.simple_list_item_1, mListVatLieuOngChinh);
-                        spin.setAdapter(adapter);
-                        if (item.getValue() != null)
-                            spin.setSelection(mListVatLieuOngChinh.indexOf(item.getValue()));
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(1).getDomains().get(mMainActivity.getString(R.string.VatLieu))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues)
+                                codes.add(codedValue.getName());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
+                            spin.setAdapter(adapter);
+                        }
                     }
-
+                    if (item.getValue() != null)
+                        spin.setSelection(codes.indexOf(item.getValue()));
                 } else {
-
                     if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                         layoutSpin.setVisibility(View.VISIBLE);
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
@@ -466,6 +491,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     } else if (domain != null) {
                         layoutSpin.setVisibility(View.VISIBLE);
                         List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+
                         if (codedValues != null) {
                             List<String> codes = new ArrayList<>();
                             for (CodedValue codedValue : codedValues)
@@ -508,8 +534,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             layoutEditText.setVisibility(View.VISIBLE);
                             editText.setInputType(InputType.TYPE_CLASS_NUMBER);
                             editText.setText(item.getValue());
-
-
                             break;
                         case DOUBLE:
                             layoutEditText.setVisibility(View.VISIBLE);
@@ -524,12 +548,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                             item.setValue(spin.getSelectedItem().toString());
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
-
-
                             //Khi đổi subtype
                             //Phải set những field liên quan đến subtype isMustEdit = true;
                             if (!item.getValue().equals(spin.getSelectedItem().toString()) && item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
-                                mLoaiSuCo = item.getValue();
                                 String[] field_subtypeArr = mMainActivity.getResources().getStringArray(R.array.field_subtype_array);
                                 for (int i = 0; i < parent.getCount(); i++) {
                                     FeatureViewMoreInfoAdapter.Item item1 = (FeatureViewMoreInfoAdapter.Item) parent.getAdapter().getItem(i);
@@ -544,6 +565,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                 item.setMustEdit(false);
                             }
                             item.setValue(spin.getSelectedItem().toString());
+                            mLoaiSuCo = item.getValue();
                         } else {
                             switch (item.getFieldType()) {
                                 case DATE:

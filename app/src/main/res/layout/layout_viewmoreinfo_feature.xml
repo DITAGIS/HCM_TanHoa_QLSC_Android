@@ -86,7 +86,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/layout_border_transparent"
-            android:text="sdf" />
+       />
 
         <Button
             android:id="@+id/btn_viewmoreinfo_right"
@@ -96,7 +96,7 @@
             android:background="@color/colorPrimary"
             android:paddingLeft="@dimen/padding_small"
             android:paddingRight="@dimen/padding_small"
-            android:text="ádfdsfds" />
+            />
     </LinearLayout>
 
 </LinearLayout>
