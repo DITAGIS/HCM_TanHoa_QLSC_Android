@@ -550,7 +550,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
                             //Khi đổi subtype
                             //Phải set những field liên quan đến subtype isMustEdit = true;
-                            if (!item.getValue().equals(spin.getSelectedItem().toString()) && item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
+                            if ((item.getValue() == null || !item.getValue().equals(spin.getSelectedItem().toString())) && item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                                 String[] field_subtypeArr = mMainActivity.getResources().getStringArray(R.array.field_subtype_array);
                                 for (int i = 0; i < parent.getCount(); i++) {
                                     FeatureViewMoreInfoAdapter.Item item1 = (FeatureViewMoreInfoAdapter.Item) parent.getAdapter().getItem(i);
@@ -565,7 +565,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                 item.setMustEdit(false);
                             }
                             item.setValue(spin.getSelectedItem().toString());
-                            mLoaiSuCo = item.getValue();
+                            if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()))
+                                mLoaiSuCo = item.getValue();
                         } else {
                             switch (item.getFieldType()) {
                                 case DATE:

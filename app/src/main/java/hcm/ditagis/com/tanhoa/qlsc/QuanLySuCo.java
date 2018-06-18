@@ -626,9 +626,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                     mSearchAdapter.clear();
                                     mSearchAdapter.notifyDataSetChanged();
                                     if (output.size() > 0) {
-                                        Address address = output.get(0);
-                                        setViewPointCenterLongLat(new Point(address.getLongitude(), address.getLatitude()), address.getAddressLine(0));
-                                        Log.d("Tọa độ tìm kiếm", String.format("[% ,.9f;% ,.9f]", address.getLongitude(), address.getLatitude()));
+                                        for (Address address : output) {
+                                            TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
+                                            item.setLatitude(address.getLatitude());
+                                            item.setLongtitude(address.getLongitude());
+                                            mSearchAdapter.add(item);
+                                        }
+                                        mSearchAdapter.notifyDataSetChanged();
+
 //                                    }
                                     }
                                 }
@@ -1006,6 +1011,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             mMapViewHandler.queryByObjectID(objectID);
             mSearchAdapter.clear();
             mSearchAdapter.notifyDataSetChanged();
+        }
+        else{
+
+            setViewPointCenterLongLat(new Point(item.getLongtitude(), item.getLatitude()), item.getDiaChi());
+            Log.d("Tọa độ tìm kiếm", String.format("[% ,.9f;% ,.9f]",item.getLongtitude(),item.getLatitude()));
         }
     }
 }

@@ -68,13 +68,94 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         FeatureViewMoreInfoAdapter adapter = params[0];
         Calendar c = Calendar.getInstance();
         mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.NgayCapNhat), c);
+        String loaiSuCo = "";
+        for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
+            if (item.getFieldName().equals(mContext.getString(R.string.LoaiSuCo))) {
+                loaiSuCo = item.getValue();
+                break;
+            }
+        }
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getValue() == null) continue;
             Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
             Object codeDomain = null;
             if (domain != null) {
-                List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
-                codeDomain = getCodeDomain(codedValues, item.getValue());
+                //Trường hợp nguyên nhân, không tự động lấy được domain
+                if (item.getFieldName().equals(mContext.getString(R.string.NguyenNhan))) {
+                    if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))) {
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(0).getDomains().get(mContext.getString(R.string.NguyenNhan))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(1).getDomains().get(mContext.getString(R.string.NguyenNhan))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+
+                    } else {
+                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                //Trường hợp vật liệu, không tự động lấy được domain
+                else if (item.getFieldName().equals(mContext.getString(R.string.VatLieu))) {
+                    if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))) {
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(0).getDomains().get(mContext.getString(R.string.VatLieu))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+                    } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
+                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                .get(1).getDomains().get(mContext.getString(R.string.VatLieu))).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                        if (codedValues != null) {
+                            for (CodedValue codedValue : codedValues) {
+                                if (codedValue.getName().equals(item.getValue())) {
+                                    codeDomain = codedValue.getCode();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                    codeDomain = getCodeDomain(codedValues, item.getValue());
+                }
             }
             if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                 List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
@@ -89,7 +170,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
                         c.setTime(date);
                         mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c);
-                    } catch (ParseException e) {
+                    } catch (ParseException ignored) {
                     }
                     break;
 
@@ -149,46 +230,47 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         addResult.addDoneListener(new Runnable() {
             @Override
             public void run() {
-                if (mDialog != null && mDialog.isShowing()) {
-                    mDialog.dismiss();
-                }
+//                if (mDialog != null && mDialog.isShowing()) {
+//                    mDialog.dismiss();
+//                }
                 try {
-                    Attachment attachment = addResult.get();
-                    if (attachment.getSize() > 0) {
-                        final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
-                        tableResult.addDoneListener(new Runnable() {
-                            @Override
-                            public void run() {
-                                final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
-                                updatedServerResult.addDoneListener(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        List<FeatureEditResult> edits = null;
-                                        try {
-                                            edits = updatedServerResult.get();
-                                            if (edits.size() > 0) {
-                                                if (!edits.get(0).hasCompletedWithErrors()) {
-                                                    //attachmentList.add(fileName);
-                                                    String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
-                                                    // update the attachment list view/ on the control panel
-                                                }
+                    //todo
+//                    Attachment attachment = addResult.get();
+//                    if (attachment.getSize() > 0) {
+                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+                    tableResult.addDoneListener(new Runnable() {
+                        @Override
+                        public void run() {
+                            final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                            updatedServerResult.addDoneListener(new Runnable() {
+                                @Override
+                                public void run() {
+                                    List<FeatureEditResult> edits = null;
+                                    try {
+                                        edits = updatedServerResult.get();
+                                        if (edits.size() > 0) {
+                                            if (!edits.get(0).hasCompletedWithErrors()) {
+                                                //attachmentList.add(fileName);
+                                                String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
+                                                // update the attachment list view/ on the control panel
                                             }
-                                        } catch (InterruptedException | ExecutionException e) {
-                                            e.printStackTrace();
                                         }
-                                        if (mDialog != null && mDialog.isShowing()) {
-                                            mDialog.dismiss();
-                                        }
-
+                                    } catch (InterruptedException | ExecutionException e) {
+                                        e.printStackTrace();
                                     }
-                                });
+                                    if (mDialog != null && mDialog.isShowing()) {
+                                        mDialog.dismiss();
+                                    }
+
+                                }
+                            });
 
 
-                            }
-                        });
-                    }
+                        }
+                    });
+//                    }
 
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
