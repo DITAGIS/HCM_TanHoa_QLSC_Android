@@ -91,7 +91,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                 @Override
                 public void processFinish(List<Address> output) {
                     if (output != null) {
-                        feature.getAttributes().put(mContext.getString(R.string.ViTri), output.get(0).getAddressLine(0));
+                        feature.getAttributes().put(mContext.getString(R.string.SoNha), output.get(0).getAddressLine(0));
                         String subAdminArea = output.get(0).getSubAdminArea();
                         if (subAdminArea.equals(mContext.getString(R.string.QuanPhuNhuanName)))
                             feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));

@@ -18,8 +18,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
 
-        android:layout_marginTop="@dimen/login_activity_vertical_margin"
         android:layout_marginBottom="@dimen/login_activity_vertical_margin"
+        android:layout_marginTop="@dimen/login_activity_vertical_margin"
         android:src="@drawable/logo_tanhoa" />
 
     <!--Layout hiển thị icon đăng nhập và tên đăng nhập-->
@@ -27,16 +27,15 @@
         android:id="@+id/layout_login_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/login_activity_horizontal_margin"
         android:layout_marginEnd="@dimen/login_activity_horizontal_margin"
+        android:layout_marginStart="@dimen/login_activity_horizontal_margin"
         android:background="@drawable/layout_border_curve"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:orientation="horizontal"
->
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="50dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.5"
@@ -44,10 +43,10 @@
 
         <EditText
             android:id="@+id/txtUsername"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:layout_weight="2"
             android:background="@drawable/layout_edittext_none_border"
             android:hint="Nhập tên đăng nhập"
             android:inputType="text"
@@ -61,8 +60,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/login_activity_horizontal_margin"
         android:layout_marginEnd="@dimen/login_activity_horizontal_margin"
+        android:layout_marginStart="@dimen/login_activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:background="@drawable/layout_border_curve"
         android:focusable="true"
@@ -70,32 +69,27 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="42dp"
+            android:layout_width="0dp"
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:layout_weight="0.5"
             android:src="@drawable/ic_password" />
 
-        <FrameLayout
-            android:layout_width="wrap_content"
+
+        <EditText
+            android:id="@+id/txtPassword"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="2">
+            android:layout_gravity="center_vertical"
+            android:layout_weight="3"
+            android:background="@drawable/layout_edittext_none_border"
+            android:hint="Nhập mật khẩu"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:nextFocusDown="@+id/btnLogin"
+            android:textColor="@color/colorTextLogin_1"
+            android:textCursorDrawable="@null" />
 
-            <EditText
-                android:id="@+id/txtPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="2"
-                android:background="@drawable/layout_edittext_none_border"
-                android:hint="Nhập mật khẩu"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:nextFocusDown="@+id/btnLogin"
-                android:textColor="@color/colorTextLogin_1"
-                android:textCursorDrawable="@null" />
-
-        </FrameLayout>
     </LinearLayout>
 
     <TextView

@@ -79,6 +79,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout linearLayout;
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
+    private String mLoaiSuCo;
+    private String[] mPhanLoaiArray;
 
     public DialogInterface getDialog() {
         return mDialog;
@@ -91,6 +93,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
         this.mListDMA = listDMA;
+        mPhanLoaiArray = mMainActivity.getResources().getStringArray(R.array.phanloai_arrays);
     }
 
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
@@ -181,6 +184,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         boolean isFoundContinue = false;
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             Object value = attr.get(field.getName());
+
+            //nếu là nodisplay field thì bỏ qua
             for (String noDisplayField : no_displayFields)
                 if (field.getName().equals(noDisplayField)) {
                     isFoundContinue = true;
@@ -190,8 +195,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 isFoundContinue = false;
                 continue;
             }
+
+            //Nếu đang trong chức năng thêm sự cố
             if (isAddFeature) {
                 isFoundContinue = true;
+                //Kiểm tra nếu không phải là addField thì bỏ qua
                 for (String addField : addFields)
                     if (field.getName().equals(addField)) {
                         isFoundContinue = false;
@@ -213,7 +221,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     if (item.getFieldName().equals(typeIdField)) {
                         List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
                         Object valueFeatureType = getValueFeatureType(featureTypes, value.toString());
-                        if (valueFeatureType != null) item.setValue(valueFeatureType.toString());
+                        mLoaiSuCo = "";
+                        if (valueFeatureType != null) {
+                            item.setValue(valueFeatureType.toString());
+                            mLoaiSuCo = valueFeatureType.toString();
+                        }
 
                     } else if (field.getDomain() != null) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
@@ -242,13 +254,18 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         break;
                     }
                 }
-                if (!isAddField)
-                    for (String updateField : updateFields) {
-                        if (item.getFieldName().equals(updateField)) {
+                for (String updateField : updateFields) {
+                    //Nếu là update field
+                    if (item.getFieldName().equals(updateField)) {
+                        //Nếu đang trong chức năng thêm sự cố thì edit = true
+                        if (isAddFeature)
                             item.setEdit(true);
-                            break;
-                        }
+                            //Ngược lại, nếu không phải là addField thì edit = true
+                        else if (!isAddField)
+                            item.setEdit(true);
+                        break;
                     }
+                }
                 item.setFieldType(field.getFieldType());
                 mFeatureViewMoreInfoAdapter.add(item);
                 mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
@@ -355,10 +372,27 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
+
+                //Load danh sách madma từ csdl
                 if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListDMA);
                     spin.setAdapter(adapter);
+                    if (item.getValue() != null)
+                        spin.setSelection(mListDMA.indexOf(item.getValue()));
+                }
+                //Trường hợp số nhà (vị trí) thì không dùng domain, vì còn có nhập khoảng cách
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
+                    layoutSpin.setVisibility(View.VISIBLE);
+                    layoutEditText.setVisibility(View.VISIBLE);
+
+                    if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongnganh_arrays));
+                        spin.setAdapter(adapter);
+                    } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh_arrays));
+                        spin.setAdapter(adapter);
+                    }
                     if (item.getValue() != null)
                         spin.setSelection(mListDMA.indexOf(item.getValue()));
                 } else {
@@ -367,8 +401,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         layoutSpin.setVisibility(View.VISIBLE);
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, lstFeatureType);
                         spin.setAdapter(adapter);
-                        if (item.getValue() != null)
+                        if (item.getValue() != null) {
                             spin.setSelection(lstFeatureType.indexOf(item.getValue()));
+                        }
                     } else if (domain != null) {
                         layoutSpin.setVisibility(View.VISIBLE);
                         List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
@@ -431,6 +466,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             item.setValue(spin.getSelectedItem().toString());
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
                             item.setValue(spin.getSelectedItem().toString());
+                            mLoaiSuCo = item.getValue();
                         } else {
                             switch (item.getFieldType()) {
                                 case DATE:

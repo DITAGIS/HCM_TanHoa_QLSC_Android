@@ -167,13 +167,9 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                                                     //attachmentList.add(fileName);
                                                     String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
                                                     // update the attachment list view/ on the control panel
-                                                } else {
                                                 }
-                                            } else {
                                             }
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        } catch (ExecutionException e) {
+                                        } catch (InterruptedException | ExecutionException e) {
                                             e.printStackTrace();
                                         }
                                         if (mDialog != null && mDialog.isShowing()) {
@@ -188,9 +184,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                         });
                     }
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
@@ -227,7 +221,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         super.onProgressUpdate(values);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
-            this.mDelegate.processFinish(values[0]);
+            this.mDelegate.processFinish(null);
         }
 
     }

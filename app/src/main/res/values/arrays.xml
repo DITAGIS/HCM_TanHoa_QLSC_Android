@@ -7,9 +7,9 @@
         <item> Quận Tân Phú </item>
     </string-array>
     <string-array name="phanloai_arrays">
-        <item> Chọn loại sự cố </item>
-        <item> A </item>
-        <item> B </item>
+        <item>Ống ngánh</item>
+        <item>Ống chính</item>
+        <item>Chưa phân loại</item>
     </string-array>
     <string-array name="trangthai_arrays">
         <item>Chưa sửa chữa</item>
@@ -23,7 +23,8 @@
         <item>NguyenNhan</item>
         <item>NguoiSuaChua</item>
         <item>GhiChuVatTu</item>
-        <item>SoNha</item>
+        <item>ViTri</item>
+
         <item>GhiChu</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
@@ -45,7 +46,7 @@
         <item>IDSuCo</item>
         <item>NgayXayRa</item>
         <item>HinhThucPhatHien</item>
-        <item>ViTri</item>
+        <item>SoNha</item>
         <item>SDTNguoiBao</item>
     </string-array>
     <string-array name="no_display_fields_arrays">
@@ -57,6 +58,24 @@
         <item>GlobalID</item>
         <item>TENDMA</item>
     </string-array>
+    <string-array name="vitri_ongnganh_arrays">
+        <item>Cách mép nhà...</item>
+        <item>Cách bó vỉa...</item>
+        <item>Bên phải nhà</item>
+        <item>Bên trái nhà</item>
+    </string-array>
+    <string-array name="vitri_ongchinh_arrays">
+        <item>Cách mép nhà...</item>
+        <item>Cách bó vỉa...</item>
+        <item>Ống trên lề BTXM</item>
+        <item>Ống trên lề gạch con sâu</item>
+        <item>Ống trên lề gạch Tezzaro</item>
+        <item>Ống trên lề đá hoa cương</item>
+        <item>Ống dưới lòng đường nhựa</item>
+        <item>Ống lười lòng đường BTXM</item>
+        <item>Ống dưới lòng đường đất đá</item>
+    </string-array>
+
     <!--Query field begin-->
     <string-array name="queryFields_dma">
         <item>OBJECTID</item>

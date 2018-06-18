@@ -4,22 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/layout_edit_viewmoreinfo_Editext"
-        android:layout_width="match_parent"
-        android:visibility="gone"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etxt_edit_viewmoreinfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-
-    </LinearLayout>
 
     <FrameLayout
 
@@ -66,5 +51,20 @@
             android:text="ádfdasf"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/layout_edit_viewmoreinfo_Editext"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+        <EditText
+            android:id="@+id/etxt_edit_viewmoreinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+    </LinearLayout>
 </LinearLayout>
