@@ -91,6 +91,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return mDialog;
     }
 
+
     public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
@@ -173,8 +174,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         @SuppressLint("InflateParams") View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
+        Button btnLeft = layout.findViewById(R.id.btn_viewmoreinfo_left);
+        Button btnRight = layout.findViewById(R.id.btn_viewmoreinfo_right);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
-        layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
+
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -288,12 +291,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         builder.setView(layout);
         builder.setCancelable(false);
 
-        if (isAddFeature) {
-            builder.setPositiveButton("Lưu", new DialogInterface.OnClickListener()
 
-            {
+        final AlertDialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        if (isAddFeature) {
+            btnLeft.setText("Lưu");
+            btnRight.setText("Chụp ảnh và lưu");
+            btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View view) {
                     EditAsync editAsync = new EditAsync(mMainActivity, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, null, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(Void output) {
@@ -303,32 +309,36 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     editAsync.execute(mFeatureViewMoreInfoAdapter);
                     dialog.dismiss();
                 }
-            }).setNegativeButton("Chụp ảnh và lưu", new DialogInterface.OnClickListener() {
+            });
+            btnRight.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View view) {
                     capture();
                     mDialog = dialog;
                 }
             });
         } else {
-            builder.setPositiveButton("Thoát", new DialogInterface.OnClickListener()
-
-            {
+            layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
+            btnLeft.setText("Thoát");
+            btnRight.setText("Chụp ảnh và cập nhật");
+            btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View view) {
                     dialog.dismiss();
                 }
-            }).setNegativeButton("Chụp ảnh và cập nhật", new DialogInterface.OnClickListener() {
+            });
+            btnRight.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(View view) {
+                    for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                        if (item.isMustEdit()) {
+                            return;
+                        }
                     capture();
                     mDialog = dialog;
                 }
             });
         }
-        AlertDialog dialog = builder.create();
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
         dialog.show();
     }
 
@@ -514,9 +524,26 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                             item.setValue(spin.getSelectedItem().toString());
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
-                            item.setValue(spin.getSelectedItem().toString());
-                            if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()))
+
+
+                            //Khi đổi subtype
+                            //Phải set những field liên quan đến subtype isMustEdit = true;
+                            if (!item.getValue().equals(spin.getSelectedItem().toString()) && item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                                 mLoaiSuCo = item.getValue();
+                                String[] field_subtypeArr = mMainActivity.getResources().getStringArray(R.array.field_subtype_array);
+                                for (int i = 0; i < parent.getCount(); i++) {
+                                    FeatureViewMoreInfoAdapter.Item item1 = (FeatureViewMoreInfoAdapter.Item) parent.getAdapter().getItem(i);
+                                    for (String field_subtype : field_subtypeArr) {
+                                        if (item1.getFieldName().equals(field_subtype)) {
+                                            item1.setMustEdit(true);
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                item.setMustEdit(false);
+                            }
+                            item.setValue(spin.getSelectedItem().toString());
                         } else {
                             switch (item.getFieldType()) {
                                 case DATE:
@@ -542,6 +569,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     }
                                     break;
                             }
+                            item.setMustEdit(false);
                         }
                         dialog.dismiss();
                         FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();

@@ -34,6 +34,10 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         return items;
     }
 
+    public void addAll(List<Item> items) {
+        this.items = items;
+    }
+
     public void clear() {
         items.clear();
     }
@@ -59,7 +63,7 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         }
         Item item = items.get(position);
 
-        TextView txtAlias =  convertView.findViewById(R.id.txt_viewmoreinfo_alias);
+        TextView txtAlias = convertView.findViewById(R.id.txt_viewmoreinfo_alias);
         txtAlias.setText(item.getAlias());
 
         TextView txtValue = convertView.findViewById(R.id.txt_viewmoreinfo_value);
@@ -68,8 +72,13 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         }
         txtValue.setText(item.getValue());
         if (item.isEdit()) {
-            convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorAccent_1));
-            convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.VISIBLE);
+            if (item.isMustEdit()) {
+                convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorRed));
+                convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.VISIBLE);
+            } else {
+                convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorAccent_1));
+                convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.VISIBLE);
+            }
         } else {
             convertView.setBackgroundColor(ContextCompat.getColor(mContext, R.color.colorBackground_1));
             convertView.findViewById(R.id.img_viewmoreinfo_edit).setVisibility(View.INVISIBLE);
@@ -87,8 +96,18 @@ public class FeatureViewMoreInfoAdapter extends ArrayAdapter<FeatureViewMoreInfo
         private String fieldName;
         private boolean isEdit;
         private Field.Type fieldType;
+        private boolean isMustEdit;
+
+        public boolean isMustEdit() {
+            return isMustEdit;
+        }
+
+        public void setMustEdit(boolean mustEdit) {
+            isMustEdit = mustEdit;
+        }
 
         public Item() {
+            this.isMustEdit = false;
         }
 
 

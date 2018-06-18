@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="district_arrays">
-        <item> Chọn quận huyện </item>
-        <item> Quận Phú Nhuận </item>
-        <item> Quận Tân Bình</item>
-        <item> Quận Tân Phú </item>
-    </string-array>
     <string-array name="phanloai_arrays">
         <item>Ống ngánh</item>
         <item>Ống chính</item>
         <item>Chưa phân loại</item>
     </string-array>
-    <string-array name="trangthai_arrays">
-        <item>Chưa sửa chữa</item>
-        <item>Đang sửa chữa</item>
-        <item>Đã sửa chữa</item>
+    <string-array name="field_subtype_array">
+        <item>@string/NguyenNhan</item>
+        <item>@string/VatLieu</item>
     </string-array>
-
     <string-array name="update_fields_arrays">
         <item>NgayKhacPhuc</item>
         <item>NgaySuaChua</item>

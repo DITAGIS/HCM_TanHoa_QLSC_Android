@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -8,10 +9,10 @@
     <LinearLayout
         android:id="@+id/layout_viewmoreinfo_id_su_co"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center_vertical"
+        android:layout_weight="1"
         android:orientation="horizontal"
-        android:visibility="gone"
         android:weightSum="3">
 
         <TextView
@@ -40,7 +41,8 @@
     <FrameLayout
         android:id="@+id/framelayout_viewmoreinfo_attachment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:visibility="gone">
 
         <TextView
@@ -60,13 +62,41 @@
             android:src="@drawable/ic_right" />
     </FrameLayout>
 
-
     <ListView
         android:id="@+id/lstView_alertdialog_info"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="7">
 
     </ListView>
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginRight="@dimen/margin_small"
+        android:layout_weight="1"
+        android:gravity="right|center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="RtlHardcoded">
+
+        <Button
+            android:id="@+id/btn_viewmoreinfo_left"
+            style="@style/MyTextAppearance.Blue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_border_transparent"
+            android:text="sdf" />
+
+        <Button
+            android:id="@+id/btn_viewmoreinfo_right"
+            style="@style/MyTextAppearance.White"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:paddingLeft="@dimen/padding_small"
+            android:paddingRight="@dimen/padding_small"
+            android:text="ádfdsfds" />
+    </LinearLayout>
 
 </LinearLayout>
