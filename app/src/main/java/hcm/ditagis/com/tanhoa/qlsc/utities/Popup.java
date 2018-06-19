@@ -66,6 +66,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.entities.VatTu;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
@@ -217,7 +218,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 @Override
                 public void onClick(View view) {
                     EditAsync editAsync = new EditAsync(mMainActivity,
-                    (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
+                            (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
                             mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(Void output) {
@@ -621,6 +622,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
         });
         //todo load danh sách vật tư từ csdl
+        List<HoSoVatTuSuCo> hoSoVatTuSuCos = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
+        for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCos) {
+            vatTuAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
+                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+        }
+        vatTuAdapter.notifyDataSetChanged();
+
     }
 
     private void loadDataEdit_Another(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
@@ -722,7 +730,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             if (listViewVatTu.getAdapter() != null) {
                 VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
                 for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-                    mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu()));
+                    mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
                 }
                 if (mListHoSoVatTuSuCo.size() > 0) {
                     VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);

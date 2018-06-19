@@ -5,9 +5,11 @@ import android.os.StrictMode;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
@@ -50,7 +52,38 @@ public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
 
     @Override
     public List<HoSoVatTuSuCo> getAll() {
+
         return null;
+    }
+
+    public List<HoSoVatTuSuCo> find(String idSuCo) {
+        Connection cnn = ConnectionDB.getInstance().getConnection();
+        List<HoSoVatTuSuCo> hoSoVatTuSuCos = new ArrayList<>();
+        ResultSet rs = null;
+        try {
+            if (cnn == null)
+                return null;
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            String query = mContext.getString(R.string.sql_select_hosovattu_suco);
+            PreparedStatement mStatement = cnn.prepareStatement(query);
+            mStatement.setString(1, idSuCo);
+            rs = mStatement.executeQuery();
+
+            while (rs.next()) {
+                hoSoVatTuSuCos.add(new HoSoVatTuSuCo(idSuCo, rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        } finally {
+            try {
+                if (rs != null && !rs.isClosed())
+                    rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return hoSoVatTuSuCos;
     }
 
     public boolean insert(HoSoVatTuSuCo hoSoVatTuSuCo) {
@@ -76,5 +109,4 @@ public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
         }
         return result > 0;
     }
-
 }
