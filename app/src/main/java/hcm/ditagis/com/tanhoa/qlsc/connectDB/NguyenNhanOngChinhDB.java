@@ -14,16 +14,17 @@ import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 
-public class GetListVatLieuOngNganhDB implements IDB<HashMap<Integer, String>, Boolean, String> {
+public class NguyenNhanOngChinhDB implements IDB<HashMap<String, String>, Boolean, String> {
     DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private Context mContext;
 
-    public GetListVatLieuOngNganhDB(Context mContext) {
+    public NguyenNhanOngChinhDB(Context mContext) {
         this.mContext = mContext;
     }
 
+
     @Override
-    public Boolean add(HashMap<Integer, String> integerStringHashMap) {
+    public Boolean add(HashMap<String, String> stringStringHashMap) {
         return null;
     }
 
@@ -33,36 +34,36 @@ public class GetListVatLieuOngNganhDB implements IDB<HashMap<Integer, String>, B
     }
 
     @Override
-    public Boolean update(HashMap<Integer, String> integerStringHashMap) {
+    public Boolean update(HashMap<String, String> stringStringHashMap) {
         return null;
     }
 
     @Override
-    public HashMap<Integer, String> find(String s, String k1) {
+    public HashMap<String, String> find(String s, String k1) {
         return null;
     }
 
     @Override
-    public HashMap<Integer, String> find(String s, String k1, String k2) {
+    public HashMap<String, String> find(String s, String k1, String k2) {
         return null;
     }
 
-    public HashMap<Integer, String> find() {
+    public HashMap<String, String> find() {
         Connection cnn = ConnectionDB.getInstance().getConnection();
-        HashMap<Integer, String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<>();
         ResultSet rs = null;
         try {
             if (cnn == null)
                 return null;
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            String query = mContext.getString(R.string.sql_select_vatlieu_ongnganh);
+            String query = mContext.getString(R.string.sql_select_nguyennhan_ongchinh);
             PreparedStatement mStatement = cnn.prepareStatement(query);
 
             rs = mStatement.executeQuery();
 
             while (rs.next()) {
-                hashMap.put(rs.getInt(1), rs.getString(2));
+                hashMap.put(rs.getString(1), rs.getString(2));
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -78,7 +79,7 @@ public class GetListVatLieuOngNganhDB implements IDB<HashMap<Integer, String>, B
     }
 
     @Override
-    public List<HashMap<Integer, String>> getAll() {
+    public List<HashMap<String, String>> getAll() {
         return null;
     }
 }

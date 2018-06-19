@@ -9,6 +9,7 @@
         <item>@string/Field_SuCo_NguyenNhan</item>
         <item>@string/Field_SuCo_VatLieu</item>
         <item>@string/Field_SuCo_ViTri</item>
+        <item>@string/Field_SuCo_VatTu</item>
     </string-array>
     <string-array name="update_fields_arrays">
         <item>NgayKhacPhuc</item>

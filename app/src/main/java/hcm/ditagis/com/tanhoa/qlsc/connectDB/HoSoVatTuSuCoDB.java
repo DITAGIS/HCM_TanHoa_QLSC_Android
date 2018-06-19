@@ -13,18 +13,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 
-public class GetListNguyenNhanOngChinhDB implements IDB<HashMap<String, String>, Boolean, String> {
+public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
     DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private Context mContext;
 
-    public GetListNguyenNhanOngChinhDB(Context mContext) {
+    public HoSoVatTuSuCoDB(Context mContext) {
         this.mContext = mContext;
     }
 
 
     @Override
-    public Boolean add(HashMap<String, String> stringStringHashMap) {
+    public Boolean add(HoSoVatTuSuCo hoSoVatTuSuCo) {
         return null;
     }
 
@@ -34,17 +35,23 @@ public class GetListNguyenNhanOngChinhDB implements IDB<HashMap<String, String>,
     }
 
     @Override
-    public Boolean update(HashMap<String, String> stringStringHashMap) {
+    public Boolean update(HoSoVatTuSuCo hoSoVatTuSuCo) {
         return null;
     }
 
     @Override
-    public HashMap<String, String> find(String s, String k1) {
+    public HoSoVatTuSuCo find(String s, String k1) {
         return null;
     }
 
     @Override
-    public HashMap<String, String> find(String s, String k1, String k2) {
+    public HoSoVatTuSuCo find(String s, String k1, String k2) {
+        return null;
+    }
+
+
+    @Override
+    public List<HoSoVatTuSuCo> getAll() {
         return null;
     }
 
@@ -78,8 +85,4 @@ public class GetListNguyenNhanOngChinhDB implements IDB<HashMap<String, String>,
         return hashMap;
     }
 
-    @Override
-    public List<HashMap<String, String>> getAll() {
-        return null;
-    }
 }

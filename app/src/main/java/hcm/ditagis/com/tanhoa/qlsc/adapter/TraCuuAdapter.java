@@ -75,19 +75,19 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
                 break;
         }
 
-        TextView txtID =  convertView.findViewById(R.id.txt_tracuu_id);
+        TextView txtID =  convertView.findViewById(R.id.txt_top);
         if (item.getId() == null || item.getId().isEmpty())
             txtID.setVisibility(View.GONE);
         else
             txtID.setText(item.getId());
 
-        TextView txtDiaChi = (TextView) convertView.findViewById(R.id.txt_tracuu_diachi);
+        TextView txtDiaChi = (TextView) convertView.findViewById(R.id.txt_bottom);
         if (item.getDiaChi() == null || item.getDiaChi().isEmpty())
             txtDiaChi.setVisibility(View.GONE);
         else
             txtDiaChi.setText(item.getDiaChi());
 
-        TextView txtNgayCapNhat = (TextView) convertView.findViewById(R.id.txt_tracuu_ngaycapnhat);
+        TextView txtNgayCapNhat = (TextView) convertView.findViewById(R.id.txt_right);
         if (item.getNgayCapNhat() == null || item.getNgayCapNhat().isEmpty())
             txtNgayCapNhat.setVisibility(View.GONE);
         else

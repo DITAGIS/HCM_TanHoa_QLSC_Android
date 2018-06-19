@@ -9,11 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
-import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListDMADB;
-import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListNguyenNhanOngChinhDB;
-import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListNguyenNhanOngNganhDB;
-import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListVatLieuOngChinhDB;
-import hcm.ditagis.com.tanhoa.qlsc.connectDB.GetListVatLieuOngNganhDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.DMADB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.VatTuOngChinhDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.VatTuOngNganhDB;
 
 public class PreparingAsycn extends AsyncTask<Void, Void, List<Object>> {
     private ProgressDialog mDialog;
@@ -42,20 +40,14 @@ public class PreparingAsycn extends AsyncTask<Void, Void, List<Object>> {
     protected List<Object> doInBackground(Void... params) {
         List<Object> lst = new ArrayList<>();
         try {
-            GetListDMADB getListDMADB = new GetListDMADB(mContext);
+            DMADB getListDMADB = new DMADB(mContext);
             lst.add(getListDMADB.find());
 
-            GetListNguyenNhanOngChinhDB getListNguyenNhanOngChinhDB = new GetListNguyenNhanOngChinhDB(mContext);
-            lst.add(getListNguyenNhanOngChinhDB.find());
+            VatTuOngChinhDB getListVatTuOngChinhDB = new VatTuOngChinhDB(mContext);
+            lst.add(getListVatTuOngChinhDB.find());
 
-            GetListNguyenNhanOngNganhDB getListNguyenNhanOngNganhDB = new GetListNguyenNhanOngNganhDB(mContext);
-            lst.add(getListNguyenNhanOngNganhDB.find());
-
-            GetListVatLieuOngChinhDB getListVatLieuOngChinhDB = new GetListVatLieuOngChinhDB(mContext);
-            lst.add(getListVatLieuOngChinhDB.find());
-
-            GetListVatLieuOngNganhDB getListVatLieuOngNganhDB = new GetListVatLieuOngNganhDB(mContext);
-            lst.add(getListVatLieuOngNganhDB.find());
+            VatTuOngNganhDB getListVatTuOngNganhDB = new VatTuOngNganhDB(mContext);
+            lst.add(getListVatTuOngNganhDB.find());
         } catch (Exception e) {
             Log.e("Lỗi lấy danh sách DMA", e.toString());
         }

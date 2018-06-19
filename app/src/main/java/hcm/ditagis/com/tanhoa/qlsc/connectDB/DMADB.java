@@ -9,22 +9,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 
-public class GetListNguyenNhanOngNganhDB implements IDB<HashMap<String, String>, Boolean, String> {
+public class DMADB implements IDB<List<String>, Boolean, String> {
     DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
     private Context mContext;
 
-    public GetListNguyenNhanOngNganhDB(Context mContext) {
+    public DMADB(Context mContext) {
         this.mContext = mContext;
     }
 
 
     @Override
-    public Boolean add(HashMap<String, String> stringStringHashMap) {
+    public Boolean add(List<String> strings) {
         return null;
     }
 
@@ -34,36 +34,32 @@ public class GetListNguyenNhanOngNganhDB implements IDB<HashMap<String, String>,
     }
 
     @Override
-    public Boolean update(HashMap<String, String> stringStringHashMap) {
+    public Boolean update(List<String> strings) {
         return null;
     }
 
     @Override
-    public HashMap<String, String> find(String s, String k1) {
+    public List<String> find(String userName, String passWord) {
         return null;
     }
 
-    @Override
-    public HashMap<String, String> find(String s, String k1, String k2) {
-        return null;
-    }
-
-    public HashMap<String, String> find() {
+    public List<String> find() {
         Connection cnn = ConnectionDB.getInstance().getConnection();
-        HashMap<String, String> hashMap = new HashMap<>();
+        List<String> lstDMA = new ArrayList<>();
         ResultSet rs = null;
         try {
             if (cnn == null)
                 return null;
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            String query = mContext.getString(R.string.sql_select_nguyennhan_ongnganh);
+            String query = mContext.getString(R.string.sql_select_ma_dma);
             PreparedStatement mStatement = cnn.prepareStatement(query);
 
             rs = mStatement.executeQuery();
 
             while (rs.next()) {
-                hashMap.put(rs.getString(1), rs.getString(2));
+
+                lstDMA.add(rs.getString(1));
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -75,11 +71,18 @@ public class GetListNguyenNhanOngNganhDB implements IDB<HashMap<String, String>,
                 e.printStackTrace();
             }
         }
-        return hashMap;
+        return lstDMA;
     }
 
     @Override
-    public List<HashMap<String, String>> getAll() {
+    public List<String> find(String s, String k1, String k2) {
         return null;
     }
+
+    @Override
+    public List<List<String>> getAll() {
+        return null;
+    }
+
+
 }

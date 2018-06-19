@@ -158,6 +158,7 @@
     <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
+    <string name="preference_displayname">displayname</string>
     <!--preference end-->
 
     <!--sql begin-->
@@ -207,7 +208,8 @@
     <string name="sql_select_nguyennhan_ongnganh">  SELECT *  FROM NguyenNhanOngNganh</string>
     <string name="sql_select_vatlieu_ongchinh">  SELECT *  FROM VatLieuOngChinh</string>
     <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
-
+    <string name="sql_select_vattu_ongchinh">select * from vattuongchinh</string>
+    <string name="sql_select_vattu_ongnganh">select * from vattuongnganh</string>
 
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
@@ -283,5 +285,6 @@
     <string name="Field_SuCo_MaQuan">MaQuan</string>
     <string name="Field_SuCo_NGUOICAPNHAT">NGUOICAPNHAT</string>
     <string name="Field_MADMA">MADMA</string>
+    <string name="Field_SuCo_VatTu">VatTu</string>
     <!--field sự cố end-->
 </resources>

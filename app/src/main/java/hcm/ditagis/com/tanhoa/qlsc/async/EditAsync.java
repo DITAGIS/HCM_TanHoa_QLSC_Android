@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
 /**
@@ -39,13 +40,14 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     private boolean isUpdateAttachment;
     private byte[] mImage;
     private AsyncResponse mDelegate;
+    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
 
     public interface AsyncResponse {
         void processFinish(Void output);
     }
 
     public EditAsync(Context context, ServiceFeatureTable serviceFeatureTable,
-                     ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image, AsyncResponse delegate) {
+                     ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image, List<HoSoVatTuSuCo> hoSoVatTu_suCos, AsyncResponse delegate) {
         mContext = context;
         this.mDelegate = delegate;
         mServiceFeatureTable = serviceFeatureTable;
@@ -53,6 +55,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         this.isUpdateAttachment = isUpdateAttachment;
         this.mImage = image;
+        this.mListHoSoVatTuSuCo = hoSoVatTu_suCos;
     }
 
     @Override
@@ -158,6 +161,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                     codeDomain = getCodeDomain(codedValues, item.getValue());
                 }
+            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTu))) {
+
             }
             if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                 List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
@@ -239,37 +244,37 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     //todo
                     Attachment attachment = addResult.get();
                     if (attachment.getSize() > 0) {
-                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
-                    tableResult.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
-                            updatedServerResult.addDoneListener(new Runnable() {
-                                @Override
-                                public void run() {
-                                    List<FeatureEditResult> edits ;
-                                    try {
-                                        edits = updatedServerResult.get();
-                                        if (edits.size() > 0) {
-                                            if (!edits.get(0).hasCompletedWithErrors()) {
-                                                //attachmentList.add(fileName);
+                        final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
+                        tableResult.addDoneListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                                updatedServerResult.addDoneListener(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        List<FeatureEditResult> edits;
+                                        try {
+                                            edits = updatedServerResult.get();
+                                            if (edits.size() > 0) {
+                                                if (!edits.get(0).hasCompletedWithErrors()) {
+                                                    //attachmentList.add(fileName);
 //                                                String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
-                                                // update the attachment list view/ on the control panel
+                                                    // update the attachment list view/ on the control panel
+                                                }
                                             }
+                                        } catch (InterruptedException | ExecutionException e) {
+                                            e.printStackTrace();
                                         }
-                                    } catch (InterruptedException | ExecutionException e) {
-                                        e.printStackTrace();
+                                        if (mDialog != null && mDialog.isShowing()) {
+                                            mDialog.dismiss();
+                                        }
+
                                     }
-                                    if (mDialog != null && mDialog.isShowing()) {
-                                        mDialog.dismiss();
-                                    }
-
-                                }
-                            });
+                                });
 
 
-                        }
-                    });
+                            }
+                        });
                     }
 
                 } catch (Exception e) {

@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
 import hcm.ditagis.com.tanhoa.qlsc.async.LoginAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
@@ -82,7 +81,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void processFinish(KhachHang output) {
                 if (output != null)
-                    handleLoginSuccess(finalUserName, passWord);
+                    handleLoginSuccess(output);
                 else
                     handleLoginFail();
             }
@@ -100,12 +99,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTxtValidation.setVisibility(View.VISIBLE);
     }
 
-    private void handleLoginSuccess(String userName, String passWord) {
+    private void handleLoginSuccess(KhachHang khachHang) {
         mTxtUsername.setText("");
         mTxtPassword.setText("");
 
-        Preference.getInstance().savePreferences(getString(R.string.preference_username), userName);
-        Preference.getInstance().savePreferences(getString(R.string.preference_password), passWord);
+        Preference.getInstance().savePreferences(getString(R.string.preference_username), khachHang.getUserName());
+        Preference.getInstance().savePreferences(getString(R.string.preference_password), khachHang.getPassWord());
+        Preference.getInstance().savePreferences(getString(R.string.preference_displayname), khachHang.getDisplayName());
 
         Intent intent = new Intent(this, QuanLySuCo.class);
 
