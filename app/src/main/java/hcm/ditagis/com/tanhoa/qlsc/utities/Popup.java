@@ -216,7 +216,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    EditAsync editAsync = new EditAsync(mMainActivity, (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature, true, null, new EditAsync.AsyncResponse() {
+                    EditAsync editAsync = new EditAsync(mMainActivity,
+                    (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(Void output) {
                             refreshPopup();

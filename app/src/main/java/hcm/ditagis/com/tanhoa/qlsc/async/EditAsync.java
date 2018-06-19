@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
@@ -136,6 +137,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                             }
                         }
                     } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
+
+                        //todo index featuretype
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
                                 .get(1).getDomains().get(mContext.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
                         if (codedValues != null) {
@@ -162,7 +165,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     codeDomain = getCodeDomain(codedValues, item.getValue());
                 }
             } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTu))) {
-
+                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
+                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+                    hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
+                }
             }
             if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
                 List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();

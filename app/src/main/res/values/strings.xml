@@ -210,6 +210,7 @@
     <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
     <string name="sql_select_vattu_ongchinh">select * from vattuongchinh</string>
     <string name="sql_select_vattu_ongnganh">select * from vattuongnganh</string>
+    <string name="sql_insert_hosovattu_suco">INSERT INTO HoSoVatTuSuCo VALUES (?,?,?)</string>
 
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>

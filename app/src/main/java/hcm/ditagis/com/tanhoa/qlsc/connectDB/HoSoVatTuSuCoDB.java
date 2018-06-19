@@ -5,11 +5,9 @@ import android.os.StrictMode;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.List;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
@@ -55,34 +53,28 @@ public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
         return null;
     }
 
-    public HashMap<String, String> find() {
+    public boolean insert(HoSoVatTuSuCo hoSoVatTuSuCo) {
         Connection cnn = ConnectionDB.getInstance().getConnection();
-        HashMap<String, String> hashMap = new HashMap<>();
-        ResultSet rs = null;
+        int result = 0;
         try {
             if (cnn == null)
-                return null;
+                return false;
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
-            String query = mContext.getString(R.string.sql_select_nguyennhan_ongchinh);
-            PreparedStatement mStatement = cnn.prepareStatement(query);
+            String query = mContext.getString(R.string.sql_insert_hosovattu_suco);
+            PreparedStatement statement = cnn.prepareStatement(query);
+            statement.setString(1, hoSoVatTuSuCo.getIdSuCo());
+            statement.setInt(2, hoSoVatTuSuCo.getSoLuong());
+            statement.setString(3, hoSoVatTuSuCo.getMaVatTu());
 
-            rs = mStatement.executeQuery();
+            result = statement.executeUpdate();
 
-            while (rs.next()) {
-                hashMap.put(rs.getString(1), rs.getString(2));
-            }
         } catch (SQLException e1) {
             e1.printStackTrace();
         } finally {
-            try {
-                if (rs != null && !rs.isClosed())
-                    rs.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+
         }
-        return hashMap;
+        return result > 0;
     }
 
 }
