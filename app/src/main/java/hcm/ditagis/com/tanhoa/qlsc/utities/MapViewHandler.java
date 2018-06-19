@@ -209,7 +209,7 @@ public class MapViewHandler extends Activity {
                         Feature item = (Feature) iterator.next();
                         Map<String, Object> attributes = item.getAttributes();
                         String format_date = "";
-                        String[] split = attributes.get(mContext.getString(R.string.IDSuCo)).toString().split("_");
+                        String[] split = attributes.get(mContext.getString(R.string.Field_SuCo_IDSuCo)).toString().split("_");
                         try {
                             format_date = Constant.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
                         } catch (Exception ignored) {
@@ -217,13 +217,13 @@ public class MapViewHandler extends Activity {
                         }
                         String viTri = "";
                         try {
-                            viTri = attributes.get(mContext.getString(R.string.ViTri)).toString();
+                            viTri = attributes.get(mContext.getString(R.string.Field_SuCo_ViTri)).toString();
                         } catch (Exception ignored) {
 
                         }
-                        adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(mContext.getString(R.string.OBJECTID)).toString()),
-                                attributes.get(mContext.getString(R.string.IDSuCo)).toString(),
-                                Integer.parseInt(attributes.get(mContext.getString(R.string.TrangThai)).toString()), format_date, viTri));
+                        adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(mContext.getString(R.string.Field_OBJECTID)).toString()),
+                                attributes.get(mContext.getString(R.string.Field_SuCo_IDSuCo)).toString(),
+                                Integer.parseInt(attributes.get(mContext.getString(R.string.Field_SuCo_TrangThai)).toString()), format_date, viTri));
                         adapter.notifyDataSetChanged();
 
 //                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));

@@ -97,13 +97,13 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                         feature.getAttributes().put(mContext.getString(R.string.SoNha), output.get(0).getAddressLine(0));
                         String subAdminArea = output.get(0).getSubAdminArea();
                         if (subAdminArea.equals(mContext.getString(R.string.QuanPhuNhuanName)))
-                            feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));
+                            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));
                         else if (subAdminArea.equals(mContext.getString(R.string.QuanTanPhuName)))
-                            feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanTanPhuCode));
+                            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanPhuCode));
                         else if (subAdminArea.equals(mContext.getString(R.string.QuanTanBinhName)))
-                            feature.getAttributes().put(mContext.getString(R.string.MaQuan), mContext.getString(R.string.QuanTanBinhCode));
+                            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanBinhCode));
                         Short intObj = (short) 0;
-                        feature.getAttributes().put(mContext.getString(R.string.TrangThai), intObj);
+                        feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_TrangThai), intObj);
 
                         String searchStr = "";
                         String dateTime = "";
@@ -111,7 +111,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                             dateTime = getDateString();
                             timeID = getTimeID();
-                            searchStr = mContext.getString(R.string.IDSuCo) + " like '%" + timeID + "'";
+                            searchStr = mContext.getString(R.string.Field_SuCo_IDSuCo) + " like '%" + timeID + "'";
                         }
                         QueryParameters queryParameters = new QueryParameters();
                         queryParameters.setWhereClause(searchStr);
@@ -167,19 +167,19 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             Iterator iterator = result.iterator();
             while (iterator.hasNext()) {
                 Feature item = (Feature) iterator.next();
-                id_tmp = Integer.parseInt(item.getAttributes().get(mContext.getString(R.string.IDSuCo)).toString().split("_")[0]);
+                id_tmp = Integer.parseInt(item.getAttributes().get(mContext.getString(R.string.Field_SuCo_IDSuCo)).toString().split("_")[0]);
                 if (id_tmp > id) id = id_tmp;
             }
             id++;
-            feature.getAttributes().put(mContext.getString(R.string.IDSuCo), id + "_" + finalTimeID);
+            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_IDSuCo), id + "_" + finalTimeID);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                 Calendar c = Calendar.getInstance();
-                feature.getAttributes().put(mContext.getString(R.string.NgayXayRa), c);
-                feature.getAttributes().put(mContext.getString(R.string.NgayThongBao), c);
+                feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayXayRa), c);
+                feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayThongBao), c);
             }
-            feature.getAttributes().put(mContext.getString(R.string.NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
-            feature.getAttributes().put(mContext.getString(R.string.LoaiSuCo), (short) 0);
+            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
+            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_LoaiSuCo), (short) 0);
             //---get DMA begin
             final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
             listListenableFuture.addDoneListener(new Runnable() {

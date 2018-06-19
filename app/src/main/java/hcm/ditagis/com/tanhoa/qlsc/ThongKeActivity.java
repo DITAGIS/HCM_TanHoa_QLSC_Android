@@ -204,23 +204,23 @@ public class ThongKeActivity extends AppCompatActivity {
         String whereClause = "";
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
             if (khachHang.isPhuNhuan())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanPhuNhuanCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
             if (khachHang.isTanBinh())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanBinhCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
             if (khachHang.isTanPhu())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanPhuCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
             whereClause += " 1 = 1";
         } else {
 
             whereClause = String.format("(%s >= date '%s' and %s <= date '%s') and (",
-                    getString(R.string.NgayThongBao), item.getThoigianbatdau(),
-                    getString(R.string.NgayThongBao), item.getThoigianketthuc());
+                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianbatdau(),
+                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianketthuc());
             if (khachHang.isPhuNhuan())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanPhuNhuanCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
             if (khachHang.isTanBinh())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanBinhCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
             if (khachHang.isTanPhu())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.MaQuan), getString(R.string.QuanTanPhuCode));
+                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
             whereClause += " 1 = 1)";
         }
         QueryParameters queryParameters = new QueryParameters();

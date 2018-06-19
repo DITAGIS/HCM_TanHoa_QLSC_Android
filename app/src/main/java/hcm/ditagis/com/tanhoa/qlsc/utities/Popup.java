@@ -223,7 +223,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 isFoundContinue = false;
                 continue;
             }
-            if (field.getName().equals(mMainActivity.getString(R.string.IDSuCo))) {
+            if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_IDSuCo))) {
                 if (value != null)
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(value.toString());
             } else {
@@ -396,7 +396,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
                 //Load danh sách madma từ csdl
-                if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
+                if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_MADMA))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListDMA);
                     spin.setAdapter(adapter);
@@ -404,7 +404,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         spin.setSelection(mListObjectDB.indexOf(item.getValue()));
                 }
                 //Trường hợp số nhà (vị trí) thì không dùng domain, vì còn có nhập khoảng cách
-                else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     layoutSubSpin.setVisibility(View.VISIBLE);
                     ArrayAdapter<String> subAdapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh2_arrays));
@@ -421,7 +421,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         spin.setSelection(mListObjectDB.indexOf(item.getValue()));
                 }
                 //Trường hợp nguyên nhân, không tự động lấy được domain
-                else if (item.getFieldName().equals(mMainActivity.getString(R.string.NguyenNhan))) {
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     List<String> codes = new ArrayList<>();
 
@@ -429,7 +429,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //
                     if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(0).getDomains().get(mMainActivity.getString(R.string.NguyenNhan))).getCodedValues();
+                                .get(0).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues)
                                 codes.add(codedValue.getName());
@@ -439,7 +439,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         }
                     } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(1).getDomains().get(mMainActivity.getString(R.string.NguyenNhan))).getCodedValues();
+                                .get(1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues)
                                 codes.add(codedValue.getName());
@@ -458,12 +458,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
                 //Trường hợp vật liệu, không tự động lấy được domain
-                else if (item.getFieldName().equals(mMainActivity.getString(R.string.VatLieu))) {
+                else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatLieu))) {
                     layoutSpin.setVisibility(View.VISIBLE);
                     List<String> codes = new ArrayList<>();
                     if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(0).getDomains().get(mMainActivity.getString(R.string.VatLieu))).getCodedValues();
+                                .get(0).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues)
                                 codes.add(codedValue.getName());
@@ -472,7 +472,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         }
                     } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(1).getDomains().get(mMainActivity.getString(R.string.VatLieu))).getCodedValues();
+                                .get(1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues)
                                 codes.add(codedValue.getName());
@@ -547,9 +547,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
+                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_MADMA))) {
                             item.setValue(spin.getSelectedItem().toString());
-                        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
+                        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
                             if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
                                 item.setValue(subSpin.getSelectedItem().toString() + "\n" + spin.getSelectedItem().toString());
                             } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
@@ -738,7 +738,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
 
             //khi hoàn thành rồi thì không chỉnh sửa được
-            if (Integer.parseInt(mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.TrangThai)).toString())
+            if (Integer.parseInt(mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai)).toString())
                     != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                 linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         } else {

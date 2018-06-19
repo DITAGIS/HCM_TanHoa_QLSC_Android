@@ -48,7 +48,6 @@
             android:layout_margin="20dp"
             android:gravity="right"
             android:paddingLeft="20dp"
-            android:text="ádfdasf"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
     <LinearLayout
@@ -65,7 +64,6 @@
             android:layout_margin="20dp"
             android:gravity="right"
             android:paddingLeft="20dp"
-            android:text="ádfdasf"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
     <LinearLayout
