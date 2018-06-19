@@ -137,8 +137,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                             }
                         }
                     } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
-
-                        //todo index featuretype
                         List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
                                 .get(1).getDomains().get(mContext.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
                         if (codedValues != null) {

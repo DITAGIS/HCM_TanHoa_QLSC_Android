@@ -118,7 +118,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             mListTenVatTuOngChinh.add(vatTu.getTenVatTu());
         for (VatTu vatTu : mListVatTuOngNganh)
             mListTenVatTuOngNganh.add(vatTu.getTenVatTu());
-
     }
 
     public List<HoSoVatTuSuCo> getListHoSoVatTuSuCo() {
@@ -301,6 +300,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 if (value != null) {
                     mIDSuCo = value.toString();
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(mIDSuCo);
+                    this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
                 }
             } else {
                 FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
@@ -393,7 +393,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         if (parent.getItemAtPosition(position) instanceof FeatureViewMoreInfoAdapter.Item) {
             final FeatureViewMoreInfoAdapter.Item item = (FeatureViewMoreInfoAdapter.Item) parent.getItemAtPosition(position);
             if (item.isEdit()) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
                 builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
@@ -572,6 +572,35 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final VatTuAdapter vatTuAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
         final String[] maVatTu = {""};
         listViewVatTu.setAdapter(vatTuAdapter);
+
+        //Nhấn và giữ một item để xóa
+        listViewVatTu.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+                builder.setTitle("Xóa vật tư");
+                builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
+                builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        vatTuAdapter.remove(itemVatTu);
+                        vatTuAdapter.notifyDataSetChanged();
+
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+                return false;
+            }
+        });
         autoCompleteTextView.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -621,9 +650,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 }
             }
         });
-        //todo load danh sách vật tư từ csdl
-        List<HoSoVatTuSuCo> hoSoVatTuSuCos = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
-        for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCos) {
+
+        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
             vatTuAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
                     hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
         }
