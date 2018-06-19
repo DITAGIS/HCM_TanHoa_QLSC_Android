@@ -13,17 +13,18 @@
     <string-array name="update_fields_arrays">
         <item>NgayKhacPhuc</item>
         <item>NgaySuaChua</item>
-        <item>NguyenNhan</item>
+        <item>@string/NguyenNhan</item>
         <item>NguoiSuaChua</item>
         <item>GhiChuVatTu</item>
-        <item>ViTri</item>
+        <item>@string/ViTri</item>
         <item>GhiChu</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
         <item>DuongKinhOng</item>
         <item>HinhThucPhatHien</item>
-        <item>VatLieu</item>
+        <item>@string/VatLieu</item>
         <item>TrangThai</item>
+        <item>VatTu</item>
         <item>KetQuaKiemTra</item>
         <item>ApLuc</item>
         <item>THOIGIANTHUCHIEN</item>
@@ -51,20 +52,20 @@
         <item>TENDMA</item>
     </string-array>
     <string-array name="vitri_ongnganh_arrays">
-        <item>Cách mép nhà...</item>
-        <item>Cách bó vỉa...</item>
         <item>Bên phải nhà</item>
         <item>Bên trái nhà</item>
     </string-array>
-    <string-array name="vitri_ongchinh_arrays">
-        <item>Cách mép nhà...</item>
-        <item>Cách bó vỉa...</item>
+    <string-array name="vitri_ongchinh1_arrays">
+        <item>Cách mép nhà…</item>
+        <item>Cách bó vỉa…</item>
+    </string-array>
+    <string-array name="vitri_ongchinh2_arrays">
         <item>Ống trên lề BTXM</item>
         <item>Ống trên lề gạch con sâu</item>
         <item>Ống trên lề gạch Tezzaro</item>
         <item>Ống trên lề đá hoa cương</item>
         <item>Ống dưới lòng đường nhựa</item>
-        <item>Ống lười lòng đường BTXM</item>
+        <item>Ống dưới lòng đường BTXM</item>
         <item>Ống dưới lòng đường đất đá</item>
     </string-array>
     <string-array name="nguyennhan_ongnganh_array">

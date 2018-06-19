@@ -270,4 +270,9 @@
     <string name="LoaiSuCo_OngChinh">Ống chính</string>
     <string name="NguyenNhan">NguyenNhan</string>
     <string name="VatLieu">VatLieu</string>
+    <string name="btnLeftAddFeature">Lưu</string>
+    <string name="btnRightAddFeature">Chụp ảnh và lưu</string>
+    <string name="btnLeftUpdateFeature">Thoát</string>
+    <string name="btnRightUpdateFeature">Chụp ảnh và cập nhật</string>
+    <string name="message_error_add_feature">Không tạo được thuộc tính. Vui lòng thử lại sau</string>
 </resources>

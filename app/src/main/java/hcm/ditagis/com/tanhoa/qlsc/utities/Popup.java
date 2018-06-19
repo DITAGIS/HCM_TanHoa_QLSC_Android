@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
@@ -70,8 +71,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private List<String> mListDMA;
     private HashMap<String, String> mHashMapNguyenNhanOngChinh, mHashMapNguyenNhanOngNganh;
     private HashMap<Integer, String> mHashMapVatLieuOngChinh, mHashMapVatLieuOngNganh;
-    private List<String> mListNguyenNhanOngChinh, mListNguyenNhanOngNganh,
-            mListVatLieuOngChinh, mListVatLieuOngNganh;
     private List<Object> mListObjectDB;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
@@ -86,28 +85,26 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private MapView mMapView;
     private LocationDisplay mLocationDisplay;
     private String mLoaiSuCo;
+    private Geocoder mGeocoder;
 
     public DialogInterface getDialog() {
         return mDialog;
     }
 
 
-    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB) {
+    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable, Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB, Geocoder geocoder) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
         this.mListObjectDB = listObjectDB;
+        this.mGeocoder = geocoder;
         mListDMA = (List<String>) mListObjectDB.get(0);
         mHashMapNguyenNhanOngChinh = (HashMap<String, String>) mListObjectDB.get(1);
         mHashMapNguyenNhanOngNganh = (HashMap<String, String>) mListObjectDB.get(2);
         mHashMapVatLieuOngChinh = (HashMap<Integer, String>) mListObjectDB.get(3);
         mHashMapVatLieuOngNganh = (HashMap<Integer, String>) mListObjectDB.get(4);
-        mListNguyenNhanOngChinh = new ArrayList<>(mHashMapNguyenNhanOngChinh.values());
-        mListNguyenNhanOngNganh = new ArrayList<>(mHashMapNguyenNhanOngNganh.values());
-        mListVatLieuOngChinh = new ArrayList<>(mHashMapVatLieuOngChinh.values());
-        mListVatLieuOngNganh = new ArrayList<>(mHashMapVatLieuOngNganh.values());
     }
 
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
@@ -295,8 +292,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (isAddFeature) {
-            btnLeft.setText("Lưu");
-            btnRight.setText("Chụp ảnh và lưu");
+            btnLeft.setText(mMainActivity.getString(R.string.btnLeftAddFeature));
+            btnRight.setText(mMainActivity.getString(R.string.btnRightAddFeature));
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -319,8 +316,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             });
         } else {
             layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
-            btnLeft.setText("Thoát");
-            btnRight.setText("Chụp ảnh và cập nhật");
+            btnLeft.setText(mMainActivity.getString(R.string.btnLeftUpdateFeature));
+            btnRight.setText(mMainActivity.getString(R.string.btnRightUpdateFeature));
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -394,6 +391,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
                 final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
+                final LinearLayout layoutSubSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_SubSpinner);
+                final Spinner subSpin = layout.findViewById(R.id.spin_sub_edit_viewmoreinfo);
+
                 final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
                 //Load danh sách madma từ csdl
                 if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
@@ -406,13 +406,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 //Trường hợp số nhà (vị trí) thì không dùng domain, vì còn có nhập khoảng cách
                 else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
                     layoutSpin.setVisibility(View.VISIBLE);
-                    layoutEditText.setVisibility(View.VISIBLE);
-
+                    layoutSubSpin.setVisibility(View.VISIBLE);
+                    ArrayAdapter<String> subAdapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh2_arrays));
+                    subSpin.setAdapter(subAdapter);
                     if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongnganh_arrays));
                         spin.setAdapter(adapter);
                     } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh_arrays));
+                        layoutEditText.setVisibility(View.VISIBLE);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh1_arrays));
                         spin.setAdapter(adapter);
                     }
                     if (item.getValue() != null)
@@ -547,6 +549,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int which) {
                         if (item.getFieldName().equals(mMainActivity.getString(R.string.MADMA))) {
                             item.setValue(spin.getSelectedItem().toString());
+                        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.ViTri))) {
+                            if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                                item.setValue(subSpin.getSelectedItem().toString() + "\n" + spin.getSelectedItem().toString());
+                            } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                                item.setValue(subSpin.getSelectedItem().toString() + "\n" + spin.getSelectedItem().toString() + editText.getText().toString());
+                            }
+                            item.setMustEdit(false);
                         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
                             //Khi đổi subtype
                             //Phải set những field liên quan đến subtype isMustEdit = true;
@@ -793,7 +802,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             if (position == null)
                 return;
 
-            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false, new FindLocationAsycn.AsyncResponse() {
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false, mGeocoder, new FindLocationAsycn.AsyncResponse() {
                 @SuppressLint("InflateParams")
                 @Override
                 public void processFinish(List<Address> output) {

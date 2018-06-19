@@ -2,10 +2,10 @@ package hcm.ditagis.com.tanhoa.qlsc.utities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Geocoder;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
-import android.widget.ListView;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -39,6 +39,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapAddFeatureAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapMapViewAsync;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+
 /**
  * Created by ThanLe on 2/2/2018.
  */
@@ -55,7 +56,7 @@ public class MapViewHandler extends Activity {
     private ServiceFeatureTable mServiceFeatureTable;
     private Popup mPopUp;
     private Context mContext;
-
+    private Geocoder mGeocoder;
 
     public void setFeatureLayerDTGs(List<FeatureLayerDTG> mFeatureLayerDTGs) {
         this.mFeatureLayerDTGs = mFeatureLayerDTGs;
@@ -64,13 +65,14 @@ public class MapViewHandler extends Activity {
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
 
     public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mapView,
-                          Popup popupInfos, Context mContext) {
+                          Popup popupInfos, Context mContext, Geocoder geocoder) {
         this.mCallout = mCallout;
         this.mMapView = mapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
         this.mPopUp = popupInfos;
         this.mContext = mContext;
         this.suCoTanHoaLayer = featureLayerDTG.getFeatureLayer();
+        this.mGeocoder = geocoder;
     }
 
     public void setClickBtnAdd(boolean clickBtnAdd) {
@@ -80,7 +82,7 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTable, mMapView, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTable, mMapView,mGeocoder, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
                 if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
@@ -95,7 +97,7 @@ public class MapViewHandler extends Activity {
 
 
     public double[] onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        Point center =  mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+        Point center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
         Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
         double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
         mClickPoint = new android.graphics.Point((int) e2.getX(), (int) e2.getY());

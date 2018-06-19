@@ -11,6 +11,7 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 
@@ -20,7 +21,6 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
     private Context mContext;
     private AsyncResponse mDelegate;
     private double mLongtitude, mLatitude;
-    private ProgressDialog mDialog;
 
     public interface AsyncResponse {
         void processFinish(List<Address> output);
@@ -34,21 +34,16 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
         this.mLatitude = mLatitude;
     }
 
-    public FindLocationAsycn(Context context, boolean isFromLocationName, AsyncResponse delegate) {
+    public FindLocationAsycn(Context context, boolean isFromLocationName,Geocoder geocoder, AsyncResponse delegate) {
         this.mDelegate = delegate;
         this.mContext = context;
         this.mIsFromLocationName = isFromLocationName;
-        this.mGeocoder = new Geocoder(context);
-        mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
+        this.mGeocoder = geocoder;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        mDialog.setMessage(mContext.getString(R.string.async_dang_xu_ly));
-        mDialog.setCancelable(false);
-
-        mDialog.show();
     }
 
     @Override
@@ -62,6 +57,7 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
                 List<Address> addressList = mGeocoder.getFromLocationName(text, 5);
                 lstLocation.addAll(addressList);
             } catch (IOException ignored) {
+                //todo grpc failed
                 Log.e("error", ignored.toString());
             }
         } else {
@@ -85,10 +81,7 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<Address>> {
 //        if (khachHang != null) {
         if (addressList == null)
             Toast.makeText(mContext, R.string.message_no_geocoder_available, Toast.LENGTH_LONG).show();
-        if (mDialog != null && mDialog.isShowing()) {
-            mDialog.dismiss();
             this.mDelegate.processFinish(addressList);
-        }
 //        }
     }
 }

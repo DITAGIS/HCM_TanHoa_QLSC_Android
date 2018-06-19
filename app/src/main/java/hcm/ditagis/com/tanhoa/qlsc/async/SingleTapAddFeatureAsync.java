@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -55,13 +56,14 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     private MapView mMapView;
     private AsyncResponse mDelegate;
     private android.graphics.Point mClickPoint;
+    private Geocoder mGeocoder;
 
     public interface AsyncResponse {
         void processFinish(Feature output);
     }
 
     public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image,
-                                    ServiceFeatureTable serviceFeatureTable, MapView mapView, AsyncResponse delegate) {
+                                    ServiceFeatureTable serviceFeatureTable, MapView mapView,Geocoder geocoder, AsyncResponse delegate) {
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mMapView = mapView;
         this.mImage = image;
@@ -69,6 +71,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         this.mClickPoint = clickPoint;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         this.mDelegate = delegate;
+        this.mGeocoder = geocoder;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         try {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
-            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false, new FindLocationAsycn.AsyncResponse() {
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false,mGeocoder, new FindLocationAsycn.AsyncResponse() {
                 @Override
                 public void processFinish(List<Address> output) {
                     if (output != null) {
@@ -133,7 +136,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             findLocationAsycn.execute();
 
         } catch (Exception e) {
-            MySnackBar.make(mMapView, "Không tạo được thuộc tính. Vui lòng thử lại sau", true);
+            MySnackBar.make(mMapView, mContext.getString(R.string.message_error_add_feature), true);
+            publishProgress(null);
         }
 
 
@@ -142,9 +146,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getDateString() {
-        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
+//        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
 
-        SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
         writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
         return writeDate.format(Calendar.getInstance().getTime());
     }
@@ -306,7 +310,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
 
     @Override
     protected void onProgressUpdate(Feature... values) {
-        this.mDelegate.processFinish(values[0]);
+        if (values == null)
+            this.mDelegate.processFinish(null);
+        else this.mDelegate.processFinish(values[0]);
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }

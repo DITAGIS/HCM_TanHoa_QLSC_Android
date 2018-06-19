@@ -52,6 +52,23 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
     <LinearLayout
+        android:id="@+id/layout_edit_viewmoreinfo_SubSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/spin_sub_edit_viewmoreinfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:gravity="right"
+            android:paddingLeft="20dp"
+            android:text="ádfdasf"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+    <LinearLayout
         android:id="@+id/layout_edit_viewmoreinfo_Editext"
         android:layout_width="match_parent"
         android:visibility="gone"

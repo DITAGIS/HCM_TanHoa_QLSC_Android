@@ -36,7 +36,6 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
     private ArcGISFeature mSelectedArcGISFeature = null;
     private AlertDialog.Builder builder;
     private View layout;
-
     public ViewAttachmentAsync(QuanLySuCo context, ArcGISFeature selectedArcGISFeature) {
         mMainActivity = context;
         mSelectedArcGISFeature = selectedArcGISFeature;
@@ -82,22 +81,17 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                                     @Override
                                     public void run() {
                                         try {
-                                            InputStream inputStream = inputStreamListenableFuture.get();
-                                            item.setImg(IOUtils.toByteArray(inputStream));
-                                            attachmentsAdapter.add(item);
-                                            attachmentsAdapter.notifyDataSetChanged();
-                                            size[0]--;
-                                            //Kiểm tra nếu adapter có phần tử và attachment là phần tử cuối cùng thì show dialog
+                                                InputStream inputStream = inputStreamListenableFuture.get();
+                                                item.setImg(IOUtils.toByteArray(inputStream));
+                                                attachmentsAdapter.add(item);
+                                                attachmentsAdapter.notifyDataSetChanged();
+                                                size[0]--;
+                                                //Kiểm tra nếu adapter có phần tử và attachment là phần tử cuối cùng thì show dialog
 
 
-                                            publishProgress(size[0]);
+                                                publishProgress(size[0]);
 
-
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        } catch (ExecutionException e) {
-                                            e.printStackTrace();
-                                        } catch (IOException e) {
+                                        } catch (InterruptedException | ExecutionException | IOException e) {
                                             e.printStackTrace();
                                         }
                                     }

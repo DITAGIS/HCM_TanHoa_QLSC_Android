@@ -1,5 +1,6 @@
 package hcm.ditagis.com.tanhoa.qlsc.async;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -31,6 +32,7 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
 public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void> {
     private ProgressDialog mDialog;
+    @SuppressLint("StaticFieldLeak")
     private Context mContext;
     private ServiceFeatureTable mServiceFeatureTable;
     private ArcGISFeature mSelectedArcGISFeature = null;
@@ -164,7 +166,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
             } else switch (item.getFieldType()) {
                 case DATE:
-                    Date date = null;
+                    Date date;
                     try {
                         date = Constant.DATE_FORMAT.parse(item.getValue());
 
@@ -235,8 +237,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 //                }
                 try {
                     //todo
-//                    Attachment attachment = addResult.get();
-//                    if (attachment.getSize() > 0) {
+                    Attachment attachment = addResult.get();
+                    if (attachment.getSize() > 0) {
                     final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature);
                     tableResult.addDoneListener(new Runnable() {
                         @Override
@@ -245,13 +247,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                             updatedServerResult.addDoneListener(new Runnable() {
                                 @Override
                                 public void run() {
-                                    List<FeatureEditResult> edits = null;
+                                    List<FeatureEditResult> edits ;
                                     try {
                                         edits = updatedServerResult.get();
                                         if (edits.size() > 0) {
                                             if (!edits.get(0).hasCompletedWithErrors()) {
                                                 //attachmentList.add(fileName);
-                                                String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
+//                                                String s = mSelectedArcGISFeature.getAttributes().get("objectid").toString();
                                                 // update the attachment list view/ on the control panel
                                             }
                                         }
@@ -268,9 +270,12 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
                         }
                     });
-//                    }
+                    }
 
                 } catch (Exception e) {
+                    if (mDialog != null && mDialog.isShowing()) {
+                        mDialog.dismiss();
+                    }
                     e.printStackTrace();
                 }
             }
