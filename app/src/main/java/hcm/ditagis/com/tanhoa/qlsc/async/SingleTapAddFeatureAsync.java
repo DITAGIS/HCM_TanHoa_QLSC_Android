@@ -37,7 +37,9 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
+import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
@@ -57,13 +59,14 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     private AsyncResponse mDelegate;
     private android.graphics.Point mClickPoint;
     private Geocoder mGeocoder;
+    private List<FeatureLayerDTG> mFeatureLayerDTGS;
 
     public interface AsyncResponse {
         void processFinish(Feature output);
     }
 
     public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image,
-                                    ServiceFeatureTable serviceFeatureTable, MapView mapView,Geocoder geocoder, AsyncResponse delegate) {
+                                    ServiceFeatureTable serviceFeatureTable, MapView mapView, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS, AsyncResponse delegate) {
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mMapView = mapView;
         this.mImage = image;
@@ -72,6 +75,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         this.mDelegate = delegate;
         this.mGeocoder = geocoder;
+        this.mFeatureLayerDTGS = featureLayerDTGS;
     }
 
     @Override
@@ -90,11 +94,12 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         try {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
-            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false,mGeocoder, new FindLocationAsycn.AsyncResponse() {
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false,
+                    mGeocoder, mFeatureLayerDTGS,false, new FindLocationAsycn.AsyncResponse() {
                 @Override
-                public void processFinish(List<Address> output) {
+                public void processFinish(List<MyAddress> output) {
                     if (output != null) {
-                        feature.getAttributes().put(mContext.getString(R.string.SoNha), output.get(0).getAddressLine(0));
+                        feature.getAttributes().put(mContext.getString(R.string.SoNha), output.get(0).getLocation());
                         String subAdminArea = output.get(0).getSubAdminArea();
                         if (subAdminArea.equals(mContext.getString(R.string.QuanPhuNhuanName)))
                             feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));

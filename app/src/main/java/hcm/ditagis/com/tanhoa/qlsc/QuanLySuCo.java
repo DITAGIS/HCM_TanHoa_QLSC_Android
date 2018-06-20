@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
-import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Build;
@@ -86,6 +85,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
+import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
@@ -122,6 +122,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
     private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
+    private boolean mIsAddFeature;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -221,10 +222,27 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-                if (mMapViewHandler != null) {
+                if (mIsAddFeature && mMapViewHandler != null) {
+                    //todo
+
+                    //center is x, y
+                    Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+
+                    //project is long, lat
+                    Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
+
+                    //geometry is x,y
+                    Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
+                    SimpleMarkerSymbol symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CROSS, Color.RED, 20);
+                    Graphic graphic = new Graphic(center, symbol);
+                    mGraphicsOverlay.getGraphics().clear();
+                    mGraphicsOverlay.getGraphics().add(graphic);
                     double[] location = mMapViewHandler.onScroll(e1, e2, distanceX, distanceY);
                     edit_longtitude_kinhdo.setText(location[0] + "");
                     edit_latitude_vido.setText(location[1] + "");
+
+                    mPopUp.getCallout().setLocation(center);
+                    mPointFindLocation = center;
                 }
                 return super.onScroll(e1, e2, distanceX, distanceY);
             }
@@ -294,7 +312,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
                 featureLayer.setId(config.getName());
                 Callout callout = mMapView.getCallout();
-                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListObjectDB, mGeocoder);
+                mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListObjectDB, mGeocoder, mFeatureLayerDTGS);
                 featureLayer.setPopupEnabled(true);
                 setRendererSuCoFeatureLayer(featureLayer);
                 FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;
@@ -546,13 +564,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void themDiemSuCo() {
-        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false, mGeocoder, new FindLocationAsycn.AsyncResponse() {
+        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
+                mGeocoder, mFeatureLayerDTGS, true, new FindLocationAsycn.AsyncResponse() {
             @Override
-            public void processFinish(List<Address> output) {
+            public void processFinish(List<MyAddress> output) {
                 if (output != null) {
                     KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-                    Address address = output.get(0);
-                    String subAdminArea = address.getSubAdminArea();
+                    String subAdminArea = output.get(0).getSubAdminArea();
                     //nếu tài khoản có quyền truy cập vào
                     if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
                             (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
@@ -575,13 +593,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void themDiemSuCoNoCapture() {
-        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false, mGeocoder, new FindLocationAsycn.AsyncResponse() {
+        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
+                mGeocoder, mFeatureLayerDTGS, true, new FindLocationAsycn.AsyncResponse() {
             @Override
-            public void processFinish(List<Address> output) {
+            public void processFinish(List<MyAddress> output) {
                 if (output != null) {
                     KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-                    Address address = output.get(0);
-                    String subAdminArea = address.getSubAdminArea();
+                    String subAdminArea = output.get(0).getSubAdminArea();
                     //nếu tài khoản có quyền truy cập vào
                     if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
                             (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
@@ -629,17 +647,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         mMapViewHandler.querySearch(query, mSearchAdapter);
                     else if (query.length() > 0) {
                         deleteSearching();
-                        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this, true, mGeocoder, new FindLocationAsycn.AsyncResponse() {
+                        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(QuanLySuCo.this,
+                                true, mGeocoder, mFeatureLayerDTGS, false, new FindLocationAsycn.AsyncResponse() {
                             @Override
-                            public void processFinish(List<Address> output) {
+                            public void processFinish(List<MyAddress> output) {
                                 if (output != null) {
                                     mSearchAdapter.clear();
                                     mSearchAdapter.notifyDataSetChanged();
                                     if (output.size() > 0) {
-                                        for (Address address : output) {
-                                            TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getAddressLine(0));
+                                        for (MyAddress address : output) {
+                                            TraCuuAdapter.Item item = new TraCuuAdapter.Item(-1, "", 0, "", address.getLocation());
                                             item.setLatitude(address.getLatitude());
-                                            item.setLongtitude(address.getLongitude());
+                                            item.setLongtitude(address.getLongtitude());
                                             mSearchAdapter.add(item);
                                         }
                                         mSearchAdapter.notifyDataSetChanged();
@@ -661,6 +680,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (newText.trim().length() > 0) {
+                    mIsAddFeature = true;
+                } else {
+                    mIsAddFeature = false;
+                    mSearchAdapter.clear();
+                    mSearchAdapter.notifyDataSetChanged();
+                    mGraphicsOverlay.getGraphics().clear();
+                }
                 return false;
             }
         });
@@ -994,7 +1021,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image,mPopUp.getListHoSoVatTuSuCo(), new EditAsync.AsyncResponse() {
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(), new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(Void output) {
                                     mPopUp.refreshPopup();

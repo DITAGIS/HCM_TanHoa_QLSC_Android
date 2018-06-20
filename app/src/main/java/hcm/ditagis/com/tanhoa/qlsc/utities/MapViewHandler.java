@@ -82,7 +82,7 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTable, mMapView,mGeocoder, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTable, mMapView, mGeocoder, mFeatureLayerDTGs, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
                 if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {

@@ -3,7 +3,6 @@ package hcm.ditagis.com.tanhoa.qlsc.utities;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -68,6 +67,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
+import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.VatTu;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
@@ -93,6 +93,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private Geocoder mGeocoder;
     private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
     private String mIDSuCo;
+    private List<FeatureLayerDTG> mFeatureLayerDTGS;
 
     public DialogInterface getDialog() {
         return mDialog;
@@ -100,7 +101,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
     public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
-                 Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB, Geocoder geocoder) {
+                 Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
@@ -118,6 +119,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             mListTenVatTuOngChinh.add(vatTu.getTenVatTu());
         for (VatTu vatTu : mListVatTuOngNganh)
             mListTenVatTuOngNganh.add(vatTu.getTenVatTu());
+
+        this.mFeatureLayerDTGS = featureLayerDTGS;
+    }
+
+    public Callout getCallout() {
+        return mCallout;
     }
 
     public List<HoSoVatTuSuCo> getListHoSoVatTuSuCo() {
@@ -976,7 +983,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
 
             //khi hoàn thành rồi thì không chỉnh sửa được
-            if (Integer.parseInt(mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai)).toString())
+            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai));
+            if (o != null && Integer.parseInt(o.toString())
                     != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                 linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         } else {
@@ -1040,15 +1048,16 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             if (position == null)
                 return;
 
-            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false, mGeocoder, new FindLocationAsycn.AsyncResponse() {
+            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false,
+                    mGeocoder, mFeatureLayerDTGS, false, new FindLocationAsycn.AsyncResponse() {
                 @SuppressLint("InflateParams")
                 @Override
-                public void processFinish(List<Address> output) {
+                public void processFinish(List<MyAddress> output) {
                     if (output != null && output.size() > 0) {
                         clearSelection();
                         dimissCallout();
-                        Address address = output.get(0);
-                        String addressLine = address.getAddressLine(0);
+                        MyAddress address = output.get(0);
+                        String addressLine = address.getLocation();
                         LayoutInflater inflater = LayoutInflater.from(mMainActivity.getApplicationContext());
                         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_timkiemdiachi, null);
                         ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(addressLine);
