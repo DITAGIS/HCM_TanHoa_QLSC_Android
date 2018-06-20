@@ -26,6 +26,7 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
 /**
@@ -73,7 +74,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         FeatureViewMoreInfoAdapter adapter = params[0];
         Calendar c = Calendar.getInstance();
-        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayCapNhat), c);
+        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
         String loaiSuCo = "";
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_LoaiSuCo))) {
@@ -203,6 +204,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     break;
             }
         }
+        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
         mServiceFeatureTable.loadAsync();
         mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
             @Override

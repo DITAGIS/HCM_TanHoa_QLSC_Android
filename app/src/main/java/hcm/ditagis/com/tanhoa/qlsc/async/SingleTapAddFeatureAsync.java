@@ -178,7 +178,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                 feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayXayRa), c);
                 feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayThongBao), c);
             }
-            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NGUOICAPNHAT), KhachHang.khachHangDangNhap.getUserName());
+            feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NguoiBaoSuCo), KhachHang.khachHangDangNhap.getUserName());
             feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_LoaiSuCo), (short) 0);
             //---get DMA begin
             final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);

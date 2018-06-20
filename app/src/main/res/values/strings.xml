@@ -283,11 +283,13 @@
     <string name="Field_SuCo_IDSuCo">IDSuCo</string>
     <string name="Field_SuCo_ViTri">ViTri</string>
     <string name="Field_SuCo_TrangThai">TrangThai</string>
-    <string name="Field_SuCo_NgayCapNhat">NgayCapNhat</string>
+    <string name="Field_SuCo_NgayKhacPhuc">NgayKhacPhuc</string>
     <string name="Field_SuCo_NgayXayRa">NgayXayRa</string>
     <string name="Field_SuCo_NgayThongBao">NgayThongBao</string>
     <string name="Field_SuCo_MaQuan">MaQuan</string>
-    <string name="Field_SuCo_NGUOICAPNHAT">NGUOICAPNHAT</string>
+    <string name="Field_SuCo_NguoiBaoSuCo">NGUOICAPNHAT</string>
+    <string name="Field_SuCo_NhanVienGiamSat">CONGNHANTHUCHIEN</string>
+    <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
     <string name="Field_MADMA">MADMA</string>
     <string name="Field_SuCo_VatTu">VatTu</string>
     <!--field sự cố end-->
