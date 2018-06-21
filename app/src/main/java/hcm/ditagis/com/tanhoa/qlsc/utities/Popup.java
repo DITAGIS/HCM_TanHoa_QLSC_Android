@@ -135,7 +135,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         this.mFeatureLayerDTG = layerDTG;
     }
 
-    public void refreshPopup() {
+    public void refreshPopup(ArcGISFeature arcGISFeature) {
+        mSelectedArcGISFeature = arcGISFeature;
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
         ListView listView = linearLayout.findViewById(R.id.lstview_thongtinsuco);
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
@@ -189,7 +190,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void viewMoreInfo(boolean isAddFeature) {
+    private void viewMoreInfo(ArcGISFeature feature, boolean isAddFeature) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         @SuppressLint("InflateParams") View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
@@ -227,12 +228,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
                             mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
                         @Override
-                        public void processFinish(Void output) {
-                            refreshPopup();
+                        public void processFinish(ArcGISFeature arcGISFeature) {
+                            refreshPopup(arcGISFeature);
+                            dialog.dismiss();
                         }
                     });
                     editAsync.execute(mFeatureViewMoreInfoAdapter);
-                    dialog.dismiss();
+
                 }
             });
             btnRight.setOnClickListener(new View.OnClickListener() {
@@ -941,7 +943,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         mMainActivity.setUri(uri);
 //        this.mUri = Uri.fromFile(photo);
         mMainActivity.startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
-
     }
 
     private void clearSelection() {
@@ -958,11 +959,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     @SuppressLint("InflateParams")
-    public void showPopup(final ArcGISFeature mSelectedArcGISFeature,
+    public void showPopup(final ArcGISFeature selectedArcGISFeature,
                           final boolean isAddFeature) {
         clearSelection();
         dimissCallout();
-        this.mSelectedArcGISFeature = mSelectedArcGISFeature;
+        this.mSelectedArcGISFeature = selectedArcGISFeature;
         FeatureLayer featureLayer = mFeatureLayerDTG.getFeatureLayer();
         featureLayer.selectFeature(mSelectedArcGISFeature);
         lstFeatureType = new ArrayList<>();
@@ -971,7 +972,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
         LayoutInflater inflater = LayoutInflater.from(this.mMainActivity.getApplicationContext());
         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
-        refreshPopup();
+        refreshPopup(mSelectedArcGISFeature);
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
         linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
@@ -1003,11 +1004,26 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             public void run() {
                 mCallout.refresh();
                 mCallout.show();
-                if (isAddFeature)
-                    viewMoreInfo(true);
+                if (isAddFeature) {
+//                    QueryFeatureAsycn queryFeatureAsycn = new QueryFeatureAsycn(mMainActivity, mServiceFeatureTable, new QueryFeatureAsycn.AsyncResponse() {
+//                        @Override
+//                        public void processFinish(ArcGISFeature output) {
+//
+//                        }
+//                    });
+//                    String idSuCo = "";
+//                    Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
+//                    for (Field field : mSelectedArcGISFeature.getFeatureTable().getFields()) {
+//                        if (field.getName().equals(mMainActivity.getString(R.string.Field_OBJECTID))) {
+//                            idSuCo = attr.get(field.getName()).toString();
+//                            break;
+//                        }
+//                    }
+//                    queryFeatureAsycn.execute(idSuCo);
+                    viewMoreInfo(mSelectedArcGISFeature, true);
+                }
             }
         });
-
     }
 
     @SuppressLint("InflateParams")
@@ -1097,7 +1113,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     mCallout.dismiss();
                 break;
             case R.id.imgBtn_ViewMoreInfo:
-                viewMoreInfo(false);
+                viewMoreInfo(mSelectedArcGISFeature, false);
                 break;
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();

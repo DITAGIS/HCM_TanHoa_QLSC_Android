@@ -11,17 +11,19 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 public class MyServiceFeatureTable {
     private ServiceFeatureTable layerThuaDat;
+    private ServiceFeatureTable layerDMA;
 
 
     private MyServiceFeatureTable(Context context, List<FeatureLayerDTG> mFeatureLayerDTGS) {
         for (FeatureLayerDTG feature : mFeatureLayerDTGS) {
             if (feature.getTitleLayer().equals(context.getString(R.string.ALIAS_THUA_DAT))) {
                 layerThuaDat = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
-                break;
+            } else if (feature.getTitleLayer().equals(context.getString(R.string.ALIAS_DMA))) {
+                layerDMA = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
             }
-
         }
     }
+
     private static MyServiceFeatureTable instance = null;
 
     public static MyServiceFeatureTable getInstance(Context context, List<FeatureLayerDTG> mFeatureLayerDTGS) {
@@ -30,6 +32,11 @@ public class MyServiceFeatureTable {
         }
         return instance;
     }
+
+    public ServiceFeatureTable getLayerDMA() {
+        return layerDMA;
+    }
+
     public ServiceFeatureTable getLayerThuaDat() {
         return layerThuaDat;
     }

@@ -1023,8 +1023,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                     mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), new EditAsync.AsyncResponse() {
                                 @Override
-                                public void processFinish(Void output) {
-                                    mPopUp.refreshPopup();
+                                public void processFinish(ArcGISFeature arcGISFeature) {
+                                    mPopUp.refreshPopup(arcGISFeature);
                                 }
                             });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);

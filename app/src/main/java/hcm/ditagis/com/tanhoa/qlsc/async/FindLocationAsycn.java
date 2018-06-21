@@ -19,6 +19,7 @@ import com.esri.arcgisruntime.geometry.SpatialReferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -27,7 +28,7 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable;
 
-public class FindLocationAsycn extends AsyncTask<String, Void, List<MyAddress>> {
+public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> {
     private Geocoder mGeocoder;
     private boolean mIsFromLocationName;
     @SuppressLint("StaticFieldLeak")
@@ -65,76 +66,137 @@ public class FindLocationAsycn extends AsyncTask<String, Void, List<MyAddress>> 
     }
 
     @Override
-    protected List<MyAddress> doInBackground(String... params) {
+    protected Void doInBackground(String... params) {
         if (!Geocoder.isPresent())
             return null;
         final List<MyAddress> lstLocation = new ArrayList<>();
         if (mIsFromLocationName) {
-            if (!mIsAddFeature) {
-                String text = params[0];
-                try {
-                    List<Address> addressList = mGeocoder.getFromLocationName(text, 5);
-                    for (Address address : addressList)
-                        lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),  address.getSubAdminArea(),address.getAddressLine(0)));
-                } catch (IOException ignored) {
-                    //todo grpc failed
-                    Log.e("error", ignored.toString());
-                }
-            } else {
-                if (MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerThuaDat() != null) {
-                    Point project = new Point(mLongtitude, mLatitude);
-                    Geometry center = GeometryEngine.project(project, SpatialReferences.getWgs84());
-                    Geometry geometry = GeometryEngine.project(center, SpatialReferences.getWebMercator());
-
-                    //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
-                    QueryParameters queryParam = new QueryParameters();
-                    //lấy hành chính của điểm báo sự cố
-                    queryParam.setGeometry(geometry);
-                    queryParam.setWhereClause("1=1");
-                    final ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerThuaDat().queryFeaturesAsync(queryParam);
-                    featureQueryResultListenableFuture.addDoneListener(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                //todo không có địa chỉ trên thửa đất
-                                FeatureQueryResult features = featureQueryResultListenableFuture.get();
-                                for (Object item : features) {
-                                    Feature feature = (Feature) item;
-                                    lstLocation.add(new MyAddress(mLongtitude, mLatitude, "", feature.getAttributes().get("SoNha").toString()
-                                            + " " + feature.getAttributes().get("TenConDuong").toString()));
-                                }
-                            } catch (InterruptedException | ExecutionException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                }
+            final String text = params[0];
+            try {
+                List<Address> addressList = mGeocoder.getFromLocationName(text, 5);
+                for (Address address : addressList)
+                    lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),
+                            address.getSubAdminArea(), address.getAddressLine(0), "", "", ""));
+                publishProgress(lstLocation);
+            } catch (IOException ignored) {
+                //todo grpc failed
+                Log.e("error", ignored.toString());
             }
         } else {
             try {
-                List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
-                for (Address address : addressList)
-                    lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),  address.getSubAdminArea(),address.getAddressLine(0)));
+                if (!mIsAddFeature) {
+                    List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
+                    for (Address address : addressList)
+                        lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),
+                                address.getSubAdminArea(), address.getAddressLine(0), "", "", ""));
+                    publishProgress(lstLocation);
+                } else {
+                    if (MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerThuaDat() != null) {
+                        Point project = new Point(mLongtitude, mLatitude);
+                        Geometry center = GeometryEngine.project(project, SpatialReferences.getWgs84());
+                        Geometry geometry = GeometryEngine.project(center, SpatialReferences.getWebMercator());
+                        //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
+                        QueryParameters queryParam = new QueryParameters();
+                        //lấy hành chính của điểm báo sự cố
+                        queryParam.setGeometry(geometry);
+                        queryParam.setWhereClause("1=1");
+                        final ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerThuaDat().queryFeaturesAsync(queryParam);
+                        featureQueryResultListenableFuture.addDoneListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    FeatureQueryResult features = featureQueryResultListenableFuture.get();
+                                    Iterator iterator = features.iterator();
+                                    while (iterator.hasNext()) {
+                                        Feature feature = (Feature) iterator.next();
+                                    }
+                                    for (Object item : features) {
+                                        Feature feature = (Feature) item;
+                                        Object soNha = feature.getAttributes().get("SoNha");
+                                        Object tenConDuong = feature.getAttributes().get("TenConDuong");
+                                        Object maDuong = feature.getAttributes().get("MaConDuong");
+                                        Object maPhuong = feature.getAttributes().get("MaPhuong");
+                                        String location = "";
+                                        //không có địa chỉ trên thửa đất
+                                        if (soNha == null || tenConDuong == null) {
+                                            List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
+                                            for (Address address : addressList) {
+                                                location = address.getAddressLine(0);
+                                                lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(), location, "", "", ""));
+                                            }
+                                            publishProgress(lstLocation);
+                                        }
+                                        //ngược lại, địa chỉ khác null
+                                        else {
+                                            location = soNha.toString() + " " + tenConDuong.toString();
+                                            String maDuongStr = "";
+                                            String maPhuongStr = "";
+                                            if (maDuong != null)
+                                                maDuongStr = maDuong.toString();
+                                            if (maPhuong != null)
+                                                maPhuongStr = maPhuong.toString();
+                                            else if (MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerDMA() != null) {
+                                                Point project = new Point(mLongtitude, mLatitude);
+                                                Geometry center = GeometryEngine.project(project, SpatialReferences.getWgs84());
+                                                Geometry geometry = GeometryEngine.project(center, SpatialReferences.getWebMercator());
+
+                                                //kiểm tra có thuộc địa bàn quản lý của tài khoản hay không
+                                                QueryParameters queryParam = new QueryParameters();
+                                                //lấy hành chính của điểm báo sự cố
+                                                queryParam.setGeometry(geometry);
+                                                queryParam.setWhereClause("1=1");
+                                                final ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerThuaDat().queryFeaturesAsync(queryParam);
+                                                final String finalLocation = location;
+                                                final String finalMaDuongStr = maDuongStr;
+                                                final String finalMaPhuongStr = maPhuongStr;
+                                                featureQueryResultListenableFuture.addDoneListener(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        try {
+                                                            FeatureQueryResult features = featureQueryResultListenableFuture.get();
+                                                            for (Object item : features) {
+                                                                Feature feature = (Feature) item;
+                                                                Object maDMA = feature.getAttributes().get("MADMA");
+
+                                                                String maDMAStr = "";
+
+                                                                if (maDMA != null)
+                                                                    maDMAStr = maDMA.toString();
+                                                                lstLocation.add(new MyAddress(mLongtitude, mLatitude, "", finalLocation, finalMaDuongStr, finalMaPhuongStr, maDMAStr));
+                                                                publishProgress(lstLocation);
+
+
+                                                            }
+                                                        } catch (InterruptedException | ExecutionException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }
+                                } catch (InterruptedException | ExecutionException | IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+                }
             } catch (IOException ignored) {
                 Log.e("error", ignored.toString());
             }
         }
 
 
-        return lstLocation;
+        return null;
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-    }
-
-    @Override
-    protected void onPostExecute(List<MyAddress> addressList) {
-//        if (khachHang != null) {
+    protected void onProgressUpdate(List<MyAddress>... addressList) {
+        super.onProgressUpdate(addressList);
         if (addressList == null)
             Toast.makeText(mContext, R.string.message_no_geocoder_available, Toast.LENGTH_LONG).show();
-        this.mDelegate.processFinish(addressList);
-//        }
+        this.mDelegate.processFinish(addressList[0]);
     }
+
 }

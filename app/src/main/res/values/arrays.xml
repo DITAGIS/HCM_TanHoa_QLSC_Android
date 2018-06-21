@@ -37,6 +37,7 @@
         <item>@string/Field_SuCo_PhuiDao_Dai</item>
         <item>@string/Field_SuCo_PhuiDao_Cao</item>
         <item>@string/Field_SuCo_PhuiDao_Rong</item>
+        <item>SoNha</item>
     </string-array>
     <string-array name="add_fields_arrays">
         <item>IDSuCo</item>

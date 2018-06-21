@@ -13,6 +13,7 @@ import android.support.annotation.RequiresApi;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Attachment;
+import com.esri.arcgisruntime.data.EditResult;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
@@ -225,13 +226,24 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                                     final QueryParameters queryParameters = new QueryParameters();
                                     final String query = "OBJECTID = " + objectId;
                                     queryParameters.setWhereClause(query);
-                                    final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+                                    final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable.queryFeaturesAsync(queryParameters,ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
                                     featuresAsync.addDoneListener(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (mImage != null)
-                                                addAttachment(featuresAsync, feature);
-                                            else publishProgress(feature);
+                                            try {
+                                                FeatureQueryResult result = featuresAsync.get();
+                                                if (result.iterator().hasNext()) {
+                                                    Feature item = result.iterator().next();
+                                                    if (mImage != null)
+                                                        addAttachment(featuresAsync, item);
+                                                    else publishProgress(item);
+                                                }
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            } catch (ExecutionException e) {
+                                                e.printStackTrace();
+                                            }
+
                                         }
                                     });
                                 }
