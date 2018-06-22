@@ -192,11 +192,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void viewMoreInfo(ArcGISFeature feature, boolean isAddFeature) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
-        @SuppressLint("InflateParams") View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
+        @SuppressLint("InflateParams") final View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
-        Button btnLeft = layout.findViewById(R.id.btn_viewmoreinfo_left);
-        Button btnRight = layout.findViewById(R.id.btn_viewmoreinfo_right);
+        Button btnLeft = layout.findViewById(R.id.btn_updateinfo_left);
+        Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
 
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(new View.OnClickListener() {
@@ -226,10 +226,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 public void onClick(View view) {
                     EditAsync editAsync = new EditAsync(mMainActivity,
                             (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, true, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(ArcGISFeature arcGISFeature) {
-                            refreshPopup(arcGISFeature);
+                            mCallout.dismiss();
                             dialog.dismiss();
                         }
                     });
@@ -240,7 +240,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             btnRight.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    capture();
+                    capture(true);
                     mDialog = dialog;
                 }
             });
@@ -251,16 +251,23 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_TrangThai))
+                                && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.nav_thong_ke_hoan_thanh))) {
+                            Toast.makeText(layout.getContext(), R.string.message_ChupAnh_HoanThanh, Toast.LENGTH_LONG).show();
+                            return;
+                        }
                     for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
                         if (item.isMustEdit()) {
                             return;
                         }
                     EditAsync editAsync = new EditAsync(mMainActivity,
                             (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, false, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(ArcGISFeature arcGISFeature) {
-                            refreshPopup(arcGISFeature);
+                            mCallout.dismiss();
                             dialog.dismiss();
                         }
                     });
@@ -274,7 +281,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         if (item.isMustEdit()) {
                             return;
                         }
-                    capture();
+                    capture(false);
                     mDialog = dialog;
                 }
             });
@@ -418,26 +425,34 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
                 builder.setTitle("Cập nhật thuộc tính");
                 builder.setMessage(item.getAlias());
-                builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+
                 @SuppressLint("InflateParams") final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().
                         inflate(R.layout.layout_dialog_update_feature_listview, null);
+                Button btnLeft = layout.findViewById(R.id.btn_updateinfo_left);
+                Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
+
+                btnLeft.setText("Hủy");
+                btnRight.setText("Cập nhật");
+
+
                 builder.setView(layout);
 
                 loadDataEdit(item, layout);
-                builder.setPositiveButton("Cập nhật", new DialogInterface.OnClickListener() {
+
+                final AlertDialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                btnLeft.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                btnRight.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
                         updateEdit(item, layout, parent, dialog);
                     }
                 });
-
-                AlertDialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 dialog.show();
 
             }
@@ -695,7 +710,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 vatTuAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
-                        Integer.parseInt(etxtSoLuong.getText().toString()), txtDonViTinh.getText().toString(), maVatTu[0]));
+                        Double.parseDouble(etxtSoLuong.getText().toString()), txtDonViTinh.getText().toString(), maVatTu[0]));
                 vatTuAdapter.notifyDataSetChanged();
 
                 autoCompleteTextView.setText("");
@@ -794,6 +809,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void updateEdit(FeatureViewMoreInfoAdapter.Item item, LinearLayout
             layout, AdapterView<?> parent, DialogInterface dialog) {
+        boolean isCanUpdate = true;
         final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
@@ -814,16 +830,22 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             item.setMustEdit(false);
         } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
             mListHoSoVatTuSuCo = new ArrayList<>();
+
             if (listViewVatTu.getAdapter() != null) {
-                VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
-                for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-                    mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+                if (listViewVatTu.getAdapter().getCount() == 0) {
+                    isCanUpdate = false;
+                    MySnackBar.make(listViewVatTu, mMainActivity.getResources().getString(R.string.message_CapNhat_VatTu), true);
+                } else {
+                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
+                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
+                        mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+                    }
+                    if (mListHoSoVatTuSuCo.size() > 0) {
+                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
+                        item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
+                    }
+                    item.setMustEdit(false);
                 }
-                if (mListHoSoVatTuSuCo.size() > 0) {
-                    VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
-                    item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
-                }
-                item.setMustEdit(false);
             }
 
         } else if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField()) || (domain != null)) {
@@ -873,9 +895,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
             item.setMustEdit(false);
         }
-        dialog.dismiss();
-        FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();
-        new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);
+        if (isCanUpdate) {
+            dialog.dismiss();
+            FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();
+            new NotifyDataSetChangeAsync(mMainActivity).execute(adapter);
+        }
     }
 
     private void deleteFeature() {
@@ -943,7 +967,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     }
 
-    public void capture() {
+    public void capture(boolean isAddFeature) {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
 
@@ -955,7 +979,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         mMainActivity.setFeatureViewMoreInfoAdapter(mFeatureViewMoreInfoAdapter);
         mMainActivity.setUri(uri);
 //        this.mUri = Uri.fromFile(photo);
-        mMainActivity.startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE);
+        if (isAddFeature)
+            mMainActivity.startActivityForResult(cameraIntent, mMainActivity.getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE));
+        else
+            mMainActivity.startActivityForResult(cameraIntent, mMainActivity.getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_POPUP));
     }
 
     private void clearSelection() {

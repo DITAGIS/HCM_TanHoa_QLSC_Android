@@ -43,13 +43,15 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     private byte[] mImage;
     private AsyncResponse mDelegate;
     private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
+    private boolean mIsAddFeature;
 
     public interface AsyncResponse {
         void processFinish(ArcGISFeature feature);
     }
 
     public EditAsync(Context context, ServiceFeatureTable serviceFeatureTable,
-                     ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image, List<HoSoVatTuSuCo> hoSoVatTu_suCos, AsyncResponse delegate) {
+                     ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image,
+                     List<HoSoVatTuSuCo> hoSoVatTu_suCos, boolean isAddFeature, AsyncResponse delegate) {
         mContext = context;
         this.mDelegate = delegate;
         mServiceFeatureTable = serviceFeatureTable;
@@ -58,6 +60,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         this.isUpdateAttachment = isUpdateAttachment;
         this.mImage = image;
         this.mListHoSoVatTuSuCo = hoSoVatTu_suCos;
+        this.mIsAddFeature = isAddFeature;
     }
 
     @Override
@@ -74,7 +77,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         FeatureViewMoreInfoAdapter adapter = params[0];
         Calendar c = Calendar.getInstance();
-        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
+        if (!mIsAddFeature)
+            mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
         String loaiSuCo = "";
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_LoaiSuCo))) {
@@ -296,7 +300,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
             public void run() {
                 List<FeatureEditResult> edits;
                 try {
-                    //todo edits.size() == 0 khi add feature
                     edits = updatedServerResult.get();
                     if (edits.size() > 0) {
                         if (!edits.get(0).hasCompletedWithErrors()) {

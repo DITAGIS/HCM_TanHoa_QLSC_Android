@@ -23,7 +23,7 @@
         <item>VatTu</item>
         <item>KetQuaKiemTra</item>
         <item>ApLuc</item>
-        <item>THOIGIANTHUCHIEN</item>
+        <item>ThoiGianThucHien</item>
         <item>VatLieuOng</item>
         <item>@string/Field_SuCo_LoaiSuCo</item>
         <item>SDTNguoiBao</item>
@@ -49,7 +49,6 @@
         <item>TENDMA</item>
         <item>MaDuong</item>
         <item>MaPhuong</item>
-        <item>MADMA</item>
     </string-array>
     <string-array name="vitri_ongnganh_arrays">
         <item>Bên phải nhà</item>

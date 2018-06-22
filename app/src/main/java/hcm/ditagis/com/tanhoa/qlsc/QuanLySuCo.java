@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -91,7 +90,6 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Config;
-import hcm.ditagis.com.tanhoa.qlsc.utities.ImageFile;
 import hcm.ditagis.com.tanhoa.qlsc.utities.ListConfig;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
@@ -122,7 +120,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLayoutDisplayLayerAdministration;
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
-    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
     private boolean mIsAddFeature;
     private ImageView mImageOpenStreetMap, mImageStreetMap, mImageImageWithLabel;
     private TextView mTxtOpenStreetMap, mTxtStreetMap, mTxtImageWithLabel;
@@ -143,8 +140,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private ArcGISFeature mSelectedArcGISFeature;
-    private static final int REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE = 55;
-    private static final int REQUEST_ID_IMAGE_CAPTURE_POPUP = 44;
     String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
     @SuppressLint("ClickableViewAccessibility")
@@ -228,8 +223,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (mIsAddFeature && mMapViewHandler != null) {
-                    //todo
-
                     //center is x, y
                     Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
 
@@ -299,9 +292,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 .loadPreference(getString(R.string.preference_displayname)));
         optionSearchFeature();
 
-        mMapView.getMap().setMaxScale(5);
-        mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
-        handlingColorBackgroundLayerSelected(R.id.layout_layer_image);
     }
 
     private void setService() {
@@ -313,7 +303,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
             FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
             if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH))
-                    || config.getAlias().equals(getString(R.string.ALIAS_DMA)))
+                    || config.getAlias().equals(getString(R.string.ALIAS_DMA))
+                    || config.getAlias().equals(getString(R.string.ALIAS_THUA_DAT)))
                 featureLayer.setOpacity(0.7f);
             featureLayer.setName(config.getAlias());
             featureLayer.setMaxScale(0);
@@ -522,7 +513,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         Graphic graphic = new Graphic(point, symbol);
         mGraphicsOverlay.getGraphics().add(graphic);
 
-        mMapView.setViewpointCenterAsync(point);
+        mMapView.setViewpointCenterAsync(point, getResources().getInteger(R.integer.SCALE_IMAGE_WITH_LABLES));
         mPopUp.showPopupFindLocation(point, location);
         this.mPointFindLocation = point;
     }
@@ -536,7 +527,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE,
-                    Manifest.permission.READ_PHONE_STATE}, REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE);
+                    Manifest.permission.READ_PHONE_STATE}, getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE));
         }
 //        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
 //                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
@@ -559,17 +550,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     private void optionSearchFeature() {
         this.isSearchingFeature = true;
-//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_border_bottom);
-//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
         mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
     private void optionFindRoute() {
         this.isSearchingFeature = false;
-//        mLayoutTimDiaChi.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
         mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_border_bottom);
-//        mLayoutTimSuCo.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
         mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
@@ -579,34 +566,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mSearchAdapter.notifyDataSetChanged();
     }
 
-    private void themDiemSuCo() {
-        FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
-                mGeocoder, mFeatureLayerDTGS, true, new FindLocationAsycn.AsyncResponse() {
-            @Override
-            public void processFinish(List<MyAddress> output) {
-                if (output != null) {
-                    KhachHang khachHangDangNhap = KhachHang.khachHangDangNhap;
-                    String subAdminArea = output.get(0).getSubAdminArea();
-                    //nếu tài khoản có quyền truy cập vào
-                    if ((khachHangDangNhap.isPhuNhuan() && subAdminArea.equals(getString(R.string.QuanPhuNhuanName))) ||
-                            (khachHangDangNhap.isTanBinh() && subAdminArea.equals(getString(R.string.QuanTanBinhName))) ||
-                            (khachHangDangNhap.isTanPhu() && subAdminArea.equals(getString(R.string.QuanTanPhuName)))) {
-                        capture();
-                    } else {
-                        Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                }
-
-            }
-        });
-        Geometry project = GeometryEngine.project(mPointFindLocation, SpatialReferences.getWgs84());
-        double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
-        findLocationAsycn.setmLongtitude(location[0]);
-        findLocationAsycn.setmLatitude(location[1]);
-        findLocationAsycn.execute();
-    }
 
     private void themDiemSuCoNoCapture() {
         FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
@@ -654,9 +613,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-//            super.onBackPressed();
-        }
+        }  //            super.onBackPressed();
+
     }
 
     @Override
@@ -845,7 +803,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 break;
             case R.id.layout_layer_image:
-                mMapView.getMap().setMaxScale(5);
+                mMapView.getMap().setMaxScale(getResources().getInteger(R.integer.MAX_SCALE_IMAGE_WITH_LABLES));
                 mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
                 handlingColorBackgroundLayerSelected(R.id.layout_layer_image);
 
@@ -879,19 +837,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         }
     }
-
-    public void capture() {
-        Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
-
-        File photo = ImageFile.getFile(this);
-//        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
-        this.mUri = Uri.fromFile(photo);
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, this.mUri);
-//        this.mUri = Uri.fromFile(photo);
-        startActivityForResult(cameraIntent, REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE);
-    }
-
 
     @Nullable
     private Bitmap getBitmap(String path) {
@@ -994,16 +939,15 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         } catch (Exception ignored) {
         }
 
-        if (requestCode == REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE)
-
-        {
+        if (requestCode == getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE)) {
             if (resultCode == RESULT_OK) {
+//                this.mUri= data.getData();
                 if (this.mUri != null) {
 //                    Uri selectedImage = this.mUri;
 //                    getContentResolver().notifyChange(selectedImage, null);
                     Bitmap bitmap = getBitmap(mUri.getPath());
                     try {
-                        if (bitmap != null && mMapViewHandler != null) {
+                        if (bitmap != null) {
                             Matrix matrix = new Matrix();
                             matrix.postRotate(90);
                             Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
@@ -1011,8 +955,18 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-                            mMapViewHandler.addFeature(image, mPointFindLocation);
-                            deleteSearching();
+//                            mMapViewHandler.addFeature(image);
+
+                            EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
+                                    mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(), true, new EditAsync.AsyncResponse() {
+                                @Override
+                                public void processFinish(ArcGISFeature arcGISFeature) {
+                                    mPopUp.getDialog().dismiss();
+                                    mPopUp.getCallout().dismiss();
+                                }
+                            });
+                            editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }
                     } catch (Exception ignored) {
                     }
@@ -1022,7 +976,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             } else {
                 MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
             }
-        } else if (requestCode == REQUEST_ID_IMAGE_CAPTURE_POPUP) {
+        } else if (requestCode == getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_POPUP)) {
             if (resultCode == RESULT_OK) {
 //                this.mUri= data.getData();
                 if (this.mUri != null) {
@@ -1042,10 +996,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(), new EditAsync.AsyncResponse() {
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(), false, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
-                                    mPopUp.refreshPopup(arcGISFeature);
+                                    mPopUp.getCallout().dismiss();
                                 }
                             });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);

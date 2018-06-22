@@ -71,7 +71,7 @@ public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
             rs = mStatement.executeQuery();
 
             while (rs.next()) {
-                hoSoVatTuSuCos.add(new HoSoVatTuSuCo(idSuCo, rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+                hoSoVatTuSuCos.add(new HoSoVatTuSuCo(idSuCo, rs.getDouble(1), rs.getString(2), rs.getString(3), rs.getString(4)));
             }
         } catch (SQLException e1) {
             e1.printStackTrace();
@@ -97,7 +97,7 @@ public class HoSoVatTuSuCoDB implements IDB<HoSoVatTuSuCo, Boolean, String> {
             String query = mContext.getString(R.string.sql_insert_hosovattu_suco);
             PreparedStatement statement = cnn.prepareStatement(query);
             statement.setString(1, hoSoVatTuSuCo.getIdSuCo());
-            statement.setInt(2, hoSoVatTuSuCo.getSoLuong());
+            statement.setDouble(2, hoSoVatTuSuCo.getSoLuong());
             statement.setString(3, hoSoVatTuSuCo.getMaVatTu());
 
             result = statement.executeUpdate();

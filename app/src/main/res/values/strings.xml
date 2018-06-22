@@ -13,7 +13,7 @@
     <string name="validate_change_password_lack">Mật khẩu phải đủ 6 ký tự</string>
     <string name="validate_password_old">Mật khẩu cũ không đúng</string>
 
-    <string name="app_name">Quản lý sự cố TH</string>
+    <string name="app_name">Quản lý sự cố Tân Hòa</string>
     <string name="dialog_title_add">Thêm sự cố</string>
     <string name="btn_OK">OK</string>
     <string name="btn_save">Lưu thay đổi</string>
@@ -138,8 +138,8 @@
     <string name="find_route_textview_begin">Từ</string>
     <string name="find_route_textview_end">Đến</string>
     <string name="todo">TODO</string>
-    <string name="title_layer_default">Đường phố 1</string>
-    <string name="title_layer_street">Đường phố 2</string>
+    <string name="title_layer_default">Mặc định</string>
+    <string name="title_layer_street">Đường phố</string>
     <string name="title_layer_satellite">Vệ tinh</string>
     <!--Route end-->
 
@@ -152,9 +152,9 @@
     <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
 
     <!--activity end-->
-    <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ...</string>
-    <string name="change_password_message">Đang đổi mật khẩu...</string>
-    <string name="preparing">Đang khởi tạo bản đồ...</string>
+    <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ…</string>
+    <string name="change_password_message">Đang đổi mật khẩu…</string>
+    <string name="preparing">Đang khởi tạo bản đồ…</string>
     <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
@@ -216,9 +216,9 @@
         where idsuco = ?</string>
 
     <!--sql end-->
-    <string name="find_khachhHang_message">Đang lấy thông tin khách hàng...</string>
-    <string name="connect_message">Đang kết nối đến máy chủ...</string>
-    <string name="login_message">Đang kiểm tra thông tin đăng nhập...</string>
+    <string name="find_khachhHang_message">Đang lấy thông tin khách hàng…</string>
+    <string name="connect_message">Đang kết nối đến máy chủ…</string>
+    <string name="login_message">Đang kiểm tra thông tin đăng nhập…</string>
 
     <!--string format begin-->
     <string name="format_content_trangchu_danhbo">Danh bộ: %s</string>
@@ -228,7 +228,7 @@
     <string name="format_content_trangchu_dv">DV: %d%%</string>
     <string name="format_content_trangchu_hc">HC: %d%%</string>
     <string name="format_number">%d</string>
-    <string name="format_nav_tenkh_over">Xin chào %s...</string>
+    <string name="format_nav_tenkh_over">Xin chào %s…</string>
     <string name="format_nav_tenkh">Xin chào %s</string>
     <string name="format_number_two">%02d</string>
     <string name="format_number_money">%s đ</string>
@@ -293,5 +293,7 @@
     <string name="Field_MADMA">MADMA</string>
     <string name="Field_SuCo_VatTu">VatTu</string>
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
+    <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
+    <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
     <!--field sự cố end-->
 </resources>
