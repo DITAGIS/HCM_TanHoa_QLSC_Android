@@ -40,11 +40,11 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
-    private TextView mTxtTongSuCo, mTxtChuaSua, mTxtDangSua, mTxtDaSua, mTxtHoanThanh;
-    private TextView mTxtPhanTramChuaSua, mTxtPhanTramDangSua, mTxtPhanTramDaSua, mTxtPhanTramHoanThanh;
+    private TextView mTxtTongSuCo, mTxtChuaSua, mTxtDangSua, mTxtHoanThanh;
+    private TextView mTxtPhanTramChuaSua, mTxtPhanTramDangSua, mTxtPhanTramHoanThanh;
     private ServiceFeatureTable mServiceFeatureTable;
     private ThongKeAdapter mThongKeAdapter;
-    private int mChuaSuaChua, mDangSuaChua, mDaSuaChua, mHoanThanh;
+    private int mChuaSuaChua, mDangSuaChua, mHoanThanh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +59,9 @@ public class ThongKeActivity extends AppCompatActivity {
         this.mTxtTongSuCo = this.findViewById(R.id.txtTongSuCo);
         this.mTxtChuaSua = this.findViewById(R.id.txtChuaSua);
         this.mTxtDangSua = this.findViewById(R.id.txtDangSua);
-        this.mTxtDaSua = this.findViewById(R.id.txtDaSua);
         this.mTxtHoanThanh = this.findViewById(R.id.txtHoanThanh);
         this.mTxtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
         this.mTxtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
-        this.mTxtPhanTramDaSua = this.findViewById(R.id.txtPhanTramDaSua);
         this.mTxtPhanTramHoanThanh = this.findViewById(R.id.txtPhanTramHoanThanh);
         ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +190,7 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private void query(ThongKeAdapter.Item item) {
-        mChuaSuaChua = mDangSuaChua = mDaSuaChua = mHoanThanh = 0;
+        mChuaSuaChua = mDangSuaChua  = mHoanThanh = 0;
         ((TextView) ThongKeActivity.this.findViewById(R.id.txt_thongke_mota)).setText(item.getMota());
         TextView txtThoiGian = ThongKeActivity.this.findViewById(R.id.txt_thongke_thoigian);
         if (item.getThoigianhienthi() == null) txtThoiGian.setVisibility(View.GONE);
@@ -252,8 +250,6 @@ public class ThongKeActivity extends AppCompatActivity {
                             mChuaSuaChua++;
                         else if (trangThai == getResources().getInteger(R.integer.trang_thai_dang_sua_chua))
                             mDangSuaChua++;
-                        else if (trangThai == getResources().getInteger(R.integer.trang_thai_da_sua_chua))
-                            mDaSuaChua++;
                         else if (trangThai == getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                             mHoanThanh++;
                     }
@@ -272,23 +268,20 @@ public class ThongKeActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void displayReport() {
-        int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mDaSuaChua + mHoanThanh;
+        int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mHoanThanh;
         mTxtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai);
         mTxtChuaSua.setText(mChuaSuaChua + "");
         mTxtDangSua.setText(mDangSuaChua + "");
-        mTxtDaSua.setText(mDaSuaChua + "");
         mTxtHoanThanh.setText(mHoanThanh + "");
         double percentChuaSua, percentDangSua, percentDaSua, percentHoanThanh;
         percentChuaSua = percentDangSua = percentDaSua = percentHoanThanh = 0.0;
         if (tongloaitrangthai > 0) {
             percentChuaSua = mChuaSuaChua * 100 / tongloaitrangthai;
             percentDangSua = mDangSuaChua * 100 / tongloaitrangthai;
-            percentDaSua = mDaSuaChua * 100 / tongloaitrangthai;
             percentHoanThanh = mHoanThanh * 100 / tongloaitrangthai;
         }
         mTxtPhanTramChuaSua.setText(percentChuaSua + "%");
         mTxtPhanTramDangSua.setText(percentDangSua + "%");
-        mTxtPhanTramDaSua.setText(percentDaSua + "%");
         mTxtPhanTramHoanThanh.setText(percentHoanThanh + "%");
         PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
@@ -319,12 +312,10 @@ public class ThongKeActivity extends AppCompatActivity {
 
         yVals1.add(new Entry(mChuaSuaChua, 0));
         yVals1.add(new Entry(mDangSuaChua, 1));
-        yVals1.add(new Entry(mDaSuaChua, 2));
         yVals1.add(new Entry(mHoanThanh, 2));
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.nav_thong_ke_chua_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_dang_sua_chua));
-        xVals.add(getString(R.string.nav_thong_ke_da_sua_chua));
         xVals.add(getString(R.string.nav_thong_ke_hoan_thanh));
 
 
@@ -333,7 +324,6 @@ public class ThongKeActivity extends AppCompatActivity {
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(android.R.color.holo_red_light));
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
-        colors.add(getResources().getColor(android.R.color.holo_blue_light));
         colors.add(getResources().getColor(android.R.color.holo_green_light));
         set1.setColors(colors);
         PieData data = new PieData(xVals, set1);

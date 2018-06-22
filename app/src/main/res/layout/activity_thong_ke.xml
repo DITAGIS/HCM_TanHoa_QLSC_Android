@@ -168,37 +168,37 @@
                     android:textSize="17sp" />
             </TableRow>
 
-            <TableRow android:layout_width="match_parent">
+            <!--<TableRow android:layout_width="match_parent">-->
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/cell_shape"
-                    android:padding="3dip"
-                    android:text="Đã sửa"
-                    android:textSize="17sp" />
+                <!--<TextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/cell_shape"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text="Đã sửa"-->
+                    <!--android:textSize="17sp" />-->
 
-                <TextView
-                    android:id="@+id/txtDaSua"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/cell_shape"
-                    android:gravity="right"
-                    android:padding="3dip"
-                    android:text=""
-                    android:textSize="17sp" />
+                <!--<TextView-->
+                    <!--android:id="@+id/txtDaSua"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/cell_shape"-->
+                    <!--android:gravity="right"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text=""-->
+                    <!--android:textSize="17sp" />-->
 
 
-                <TextView
-                    android:id="@+id/txtPhanTramDaSua"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/cell_shape"
-                    android:gravity="right"
-                    android:padding="3dip"
-                    android:text=""
-                    android:textSize="17sp" />
-            </TableRow>
+                <!--<TextView-->
+                    <!--android:id="@+id/txtPhanTramDaSua"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:background="@drawable/cell_shape"-->
+                    <!--android:gravity="right"-->
+                    <!--android:padding="3dip"-->
+                    <!--android:text=""-->
+                    <!--android:textSize="17sp" />-->
+            <!--</TableRow>-->
 
             <TableRow android:layout_width="match_parent">
 

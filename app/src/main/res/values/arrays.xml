@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="phanloai_arrays">
-        <item>Ống ngánh</item>
-        <item>Ống chính</item>
-        <item>Chưa phân loại</item>
-    </string-array>
     <string-array name="field_subtype_array">
         <item>@string/Field_SuCo_NguyenNhan</item>
         <item>@string/Field_SuCo_VatLieu</item>
@@ -52,6 +47,9 @@
         <item>NgaySuaChua</item>
         <item>GlobalID</item>
         <item>TENDMA</item>
+        <item>MaDuong</item>
+        <item>MaPhuong</item>
+        <item>MADMA</item>
     </string-array>
     <string-array name="vitri_ongnganh_arrays">
         <item>Bên phải nhà</item>

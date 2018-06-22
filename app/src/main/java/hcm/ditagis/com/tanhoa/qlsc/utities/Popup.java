@@ -215,7 +215,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         });
         loadDataViewMoreInfo(isAddFeature, layout);
         builder.setView(layout);
-        builder.setCancelable(false);
+        builder.setCancelable(true);
         final AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (isAddFeature) {
@@ -251,7 +251,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.dismiss();
+                    for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                        if (item.isMustEdit()) {
+                            return;
+                        }
+                    EditAsync editAsync = new EditAsync(mMainActivity,
+                            (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, new EditAsync.AsyncResponse() {
+                        @Override
+                        public void processFinish(ArcGISFeature arcGISFeature) {
+                            refreshPopup(arcGISFeature);
+                            dialog.dismiss();
+                        }
+                    });
+                    editAsync.execute(mFeatureViewMoreInfoAdapter);
                 }
             });
             btnRight.setOnClickListener(new View.OnClickListener() {
