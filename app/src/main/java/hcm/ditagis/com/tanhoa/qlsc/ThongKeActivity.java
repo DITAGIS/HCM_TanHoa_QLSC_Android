@@ -243,21 +243,20 @@ public class ThongKeActivity extends AppCompatActivity {
 //                        Feature item = (Feature) i;
                         Object value = item.getAttributes().get(getString(R.string.trangthai));
                         int trangThai = getResources().getInteger(R.integer.trang_thai_chua_sua_chua);
-                        if (value != null)
+                        if (value != null) {
                             trangThai = Integer.parseInt(value.toString());
-
+                        }
                         if (trangThai == getResources().getInteger(R.integer.trang_thai_chua_sua_chua))
                             mChuaSuaChua++;
                         else if (trangThai == getResources().getInteger(R.integer.trang_thai_dang_sua_chua))
                             mDangSuaChua++;
                         else if (trangThai == getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                             mHoanThanh++;
+
                     }
                     displayReport();
 
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
+                } catch (InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
