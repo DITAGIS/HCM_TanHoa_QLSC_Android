@@ -267,9 +267,9 @@
     <string name="LoaiSuCo_OngChinh">Ống chính</string>
 
     <string name="btnLeftAddFeature">Lưu</string>
-    <string name="btnRightAddFeature">Chụp ảnh và lưu</string>
+    <string name="btnRightAddFeature">Chụp ảnh</string>
     <string name="btnLeftUpdateFeature">Cập nhật</string>
-    <string name="btnRightUpdateFeature">Chụp ảnh và cập nhật</string>
+    <string name="btnRightUpdateFeature">Chụp ảnh</string>
     <string name="message_error_add_feature">Không tạo được thuộc tính. Vui lòng thử lại sau</string>
 
     <!--field sự cố begin-->
@@ -291,7 +291,6 @@
     <string name="Field_SuCo_PhuiDao3_Sau">PhuiDao3Sau</string>
     <string name="Field_OBJECTID">OBJECTID</string>
     <string name="Field_SuCo_IDSuCo">IDSuCo</string>
-
     <string name="Field_SuCo_TrangThai">TrangThai</string>
     <string name="Field_SuCo_NgayKhacPhuc">NgayKhacPhuc</string>
     <string name="Field_SuCo_NgayXayRa">NgayXayRa</string>

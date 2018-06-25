@@ -962,7 +962,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), true, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
-                                    mPopUp.getDialog().dismiss();
+//                                    mPopUp.getDialog().dismiss();
                                     mPopUp.getCallout().dismiss();
                                 }
                             });
@@ -993,7 +993,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             byte[] image = outputStream.toByteArray();
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
 //                            mMapViewHandler.addFeature(image);
-                            mPopUp.getDialog().dismiss();
+//                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), false, new EditAsync.AsyncResponse() {

@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.CodedValue;
 import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
@@ -251,27 +252,62 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             btnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    boolean isComplete = false;
                     for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
                         if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_TrangThai))
                                 && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.nav_thong_ke_hoan_thanh))) {
-                            Toast.makeText(layout.getContext(), R.string.message_ChupAnh_HoanThanh, Toast.LENGTH_LONG).show();
-                            return;
+                            isComplete = true;
                         }
-                    for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
-                        if (item.isMustEdit()) {
-                            return;
-                        }
-                    EditAsync editAsync = new EditAsync(mMainActivity,
-                            (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
-                        @Override
-                        public void processFinish(ArcGISFeature arcGISFeature) {
-                            mCallout.dismiss();
-                            dialog.dismiss();
-                        }
-                    });
-                    editAsync.execute(mFeatureViewMoreInfoAdapter);
+                    if (isComplete) {
+                        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
+                        attachmentResults.addDoneListener(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+
+                                    final List<Attachment> attachments = attachmentResults.get();
+                                    int size = attachments.size();
+                                    if (size == 0) {
+                                        Toast.makeText(layout.getContext(), R.string.message_ChupAnh_HoanThanh, Toast.LENGTH_LONG).show();
+                                    } else {
+                                        for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                                            if (item.isMustEdit()) {
+                                                return;
+                                            }
+                                        EditAsync editAsync = new EditAsync(mMainActivity,
+                                                (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
+                                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                            @Override
+                                            public void processFinish(ArcGISFeature arcGISFeature) {
+                                                mCallout.dismiss();
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        editAsync.execute(mFeatureViewMoreInfoAdapter);
+                                    }
+                                } catch (InterruptedException | ExecutionException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    } else {
+                        for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                            if (item.isMustEdit()) {
+                                return;
+                            }
+                        EditAsync editAsync = new EditAsync(mMainActivity,
+                                (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
+                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                            @Override
+                            public void processFinish(ArcGISFeature arcGISFeature) {
+                                mCallout.dismiss();
+                                dialog.dismiss();
+                            }
+                        });
+                        editAsync.execute(mFeatureViewMoreInfoAdapter);
+                    }
+
                 }
             });
             btnRight.setOnClickListener(new View.OnClickListener() {
@@ -817,7 +853,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             item.setValue(spin.getSelectedItem().toString());
         } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
             if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
-                item.setValue( spin.getSelectedItem().toString());
+                item.setValue(spin.getSelectedItem().toString());
             } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
                 item.setValue(spin.getSelectedItem().toString() + editText.getText().toString());
             }
