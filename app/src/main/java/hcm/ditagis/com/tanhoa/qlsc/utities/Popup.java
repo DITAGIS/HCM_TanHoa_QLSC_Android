@@ -190,7 +190,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
-    private void viewMoreInfo(ArcGISFeature feature, boolean isAddFeature) {
+    private void viewMoreInfo(ArcGISFeature feature, final boolean isAddFeature) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         @SuppressLint("InflateParams") final View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
@@ -226,7 +226,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 public void onClick(View view) {
                     EditAsync editAsync = new EditAsync(mMainActivity,
                             (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, true, new EditAsync.AsyncResponse() {
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(ArcGISFeature arcGISFeature) {
                             mCallout.dismiss();
@@ -264,7 +264,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         }
                     EditAsync editAsync = new EditAsync(mMainActivity,
                             (ServiceFeatureTable) mFeatureLayerDTG.getFeatureLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, false, new EditAsync.AsyncResponse() {
+                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                         @Override
                         public void processFinish(ArcGISFeature arcGISFeature) {
                             mCallout.dismiss();
@@ -502,12 +502,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final LinearLayout layoutEditText = layout.findViewById(R.id.layout_edit_viewmoreinfo_Editext);
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final LinearLayout layoutSubSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_SubSpinner);
-        final Spinner subSpin = layout.findViewById(R.id.spin_sub_edit_viewmoreinfo);
         layoutSpin.setVisibility(View.VISIBLE);
-        layoutSubSpin.setVisibility(View.VISIBLE);
-        ArrayAdapter<String> subAdapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh2_arrays));
-        subSpin.setAdapter(subAdapter);
         if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongnganh_arrays));
             spin.setAdapter(adapter);
@@ -813,7 +808,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final Spinner subSpin = layout.findViewById(R.id.spin_sub_edit_viewmoreinfo);
         final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
         final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
@@ -823,9 +817,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             item.setValue(spin.getSelectedItem().toString());
         } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
             if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
-                item.setValue(subSpin.getSelectedItem().toString() + "\n" + spin.getSelectedItem().toString());
+                item.setValue( spin.getSelectedItem().toString());
             } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
-                item.setValue(subSpin.getSelectedItem().toString() + "\n" + spin.getSelectedItem().toString() + editText.getText().toString());
+                item.setValue(spin.getSelectedItem().toString() + editText.getText().toString());
             }
             item.setMustEdit(false);
         } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
@@ -1028,6 +1022,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             if (o != null && Integer.parseInt(o.toString())
                     != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                 linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
+            else
+                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
         } else {
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);

@@ -77,8 +77,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         FeatureViewMoreInfoAdapter adapter = params[0];
         Calendar c = Calendar.getInstance();
-        if (!mIsAddFeature)
-            mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
+
         String loaiSuCo = "";
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_LoaiSuCo))) {
@@ -178,10 +177,18 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                 Object idFeatureTypes = getIdFeatureTypes(featureTypes, item.getValue());
                 mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(idFeatureTypes.toString()));
 
+            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc))) {
+                if (!mIsAddFeature) {
+                    c = Calendar.getInstance();
+                    mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
+                }
+            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat))) {
+                mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
             } else switch (item.getFieldType()) {
                 case DATE:
                     Date date;
                     try {
+
                         date = Constant.DATE_FORMAT_VIEW.parse(item.getValue());
                         c.setTime(date);
                         mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c);
@@ -235,7 +242,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     break;
             }
         }
-        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
+
+
         mServiceFeatureTable.loadAsync();
         mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
             @Override

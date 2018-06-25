@@ -95,6 +95,7 @@
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"
             android:paddingLeft="@dimen/padding_small"
+            android:layout_marginLeft="@dimen/margin_small"
             android:paddingRight="@dimen/padding_small"
             />
     </LinearLayout>
