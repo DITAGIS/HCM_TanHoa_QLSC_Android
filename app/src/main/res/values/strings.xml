@@ -214,6 +214,7 @@
     <string name="sql_select_hosovattu_suco">select soluong, h.mavattu, tenvattu, donvitinh
         from dbo.hosovattusuco h inner join vattu v on h.mavattu = v.MaVatTu
         where idsuco = ?</string>
+    <string name="sql_delete_hosovattu_suco">delete from dbo.hosovattusuco where idsuco = ?</string>
 
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng…</string>
@@ -304,5 +305,7 @@
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
     <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
     <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
+    <string name="message_soluong_themvattu">Số lượng không được để trống</string>
+    <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
     <!--field sự cố end-->
 </resources>

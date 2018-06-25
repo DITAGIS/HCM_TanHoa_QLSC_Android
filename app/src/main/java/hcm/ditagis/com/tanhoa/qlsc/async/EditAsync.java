@@ -168,6 +168,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                 }
             } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTu))) {
                 HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
+                if (mListHoSoVatTuSuCo.size() > 0)
+                    hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCo.get(0).getIdSuCo());
                 for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
                     hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
                 }
