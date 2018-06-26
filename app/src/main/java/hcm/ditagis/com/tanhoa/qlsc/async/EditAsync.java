@@ -79,11 +79,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         Calendar c = Calendar.getInstance();
 
         String loaiSuCo = "";
+        String trangThai = "";
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_LoaiSuCo))) {
                 loaiSuCo = item.getValue();
-                break;
-            }
+
+            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_TrangThai)))
+                trangThai = item.getValue();
         }
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getValue() == null) continue;
@@ -179,13 +181,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                 Object idFeatureTypes = getIdFeatureTypes(featureTypes, item.getValue());
                 mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(idFeatureTypes.toString()));
 
-            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc))) {
-                if (!mIsAddFeature) {
-                    c = Calendar.getInstance();
-                    mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
-                }
-            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat))) {
-                mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
             } else switch (item.getFieldType()) {
                 case DATE:
                     Date date;
@@ -244,7 +239,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     break;
             }
         }
-
+        if (trangThai.equals(mContext.getString(R.string.SuCo_TrangThai_HoanThanh))) {
+            c = Calendar.getInstance();
+            mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
+        }
+        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
 
         mServiceFeatureTable.loadAsync();
         mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
@@ -257,8 +256,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                         mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
                             @Override
                             public void run() {
-                                if (isUpdateAttachment && mImage != null && mSelectedArcGISFeature.canEditAttachments()) {
-                                    addAttachment();
+                                if (isUpdateAttachment && mImage != null) {
+                                    if (mSelectedArcGISFeature.canEditAttachments())
+                                        addAttachment();
+                                    else applyEdit();
                                 } else {
                                     applyEdit();
 

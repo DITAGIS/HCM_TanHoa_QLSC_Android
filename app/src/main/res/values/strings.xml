@@ -101,10 +101,10 @@
     <string name="nav_cai_dat_tim_kiem_title">Tùy chọn tìm kiếm</string>
     <string name="nav_thong_ke">Thống kê</string>
     <string name="nav_thong_ke_tong_su_co">Tổng các sự cố: </string>
-    <string name="nav_thong_ke_chua_sua_chua">Chưa sửa chữa</string>
-    <string name="nav_thong_ke_dang_sua_chua">Đang sửa chữa</string>
-    <string name="nav_thong_ke_da_sua_chua">Đã sửa chữa</string>
-    <string name="nav_thong_ke_hoan_thanh">Hoàn thành</string>
+    <string name="SuCo_TrangThai_ChuaSuaChua">Chưa sửa chữa</string>
+    <string name="SuCo_TrangThai_DangSuaChua">Đang sửa chữa</string>
+    <string name="SuCo_TrangThai_DaSuaChua">Đã sửa chữa</string>
+    <string name="SuCo_TrangThai_HoanThanh">Hoàn thành</string>
 
     <!--async-->
     <string name="async_dang_xu_ly">Đang xử lý…</string>

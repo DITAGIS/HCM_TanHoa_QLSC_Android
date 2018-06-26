@@ -84,7 +84,6 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
-import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
@@ -964,6 +963,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 public void processFinish(ArcGISFeature arcGISFeature) {
 //                                    mPopUp.getDialog().dismiss();
                                     mPopUp.getCallout().dismiss();
+                                    if (!arcGISFeature.canEditAttachments())
+                                        MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
                                 }
                             });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
@@ -1000,6 +1001,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
                                     mPopUp.getCallout().dismiss();
+                                    if (!arcGISFeature.canEditAttachments())
+                                        MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
                                 }
                             });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);

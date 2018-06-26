@@ -313,9 +313,9 @@ public class ThongKeActivity extends AppCompatActivity {
         yVals1.add(new Entry(mDangSuaChua, 1));
         yVals1.add(new Entry(mHoanThanh, 2));
         ArrayList<String> xVals = new ArrayList<>();
-        xVals.add(getString(R.string.nav_thong_ke_chua_sua_chua));
-        xVals.add(getString(R.string.nav_thong_ke_dang_sua_chua));
-        xVals.add(getString(R.string.nav_thong_ke_hoan_thanh));
+        xVals.add(getString(R.string.SuCo_TrangThai_ChuaSuaChua));
+        xVals.add(getString(R.string.SuCo_TrangThai_DangSuaChua));
+        xVals.add(getString(R.string.SuCo_TrangThai_HoanThanh));
 
 
         PieDataSet set1 = new PieDataSet(yVals1, "");

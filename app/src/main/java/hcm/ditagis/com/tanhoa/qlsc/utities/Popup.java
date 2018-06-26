@@ -95,11 +95,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
     private String mIDSuCo;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private Button mBtnLeft;
 
     public DialogInterface getDialog() {
         return mDialog;
     }
 
+    public Button getmBtnLeft() {
+        return mBtnLeft;
+    }
 
     public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
                  Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS) {
@@ -205,7 +209,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         @SuppressLint("InflateParams") final View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAdapter.Item>());
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
-        Button btnLeft = layout.findViewById(R.id.btn_updateinfo_left);
+        mBtnLeft = layout.findViewById(R.id.btn_updateinfo_left);
         Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
 
@@ -229,9 +233,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (isAddFeature) {
-            btnLeft.setText(mMainActivity.getString(R.string.btnLeftAddFeature));
+            mBtnLeft.setText(mMainActivity.getString(R.string.btnLeftAddFeature));
             btnRight.setText(mMainActivity.getString(R.string.btnRightAddFeature));
-            btnLeft.setOnClickListener(new View.OnClickListener() {
+            mBtnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     EditAsync editAsync = new EditAsync(mMainActivity,
@@ -256,15 +260,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             });
         } else {
             layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
-            btnLeft.setText(mMainActivity.getString(R.string.btnLeftUpdateFeature));
+            mBtnLeft.setText(mMainActivity.getString(R.string.btnLeftUpdateFeature));
             btnRight.setText(mMainActivity.getString(R.string.btnRightUpdateFeature));
-            btnLeft.setOnClickListener(new View.OnClickListener() {
+            mBtnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean isComplete = false;
                     for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
                         if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_TrangThai))
-                                && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.nav_thong_ke_hoan_thanh))) {
+                                && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.SuCo_TrangThai_HoanThanh))) {
                             isComplete = true;
                         }
                     if (isComplete) {
@@ -277,7 +281,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     final List<Attachment> attachments = attachmentResults.get();
                                     int size = attachments.size();
                                     if (size == 0) {
-                                        Toast.makeText(layout.getContext(), R.string.message_ChupAnh_HoanThanh, Toast.LENGTH_LONG).show();
+                                        MySnackBar.make(mBtnLeft, R.string.message_ChupAnh_HoanThanh, true);
                                     } else {
                                         for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
                                             if (item.isMustEdit()) {
