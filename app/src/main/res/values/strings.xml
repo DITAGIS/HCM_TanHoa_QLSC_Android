@@ -263,7 +263,7 @@
     <string name="QuanTanBinhName">Tân Bình</string>
     <string name="QuanTanPhuName">Tân Phú</string>
     <string name="format_date_month_year">%02d_%02d_%d</string>
-    <string name="SoNha">SoNha</string>
+
     <string name="LoaiSuCo_OngNganh">Ống ngánh</string>
     <string name="LoaiSuCo_OngChinh">Ống chính</string>
 
@@ -301,6 +301,7 @@
     <string name="Field_SuCo_NhanVienGiamSat">CONGNHANTHUCHIEN</string>
     <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
     <string name="Field_MADMA">MADMA</string>
+    <string name="Field_SuCo_DiaChi">SoNha</string>
     <string name="Field_SuCo_VatTu">VatTu</string>
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
     <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>

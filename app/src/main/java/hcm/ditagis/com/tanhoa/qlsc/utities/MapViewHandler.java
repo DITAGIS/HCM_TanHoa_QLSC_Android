@@ -132,7 +132,8 @@ public class MapViewHandler extends Activity {
         final QueryParameters queryParameters = new QueryParameters();
         final String query = "OBJECTID = " + objectID;
         queryParameters.setWhereClause(query);
-        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+
+        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {
@@ -217,7 +218,7 @@ public class MapViewHandler extends Activity {
                         }
                         String viTri = "";
                         try {
-                            viTri = attributes.get(mContext.getString(R.string.Field_SuCo_ViTri)).toString();
+                            viTri = attributes.get(mContext.getString(R.string.Field_SuCo_DiaChi)).toString();
                         } catch (Exception ignored) {
 
                         }

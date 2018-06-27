@@ -107,7 +107,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LocationDisplay mLocationDisplay;
     private int requestCode = 2;
     private GraphicsOverlay mGraphicsOverlay;
-    private boolean isSearchingFeature = false;
+    private boolean mIsSearchingFeature = false;
     private LinearLayout mLayoutTimSuCo;
     private LinearLayout mLayoutTimDiaChi;
     private LinearLayout mLayoutTimKiem;
@@ -548,13 +548,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void optionSearchFeature() {
-        this.isSearchingFeature = true;
+        this.mIsSearchingFeature = true;
         mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_border_bottom);
         mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
 
     private void optionFindRoute() {
-        this.isSearchingFeature = false;
+        this.mIsSearchingFeature = false;
         mLayoutTimDiaChi.setBackgroundResource(R.drawable.layout_border_bottom);
         mLayoutTimSuCo.setBackgroundResource(R.drawable.layout_shape_basemap_none);
     }
@@ -626,7 +626,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public boolean onQueryTextSubmit(String query) {
                 try {
-                    if (isSearchingFeature && mMapViewHandler != null)
+                    if (mIsSearchingFeature && mMapViewHandler != null)
                         mMapViewHandler.querySearch(query, mSearchAdapter);
                     else if (query.length() > 0) {
                         deleteSearching();
@@ -663,7 +663,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (newText.trim().length() > 0) {
+                if (newText.trim().length() > 0 && !mIsSearchingFeature) {
                     mIsAddFeature = true;
                 } else {
                     mIsAddFeature = false;

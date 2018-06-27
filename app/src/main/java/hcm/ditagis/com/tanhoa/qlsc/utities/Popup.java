@@ -149,7 +149,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         String[] noDisplayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
         boolean isFoundField = false;
-        mIDSuCo = attributes.get(mMainActivity.getString(R.string.Field_SuCo_IDSuCo)).toString();
+        boolean isSuCoFeature = false;
+        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
+            isSuCoFeature = true;
+            mIDSuCo = attributes.get(mMainActivity.getString(R.string.Field_SuCo_IDSuCo)).toString();
+        }
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
             for (String noDisplayField : noDisplayFields)
                 if (noDisplayField.equals(field.getName())) {
@@ -175,7 +179,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
                     Object valueDomainObject = getValueDomain(codedValues, value.toString());
                     if (valueDomainObject != null) item.setValue(valueDomainObject.toString());
-                } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
+                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
                     StringBuilder builder = new StringBuilder();
                     this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
                     for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
