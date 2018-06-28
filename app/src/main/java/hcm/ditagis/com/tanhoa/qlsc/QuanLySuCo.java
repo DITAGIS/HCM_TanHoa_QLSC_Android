@@ -129,10 +129,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     public void setFeatureViewMoreInfoAdapter(FeatureViewMoreInfoAdapter featureViewMoreInfoAdapter) {
-        this.mFeatureViewMoreInfoAdapter = featureViewMoreInfoAdapter;
+        this.mFeatureUpdateAdapter = featureViewMoreInfoAdapter;
     }
 
-    private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
+    private FeatureViewMoreInfoAdapter mFeatureUpdateAdapter;
 
     public void setSelectedArcGISFeature(ArcGISFeature selectedArcGISFeature) {
         this.mSelectedArcGISFeature = selectedArcGISFeature;
@@ -956,6 +956,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                             Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
 //                            mMapViewHandler.addFeature(image);
 
+
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getFeatureLayer().getFeatureTable(), mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), true, new EditAsync.AsyncResponse() {
@@ -967,7 +968,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                         MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
                                 }
                             });
-                            editAsync.execute(mFeatureViewMoreInfoAdapter);
+                            editAsync.execute(mFeatureUpdateAdapter);
                         }
                     } catch (Exception ignored) {
                     }
@@ -1005,7 +1006,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                         MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
                                 }
                             });
-                            editAsync.execute(mFeatureViewMoreInfoAdapter);
+                            editAsync.execute(mFeatureUpdateAdapter);
                         }
                     } catch (Exception ignored) {
                     }

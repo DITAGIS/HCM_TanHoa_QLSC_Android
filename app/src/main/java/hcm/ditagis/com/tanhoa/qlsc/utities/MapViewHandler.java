@@ -86,8 +86,13 @@ public class MapViewHandler extends Activity {
             @Override
             public void processFinish(Feature output) {
                 if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
-                    mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
-                    mPopUp.showPopup((ArcGISFeature) output, true);
+                    ArcGISFeature arcGISFeature = (ArcGISFeature) output;
+                    if (arcGISFeature.canEditAttachments() && arcGISFeature.canUpdateGeometry()) {
+                        mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
+                        mPopUp.showPopup(arcGISFeature, true);
+                    } else {
+                        MySnackBar.make(mMapView, "Điểm sự cố vừa thêm bị lỗi\nVui lòng liên hệ admin để xử lý", true);
+                    }
                 }
             }
         });

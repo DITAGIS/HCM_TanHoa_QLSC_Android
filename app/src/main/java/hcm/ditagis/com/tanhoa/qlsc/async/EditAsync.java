@@ -75,10 +75,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
-        FeatureViewMoreInfoAdapter adapter = params[0];
-        Calendar c = Calendar.getInstance();
+        final FeatureViewMoreInfoAdapter adapter = params[0];
+        final Calendar[] c = {Calendar.getInstance()};
 
         String loaiSuCo = "";
+        short loaiSuCoShort = 0;
         String trangThai = "";
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_LoaiSuCo))) {
@@ -87,165 +88,16 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
             } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_TrangThai)))
                 trangThai = item.getValue();
         }
-        for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
-            if (item.getValue() == null) continue;
-            Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
-            Object codeDomain = null;
-            if (domain != null) {
-                //Trường hợp nguyên nhân, không tự động lấy được domain
-                if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NguyenNhan))) {
-                    if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))) {
-                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(0).getDomains().get(mContext.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-                    } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
-                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(1).getDomains().get(mContext.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-
-                    } else {
-                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-                //Trường hợp vật liệu, không tự động lấy được domain
-                else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatLieu))) {
-                    if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))) {
-                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(0).getDomains().get(mContext.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-                    } else if (loaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
-                        List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(1).getDomains().get(mContext.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-                    } else {
-                        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
-                        if (codedValues != null) {
-                            for (CodedValue codedValue : codedValues) {
-                                if (codedValue.getName().equals(item.getValue())) {
-                                    codeDomain = codedValue.getCode();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
-                    codeDomain = getCodeDomain(codedValues, item.getValue());
-                }
-            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTu))) {
-                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
-                if (mListHoSoVatTuSuCo.size() > 0)
-                    hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCo.get(0).getIdSuCo());
-                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-                    hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
-                }
-            }
-            if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
-                List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
-                Object idFeatureTypes = getIdFeatureTypes(featureTypes, item.getValue());
-                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(idFeatureTypes.toString()));
-
-            } else switch (item.getFieldType()) {
-                case DATE:
-                    Date date;
-                    try {
-
-                        date = Constant.DATE_FORMAT_VIEW.parse(item.getValue());
-                        c.setTime(date);
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c);
-                    } catch (ParseException e) {
-                        try {
-                            date = Constant.DATE_FORMAT.parse(item.getValue());
-                            c.setTime(date);
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c);
-                        } catch (ParseException ignored) {
-
-                        }
-
-                    }
-                    break;
-
-                case TEXT:
-                    if (codeDomain != null) {
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), codeDomain.toString());
-                    } else
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
-                    break;
-                case SHORT:
-                    if (codeDomain != null) {
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(codeDomain.toString()));
-                    } else
-                        try {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(item.getValue()));
-                        } catch (NumberFormatException e) {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
-                        }
-                    break;
-                case DOUBLE:
-                    if (codeDomain != null) {
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Double.parseDouble(codeDomain.toString()));
-                    } else
-                        try {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Double.parseDouble(item.getValue()));
-                        } catch (NumberFormatException e) {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
-                        }
-                    break;
-                case INTEGER:
-                    if (codeDomain != null) {
-                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Integer.parseInt(codeDomain.toString()));
-                    } else
-                        try {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Integer.parseInt(item.getValue()));
-                        } catch (NumberFormatException e) {
-                            mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
-                        }
-                    break;
-            }
+        List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
+        Object idFeatureTypes = getIdFeatureTypes(featureTypes, loaiSuCo);
+        if (idFeatureTypes != null) {
+            loaiSuCoShort = Short.parseShort(idFeatureTypes.toString());
+            mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_LoaiSuCo), loaiSuCoShort);
         }
-        if (trangThai.equals(mContext.getString(R.string.SuCo_TrangThai_HoanThanh))) {
-            c = Calendar.getInstance();
-            mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c);
-        }
-        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
-
         mServiceFeatureTable.loadAsync();
+        final String finalLoaiSuCo = loaiSuCo;
+        final short finalLoaiSuCoShort = loaiSuCoShort;
+        final String finalTrangThai = trangThai;
         mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
             @Override
             public void run() {
@@ -254,24 +106,177 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     @Override
                     public void run() {
                         mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
+
                             @Override
                             public void run() {
-                                if (isUpdateAttachment && mImage != null) {
-                                    if (mSelectedArcGISFeature.canEditAttachments())
-                                        addAttachment();
-                                    else applyEdit();
-                                } else {
-                                    applyEdit();
+                                for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
+                                    if (item.getValue() == null || !item.isEdit()) continue;
+                                    Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
+                                    Object codeDomain = null;
+                                    if (domain != null) {
+                                        //Trường hợp nguyên nhân, không tự động lấy được domain
+                                        if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_NguyenNhan))) {
+                                            if (finalLoaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))
+                                                    || finalLoaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
+                                                //todo loaiSuCo - 1 chưa rõ nguyên nhân
+                                                List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                                        .get(finalLoaiSuCoShort - 1).getDomains().get(mContext.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
+                                                if (codedValues != null) {
+                                                    for (CodedValue codedValue : codedValues) {
+                                                        if (codedValue.getName().equals(item.getValue())) {
+                                                            codeDomain = codedValue.getCode();
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                                                if (codedValues != null) {
+                                                    for (CodedValue codedValue : codedValues) {
+                                                        if (codedValue.getName().equals(item.getValue())) {
+                                                            codeDomain = codedValue.getCode();
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        //Trường hợp vật liệu, không tự động lấy được domain
+                                        else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatLieu))) {
+                                            if (finalLoaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngNganh))
+                                                    || finalLoaiSuCo.equals(mContext.getString(R.string.LoaiSuCo_OngChinh))) {
+                                                List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
+                                                        .get(finalLoaiSuCoShort - 1).getDomains().get(mContext.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
+                                                if (codedValues != null) {
+                                                    for (CodedValue codedValue : codedValues) {
+                                                        if (codedValue.getName().equals(item.getValue())) {
+                                                            codeDomain = codedValue.getCode();
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            } else {
+                                                List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
+                                                if (codedValues != null) {
+                                                    for (CodedValue codedValue : codedValues) {
+                                                        if (codedValue.getName().equals(item.getValue())) {
+                                                            codeDomain = codedValue.getCode();
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                                            codeDomain = getCodeDomain(codedValues, item.getValue());
+                                        }
+                                    } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTu))) {
+                                        HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
+                                        if (mListHoSoVatTuSuCo.size() > 0)
+                                            hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCo.get(0).getIdSuCo());
+                                        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+                                            hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
+                                        }
+                                        continue;
+                                    }
+                                    if (item.getFieldName().equals(mSelectedArcGISFeature.getFeatureTable().getTypeIdField())) {
+                                        mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), finalLoaiSuCoShort);
+                                    } else switch (item.getFieldType()) {
+                                        case DATE:
+                                            Date date;
+                                            try {
 
+                                                date = Constant.DATE_FORMAT_VIEW.parse(item.getValue());
+                                                c[0].setTime(date);
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c[0]);
+                                            } catch (ParseException e) {
+                                                try {
+                                                    date = Constant.DATE_FORMAT.parse(item.getValue());
+                                                    c[0].setTime(date);
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), c[0]);
+                                                } catch (ParseException ignored) {
+
+                                                }
+
+                                            }
+                                            break;
+
+                                        case TEXT:
+                                            if (codeDomain != null) {
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), codeDomain.toString());
+                                            } else
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
+                                            break;
+                                        case SHORT:
+                                            if (codeDomain != null) {
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(codeDomain.toString()));
+                                            } else
+                                                try {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Short.parseShort(item.getValue()));
+                                                } catch (NumberFormatException e) {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
+                                                }
+                                            break;
+                                        case DOUBLE:
+                                            if (codeDomain != null) {
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Double.parseDouble(codeDomain.toString()));
+                                            } else
+                                                try {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Double.parseDouble(item.getValue()));
+                                                } catch (NumberFormatException e) {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
+                                                }
+                                            break;
+                                        case INTEGER:
+                                            if (codeDomain != null) {
+                                                mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Integer.parseInt(codeDomain.toString()));
+                                            } else
+                                                try {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), Integer.parseInt(item.getValue()));
+                                                } catch (NumberFormatException e) {
+                                                    mSelectedArcGISFeature.getAttributes().put(item.getFieldName(), item.getValue());
+                                                }
+                                            break;
+                                    }
                                 }
+                                if (finalTrangThai.equals(mContext.getString(R.string.SuCo_TrangThai_HoanThanh)))
 
+                                {
+                                    c[0] = Calendar.getInstance();
+                                    mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c[0]);
+                                }
+                                mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
 
+                                mServiceFeatureTable.loadAsync();
+                                mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // update feature in the feature table
+                                        mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature).addDoneListener(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (isUpdateAttachment && mImage != null) {
+                                                            if (mSelectedArcGISFeature.canEditAttachments())
+                                                                addAttachment();
+                                                            else
+                                                                applyEdit();
+                                                        } else {
+                                                            applyEdit();
+
+                                                        }
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
                 });
-
-
             }
         });
         return null;

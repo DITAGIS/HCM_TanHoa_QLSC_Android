@@ -34,10 +34,4 @@
     <integer name="trang_thai_dang_sua_chua">1</integer>
     <integer name="trang_thai_da_sua_chua">2</integer>
     <integer name="trang_thai_hoan_thanh">3</integer>
-
-
-    <integer name="loai_su_co_ongnganh">0</integer>
-    <integer name="loai_su_co_ongchinh">1</integer>
-    <integer name="loai_su_co_chuaphanloai">2</integer>
-
 </resources>
