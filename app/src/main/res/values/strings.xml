@@ -308,5 +308,7 @@
     <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
     <string name="message_soluong_themvattu">Số lượng không được để trống</string>
     <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
+    <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
+    <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
     <!--field sự cố end-->
 </resources>

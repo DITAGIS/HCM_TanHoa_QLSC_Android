@@ -382,9 +382,19 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 }
             });
-            if (layer.getName().equals(getString(R.string.ALIAS_DIEM_SU_CO)))
+            if (layer.getName().equals(getString(R.string.ALIAS_DIEM_SU_CO))) {
+                checkBox.setChecked(true);
+                for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
+                    if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
+                            && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
+                        tmpFeatureLayerDTGs.add(featureLayerDTG);
+                        layer.setVisible(true);
+                        break;
+                    }
+                if (mMapViewHandler != null)
+                    mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
                 layoutDisplayLayerDiemSuCo.addView(checkBox);
-            else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
+            } else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
                     || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
                     || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
                     || layer.getName().equals(getString(R.string.ALIAS_HANH_CHINH)))
