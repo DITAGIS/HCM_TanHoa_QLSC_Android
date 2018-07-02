@@ -75,6 +75,7 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 @SuppressLint("Registered")
 public class Popup extends AppCompatActivity implements View.OnClickListener {
+    private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private List<String> mListDMA, mListTenVatTuOngChinh, mListTenVatTuOngNganh;
     private List<VatTu> mListVatTuOngChinh, mListVatTuOngNganh;
     private List<Object> mListObjectDB;
@@ -84,7 +85,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private Callout mCallout;
     private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
-    private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
     private DialogInterface mDialog;
     private LinearLayout linearLayout;
@@ -97,14 +97,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private String mIDSuCo;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     private Button mBtnLeft;
-
-    public DialogInterface getDialog() {
-        return mDialog;
-    }
-
-    public Button getmBtnLeft() {
-        return mBtnLeft;
-    }
 
     public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
                  Callout callout, LocationDisplay locationDisplay, List<Object> listObjectDB, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS) {
@@ -126,6 +118,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             mListTenVatTuOngNganh.add(vatTu.getTenVatTu());
 
         this.mFeatureLayerDTGS = featureLayerDTGS;
+    }
+
+    public DialogInterface getDialog() {
+        return mDialog;
+    }
+
+    public Button getmBtnLeft() {
+        return mBtnLeft;
     }
 
     public Callout getCallout() {
@@ -204,7 +204,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
 
                         }
-                    } else {
+                    }  else {
                         codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
 
                     }
@@ -665,8 +665,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             spin.setSelection(codes.indexOf(item.getValue()));
     }
 
-    private void loadDataEdit_DuongKinhOng(FeatureViewMoreInfoAdapter.Item item, LinearLayout
-            layout) {
+    private void loadDataEdit_DuongKinhOng(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
@@ -686,6 +685,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         if (item.getValue() != null)
             spin.setSelection(codes.indexOf(item.getValue()));
     }
+
 
 
     private void loadDataEdit_VatTu(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
@@ -928,6 +928,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     for (String field_subtype : field_subtypeArr) {
                         if (item1.getFieldName().equals(field_subtype)) {
                             item1.setValue("");
+                            item1.setEdited(true);
                             ((FeatureViewMoreInfoAdapter) parent.getAdapter()).notifyDataSetChanged();
                             break;
                         }
