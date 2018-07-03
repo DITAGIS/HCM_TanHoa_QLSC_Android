@@ -237,6 +237,7 @@
     <string name="format_new_line">\n%s</string>
     <string name="format_newline_address">\n%s %s</string>
     <string name="format_monthyear">%02d/%d</string>
+    <string name="format_definitionExp_DiemSuCo">trangthai = 0 or trangthai = 1 or (trangthai = 3 and (ngayxayra >= date\'%s\'))</string>
     <!--string format end-->
 
     <string name="trangthai">TrangThai</string>

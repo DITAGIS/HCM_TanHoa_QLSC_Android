@@ -172,41 +172,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="invisible" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:onClick="onClickTextView"
-                        android:text="Ẩn/hiện dữ liệu sự cố"
-                        android:textColor="@color/colorTextColor_1" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linnearDisplayLayerDiemSuCo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@android:color/black" />
 
                 <LinearLayout
                     android:layout_width="match_parent"

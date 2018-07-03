@@ -95,6 +95,7 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Preference;
+import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
     private List<Object> mListObjectDB;
@@ -317,6 +318,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             featureLayerDTG.setUpdateFields(config.getUpdateField());
             mFeatureLayerDTG = featureLayerDTG;
             if (config.getName() != null && config.getName().equals(getString(R.string.Name_DiemSuCo))) {
+                TimePeriodReport timePeriodReport = new TimePeriodReport(this);
+                featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo), timePeriodReport.getItems().get(2).getThoigianbatdau()));
                 featureLayer.setId(config.getName());
                 Callout callout = mMapView.getCallout();
                 mPopUp = new Popup(QuanLySuCo.this, mMapView, serviceFeatureTable, callout, mLocationDisplay, mListObjectDB, mGeocoder, mFeatureLayerDTGS);
@@ -342,8 +345,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         mLayoutDisplayLayerFeature.removeAllViews();
         mLayoutDisplayLayerAdministration = findViewById(R.id.linnearDisplayLayerAdministration);
         mLayoutDisplayLayerAdministration.removeAllViews();
-        LinearLayout layoutDisplayLayerDiemSuCo = findViewById(R.id.linnearDisplayLayerDiemSuCo);
-        layoutDisplayLayerDiemSuCo.removeAllViews();
 
         LayerList layers = mMap.getOperationalLayers();
         int states[][] = {{android.R.attr.state_checked}, {}};
@@ -425,7 +426,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     }
                 if (mMapViewHandler != null)
                     mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
-                layoutDisplayLayerDiemSuCo.addView(layoutFeature);
             } else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
                     || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
                     || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
