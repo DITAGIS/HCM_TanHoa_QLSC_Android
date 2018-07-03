@@ -42,6 +42,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -301,10 +302,10 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(config.getUrl());
 
             FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH))
-                    || config.getAlias().equals(getString(R.string.ALIAS_DMA))
-                    || config.getAlias().equals(getString(R.string.ALIAS_THUA_DAT)))
-                featureLayer.setOpacity(0.7f);
+//            if (config.getAlias().equals(getString(R.string.ALIAS_HANH_CHINH))
+//                    || config.getAlias().equals(getString(R.string.ALIAS_DMA))
+//                    || config.getAlias().equals(getString(R.string.ALIAS_THUA_DAT)))
+//                featureLayer.setOpacity(0.7f);
             featureLayer.setName(config.getAlias());
             featureLayer.setMaxScale(0);
 
@@ -348,8 +349,38 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         int states[][] = {{android.R.attr.state_checked}, {}};
         int colors[] = {R.color.colorTextColor_1, R.color.colorTextColor_1};
         for (final Layer layer : layers) {
-            final CheckBox checkBox = new CheckBox(mLayoutDisplayLayerFeature.getContext());
-            checkBox.setText(layer.getName());
+
+            LinearLayout layoutFeature = (LinearLayout) getLayoutInflater().inflate(R.layout.layout_feature, null);
+            final SeekBar seekBar = layoutFeature.findViewById(R.id.skbr_layout_feature);
+            final CheckBox checkBox = layoutFeature.findViewById(R.id.ckb_layout_feature);
+            final TextView textView = layoutFeature.findViewById(R.id.txt_layout_feature);
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+            textView.setText(layer.getName());
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (seekBar.getVisibility() == View.VISIBLE)
+                        seekBar.setVisibility(View.GONE);
+                    else seekBar.setVisibility(View.VISIBLE);
+                }
+            });
+
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    layer.setOpacity((float) i / 100);
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
             checkBox.setChecked(false);
             layer.setVisible(false);
             CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
@@ -360,7 +391,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                     if (buttonView.isChecked()) {
                         for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
-                            if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
+                            if (featureLayerDTG.getTitleLayer().contentEquals(textView.getText())
                                     && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
                                 tmpFeatureLayerDTGs.add(featureLayerDTG);
                                 layer.setVisible(true);
@@ -369,7 +400,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                     } else {
                         for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
-                            if (featureLayerDTG.getTitleLayer().contentEquals(checkBox.getText())
+                            if (featureLayerDTG.getTitleLayer().contentEquals(textView.getText())
                                     && tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
                                 tmpFeatureLayerDTGs.remove(featureLayerDTG);
                                 layer.setVisible(false);
@@ -382,6 +413,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                 }
             });
+
             if (layer.getName().equals(getString(R.string.ALIAS_DIEM_SU_CO))) {
                 checkBox.setChecked(true);
                 for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
@@ -393,14 +425,14 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     }
                 if (mMapViewHandler != null)
                     mMapViewHandler.setFeatureLayerDTGs(tmpFeatureLayerDTGs);
-                layoutDisplayLayerDiemSuCo.addView(checkBox);
+                layoutDisplayLayerDiemSuCo.addView(layoutFeature);
             } else if (layer.getName().equals(getString(R.string.ALIAS_THUA_DAT))
                     || layer.getName().equals(getString(R.string.ALIAS_SONG_HO))
                     || layer.getName().equals(getString(R.string.ALIAS_GIAO_THONG))
                     || layer.getName().equals(getString(R.string.ALIAS_HANH_CHINH)))
-                mLayoutDisplayLayerAdministration.addView(checkBox);
+                mLayoutDisplayLayerAdministration.addView(layoutFeature);
             else
-                mLayoutDisplayLayerFeature.addView(checkBox);
+                mLayoutDisplayLayerFeature.addView(layoutFeature);
         }
     }
 
@@ -781,6 +813,61 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 else
                     mLayoutDisplayLayerFeature.setVisibility(View.VISIBLE);
                 break;
+        }
+    }
+
+    public void onClickCheckBox(View v) {
+        if (v instanceof CheckBox) {
+            CheckBox checkBox = (CheckBox) v;
+            switch (v.getId()) {
+                case R.id.ckb_quanlysuco_hanhchinh:
+
+                    for (int i = 0; i < mLayoutDisplayLayerAdministration.getChildCount(); i++) {
+                        View view = mLayoutDisplayLayerAdministration.getChildAt(i);
+                        if (view instanceof LinearLayout) {
+                            LinearLayout layoutFeature = (LinearLayout) view;
+                            for (int j = 0; j < layoutFeature.getChildCount(); j++) {
+                                View view1 = layoutFeature.getChildAt(j);
+                                if (view1 instanceof LinearLayout) {
+                                    LinearLayout layoutCheckBox = (LinearLayout) view1;
+                                    for (int k = 0; k < layoutCheckBox.getChildCount(); k++) {
+                                        View view2 = layoutCheckBox.getChildAt(k);
+                                        if (view2 instanceof CheckBox) {
+                                            CheckBox checkBoxK = (CheckBox) view2;
+                                            if (checkBox.isChecked())
+                                                checkBoxK.setChecked(true);
+                                            else checkBoxK.setChecked(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+                case R.id.ckb_quanlysuco_dulieu:
+                    for (int i = 0; i < mLayoutDisplayLayerFeature.getChildCount(); i++) {
+                        View view = mLayoutDisplayLayerFeature.getChildAt(i);
+                        if (view instanceof LinearLayout) {
+                            LinearLayout layoutFeature = (LinearLayout) view;
+                            for (int j = 0; j < layoutFeature.getChildCount(); j++) {
+                                View view1 = layoutFeature.getChildAt(j);
+                                if (view1 instanceof LinearLayout) {
+                                    LinearLayout layoutCheckBox = (LinearLayout) view1;
+                                    for (int k = 0; k < layoutCheckBox.getChildCount(); k++) {
+                                        View view2 = layoutCheckBox.getChildAt(k);
+                                        if (view2 instanceof CheckBox) {
+                                            CheckBox checkBoxK = (CheckBox) view2;
+                                            if (checkBox.isChecked())
+                                                checkBoxK.setChecked(true);
+                                            else checkBoxK.setChecked(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
         }
     }
 

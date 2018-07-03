@@ -36,6 +36,7 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="60dp"
+        android:alpha="0.9"
         android:animateLayoutChanges="true"
         android:background="@drawable/layout_shape"
         android:orientation="vertical"
@@ -72,7 +73,6 @@
             android:weightSum="3">
 
 
-
             <LinearLayout
                 android:id="@+id/layout_layer_open_street_map"
                 android:layout_width="0dp"
@@ -84,8 +84,8 @@
 
                 <ImageView
                     android:id="@+id/img_layer_open_street_map"
-                    android:layout_width="80dp"
-                    android:layout_height="65dp"
+                    android:layout_width="65dp"
+                    android:layout_height="55dp"
                     android:background="@drawable/layout_shape_basemap"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/open_street_map" />
@@ -113,8 +113,8 @@
 
                 <ImageView
                     android:id="@+id/img_layer_street_map"
-                    android:layout_width="80dp"
-                    android:layout_height="65dp"
+                    android:layout_width="65dp"
+                    android:layout_height="55dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/street_map" />
 
@@ -140,8 +140,8 @@
 
                 <ImageView
                     android:id="@+id/img_layer_image"
-                    android:layout_width="80dp"
-                    android:layout_height="65dp"
+                    android:layout_width="65dp"
+                    android:layout_height="55dp"
                     android:contentDescription="@string/todo"
                     android:src="@drawable/imagery_with_labels" />
 
@@ -172,16 +172,27 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/txt_quanlysuco_diemsuco"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="onClickTextView"
-                    android:text="Ẩn/hiện dữ liệu sự cố"
-                    android:textColor="@color/colorTextColor_1" />
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="invisible" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClickTextView"
+                        android:text="Ẩn/hiện dữ liệu sự cố"
+                        android:textColor="@color/colorTextColor_1" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linnearDisplayLayerDiemSuCo"
@@ -197,16 +208,29 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:background="@android:color/black" />
 
-                <TextView
-                    android:id="@+id/txt_quanlysuco_hanhchinh"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="onClickTextView"
-                    android:text="Ẩn/hiện dữ liệu hành chính"
-                    android:textColor="@color/colorTextColor_1" />
+                    android:orientation="horizontal">
+
+                    <CheckBox
+                        android:id="@+id/ckb_quanlysuco_hanhchinh"
+                        android:layout_width="wrap_content"
+                        android:onClick="onClickCheckBox"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/txt_quanlysuco_hanhchinh"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClickTextView"
+                        android:text="Ẩn/hiện dữ liệu hành chính"
+                        android:textColor="@color/colorTextColor_1" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/linnearDisplayLayerAdministration"
@@ -222,18 +246,30 @@
                     android:layout_marginTop="@dimen/margin_small"
                     android:background="@android:color/black" />
 
-
-                <TextView
-                    android:id="@+id/txt_quanlysuco_dulieu"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    android:layout_gravity="center_vertical"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="onClickTextView"
-                    android:text="Ẩn/hiện lớp dữ liệu"
-                    android:textColor="@color/colorTextColor_1" />
+                    <CheckBox
+                        android:id="@+id/ckb_quanlysuco_dulieu"
+                        android:layout_width="wrap_content"
+                        android:onClick="onClickCheckBox"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/txt_quanlysuco_dulieu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+
+                        android:layout_gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="onClickTextView"
+                        android:text="Ẩn/hiện lớp dữ liệu"
+                        android:textColor="@color/colorTextColor_1" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/linnearDisplayLayerFeature"

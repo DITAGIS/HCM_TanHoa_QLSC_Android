@@ -68,7 +68,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         super.onPreExecute();
         mDialog.setMessage(mContext.getString(R.string.async_dang_xu_ly));
         mDialog.setCancelable(false);
-
         mDialog.show();
 
     }
@@ -76,6 +75,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         final FeatureViewMoreInfoAdapter adapter = params[0];
+        mDialog.setMax(adapter.getCount());
         final Calendar[] c = {Calendar.getInstance()};
 
         String loaiSuCo = "";
@@ -112,6 +112,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 //
 //                            @Override
 //                            public void run() {
+
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
             if (item.getValue() == null || !item.isEdit() || !item.isEdited()) continue;
             Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
