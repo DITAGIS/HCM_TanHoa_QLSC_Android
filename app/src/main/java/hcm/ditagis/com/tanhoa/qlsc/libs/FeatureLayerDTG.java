@@ -8,7 +8,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
  * Created by NGUYEN HONG on 3/14/2018.
  */
 
-public class FeatureLayerDTG {
+public class FeatureLayerDTG{
 
 
     private FeatureLayer featureLayer;

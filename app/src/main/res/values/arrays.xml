@@ -23,7 +23,6 @@
         <item>VatTu</item>
         <item>KetQuaKiemTra</item>
         <item>ApLuc</item>
-        <item>ThoiGianThucHien</item>
         <item>VatLieuOng</item>
         <item>@string/Field_SuCo_LoaiSuCo</item>
         <item>SDTNguoiBao</item>
@@ -53,7 +52,6 @@
     <string-array name="no_display_fields_arrays">
         <item>OBJECTID</item>
         <item>VatLieuOng</item>
-        <item>NgaySuaChua</item>
         <item>GlobalID</item>
         <item>TENDMA</item>
         <item>MaDuong</item>

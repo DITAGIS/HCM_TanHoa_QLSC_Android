@@ -11,7 +11,6 @@ import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
-import com.esri.arcgisruntime.data.Field;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Envelope;
@@ -173,38 +172,38 @@ public class MapViewHandler extends Activity {
         suCoTanHoaLayer.clearSelection();
         QueryParameters queryParameters = new QueryParameters();
         StringBuilder builder = new StringBuilder();
-        for (Field field : mServiceFeatureTable.getFields()) {
-            switch (field.getFieldType()) {
-                case OID:
-                case INTEGER:
-                case SHORT:
-                    try {
-                        int search = Integer.parseInt(searchStr);
-                        builder.append(String.format("%s = %s", field.getName(), search));
-                        builder.append(" or ");
-                    } catch (Exception ignored) {
-
-                    }
-                    break;
-                case FLOAT:
-                case DOUBLE:
-                    try {
-                        double search = Double.parseDouble(searchStr);
-                        builder.append(String.format("%s = %s", field.getName(), search));
-                        builder.append(" or ");
-                    } catch (Exception ignored) {
-
-                    }
-                    break;
-                case TEXT:
-                    builder.append(field.getName()).append(" like N'%").append(searchStr).append("%'");
-                    builder.append(" or ");
-                    break;
-            }
-        }
-        builder.append(" 1 = 2 ");
+//        for (Field field : mServiceFeatureTable.getFields()) {
+//            switch (field.getFieldType()) {
+//                case INTEGER:
+//                case SHORT:
+//                    try {
+//                        int search = Integer.parseInt(searchStr);
+//                        builder.append(String.format("%s = %s", field.getName(), search));
+//                        builder.append(" or ");
+//                    } catch (Exception ignored) {
+//
+//                    }
+//                    break;
+//                case FLOAT:
+//                case DOUBLE:
+//                    try {
+//                        double search = Double.parseDouble(searchStr);
+//                        builder.append(String.format("%s = %s", field.getName(), search));
+//                        builder.append(" or ");
+//                    } catch (Exception ignored) {
+//
+//                    }
+//                    break;
+//                case TEXT:
+//                    builder.append(field.getName()).append(" like N'%").append(searchStr).append("%'");
+//                    builder.append(" or ");
+//                    break;
+//            }
+//        }
+        builder.append("SoNha  like N'%").append(searchStr).append("%'");
+//        builder.append(" 1 = 2 ");
         queryParameters.setWhereClause(builder.toString());
-        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters);
+        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {

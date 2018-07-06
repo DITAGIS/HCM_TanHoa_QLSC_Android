@@ -119,6 +119,7 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-dynamic-links-12.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test.espresso:espresso-idling-resource-2.2.2" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-gass-12.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.java-websocket:Java-WebSocket:1.3.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-games-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-cast-framework-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-analytics-impl-12.0.1" level="project" />
@@ -210,6 +211,7 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-config-12.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: com.android.support.test:exposed-instrumentation-api-publish-0.5" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-drive-license-12.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.json:json:20090211@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-database-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-auth-base-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:design-26.1.0" level="project" />
@@ -230,6 +232,7 @@
     <orderEntry type="library" name="Gradle: com.android.support:appcompat-v7-26.1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-vision-common-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:common:1.0.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.nkzawa:socket.io-client:0.3.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-crash-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-analytics-impl-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-base-license-12.0.1" level="project" />
@@ -252,6 +255,7 @@
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-messaging-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-identity-license-12.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.google.firebase:firebase-appindexing-license-12.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.github.nkzawa:engine.io-client:0.3.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-wearable-license-12.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-integration:1.3@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-library:1.3@jar" level="project" />

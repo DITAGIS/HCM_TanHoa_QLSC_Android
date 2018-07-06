@@ -29,6 +29,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -172,6 +173,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private void prepare() {
         // create an empty map instance
         setLicense();
+//        Notice.getInstance(this).emit("test", "from admin: add feature 23409532423");
+
         mGeocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
         mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -664,6 +667,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         getMenuInflater().inflate(R.menu.quan_ly_su_co, menu);
         mTxtSearchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         mTxtSearchView.setQueryHint(getString(R.string.title_search));
+        mTxtSearchView.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         mTxtSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

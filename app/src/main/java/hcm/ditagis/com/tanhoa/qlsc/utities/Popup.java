@@ -281,7 +281,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         }
                     });
                     editAsync.execute(mFeatureViewMoreInfoAdapter);
-
                 }
             });
             btnRight.setOnClickListener(new View.OnClickListener() {

@@ -1,9 +1,10 @@
-<!DOCTYPE resources [<!ENTITY table_temp_docso "#docsotemp"><!ENTITY table_docso "Docso"><!ENTITY table_lichsuds "LichSuDS"><!ENTITY table_khachhang "KhachHang1"><!ENTITY table_hinhdhn "Docsoth_hinh..HinhDHN">]>
+<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_docso "Docso"><!ENTITY table_lichsuds "LichSuDS"><!ENTITY table_khachhang "KhachHang1"><!ENTITY table_hinhdhn "Docsoth_hinh..HinhDHN">]>
 <resources>
+    <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="license">runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169</string>
-    <string name="action_search">Tìm kiếm</string>
+    <string name="action_search_title">Tìm kiếm</string>
     <string name="changepassword_oldpassword">Nhập mật khẩu cũ</string>
     <string name="changepassword_newpassword">Nhập mật khẩu mới</string>
     <string name="changepassword_newpasswordconfirm">Nhập lại mật khẩu mới</string>
@@ -49,22 +50,22 @@
     <string name="ALIAS_GIAO_THONG">Giao thông</string>
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
-    <string name="URL_DIEM_SU_CO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
-    <string name="URL_DONG_HO_KHACH_HANG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
-    <string name="URL_DONG_HO_TONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
-    <string name="URL_ONG_NGANH">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
-    <string name="URL_ONG_PHAN_PHOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
-    <string name="URL_ONG_TRUYEN_DAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
-    <string name="URL_MOI_NOI">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
-    <string name="URL_TRU_HONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/6</string>
-    <string name="URL_VAN">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
-    <string name="URL_DIEM_AP_LUC">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
-    <string name="URL_DIEM_CUOI_ONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DMA">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
-    <string name="URL_THUA_DAT">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
-    <string name="URL_SONG_HO">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
-    <string name="URL_GIAO_THONG">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
-    <string name="URL_HANH_CHINH">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3</string>
+    <string name="URL_DIEM_SU_CO">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <string name="URL_DONG_HO_KHACH_HANG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
+    <string name="URL_DONG_HO_TONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
+    <string name="URL_ONG_NGANH">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
+    <string name="URL_ONG_PHAN_PHOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
+    <string name="URL_ONG_TRUYEN_DAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
+    <string name="URL_MOI_NOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
+    <string name="URL_TRU_HONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/6</string>
+    <string name="URL_VAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
+    <string name="URL_DIEM_AP_LUC">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
+    <string name="URL_DIEM_CUOI_ONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
+    <string name="URL_DMA">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
+    <string name="URL_THUA_DAT">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
+    <string name="URL_SONG_HO">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
+    <string name="URL_GIAO_THONG">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
+    <string name="URL_HANH_CHINH">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3</string>
     <!--URL START-->
     <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
     <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
@@ -75,8 +76,8 @@
     <string name="attachment">attachment</string>
     <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
     <!--<string name="service_feature_table">https://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
-    <string name="world_elevation_service">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
-    <string name="service_feature_table">http://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <string name="world_elevation_service">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
+    <string name="service_feature_table">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
 
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
@@ -84,7 +85,7 @@
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!--thông báo-->
-    <string name="title_search">Tìm kiếm mọi thứ…</string>
+    <string name="title_search">Tìm kiếm theo địa chỉ…</string>
     <string name="notify_add_feature">Vui lòng click vào một điểm trên bản đồ để thêm một sự cố</string>
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
 
@@ -146,8 +147,8 @@
 
     <string name="action_logout">Đăng xuất</string>
     <string name="validate_no_connect">Không có kết nối internet</string>
-    <string name="info_login_empty">Danh bạ hoặc mật khẩu không được để trống</string>
-    <string name="validate_login_fail">Sai danh bạ hoặc mật khẩu</string>
+    <string name="info_login_empty">Tên đăng nhập hoặc mật khẩu không được để trống</string>
+    <string name="validate_login_fail">Sai tên đăng nhập hoặc mật khẩu</string>
     <string name="validate_hieuluc">Đồng hồ của khách hàng đã không còn hiệu lực\nVui lòng liên hệ công ty Cấp nước Tân Hòa\nđể biết thêm thông tin</string>
     <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
 
@@ -301,6 +302,7 @@
     <string name="Field_SuCo_NguoiBaoSuCo">NGUOICAPNHAT</string>
     <string name="Field_SuCo_NhanVienGiamSat">CONGNHANTHUCHIEN</string>
     <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
+    <string name="Field_SuCo_ThoiGianThucHien">ThoiGianThucHien</string>
     <string name="Field_MADMA">MADMA</string>
     <string name="Field_SuCo_DiaChi">SoNha</string>
     <string name="Field_SuCo_VatTu">VatTu</string>

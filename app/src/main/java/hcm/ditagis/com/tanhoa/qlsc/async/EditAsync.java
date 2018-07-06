@@ -16,6 +16,8 @@ import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -240,12 +242,17 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                         }
                     break;
             }
+            hasDomain = false;
         }
         if (finalTrangThai.equals(mContext.getString(R.string.SuCo_TrangThai_HoanThanh)))
 
         {
             c[0] = Calendar.getInstance();
             mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c[0]);
+            long ngayKhacPhuc = c[0].getTimeInMillis();
+            long ngayXayRa = ((Calendar) mSelectedArcGISFeature.getAttributes().get(mContext.getString(R.string.Field_SuCo_NgayXayRa))).getTimeInMillis();
+            double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayXayRa) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            mSelectedArcGISFeature.getAttributes().put((mContext.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
         }
         mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
 
