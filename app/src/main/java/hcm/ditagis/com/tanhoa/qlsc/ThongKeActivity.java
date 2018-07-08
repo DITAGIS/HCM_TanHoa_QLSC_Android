@@ -24,6 +24,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -190,7 +194,7 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private void query(ThongKeAdapter.Item item) {
-        mChuaSuaChua = mDangSuaChua  = mHoanThanh = 0;
+        mChuaSuaChua = mDangSuaChua = mHoanThanh = 0;
         ((TextView) ThongKeActivity.this.findViewById(R.id.txt_thongke_mota)).setText(item.getMota());
         TextView txtThoiGian = ThongKeActivity.this.findViewById(R.id.txt_thongke_thoigian);
         if (item.getThoigianhienthi() == null) txtThoiGian.setVisibility(View.GONE);
@@ -272,16 +276,16 @@ public class ThongKeActivity extends AppCompatActivity {
         mTxtChuaSua.setText(mChuaSuaChua + "");
         mTxtDangSua.setText(mDangSuaChua + "");
         mTxtHoanThanh.setText(mHoanThanh + "");
-        double percentChuaSua, percentDangSua, percentDaSua, percentHoanThanh;
-        percentChuaSua = percentDangSua = percentDaSua = percentHoanThanh = 0.0;
+        double percentChuaSua, percentDangSua, percentHoanThanh;
+        percentChuaSua = percentDangSua = percentHoanThanh = 0.0;
         if (tongloaitrangthai > 0) {
-            percentChuaSua = mChuaSuaChua * 100 / tongloaitrangthai;
-            percentDangSua = mDangSuaChua * 100 / tongloaitrangthai;
-            percentHoanThanh = mHoanThanh * 100 / tongloaitrangthai;
+            percentChuaSua = (double) mChuaSuaChua * 100 / tongloaitrangthai;
+            percentDangSua = (double) mDangSuaChua * 100 / tongloaitrangthai;
+            percentHoanThanh = (double) mHoanThanh * 100 / tongloaitrangthai;
         }
-        mTxtPhanTramChuaSua.setText(percentChuaSua + "%");
-        mTxtPhanTramDangSua.setText(percentDangSua + "%");
-        mTxtPhanTramHoanThanh.setText(percentHoanThanh + "%");
+        mTxtPhanTramChuaSua.setText(new BigDecimal((double) percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramDangSua.setText(new BigDecimal((double) percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramHoanThanh.setText(new BigDecimal((double) percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
 
@@ -325,9 +329,10 @@ public class ThongKeActivity extends AppCompatActivity {
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
         colors.add(getResources().getColor(android.R.color.holo_green_light));
         set1.setColors(colors);
+        set1.setValueTextSize(15);
         PieData data = new PieData(xVals, set1);
-        data.setValueTextSize(15);
-        set1.setValueTextSize(0);
+        data.setValueTextSize(20);
+        data.setHighlightEnabled(true);
         chart.setData(data);
         chart.highlightValues(null);
 //        chart.invalidate();
