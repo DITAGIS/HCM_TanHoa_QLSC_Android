@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
@@ -202,7 +203,7 @@ public class ThongKeActivity extends AppCompatActivity {
             txtThoiGian.setText(item.getThoigianhienthi());
             txtThoiGian.setVisibility(View.VISIBLE);
         }
-        KhachHang khachHang = KhachHang.khachHangDangNhap;
+        KhachHang khachHang = KhachHangDangNhap.getInstance().getKhachHang();
         String whereClause = "";
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
             if (khachHang.isPhuNhuan())
@@ -283,9 +284,9 @@ public class ThongKeActivity extends AppCompatActivity {
             percentDangSua = (double) mDangSuaChua * 100 / tongloaitrangthai;
             percentHoanThanh = (double) mHoanThanh * 100 / tongloaitrangthai;
         }
-        mTxtPhanTramChuaSua.setText(new BigDecimal((double) percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
-        mTxtPhanTramDangSua.setText(new BigDecimal((double) percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
-        mTxtPhanTramHoanThanh.setText(new BigDecimal((double) percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramChuaSua.setText(new BigDecimal( percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramDangSua.setText(new BigDecimal( percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramHoanThanh.setText(new BigDecimal( percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
 

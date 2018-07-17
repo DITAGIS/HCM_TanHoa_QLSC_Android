@@ -1,4 +1,4 @@
-<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_docso "Docso"><!ENTITY table_lichsuds "LichSuDS"><!ENTITY table_khachhang "KhachHang1"><!ENTITY table_hinhdhn "Docsoth_hinh..HinhDHN">]>
+<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account">]>
 <resources>
     <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -163,13 +163,9 @@
     <!--preference end-->
 
     <!--sql begin-->
-    <string name="sql_table_name_docso">&table_docso;</string>
-    <string name="sql_table_name_khachhang">&table_khachhang;</string>
-    <string name="sql_table_name_hinhdhn">&table_hinhdhn;</string>
-    <string name="sql_table_name_lichsuds">&table_lichsuds;</string>
 
     <!--sql column login begin-->
-    <string name="sql_coloumn_login_displayname">namedisplay</string>
+    <string name="sql_coloumn_login_displayname">displayname</string>
     <string name="sql_coloumn_login_tanbinh">tanbinh</string>
     <string name="sql_coloumn_login_tanphu">tanphu</string>
     <string name="sql_coloumn_login_phunhuan">phunhuan</string>
@@ -185,25 +181,26 @@
     <string name="sql_coloumn_docso_phibvmt">bvmt</string>
     <string name="sql_coloumn_docso_tongtien">tongtien</string>
     <!--sql column docso end-->
-
+    <string name="sql_coloumn_sys_id">id</string>
+    <string name="sql_coloumn_sys_title">title</string>
+    <string name="sql_coloumn_sys_url">url</string>
+    <string name="sql_coloumn_sys_number_order">NumericalOder</string>
+    <string name="sql_coloumn_sys_iscreate">iscreate</string>
+    <string name="sql_coloumn_sys_isdelete">isdelete</string>
+    <string name="sql_coloumn_sys_isedit">isedit</string>
+    <string name="sql_coloumn_sys_isview">isview</string>
+    <string name="sql_coloumn_sys_outfield">outfields</string>
+    <string name="sql_coloumn_sys_definition">definition</string>
     <!--sql column lichsuds begin-->
     <string name="sql_coloumn_lichsuds_nam">nam</string>
     <string name="sql_coloumn_lichsuds_ky">ky</string>
     <string name="sql_coloumn_lichsuds_nhanviends">nhanviends</string>
     <!--sql column lichsuds end-->
-    <string name="sql_get_lichsuds">select top 1 * from &table_lichsuds; where dot = ? and may = ? order by nam desc, ky desc</string>
-    <string name="sql_get_khachhang">select * from &table_khachhang;
-        where danhba = ? and pin = ?</string>
     <string name="sql_login">select *
-					 from Users u
-					 left join UserInGroup ug
-					 on ug.UserID = u.id
-					 left join GroupRole gr
-					 on ug.GroupID = gr.GroupID
-					 where u.username = ? and u.pass = ?</string>
+					 from &table_sys_account; where username = ? and password = ?</string>
     <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
-    <string name="sql_get_docso">select top 1 * from &table_docso; where docsoid = ? </string>
-
+    <string name="sql_select_sys_layer">SELECT distinct * FROM &table_sys_layer;
+        l  inner join &table_sys_layer_account; la  on l.id = la.Layer  where account = ? order by NumericalOder </string>
     <string name="sql_select_ma_dma">  select madma from dma  order by madma asc</string>
     <string name="sql_select_nguyennhan_ongchinh">  SELECT *  FROM NguyenNhanOngChinh</string>
     <string name="sql_select_nguyennhan_ongnganh">  SELECT *  FROM NguyenNhanOngNganh</string>
@@ -313,5 +310,7 @@
     <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
     <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
     <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
+    <string name="IDLayer_Basemap">BASEMAP</string>
+    <string name="IDLayer_DiemSuCo">diemsucoLYR</string>
     <!--field sự cố end-->
 </resources>

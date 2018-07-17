@@ -10,6 +10,7 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.ConnectionDB;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.LoginDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 
 public class LoginAsycn extends AsyncTask<String, Void, KhachHang> {
     private ProgressDialog mDialog;
@@ -44,7 +45,7 @@ public class LoginAsycn extends AsyncTask<String, Void, KhachHang> {
             publishProgress();
             LoginDB loginDB = new LoginDB(mContext);
             KhachHang khachHang = loginDB.find(danhBo, pin);
-            KhachHang.khachHangDangNhap = khachHang;
+            KhachHangDangNhap.getInstance().setKhachHang(khachHang);
             return khachHang;
         } catch (Exception e) {
             Log.e("Lỗi đăng nhập", e.toString());

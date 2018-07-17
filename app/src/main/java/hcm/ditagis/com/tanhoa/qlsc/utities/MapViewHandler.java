@@ -62,17 +62,17 @@ public class MapViewHandler extends Activity {
     }
 
     private List<FeatureLayerDTG> mFeatureLayerDTGs;
-
     public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mapView,
                           Popup popupInfos, Context mContext, Geocoder geocoder) {
         this.mCallout = mCallout;
         this.mMapView = mapView;
-        this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable();
+        this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getLayer().getFeatureTable();
         this.mPopUp = popupInfos;
         this.mContext = mContext;
-        this.suCoTanHoaLayer = featureLayerDTG.getFeatureLayer();
+        this.suCoTanHoaLayer = featureLayerDTG.getLayer();
         this.mGeocoder = geocoder;
     }
+
 
     public void setClickBtnAdd(boolean clickBtnAdd) {
         isClickBtnAdd = clickBtnAdd;

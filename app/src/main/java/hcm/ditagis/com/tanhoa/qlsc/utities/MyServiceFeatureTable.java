@@ -16,14 +16,16 @@ public class MyServiceFeatureTable {
 
     private MyServiceFeatureTable(Context context, List<FeatureLayerDTG> mFeatureLayerDTGS) {
         for (FeatureLayerDTG feature : mFeatureLayerDTGS) {
-            if (feature.getTitleLayer().equals(context.getString(R.string.ALIAS_THUA_DAT))) {
-                layerThuaDat = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
-            } else if (feature.getTitleLayer().equals(context.getString(R.string.ALIAS_DMA))) {
-                layerDMA = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
-            } else if (feature.getTitleLayer().equals(context.getString(R.string.ALIAS_HANH_CHINH))) {
-                layerHanhChinh = (ServiceFeatureTable) feature.getFeatureLayer().getFeatureTable();
+            if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_THUA_DAT))) {
+                layerThuaDat = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
+            } else if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_DMA))) {
+                layerDMA = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
+
+            } else if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_HANH_CHINH))) {
+                layerHanhChinh = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
             }
         }
+
     }
 
     private static MyServiceFeatureTable instance = null;

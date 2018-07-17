@@ -29,6 +29,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
 /**
@@ -254,7 +255,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
             double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayXayRa) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
             mSelectedArcGISFeature.getAttributes().put((mContext.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
         }
-        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat), KhachHang.khachHangDangNhap.getUserName());
+        mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat),
+                KhachHangDangNhap.getInstance().getKhachHang().getUserName());
 
         mServiceFeatureTable.loadAsync();
         mServiceFeatureTable.addDoneLoadingListener(new Runnable() {

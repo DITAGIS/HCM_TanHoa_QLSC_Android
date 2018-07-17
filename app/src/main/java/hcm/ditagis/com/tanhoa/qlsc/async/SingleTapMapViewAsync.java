@@ -47,18 +47,6 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
     }
 
-    public SingleTapMapViewAsync(Context context, List<FeatureLayerDTG> featureLayerDTGS,
-                                 Popup popup, Callout callout, android.graphics.Point clickPoint,
-                                 MapView mapview) {
-        this.mMapView = mapview;
-        this.mFeatureLayerDTGs = featureLayerDTGS;
-        this.mPopUp = popup;
-//        this.mCallOut = callout;
-        this.mClickPoint = clickPoint;
-        this.mContext = context;
-        this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
-    }
-
     @Override
     protected Void doInBackground(Point... points) {
         final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
@@ -100,7 +88,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
 
     public FeatureLayerDTG getmFeatureLayerDTG(long serviceLayerId) {
         for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
-            long serviceLayerDTGId = ((ArcGISFeatureTable) featureLayerDTG.getFeatureLayer().getFeatureTable()).getServiceLayerId();
+            long serviceLayerDTGId = ((ArcGISFeatureTable) featureLayerDTG.getLayer().getFeatureTable()).getServiceLayerId();
             if (serviceLayerDTGId == serviceLayerId) return featureLayerDTG;
         }
         return null;

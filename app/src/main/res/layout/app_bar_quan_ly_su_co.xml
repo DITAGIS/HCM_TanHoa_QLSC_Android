@@ -181,8 +181,8 @@
                     <CheckBox
                         android:id="@+id/ckb_quanlysuco_hanhchinh"
                         android:layout_width="wrap_content"
-                        android:onClick="onClickCheckBox"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onClick="onClickCheckBox" />
 
                     <TextView
                         android:id="@+id/txt_quanlysuco_hanhchinh"
@@ -195,6 +195,15 @@
                         android:text="Ẩn/hiện dữ liệu hành chính"
                         android:textColor="@color/colorTextColor_1" />
                 </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/skbr_hanhchinh_app_bar_quan_ly_su_co"
+                    style="@style/MySeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="100"
+                    android:visibility="visible" />
 
 
                 <LinearLayout
@@ -219,8 +228,8 @@
                     <CheckBox
                         android:id="@+id/ckb_quanlysuco_dulieu"
                         android:layout_width="wrap_content"
-                        android:onClick="onClickCheckBox"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:onClick="onClickCheckBox" />
 
                     <TextView
                         android:id="@+id/txt_quanlysuco_dulieu"
@@ -235,6 +244,14 @@
                         android:textColor="@color/colorTextColor_1" />
                 </LinearLayout>
 
+                <SeekBar
+                    android:id="@+id/skbr_chuyende_app_bar_quan_ly_su_co"
+                    style="@style/MySeekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progress="100"
+                    android:visibility="visible" />
 
                 <LinearLayout
                     android:id="@+id/linnearDisplayLayerFeature"

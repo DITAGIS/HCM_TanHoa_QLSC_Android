@@ -4,68 +4,36 @@ package hcm.ditagis.com.tanhoa.qlsc.libs;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.LayerInfoDTG;
+
 /**
  * Created by NGUYEN HONG on 3/14/2018.
  */
-
-public class FeatureLayerDTG{
-
-
-    private FeatureLayer featureLayer;
+public class FeatureLayerDTG {
 
 
-    private MapView mMapView;
+    private FeatureLayer layer;
 
+    private LayerInfoDTG layerInfoDTG;
 
-    private String[] outFields;
-    private String[] queryFields;
-    private String[] updateFields;
-    private String titleLayer;
-
-    public String[] getUpdateFields() {
-        return updateFields;
+    public FeatureLayerDTG(FeatureLayer layer, LayerInfoDTG layerInfoDTG) {
+        this.layer = layer;
+        this.layerInfoDTG = layerInfoDTG;
     }
 
-    public void setUpdateFields(String[] updateFields) {
-        this.updateFields = updateFields;
+    public FeatureLayer getLayer() {
+        return layer;
     }
 
-    public FeatureLayerDTG(MapView mMapView, FeatureLayer featureLayer, String[] outFields) {
-        this.mMapView = mMapView;
-        this.featureLayer = featureLayer;
-        this.outFields = outFields;
+    public void setLayer(FeatureLayer layer) {
+        this.layer = layer;
     }
 
-    public FeatureLayerDTG(FeatureLayer featureLayer) {
-        this.featureLayer = featureLayer;
+    public LayerInfoDTG getLayerInfoDTG() {
+        return layerInfoDTG;
     }
 
-    public FeatureLayer getFeatureLayer() {
-        return featureLayer;
-    }
-
-
-    public String[] getOutFields() {
-        return outFields;
-    }
-
-    public void setOutFields(String[] outFields) {
-        this.outFields = outFields;
-    }
-
-    public String[] getQueryFields() {
-        return queryFields;
-    }
-
-    public void setQueryFields(String[] queryFields) {
-        this.queryFields = queryFields;
-    }
-
-    public String getTitleLayer() {
-        return titleLayer;
-    }
-
-    public void setTitleLayer(String titleLayer) {
-        this.titleLayer = titleLayer;
+    public void setLayerInfoDTG(LayerInfoDTG layerInfoDTG) {
+        this.layerInfoDTG = layerInfoDTG;
     }
 }
