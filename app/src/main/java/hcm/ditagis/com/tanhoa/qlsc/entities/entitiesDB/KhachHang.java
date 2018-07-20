@@ -4,21 +4,17 @@ public class KhachHang {
     private String userName;
     private String passWord;
     private String displayName;
-    private boolean isTanBinh;
-    private boolean isTanPhu;
-    private boolean isPhuNhuan;
+
+    private String role;
 
     public KhachHang() {
 
     }
 
-    public KhachHang(String userName, String passWord, String nameDisplay, boolean isTanBinh, boolean isTanPhu, boolean isPhuNhuan) {
+    public KhachHang(String userName, String passWord, String nameDisplay) {
         this.userName = userName;
         this.passWord = passWord;
         this.displayName = nameDisplay;
-        this.isTanBinh = isTanBinh;
-        this.isTanPhu = isTanPhu;
-        this.isPhuNhuan = isPhuNhuan;
     }
 
     public String getUserName() {
@@ -37,6 +33,14 @@ public class KhachHang {
         this.passWord = passWord;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -45,27 +49,4 @@ public class KhachHang {
         this.displayName = displayName;
     }
 
-    public boolean isTanBinh() {
-        return isTanBinh;
-    }
-
-    public void setTanBinh(boolean tanBinh) {
-        isTanBinh = tanBinh;
-    }
-
-    public boolean isTanPhu() {
-        return isTanPhu;
-    }
-
-    public void setTanPhu(boolean tanPhu) {
-        isTanPhu = tanPhu;
-    }
-
-    public boolean isPhuNhuan() {
-        return isPhuNhuan;
-    }
-
-    public void setPhuNhuan(boolean phuNhuan) {
-        isPhuNhuan = phuNhuan;
-    }
 }

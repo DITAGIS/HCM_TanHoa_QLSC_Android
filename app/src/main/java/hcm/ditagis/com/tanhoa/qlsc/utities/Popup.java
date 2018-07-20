@@ -98,7 +98,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private Button mBtnLeft;
 
-    public Popup(Callout callout,QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
+    public Popup(Callout callout, QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
                  LocationDisplay locationDisplay, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
@@ -820,6 +820,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             if (item.getValue() != null) {
                 spin.setSelection(lstFeatureType.indexOf(item.getValue()));
             }
+
         } else if (domain != null) {
             layoutSpin.setVisibility(View.VISIBLE);
             List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
@@ -832,6 +833,25 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 spin.setAdapter(adapter);
                 if (item.getValue() != null)
                     spin.setSelection(codes.indexOf(item.getValue()));
+
+
+                if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_HinhThucPhatHien))) {
+                    spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            if (!KhachHangDangNhap.getInstance().getKhachHang().getRole()
+                                    .equals(mMainActivity.getString(R.string.role_phong_giam_nuoc)) && i == 0) {
+                             MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!",true);
+                                spin.setSelection(1);
+                            }
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+
+                        }
+                    });
+                }
 
             }
         } else switch (item.getFieldType()) {
@@ -1097,7 +1117,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
             //user admin mới có quyền xóa
-            if (KhachHangDangNhap.getInstance().getKhachHang().getUserName().equals("admin")) {
+            if (KhachHangDangNhap.getInstance().getKhachHang().getRole().equals("quantri")) {
                 linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
             } else {
                 linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);

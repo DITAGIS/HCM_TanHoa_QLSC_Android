@@ -26,8 +26,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -206,24 +204,24 @@ public class ThongKeActivity extends AppCompatActivity {
         KhachHang khachHang = KhachHangDangNhap.getInstance().getKhachHang();
         String whereClause = "";
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
-            if (khachHang.isPhuNhuan())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
-            if (khachHang.isTanBinh())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
-            if (khachHang.isTanPhu())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
             whereClause += " 1 = 1";
         } else {
 
             whereClause = String.format("(%s >= date '%s' and %s <= date '%s') and (",
                     getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianbatdau(),
                     getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianketthuc());
-            if (khachHang.isPhuNhuan())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
-            if (khachHang.isTanBinh())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
-            if (khachHang.isTanPhu())
-                whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
+
+            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
             whereClause += " 1 = 1)";
         }
         QueryParameters queryParameters = new QueryParameters();
@@ -284,9 +282,9 @@ public class ThongKeActivity extends AppCompatActivity {
             percentDangSua = (double) mDangSuaChua * 100 / tongloaitrangthai;
             percentHoanThanh = (double) mHoanThanh * 100 / tongloaitrangthai;
         }
-        mTxtPhanTramChuaSua.setText(new BigDecimal( percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
-        mTxtPhanTramDangSua.setText(new BigDecimal( percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
-        mTxtPhanTramHoanThanh.setText(new BigDecimal( percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramChuaSua.setText(new BigDecimal(percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramDangSua.setText(new BigDecimal(percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramHoanThanh.setText(new BigDecimal(percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         PieChart mChart = findViewById(R.id.piechart);
         mChart = configureChart(mChart);
 

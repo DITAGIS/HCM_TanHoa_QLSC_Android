@@ -104,6 +104,7 @@ public class ChangePasswordDB implements IDB<KhachHang, Boolean, String> {
 
                 khachHang = new KhachHang();
                 khachHang.setUserName(userName);
+
             }
         } catch (SQLException e1) {
             e1.printStackTrace();

@@ -196,6 +196,8 @@
     <string name="sql_coloumn_lichsuds_ky">ky</string>
     <string name="sql_coloumn_lichsuds_nhanviends">nhanviends</string>
     <!--sql column lichsuds end-->
+    <string name="sql_coloumn_role_role">role</string>
+    <string name="role_phong_giam_nuoc">pgn</string>
     <string name="sql_login">select *
 					 from &table_sys_account; where username = ? and password = ?</string>
     <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
@@ -274,6 +276,7 @@
 
     <!--field sự cố begin-->
     <string name="Field_SuCo_LoaiSuCo">LoaiSuCo</string>
+    <string name="Field_SuCo_HinhThucPhatHien">HinhThucPhatHien</string>
     <string name="Field_SuCo_NguyenNhan">NguyenNhan</string>
     <string name="Field_SuCo_VatLieu">VatLieu</string>
     <string name="Field_SuCo_ViTri">ViTri</string>

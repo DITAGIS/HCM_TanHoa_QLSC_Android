@@ -64,6 +64,7 @@ public class LoginDB implements IDB<KhachHang, Boolean, String> {
                 khachHang = new KhachHang();
                 khachHang.setUserName(userName);
                 khachHang.setDisplayName(rs.getString(mContext.getString(R.string.sql_coloumn_login_displayname)));
+                khachHang.setRole(rs.getString(mContext.getString(R.string.sql_coloumn_role_role)));
 //                khachHang.setTanBinh(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanbinh)));
 //                khachHang.setTanPhu(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanphu)));
 //                khachHang.setPhuNhuan(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_phunhuan)));
