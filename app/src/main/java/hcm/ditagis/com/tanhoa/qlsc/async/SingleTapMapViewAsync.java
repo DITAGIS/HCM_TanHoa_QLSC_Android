@@ -26,24 +26,19 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
 public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Void> {
     private ProgressDialog mDialog;
-    private Context mContext;
     private FeatureLayerDTG mFeatureLayerDTG;
-    private Point mPoint;
-    private List<FeatureLayerDTG> mFeatureLayerDTGs;
     private MapView mMapView;
     private ArcGISFeature mSelectedArcGISFeature;
     private Popup mPopUp;
-    //    private Callout mCallOut;
     private static double DELTA_MOVE_Y = 0;//7000;
     private android.graphics.Point mClickPoint;
     private boolean isFound = false;
 
-    public SingleTapMapViewAsync(Context context, List<FeatureLayerDTG> featureLayerDTGS, Popup popup, android.graphics.Point clickPoint, MapView mapview) {
+    public SingleTapMapViewAsync(Context context, FeatureLayerDTG featureLayerDTG, Popup popup, android.graphics.Point clickPoint, MapView mapview) {
         this.mMapView = mapview;
-        this.mFeatureLayerDTGs = featureLayerDTGS;
+        this.mFeatureLayerDTG = featureLayerDTG;
         this.mPopUp = popup;
         this.mClickPoint = clickPoint;
-        this.mContext = context;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
     }
 
@@ -64,8 +59,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
                                 mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
                                 long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
                                         getServiceLayerId();
-                                FeatureLayerDTG featureLayerDTG = getmFeatureLayerDTG(serviceLayerId);
-                                publishProgress(featureLayerDTG);
+                                if(serviceLayerId == ((ArcGISFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable()).getServiceLayerId())
+                                publishProgress(mFeatureLayerDTG);
                             }
                         }
                     }
@@ -86,13 +81,6 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
         return null;
     }
 
-    public FeatureLayerDTG getmFeatureLayerDTG(long serviceLayerId) {
-        for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGs) {
-            long serviceLayerDTGId = ((ArcGISFeatureTable) featureLayerDTG.getLayer().getFeatureTable()).getServiceLayerId();
-            if (serviceLayerDTGId == serviceLayerId) return featureLayerDTG;
-        }
-        return null;
-    }
 
     @Override
     protected void onPreExecute() {

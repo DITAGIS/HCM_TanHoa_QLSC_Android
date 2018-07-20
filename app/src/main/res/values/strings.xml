@@ -69,7 +69,7 @@
     <!--URL START-->
     <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
     <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
-    <string name="url_image_symbol_dasuachua">http://sawagis.vn/tanhoa/Content/images/map/2.png</string>
+    <string name="url_image_symbol_beNgam">http://cholon.sawagis.vn/images/map/bengam.png</string>
     <string name="url_image_symbol_hoanthanh">http://sawagis.vn/tanhoa/Content/images/map/3.png</string>
     <!--URL END-->
     <string name="path_saveImage">.qlsc</string>
@@ -235,7 +235,7 @@
     <string name="format_new_line">\n%s</string>
     <string name="format_newline_address">\n%s %s</string>
     <string name="format_monthyear">%02d/%d</string>
-    <string name="format_definitionExp_DiemSuCo">trangthai = 0 or trangthai = 1 or (trangthai = 3 and (ngayxayra >= date\'%s\'))</string>
+    <string name="format_definitionExp_DiemSuCo">trangthai = 0 or trangthai = 1 or (trangthai = 3 and (NgayThongBao >= date\'%s\'))</string>
     <!--string format end-->
 
     <string name="trangthai">TrangThai</string>
@@ -293,7 +293,6 @@
     <string name="Field_SuCo_IDSuCo">IDSuCo</string>
     <string name="Field_SuCo_TrangThai">TrangThai</string>
     <string name="Field_SuCo_NgayKhacPhuc">NgayKhacPhuc</string>
-    <string name="Field_SuCo_NgayXayRa">NgayXayRa</string>
     <string name="Field_SuCo_NgayThongBao">NgayThongBao</string>
     <string name="Field_SuCo_MaQuan">MaQuan</string>
     <string name="Field_SuCo_NguoiBaoSuCo">NGUOICAPNHAT</string>

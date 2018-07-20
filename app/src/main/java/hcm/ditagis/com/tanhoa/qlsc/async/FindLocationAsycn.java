@@ -16,16 +16,15 @@ import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
+import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable;
 
 public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> {
@@ -35,7 +34,7 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
     private Context mContext;
     private AsyncResponse mDelegate;
     private double mLongtitude, mLatitude;
-    private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private boolean mIsAddFeature;
 
     public interface AsyncResponse {
@@ -51,12 +50,12 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
     }
 
     public FindLocationAsycn(Context context, boolean isFromLocationName, Geocoder geocoder,
-                             List<FeatureLayerDTG> featureLayerDTGS, boolean isAddFeature, AsyncResponse delegate) {
+                             ArcGISMapImageLayer arcGISMapImageLayer, boolean isAddFeature, AsyncResponse delegate) {
         this.mDelegate = delegate;
         this.mContext = context;
         this.mIsFromLocationName = isFromLocationName;
         this.mGeocoder = geocoder;
-        this.mFeatureLayerDTGS = featureLayerDTGS;
+        this.mArcGISMapImageLayerAdmin = arcGISMapImageLayer;
         mIsAddFeature = isAddFeature;
     }
 
@@ -91,7 +90,7 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                                 address.getSubAdminArea(), address.getAddressLine(0), "", "", ""));
                     publishProgress(lstLocation);
                 } else {
-                    if (MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerHanhChinh() != null) {
+                    if (MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdmin).getSFTLayerHanhChinh() != null) {
                         Point project = new Point(mLongtitude, mLatitude);
                         Geometry center = GeometryEngine.project(project, SpatialReferences.getWgs84());
                         Geometry geometry = GeometryEngine.project(center, SpatialReferences.getWebMercator());
@@ -101,17 +100,15 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                         queryParam.setGeometry(geometry);
                         queryParam.setWhereClause("1=1");
                         final ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture =
-                                MyServiceFeatureTable.getInstance(mContext, mFeatureLayerDTGS).getLayerHanhChinh().queryFeaturesAsync(queryParam);
+                                MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdmin).getSFTLayerHanhChinh().queryFeaturesAsync(queryParam);
                         featureQueryResultListenableFuture.addDoneListener(new Runnable() {
                             @Override
                             public void run() {
                                 try {
                                     FeatureQueryResult features = featureQueryResultListenableFuture.get();
-                                    Iterator iterator = features.iterator();
-                                    while (iterator.hasNext()) {
-                                        Feature feature = (Feature) iterator.next();
-                                    }
+                                    boolean isFoundByQuery = false;
                                     for (Object item : features) {
+                                        isFoundByQuery = true;
                                         Feature feature = (Feature) item;
 //                                        Object soNha = feature.getAttributes().get("SoNha");
 //                                        Object tenConDuong = feature.getAttributes().get("TenConDuong");
@@ -175,6 +172,17 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
 //                                            });
 //                                        }
 //                                    }
+                                    }
+                                    if (!isFoundByQuery) {
+                                        String location = "";
+                                        //không có địa chỉ trên thửa đất
+//                                        if (soNha == null || tenConDuong == null) {
+                                        List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
+                                        for (Address address : addressList) {
+                                            location = address.getAddressLine(0);
+                                            lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(), location, "", "", ""));
+                                        }
+                                        publishProgress(lstLocation);
                                     }
                                 } catch (InterruptedException | ExecutionException | IOException e1) {
                                     e1.printStackTrace();

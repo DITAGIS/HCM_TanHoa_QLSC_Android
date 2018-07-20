@@ -18,6 +18,7 @@ import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
+import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
@@ -27,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
@@ -56,19 +56,22 @@ public class MapViewHandler extends Activity {
     private Popup mPopUp;
     private Context mContext;
     private Geocoder mGeocoder;
+    private FeatureLayerDTG mFeatureLayerDTG;
 
-    public void setFeatureLayerDTGs(List<FeatureLayerDTG> mFeatureLayerDTGs) {
-        this.mFeatureLayerDTGs = mFeatureLayerDTGs;
+    public void setArcGISMapImageLayerAdmin(ArcGISMapImageLayer arcGISMapImageLayer) {
+        this.arcGISMapImageLayer = arcGISMapImageLayer;
     }
 
-    private List<FeatureLayerDTG> mFeatureLayerDTGs;
-    public MapViewHandler(FeatureLayerDTG featureLayerDTG, Callout mCallout, MapView mapView,
+    private ArcGISMapImageLayer arcGISMapImageLayer;
+
+    public MapViewHandler(Callout callout,FeatureLayerDTG featureLayerDTG, MapView mapView,
                           Popup popupInfos, Context mContext, Geocoder geocoder) {
-        this.mCallout = mCallout;
+        this.mCallout = callout;
         this.mMapView = mapView;
         this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getLayer().getFeatureTable();
         this.mPopUp = popupInfos;
         this.mContext = mContext;
+        this.mFeatureLayerDTG = featureLayerDTG;
         this.suCoTanHoaLayer = featureLayerDTG.getLayer();
         this.mGeocoder = geocoder;
     }
@@ -81,7 +84,7 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTable, mMapView, mGeocoder, mFeatureLayerDTGs, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTable, mMapView, mGeocoder, arcGISMapImageLayer, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
                 if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
@@ -116,7 +119,7 @@ public class MapViewHandler extends Activity {
             mMapView.setViewpointCenterAsync(clickPoint, 10);
         } else {
 
-            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTGs, mPopUp, mClickPoint, mMapView);
+            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTG, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
     }

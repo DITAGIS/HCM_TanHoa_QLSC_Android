@@ -251,8 +251,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
             c[0] = Calendar.getInstance();
             mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayKhacPhuc), c[0]);
             long ngayKhacPhuc = c[0].getTimeInMillis();
-            long ngayXayRa = ((Calendar) mSelectedArcGISFeature.getAttributes().get(mContext.getString(R.string.Field_SuCo_NgayXayRa))).getTimeInMillis();
-            double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayXayRa) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            long ngayThongBao = ((Calendar) mSelectedArcGISFeature.getAttributes().get(mContext.getString(R.string.Field_SuCo_NgayThongBao))).getTimeInMillis();
+            double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayThongBao) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
             mSelectedArcGISFeature.getAttributes().put((mContext.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
         }
         mSelectedArcGISFeature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NhanVienGiamSat),

@@ -1,51 +1,39 @@
 package hcm.ditagis.com.tanhoa.qlsc.utities;
 
-import android.content.Context;
-
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
-
-import java.util.List;
-
-import hcm.ditagis.com.tanhoa.qlsc.R;
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
+import com.esri.arcgisruntime.layers.ArcGISMapImageSublayer;
+import com.esri.arcgisruntime.loadable.LoadStatus;
 
 public class MyServiceFeatureTable {
-    private ServiceFeatureTable layerThuaDat;
-    private ServiceFeatureTable layerDMA;
-    private ServiceFeatureTable layerHanhChinh;
+    private ServiceFeatureTable SFTLayerHanhChinh;
 
-    private MyServiceFeatureTable(Context context, List<FeatureLayerDTG> mFeatureLayerDTGS) {
-        for (FeatureLayerDTG feature : mFeatureLayerDTGS) {
-            if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_THUA_DAT))) {
-                layerThuaDat = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
-            } else if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_DMA))) {
-                layerDMA = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
-
-            } else if (feature.getLayer().getName().equals(context.getString(R.string.ALIAS_HANH_CHINH))) {
-                layerHanhChinh = (ServiceFeatureTable) feature.getLayer().getFeatureTable();
+    private MyServiceFeatureTable(final ArcGISMapImageLayer arcGISMapImageLayer) {
+        final ArcGISMapImageSublayer layerHanhChinh = (ArcGISMapImageSublayer) arcGISMapImageLayer.getSublayers().get(3);
+        layerHanhChinh.loadAsync();
+        layerHanhChinh.addDoneLoadingListener(new Runnable() {
+            @Override
+            public void run() {
+                if (layerHanhChinh.getLoadStatus() == LoadStatus.LOADED) {
+                    SFTLayerHanhChinh = layerHanhChinh.getTable();
+                }
             }
-        }
+        });
+
 
     }
 
     private static MyServiceFeatureTable instance = null;
 
-    public static MyServiceFeatureTable getInstance(Context context, List<FeatureLayerDTG> mFeatureLayerDTGS) {
+    public static MyServiceFeatureTable getInstance(ArcGISMapImageLayer arcGISMapImageLayer) {
         if (instance == null) {
-            instance = new MyServiceFeatureTable(context, mFeatureLayerDTGS);
+            instance = new MyServiceFeatureTable(arcGISMapImageLayer);
         }
         return instance;
     }
 
-    public ServiceFeatureTable getLayerDMA() {
-        return layerDMA;
-    }
 
-    public ServiceFeatureTable getLayerThuaDat() {
-        return layerThuaDat;
-    }
-
-    public ServiceFeatureTable getLayerHanhChinh() {
-        return layerHanhChinh;
+    public ServiceFeatureTable getSFTLayerHanhChinh() {
+        return SFTLayerHanhChinh;
     }
 }

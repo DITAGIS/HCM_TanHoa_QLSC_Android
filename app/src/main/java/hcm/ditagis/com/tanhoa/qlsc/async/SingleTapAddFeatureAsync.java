@@ -22,6 +22,7 @@ import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
+import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -37,7 +38,6 @@ import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
@@ -59,14 +59,14 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     private AsyncResponse mDelegate;
     private android.graphics.Point mClickPoint;
     private Geocoder mGeocoder;
-    private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
 
     public interface AsyncResponse {
         void processFinish(Feature output);
     }
 
     public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image,
-                                    ServiceFeatureTable serviceFeatureTable, MapView mapView, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS, AsyncResponse delegate) {
+                                    ServiceFeatureTable serviceFeatureTable, MapView mapView, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer, AsyncResponse delegate) {
         this.mServiceFeatureTable = serviceFeatureTable;
         this.mMapView = mapView;
         this.mImage = image;
@@ -75,7 +75,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
         this.mDelegate = delegate;
         this.mGeocoder = geocoder;
-        this.mFeatureLayerDTGS = featureLayerDTGS;
+        this.mArcGISMapImageLayerAdmin = arcGISMapImageLayer;
     }
 
     @Override
@@ -95,7 +95,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(clickPoint);
             FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false,
-                    mGeocoder, mFeatureLayerDTGS,false, new FindLocationAsycn.AsyncResponse() {
+                    mGeocoder, mArcGISMapImageLayerAdmin,false, new FindLocationAsycn.AsyncResponse() {
                 @Override
                 public void processFinish(List<MyAddress> output) {
                     if (output != null) {
@@ -180,7 +180,6 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Date date = Constant.DATE_FORMAT.parse(finalDateTime);
                 Calendar c = Calendar.getInstance();
-                feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayXayRa), c);
                 feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NgayThongBao), c);
             }
             feature.getAttributes().put(mContext.getString(R.string.Field_SuCo_NguoiBaoSuCo), KhachHangDangNhap.getInstance().getKhachHang().getUserName());

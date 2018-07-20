@@ -44,6 +44,7 @@ import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
+import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.view.Callout;
@@ -70,7 +71,6 @@ import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.VatTu;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
@@ -95,11 +95,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private Geocoder mGeocoder;
     private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
     private String mIDSuCo;
-    private List<FeatureLayerDTG> mFeatureLayerDTGS;
+    private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private Button mBtnLeft;
 
-    public Popup(QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
-                 Callout callout, LocationDisplay locationDisplay, Geocoder geocoder, List<FeatureLayerDTG> featureLayerDTGS) {
+    public Popup(Callout callout,QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
+                 LocationDisplay locationDisplay, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
         this.mServiceFeatureTable = serviceFeatureTable;
@@ -113,7 +113,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs())
             mListTenVatTuOngNganh.add(vatTu.getTenVatTu());
 
-        this.mFeatureLayerDTGS = featureLayerDTGS;
+        this.mArcGISMapImageLayerAdmin = arcGISMapImageLayer;
     }
 
     public DialogInterface getDialog() {
@@ -1187,7 +1187,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 return;
 
             FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mMainActivity, false,
-                    mGeocoder, mFeatureLayerDTGS, false, new FindLocationAsycn.AsyncResponse() {
+                    mGeocoder, mArcGISMapImageLayerAdmin, false, new FindLocationAsycn.AsyncResponse() {
                 @SuppressLint("InflateParams")
                 @Override
                 public void processFinish(List<MyAddress> output) {
