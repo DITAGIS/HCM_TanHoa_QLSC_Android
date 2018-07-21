@@ -78,7 +78,7 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 @SuppressLint("Registered")
 public class Popup extends AppCompatActivity implements View.OnClickListener {
     private static final int REQUEST_ID_IMAGE_CAPTURE = 44;
-    private List<String> mListDMA, mListTenVatTuOngChinh, mListTenVatTuOngNganh;
+    private List<String> mListTenVatTuOngChinh, mListTenVatTuOngNganh;
     private QuanLySuCo mMainActivity;
     private ArcGISFeature mSelectedArcGISFeature = null;
     private ServiceFeatureTable mServiceFeatureTable;
@@ -93,7 +93,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private String mLoaiSuCo;
     private short mLoaiSuCoShort;
     private Geocoder mGeocoder;
-    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
+    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo, mListHoSoVatTuSuCoThuHoi;
     private String mIDSuCo;
     private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private Button mBtnLeft;
@@ -210,6 +210,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     StringBuilder builder = new StringBuilder();
                     this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
                     for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+                        builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
+                    }
+                    builder.replace(builder.length() - 2, builder.length(), "");
+                    item.setValue(builder.toString());
+                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+                    StringBuilder builder = new StringBuilder();
+                    this.mListHoSoVatTuSuCoThuHoi = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
+                    for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
                         builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
                     }
                     builder.replace(builder.length() - 2, builder.length(), "");
@@ -466,25 +474,32 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                 }
                 item.setEdit(false);
-                boolean isAddField = false;
-                for (String addField : addFields) {
-                    if (addField.equals(item.getFieldName())) {
-                        isAddField = true;
-                        break;
-                    }
-                }
-                for (String updateField : updateFields) {
-                    //Nếu là update field
-                    if (item.getFieldName().equals(updateField)) {
-                        //Nếu đang trong chức năng thêm sự cố thì edit = true
-                        if (isAddFeature)
+//                boolean isAddField = false;
+//                for (String addField : addFields) {
+//                    if (addField.equals(item.getFieldName())) {
+//                        isAddField = true;
+//                        break;
+//                    }
+//                }
+                if (isAddFeature) {
+                    for (String updateField : addFields)
+                        if (item.getFieldName().equals(updateField)) {
+                            item.setEdit(true);
+                            break;
+                        }
+                } else
+                    for (String updateField : updateFields) {
+                        //Nếu là update field
+                        if (item.getFieldName().equals(updateField)) {
+                            //Nếu đang trong chức năng thêm sự cố thì edit = true
+//                        if (isAddFeature)
                             item.setEdit(true);
                             //Ngược lại, nếu không phải là addField thì edit = true
-                        else if (!isAddField)
-                            item.setEdit(true);
-                        break;
+//                        else if (!isAddField)
+//                            item.setEdit(true);
+                            break;
+                        }
                     }
-                }
                 item.setFieldType(field.getFieldType());
                 mFeatureViewMoreInfoAdapter.add(item);
                 mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
@@ -583,6 +598,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         //Trường hợp vật tư, không tự động lấy được domain
         else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
             loadDataEdit_VatTu(item, layout);
+        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+            loadDataEdit_VatTuThuHoi(item, layout);
         } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))) {
             loadDataEdit_DuongKinhOng(item, layout);
         } else {
@@ -594,7 +611,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
         layoutSpin.setVisibility(View.VISIBLE);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListDMA);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
+                android.R.layout.simple_list_item_1, ListObjectDB.getInstance().getDmas());
         spin.setAdapter(adapter);
         if (item.getValue() != null)
             spin.setSelection(ListObjectDB.getInstance().getDmas().indexOf(item.getValue()));
@@ -684,6 +702,123 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
     private void loadDataEdit_VatTu(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
+        final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.layout_edit_viewmoreinfo_AutoCompleteTV);
+        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
+        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
+        final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
+        final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong);
+        final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
+        final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
+
+        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngNganh);
+            autoCompleteTextView.setAdapter(adapter);
+        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngChinh);
+            autoCompleteTextView.setAdapter(adapter);
+        }
+        final VatTuAdapter vatTuAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
+        final String[] maVatTu = {""};
+        listViewVatTu.setAdapter(vatTuAdapter);
+
+        //Nhấn và giữ một item để xóa
+        listViewVatTu.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+                builder.setTitle("Xóa vật tư");
+                builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
+                builder.setCancelable(false).setNegativeButton("Hủy", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        vatTuAdapter.remove(itemVatTu);
+                        vatTuAdapter.notifyDataSetChanged();
+                        dialogInterface.dismiss();
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+                return false;
+            }
+        });
+        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String tenVatTu = editable.toString();
+                if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
+                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+                            txtDonViTinh.setText(vatTu.getDonViTinh());
+                            maVatTu[0] = vatTu.getMaVatTu();
+                            break;
+                        }
+                    }
+                } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngChinhs()) {
+                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+                            txtDonViTinh.setText(vatTu.getDonViTinh());
+                            maVatTu[0] = vatTu.getMaVatTu();
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        txtThemVatTu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (etxtSoLuong.getText().toString().trim().length() == 0)
+                    MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_soluong_themvattu), true);
+                else {
+                    try {
+                        double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
+                        vatTuAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
+                                soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
+                        vatTuAdapter.notifyDataSetChanged();
+
+                        autoCompleteTextView.setText("");
+                        etxtSoLuong.setText("");
+                        txtDonViTinh.setText("");
+
+                        if (listViewVatTu.getHeight() > 500) {
+                            ViewGroup.LayoutParams params = listViewVatTu.getLayoutParams();
+                            params.height = 500;
+                            listViewVatTu.setLayoutParams(params);
+                        }
+                    } catch (NumberFormatException e) {
+                        MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_number_format_exception), true);
+                    }
+
+                }
+            }
+        });
+
+        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+            vatTuAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
+                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+        }
+        vatTuAdapter.notifyDataSetChanged();
+
+    }
+
+    private void loadDataEdit_VatTuThuHoi(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
         final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.layout_edit_viewmoreinfo_AutoCompleteTV);
         final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
@@ -841,7 +976,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             if (!KhachHangDangNhap.getInstance().getKhachHang().getRole()
                                     .equals(mMainActivity.getString(R.string.role_phong_giam_nuoc)) && i == 0) {
-                             MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!",true);
+                                MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!", true);
                                 spin.setSelection(1);
                             }
                         }
@@ -927,6 +1062,25 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
                     }
                     if (mListHoSoVatTuSuCo.size() > 0) {
+                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
+                        item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
+                    }
+                }
+            }
+
+        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+            mListHoSoVatTuSuCoThuHoi = new ArrayList<>();
+
+            if (listViewVatTu.getAdapter() != null) {
+                if (listViewVatTu.getAdapter().getCount() == 0) {
+                    isCanUpdate = false;
+                    MySnackBar.make(listViewVatTu, mMainActivity.getResources().getString(R.string.message_CapNhat_VatTu), true);
+                } else {
+                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
+                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
+                        mListHoSoVatTuSuCoThuHoi.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+                    }
+                    if (mListHoSoVatTuSuCoThuHoi.size() > 0) {
                         VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
                         item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
                     }

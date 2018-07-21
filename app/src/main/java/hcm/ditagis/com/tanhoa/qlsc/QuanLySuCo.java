@@ -89,6 +89,7 @@ import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
+import hcm.ditagis.com.tanhoa.qlsc.async.LoadLegendAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
@@ -123,7 +124,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private FloatingActionButton mFloatButtonLocation;
     private List<FeatureLayerDTG> mFeatureLayerDTGS;
     public static FeatureLayerDTG FeatureLayerDTGDiemSuCo;
-    private LinearLayout mLayoutDisplayLayerAdministration;
+    private LinearLayout mLayoutDisplayLayerAdministration, mLayoutDisplayLayerThematic, mLayoutLegend;
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
     private boolean mIsAddFeature;
@@ -134,7 +135,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private List<String> mListLayerID;
     private int states[][];
     private int colors[];
-    private LinearLayout mLayoutDisplayLayerThematic;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -180,8 +180,17 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private void prepare() {
         setLicense();
         mArcGISMapImageLayerAdministrator = mArcGISMapImageLayerThematic = null;
-        mLayoutDisplayLayerThematic = findViewById(R.id.linnearDisplayLayerFeature);
-        mLayoutDisplayLayerAdministration = findViewById(R.id.linnearDisplayLayerAdministration);
+        mLayoutDisplayLayerThematic = findViewById(R.id.linearDisplayLayerFeature);
+        mLayoutDisplayLayerAdministration = findViewById(R.id.linearDisplayLayerAdministration);
+        mLayoutLegend = findViewById(R.id.linearDisplayLayerLegend);
+        mLayoutLegend.removeAllViews();
+        LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend, QuanLySuCo.this, new LoadLegendAsycn.AsyncResponse() {
+            @Override
+            public void processFinish(Void output) {
+
+            }
+        });
+        loadLegendAsycn.execute();
         mListLayerID.clear();
         mGeocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
         mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
@@ -234,7 +243,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 if (mIsAddFeature && mMapViewHandler != null) {
                     //center is x, y
-                    Point center = ((MapView) mMapView).getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
+                    Point center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
 
                     //project is long, lat
                     Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
@@ -528,6 +537,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         }
     }
 
+
     private void handleArcgisMapDoneLoading() {
         final List<FeatureLayerDTG> tmpFeatureLayerDTGs = new ArrayList<>();
         mLayoutDisplayLayerThematic.removeAllViews();
@@ -570,45 +580,107 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         uniqueValueRenderer.getFieldNames().add("HinhThucPhatHien");
 
 
-        PictureMarkerSymbol chuaXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_chuasuachua));
-        chuaXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
-        chuaXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_chuasuachua));
+        chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        chuaXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol dangXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_dangsuachua));
-        dangXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
-        dangXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol dangXuLySymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_dangsuachua));
+        dangXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol hoanThanh = new PictureMarkerSymbol(getString(R.string.url_image_symbol_hoanthanh));
-        hoanThanh.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
-        hoanThanh.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol hoanThanhSymBol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_hoanthanh));
+        hoanThanhSymBol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        hoanThanhSymBol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol daXuLy = new PictureMarkerSymbol(getString(R.string.url_image_symbol_beNgam));
-        daXuLy.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
-        daXuLy.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+        PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_beNgam));
+        beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        beNgamSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        uniqueValueRenderer.setDefaultSymbol(chuaXuLy);
+        uniqueValueRenderer.setDefaultSymbol(chuaXuLySymbol);
         uniqueValueRenderer.setDefaultLabel("Chưa xác định");
 
         List<Object> chuaXuLyValue = new ArrayList<>();
         chuaXuLyValue.add(0);
+
+        //đang xử lý: begin
         List<Object> dangXuLyValue = new ArrayList<>();
         dangXuLyValue.add(1);
+        dangXuLyValue.add(2);
+
+        List<Object> dangXuLyValue1 = new ArrayList<>();
+        dangXuLyValue1.add(1);
+        dangXuLyValue1.add(3);
+
+        List<Object> dangXuLyValue2 = new ArrayList<>();
+        dangXuLyValue2.add(1);
+        dangXuLyValue2.add(4);
+
+        List<Object> dangXuLyValue3 = new ArrayList<>();
+        dangXuLyValue3.add(1);
+        dangXuLyValue3.add(5);
+
+        List<Object> dangXuLyValue4 = new ArrayList<>();
+        dangXuLyValue4.add(1);
+        dangXuLyValue4.add(6);
+        //đang xỷ lý: end
+
         List<Object> beNgamChuaXuLyValue = new ArrayList<>();
         beNgamChuaXuLyValue.add(0);
         beNgamChuaXuLyValue.add(1);
 
+        //hoàn thành: begin
         List<Object> hoanThanhValue = new ArrayList<>();
         hoanThanhValue.add(3);
+        hoanThanhValue.add(2);
+
+        List<Object> hoanThanhValue1 = new ArrayList<>();
+        hoanThanhValue1.add(3);
+        hoanThanhValue1.add(3);
+
+        List<Object> hoanThanhValue2 = new ArrayList<>();
+        hoanThanhValue2.add(3);
+        hoanThanhValue2.add(4);
+
+        List<Object> hoanThanhValue3 = new ArrayList<>();
+        hoanThanhValue3.add(3);
+        hoanThanhValue3.add(5);
+
+        List<Object> hoanThanhValue4 = new ArrayList<>();
+        hoanThanhValue4.add(3);
+        hoanThanhValue4.add(6);
+        //hoàn thành: end
+
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", chuaXuLy, chuaXuLyValue));
+                "Chưa xử lý", "Chưa xử lý", chuaXuLySymbol, chuaXuLyValue));
+
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", dangXuLy, dangXuLyValue));
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", daXuLy, beNgamChuaXuLyValue));
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue1));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", hoanThanh, hoanThanhValue));
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue2));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue3));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue4));
+
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Chưa xử lý bể ngầm", "Chưa xử lý bể ngầm", beNgamSymbol, beNgamChuaXuLyValue));
+
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue1));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue2));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue3));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue4));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
         mSuCoTanHoaLayer.loadAsync();
+
+
     }
 
     private void changeStatusOfLocationDataSource() {
@@ -917,6 +989,13 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     public void onClickTextView(View v) {
         switch (v.getId()) {
+            case R.id.txt_quanlysuco_legend:
+                if (mLayoutLegend.getVisibility() == View.VISIBLE) {
+                    mLayoutLegend.setVisibility(View.GONE);
+                } else {
+                    mLayoutLegend.setVisibility(View.VISIBLE);
+                }
+                break;
             case R.id.txt_quanlysuco_hanhchinh:
 
                 if (mLayoutDisplayLayerAdministration.getVisibility() == View.VISIBLE) {

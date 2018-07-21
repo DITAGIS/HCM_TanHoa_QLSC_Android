@@ -14,10 +14,14 @@
         <item>GhiChuVatTu</item>
         <item>@string/Field_SuCo_ViTri</item>
         <item>GhiChu</item>
+        <item>@string/Field_SuCo_ThietBiKhac</item>
+        <item>@string/Field_SuCo_VatTuThuHoi</item>
+        <item>@string/Field_SuCo_KetCauDuong</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
         <item>DuongKinhOng</item>
-        <item>HinhThucPhatHien</item>
         <item>@string/Field_SuCo_VatLieu</item>
         <item>@string/Field_SuCo_TrangThai</item>
         <item>VatTu</item>
@@ -28,6 +32,7 @@
         <item>SDTNguoiBao</item>
         <item>MADMA</item>
         <item>TIETDIENBE</item>
+        <item>SoNha</item>
         <item>@string/Field_SuCo_PhuiDao1</item>
         <item>@string/Field_SuCo_PhuiDao1_Dai</item>
         <item>@string/Field_SuCo_PhuiDao1_Sau</item>
@@ -48,6 +53,7 @@
         <item>HinhThucPhatHien</item>
         <item>SoNha</item>
         <item>SDTNguoiBao</item>
+        <item>@string/Field_SuCo_KetCauDuong</item>
     </string-array>
     <string-array name="no_display_fields_arrays">
         <item>OBJECTID</item>

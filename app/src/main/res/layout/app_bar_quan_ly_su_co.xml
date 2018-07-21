@@ -36,7 +36,6 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="60dp"
-        android:alpha="0.9"
         android:animateLayoutChanges="true"
         android:background="@drawable/layout_shape"
         android:orientation="vertical"
@@ -173,6 +172,34 @@
                 android:orientation="vertical">
 
 
+                <TextView
+                    android:id="@+id/txt_quanlysuco_legend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="onClickTextView"
+                    android:text="Chú thích"
+                    android:textColor="@color/colorTextColor_1" />
+
+
+                <LinearLayout
+                    android:id="@+id/linearDisplayLayerLegend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginBottom="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:background="@android:color/black" />
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -207,7 +234,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/linnearDisplayLayerAdministration"
+                    android:id="@+id/linearDisplayLayerAdministration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"
@@ -254,7 +281,7 @@
                     android:visibility="visible" />
 
                 <LinearLayout
-                    android:id="@+id/linnearDisplayLayerFeature"
+                    android:id="@+id/linearDisplayLayerFeature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:animateLayoutChanges="true"

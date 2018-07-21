@@ -45,7 +45,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
     private boolean isUpdateAttachment;
     private byte[] mImage;
     private AsyncResponse mDelegate;
-    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo;
+    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo, mListHoSoVatTuSuCoThuHoi;
     private boolean mIsAddFeature;
 
     public interface AsyncResponse {
@@ -178,6 +178,16 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                 if (mListHoSoVatTuSuCo.size() > 0)
                     hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCo.get(0).getIdSuCo());
                 for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+                    hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
+                }
+                continue;
+            }
+            else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+                hasDomain = false;
+                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
+                if (mListHoSoVatTuSuCoThuHoi.size() > 0)
+                    hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCoThuHoi.get(0).getIdSuCo());
+                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
                     hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
                 }
                 continue;

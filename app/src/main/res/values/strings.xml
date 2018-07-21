@@ -1,4 +1,4 @@
-<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account">]>
+<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account">]>
 <resources>
     <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -156,6 +156,7 @@
     <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ…</string>
     <string name="change_password_message">Đang đổi mật khẩu…</string>
     <string name="preparing">Đang khởi tạo bản đồ…</string>
+    <string name="loadingLegend">Đang khởi tạo chú thích…</string>
     <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
@@ -210,11 +211,17 @@
     <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
     <string name="sql_select_vattu_ongchinh">select * from vattuongchinh</string>
     <string name="sql_select_vattu_ongnganh">select * from vattuongnganh</string>
-    <string name="sql_insert_hosovattu_suco">INSERT INTO HoSoVatTuSuCo VALUES (?,?,?)</string>
+    <string name="sql_insert_hosovattu_suco">INSERT INTO &table_hoSoVatTuSuCo; VALUES (?,?,?)</string>
     <string name="sql_select_hosovattu_suco">select soluong, h.mavattu, tenvattu, donvitinh
-        from dbo.hosovattusuco h inner join vattu v on h.mavattu = v.MaVatTu
+        from &table_hoSoVatTuSuCo; h inner join vattu v on h.mavattu = v.MaVatTu
         where idsuco = ?</string>
-    <string name="sql_delete_hosovattu_suco">delete from dbo.hosovattusuco where idsuco = ?</string>
+    <string name="sql_delete_hosovattu_suco">delete from &table_hoSoVatTuSuCo; where idsuco = ?</string>
+
+    <string name="sql_insert_hosovattuthuhoi_suco">INSERT INTO &table_hoSoVatTuThuHoiSuCo; VALUES (?,?,?)</string>
+    <string name="sql_select_hosovattuthuhoi_suco">select soluong, h.mavattu, tenvattu, donvitinh
+        from &table_hoSoVatTuThuHoiSuCo; h inner join vattu v on h.mavattu = v.MaVatTu
+        where idsuco = ?</string>
+    <string name="sql_delete_hosovattuthuhoi_suco">delete from &table_hoSoVatTuThuHoiSuCo; where idsuco = ?</string>
 
     <!--sql end-->
     <string name="find_khachhHang_message">Đang lấy thông tin khách hàng…</string>
@@ -276,9 +283,14 @@
 
     <!--field sự cố begin-->
     <string name="Field_SuCo_LoaiSuCo">LoaiSuCo</string>
+    <string name="Field_SuCo_ThoiGianThiCongDuKienTuNgay">ThoiGianThiCongDuKienTuNgay</string>
+    <string name="Field_SuCo_ThoiGianThiCongDuKienDenNgay">ThoiGianThiCongDuKienDenNgay</string>
     <string name="Field_SuCo_HinhThucPhatHien">HinhThucPhatHien</string>
     <string name="Field_SuCo_NguyenNhan">NguyenNhan</string>
     <string name="Field_SuCo_VatLieu">VatLieu</string>
+    <string name="Field_SuCo_ThietBiKhac">ThietBiKhac</string>
+    <string name="Field_SuCo_VatTuThuHoi">VatTuThuHoi</string>
+    <string name="Field_SuCo_KetCauDuong">KetCauDuong</string>
     <string name="Field_SuCo_ViTri">ViTri</string>
     <string name="Field_SuCo_PhuiDao1">PhuiDao1</string>
     <string name="Field_SuCo_PhuiDao1_Dai">PhuiDao1Dai</string>
