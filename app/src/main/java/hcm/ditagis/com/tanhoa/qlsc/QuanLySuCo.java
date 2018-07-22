@@ -1257,7 +1257,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(), true, new EditAsync.AsyncResponse() {
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(),mPopUp.getmListHoSoVatTuThuHoiSuCo(),
+                                    true, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
 //                                    mPopUp.getDialog().dismiss();
@@ -1296,7 +1297,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(), false, new EditAsync.AsyncResponse() {
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(),mPopUp.getmListHoSoVatTuThuHoiSuCo(),
+                                    false, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
                                     mPopUp.getCallout().dismiss();

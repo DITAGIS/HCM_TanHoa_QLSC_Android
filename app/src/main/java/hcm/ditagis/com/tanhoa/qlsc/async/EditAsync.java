@@ -27,8 +27,8 @@ import java.util.concurrent.ExecutionException;
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuThuHoiSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Constant;
 
@@ -54,7 +54,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
     public EditAsync(Context context, ServiceFeatureTable serviceFeatureTable,
                      ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image,
-                     List<HoSoVatTuSuCo> hoSoVatTu_suCos, boolean isAddFeature, AsyncResponse delegate) {
+                     List<HoSoVatTuSuCo> hoSoVatTu_suCos, List<HoSoVatTuSuCo> hoSoVatTuThuHoi_suCos, boolean isAddFeature, AsyncResponse delegate) {
         mContext = context;
         this.mDelegate = delegate;
         mServiceFeatureTable = serviceFeatureTable;
@@ -63,6 +63,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         this.isUpdateAttachment = isUpdateAttachment;
         this.mImage = image;
         this.mListHoSoVatTuSuCo = hoSoVatTu_suCos;
+        this.mListHoSoVatTuSuCoThuHoi = hoSoVatTuThuHoi_suCos;
         this.mIsAddFeature = isAddFeature;
     }
 
@@ -181,14 +182,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
                 }
                 continue;
-            }
-            else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+            } else if (item.getFieldName().equals(mContext.getString(R.string.Field_SuCo_VatTuThuHoi))) {
                 hasDomain = false;
-                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mContext);
+                HoSoVatTuThuHoiSuCoDB hoSoVatTuThuHoiSuCoDB = new HoSoVatTuThuHoiSuCoDB(mContext);
                 if (mListHoSoVatTuSuCoThuHoi.size() > 0)
-                    hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCoThuHoi.get(0).getIdSuCo());
+                    hoSoVatTuThuHoiSuCoDB.delete(mListHoSoVatTuSuCoThuHoi.get(0).getIdSuCo());
                 for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
-                    hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
+                    hoSoVatTuThuHoiSuCoDB.insert(hoSoVatTuSuCo);
                 }
                 continue;
             }

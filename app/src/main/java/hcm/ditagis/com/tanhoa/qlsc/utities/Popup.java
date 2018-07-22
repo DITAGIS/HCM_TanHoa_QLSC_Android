@@ -68,6 +68,7 @@ import hcm.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import hcm.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
+import hcm.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuThuHoiSuCoDB;
 import hcm.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.VatTu;
@@ -93,7 +94,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private String mLoaiSuCo;
     private short mLoaiSuCoShort;
     private Geocoder mGeocoder;
-    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo, mListHoSoVatTuSuCoThuHoi;
+    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo;
     private String mIDSuCo;
     private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private Button mBtnLeft;
@@ -132,6 +133,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return mListHoSoVatTuSuCo;
     }
 
+    public List<HoSoVatTuSuCo> getmListHoSoVatTuThuHoiSuCo() {
+        return mListHoSoVatTuThuHoiSuCo;
+    }
+
     public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
         this.mFeatureLayerDTG = layerDTG;
     }
@@ -163,11 +168,28 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 continue;
             }
             Object value = attributes.get(field.getName());
-            if (value != null) {
-                FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
+            FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
 
-                item.setAlias(field.getAlias());
-                item.setFieldName(field.getName());
+            item.setAlias(field.getAlias());
+            item.setFieldName(field.getName());
+            if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
+                StringBuilder builder = new StringBuilder();
+                this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
+                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
+                    builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
+                }
+                builder.replace(builder.length() - 2, builder.length(), "");
+                item.setValue(builder.toString());
+            } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
+                StringBuilder builder = new StringBuilder();
+                this.mListHoSoVatTuThuHoiSuCo = new HoSoVatTuThuHoiSuCoDB(mMainActivity).find(mIDSuCo);
+                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
+                    builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
+                }
+                builder.replace(builder.length() - 2, builder.length(), "");
+                item.setValue(builder.toString());
+            } else if (value != null) {
+
                 if (item.getFieldName().equals(typeIdField)) {
                     List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
                     Object valueFeatureType = getValueFeatureType(featureTypes, value.toString());
@@ -206,22 +228,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                     Object valueDomain = getValueDomain(codedValues, value.toString());
                     if (valueDomain != null) item.setValue(valueDomain.toString());
-                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
-                    StringBuilder builder = new StringBuilder();
-                    this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
-                    for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-                        builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
-                    }
-                    builder.replace(builder.length() - 2, builder.length(), "");
-                    item.setValue(builder.toString());
-                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
-                    StringBuilder builder = new StringBuilder();
-                    this.mListHoSoVatTuSuCoThuHoi = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
-                    for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
-                        builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
-                    }
-                    builder.replace(builder.length() - 2, builder.length(), "");
-                    item.setValue(builder.toString());
                 } else switch (field.getFieldType()) {
                     case DATE:
                         item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
@@ -235,6 +241,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         item.setValue(value.toString());
                         break;
                 }
+
+            }
+            if (item.getValue() != null) {
                 featureViewInfoAdapter.add(item);
                 featureViewInfoAdapter.notifyDataSetChanged();
             }
@@ -286,7 +295,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     if (isCheck) {
                         EditAsync editAsync = new EditAsync(mMainActivity,
                                 (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
-                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo,
+                                mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                             @Override
                             public void processFinish(ArcGISFeature arcGISFeature) {
                                 mCallout.dismiss();
@@ -333,7 +343,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     } else {
                                         EditAsync editAsync = new EditAsync(mMainActivity,
                                                 (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
-                                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                                mSelectedArcGISFeature, true, null,
+                                                mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                                             @Override
                                             public void processFinish(ArcGISFeature arcGISFeature) {
                                                 mCallout.dismiss();
@@ -351,7 +362,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     } else {
                         EditAsync editAsync = new EditAsync(mMainActivity,
                                 (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
-                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                mSelectedArcGISFeature, true, null,
+                                mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                             @Override
                             public void processFinish(ArcGISFeature arcGISFeature) {
                                 mCallout.dismiss();
@@ -428,6 +440,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     mIDSuCo = value.toString();
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(mIDSuCo);
                     this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
+                    this.mListHoSoVatTuThuHoiSuCo = new HoSoVatTuThuHoiSuCoDB(mMainActivity).find(mIDSuCo);
                 }
             } else {
                 FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
@@ -851,7 +864,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.layout_edit_viewmoreinfo_AutoCompleteTV);
         final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-        final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
+        final ListView listViewVatTuThuHoi = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
         final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong);
         final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
         final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
@@ -865,12 +878,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngChinh);
             autoCompleteTextView.setAdapter(adapter);
         }
-        final VatTuAdapter vatTuAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
+        final VatTuAdapter vatTuThuHoiAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
         final String[] maVatTu = {""};
-        listViewVatTu.setAdapter(vatTuAdapter);
+        listViewVatTuThuHoi.setAdapter(vatTuThuHoiAdapter);
 
         //Nhấn và giữ một item để xóa
-        listViewVatTu.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        listViewVatTuThuHoi.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
@@ -885,8 +898,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 }).setPositiveButton("Xóa", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        vatTuAdapter.remove(itemVatTu);
-                        vatTuAdapter.notifyDataSetChanged();
+                        vatTuThuHoiAdapter.remove(itemVatTu);
+                        vatTuThuHoiAdapter.notifyDataSetChanged();
 
                         dialogInterface.dismiss();
                     }
@@ -936,18 +949,18 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 else {
                     try {
                         double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
-                        vatTuAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
+                        vatTuThuHoiAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
                                 soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
-                        vatTuAdapter.notifyDataSetChanged();
+                        vatTuThuHoiAdapter.notifyDataSetChanged();
 
                         autoCompleteTextView.setText("");
                         etxtSoLuong.setText("");
                         txtDonViTinh.setText("");
 
-                        if (listViewVatTu.getHeight() > 500) {
-                            ViewGroup.LayoutParams params = listViewVatTu.getLayoutParams();
+                        if (listViewVatTuThuHoi.getHeight() > 500) {
+                            ViewGroup.LayoutParams params = listViewVatTuThuHoi.getLayoutParams();
                             params.height = 500;
-                            listViewVatTu.setLayoutParams(params);
+                            listViewVatTuThuHoi.setLayoutParams(params);
                         }
                     } catch (NumberFormatException e) {
                         MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
@@ -957,11 +970,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
         });
 
-        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-            vatTuAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
+        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
+            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
                     hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
         }
-        vatTuAdapter.notifyDataSetChanged();
+        vatTuThuHoiAdapter.notifyDataSetChanged();
 
     }
 
@@ -1098,7 +1111,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
 
         } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
-            mListHoSoVatTuSuCoThuHoi = new ArrayList<>();
+            mListHoSoVatTuThuHoiSuCo = new ArrayList<>();
 
             if (listViewVatTu.getAdapter() != null) {
                 if (listViewVatTu.getAdapter().getCount() == 0) {
@@ -1107,9 +1120,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
                     for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-                        mListHoSoVatTuSuCoThuHoi.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+                        mListHoSoVatTuThuHoiSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
                     }
-                    if (mListHoSoVatTuSuCoThuHoi.size() > 0) {
+                    if (mListHoSoVatTuThuHoiSuCo.size() > 0) {
                         VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
                         item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
                     }
@@ -1213,6 +1226,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                             try {
                                                 HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mMainActivity);
                                                 hoSoVatTuSuCoDB.delete(mIDSuCo);
+                                                HoSoVatTuThuHoiSuCoDB hoSoVatTuThuHoiSuCoDB = new HoSoVatTuThuHoiSuCoDB(mMainActivity);
+                                                hoSoVatTuThuHoiSuCoDB.delete(mIDSuCo);
                                                 edits = serverResult.get();
                                                 if (edits.size() > 0) {
                                                     if (!edits.get(0).hasCompletedWithErrors()) {
