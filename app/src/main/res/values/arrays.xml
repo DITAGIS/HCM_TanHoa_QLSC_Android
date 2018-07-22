@@ -8,7 +8,7 @@
         <item>@string/Field_SuCo_DuongKinhOng</item>
     </string-array>
     <string-array name="pgn_fields_arrays">
-        <item>@string/Field_SuCo_KetCauDuong</item>
+
         <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
         <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
     </string-array>

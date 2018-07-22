@@ -383,6 +383,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 } else if (layerInfoDTG.getId().equals(getString(R.string.IDLayer_DiemSuCo))) {
                     ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                     FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+
                     featureLayer.setName(layerInfoDTG.getTitleLayer());
                     featureLayer.setMaxScale(0);
                     featureLayer.setMinScale(1000000);
@@ -605,23 +606,26 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         //đang xử lý: begin
         List<Object> dangXuLyValue = new ArrayList<>();
         dangXuLyValue.add(1);
-        dangXuLyValue.add(2);
-
+        dangXuLyValue.add(1);
         List<Object> dangXuLyValue1 = new ArrayList<>();
         dangXuLyValue1.add(1);
-        dangXuLyValue1.add(3);
+        dangXuLyValue1.add(2);
 
         List<Object> dangXuLyValue2 = new ArrayList<>();
         dangXuLyValue2.add(1);
-        dangXuLyValue2.add(4);
+        dangXuLyValue2.add(3);
 
         List<Object> dangXuLyValue3 = new ArrayList<>();
         dangXuLyValue3.add(1);
-        dangXuLyValue3.add(5);
+        dangXuLyValue3.add(4);
 
         List<Object> dangXuLyValue4 = new ArrayList<>();
         dangXuLyValue4.add(1);
-        dangXuLyValue4.add(6);
+        dangXuLyValue4.add(5);
+
+        List<Object> dangXuLyValue5 = new ArrayList<>();
+        dangXuLyValue5.add(1);
+        dangXuLyValue5.add(6);
         //đang xỷ lý: end
 
         List<Object> beNgamChuaXuLyValue = new ArrayList<>();
@@ -631,23 +635,26 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         //hoàn thành: begin
         List<Object> hoanThanhValue = new ArrayList<>();
         hoanThanhValue.add(3);
-        hoanThanhValue.add(2);
-
+        hoanThanhValue.add(1);
         List<Object> hoanThanhValue1 = new ArrayList<>();
         hoanThanhValue1.add(3);
-        hoanThanhValue1.add(3);
+        hoanThanhValue1.add(2);
 
         List<Object> hoanThanhValue2 = new ArrayList<>();
         hoanThanhValue2.add(3);
-        hoanThanhValue2.add(4);
+        hoanThanhValue2.add(3);
 
         List<Object> hoanThanhValue3 = new ArrayList<>();
         hoanThanhValue3.add(3);
-        hoanThanhValue3.add(5);
+        hoanThanhValue3.add(4);
 
         List<Object> hoanThanhValue4 = new ArrayList<>();
         hoanThanhValue4.add(3);
-        hoanThanhValue4.add(6);
+        hoanThanhValue4.add(5);
+
+        List<Object> hoanThanhValue5 = new ArrayList<>();
+        hoanThanhValue5.add(3);
+        hoanThanhValue5.add(6);
         //hoàn thành: end
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
@@ -663,6 +670,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue3));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue4));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue5));
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Chưa xử lý bể ngầm", "Chưa xử lý bể ngầm", beNgamSymbol, beNgamChuaXuLyValue));
@@ -677,6 +686,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue3));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue4));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue5));
         mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
         mSuCoTanHoaLayer.loadAsync();
 

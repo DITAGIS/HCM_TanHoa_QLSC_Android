@@ -98,6 +98,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private String mIDSuCo;
     private ArcGISMapImageLayer mArcGISMapImageLayerAdmin;
     private Button mBtnLeft;
+    private List<FeatureViewMoreInfoAdapter.Item> mListItemBeNgam;
 
     public Popup(Callout callout, QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
                  LocationDisplay locationDisplay, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer) {
@@ -115,6 +116,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             mListTenVatTuOngNganh.add(vatTu.getTenVatTu());
 
         this.mArcGISMapImageLayerAdmin = arcGISMapImageLayer;
+        this.mListItemBeNgam = new ArrayList<>();
     }
 
     public DialogInterface getDialog() {
@@ -178,7 +180,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
                     builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
                 }
-                builder.replace(builder.length() - 2, builder.length(), "");
+                if (builder.length() > 0)
+                    builder.replace(builder.length() - 2, builder.length(), "");
                 item.setValue(builder.toString());
             } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
                 StringBuilder builder = new StringBuilder();
@@ -186,7 +189,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
                     builder.append(hoSoVatTuSuCo.getTenVatTu() + " " + hoSoVatTuSuCo.getSoLuong() + " " + hoSoVatTuSuCo.getDonViTinh() + "\n");
                 }
-                builder.replace(builder.length() - 2, builder.length(), "");
+                if (builder.length() > 0)
+                    builder.replace(builder.length() - 2, builder.length(), "");
                 item.setValue(builder.toString());
             } else if (value != null) {
 
@@ -243,7 +247,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 }
 
             }
-            if (item.getValue() != null) {
+            if (item.getValue() != null && item.getValue().length() > 0) {
                 featureViewInfoAdapter.add(item);
                 featureViewInfoAdapter.notifyDataSetChanged();
             }
@@ -447,18 +451,16 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 item.setAlias(field.getAlias());
                 item.setFieldName(field.getName());
                 item.setEdit(false);
-                boolean isPGNField_NotPGNRole = false;
+                boolean isPGNField = false, isPGNField_NotPGNRole = false;
                 for (String pgnField : pgnFields) {
-                    if (item.getFieldName().equals(pgnField))
-                        if (
-                                KhachHangDangNhap.getInstance().getKhachHang().getRole().equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc))) {
+                    if (item.getFieldName().equals(pgnField)) {
+                        isPGNField = true;
+                        if (KhachHangDangNhap.getInstance().getKhachHang().getRole().equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc))) {
                             item.setEdit(true);
-
                         } else
                             isPGNField_NotPGNRole = true;
+                    }
                 }
-                if (isPGNField_NotPGNRole)
-                    continue;
 
                 if (value != null) {
                     if (item.getFieldName().equals(typeIdField)) {
@@ -543,6 +545,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
                 item.setFieldType(field.getFieldType());
+
+                if (isAddFeature) {
+                    if (isPGNField) {
+                        mListItemBeNgam.add(item);
+                        continue;
+                    }
+                } else if (isPGNField_NotPGNRole)
+                    continue;
+
                 mFeatureViewMoreInfoAdapter.add(item);
                 mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
             }
@@ -1016,11 +1027,31 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            if (!KhachHangDangNhap.getInstance().getKhachHang().getRole()
-                                    .equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc)) && i == 0) {
-                                MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!", true);
-                                spin.setSelection(1);
+                            boolean isVISIBLE = false;
+                            if (i == 0)
+                                if (!KhachHangDangNhap.getInstance().getKhachHang().getRole()
+                                        .equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc))) {
+                                    MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!", true);
+                                    spin.setSelection(1);
+
+                                    isVISIBLE = false;
+                                } else
+                                    isVISIBLE = true;
+                            else isVISIBLE = false;
+
+
+                            if (isVISIBLE) {
+                                for (FeatureViewMoreInfoAdapter.Item itemBeNgam : mListItemBeNgam) {
+                                    if (!mFeatureViewMoreInfoAdapter.getItems().contains(itemBeNgam))
+                                        mFeatureViewMoreInfoAdapter.add(itemBeNgam);
+                                }
+                            } else {
+                                for (FeatureViewMoreInfoAdapter.Item itemBeNgam : mListItemBeNgam) {
+                                    if (mFeatureViewMoreInfoAdapter.getItems().contains(itemBeNgam))
+                                        mFeatureViewMoreInfoAdapter.remove(itemBeNgam);
+                                }
                             }
+                            mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
                         }
 
                         @Override
