@@ -1289,12 +1289,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
 
             //khi hoàn thành rồi thì không chỉnh sửa được
-            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai));
-            if (o != null && Integer.parseInt(o.toString())
-                    != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
+//            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai));
+//            if (o != null && Integer.parseInt(o.toString())
+//                    != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
                 linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-            else
-                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
+//            else
+//                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
         } else {
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
