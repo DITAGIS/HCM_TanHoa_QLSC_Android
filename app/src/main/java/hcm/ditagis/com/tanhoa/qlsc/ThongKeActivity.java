@@ -43,11 +43,11 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
-    private TextView mTxtTongSuCo, mTxtChuaSua, mTxtDangSua, mTxtHoanThanh;
-    private TextView mTxtPhanTramChuaSua, mTxtPhanTramDangSua, mTxtPhanTramHoanThanh;
+    private TextView mTxtTongSuCo, mTxtChuaSua,mTxtBeNgam, mTxtDangSua, mTxtHoanThanh;
+    private TextView mTxtPhanTramChuaSua,mTxtPhanTramBeNgam, mTxtPhanTramDangSua, mTxtPhanTramHoanThanh;
     private ServiceFeatureTable mServiceFeatureTable;
     private ThongKeAdapter mThongKeAdapter;
-    private int mChuaSuaChua, mDangSuaChua, mHoanThanh;
+    private int mChuaSuaChua,mBeNgam, mDangSuaChua, mHoanThanh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +61,11 @@ public class ThongKeActivity extends AppCompatActivity {
 
         this.mTxtTongSuCo = this.findViewById(R.id.txtTongSuCo);
         this.mTxtChuaSua = this.findViewById(R.id.txtChuaSua);
+        this.mTxtBeNgam = findViewById(R.id.txtChuaSuaBeNgam);
         this.mTxtDangSua = this.findViewById(R.id.txtDangSua);
         this.mTxtHoanThanh = this.findViewById(R.id.txtHoanThanh);
         this.mTxtPhanTramChuaSua = this.findViewById(R.id.txtPhanTramChuaSua);
+        this.mTxtPhanTramBeNgam = findViewById(R.id.txtPhanTramChuaSuaBeNgam);
         this.mTxtPhanTramDangSua = this.findViewById(R.id.txtPhanTramDangSua);
         this.mTxtPhanTramHoanThanh = this.findViewById(R.id.txtPhanTramHoanThanh);
         ThongKeActivity.this.findViewById(R.id.layout_thongke_thoigian).setOnClickListener(new View.OnClickListener() {
@@ -193,7 +195,7 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private void query(ThongKeAdapter.Item item) {
-        mChuaSuaChua = mDangSuaChua = mHoanThanh = 0;
+        mChuaSuaChua =mBeNgam= mDangSuaChua = mHoanThanh = 0;
         ((TextView) ThongKeActivity.this.findViewById(R.id.txt_thongke_mota)).setText(item.getMota());
         TextView txtThoiGian = ThongKeActivity.this.findViewById(R.id.txt_thongke_thoigian);
         if (item.getThoigianhienthi() == null) txtThoiGian.setVisibility(View.GONE);
@@ -203,6 +205,8 @@ public class ThongKeActivity extends AppCompatActivity {
         }
         KhachHang khachHang = KhachHangDangNhap.getInstance().getKhachHang();
         String whereClause = "";
+
+        //binhThuong
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
 
             whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
@@ -210,6 +214,7 @@ public class ThongKeActivity extends AppCompatActivity {
             whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
 
             whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
+
             whereClause += " 1 = 1";
         } else {
 
@@ -224,11 +229,36 @@ public class ThongKeActivity extends AppCompatActivity {
             whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
             whereClause += " 1 = 1)";
         }
+
+String whereClauseBeNgam ="";
+        //Bể ngầm
+        if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
+            whereClauseBeNgam += " HinhThucPhatHien = 1 and (";
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
+
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
+
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
+
+            whereClauseBeNgam += " 1 = 1)";
+        } else {
+            whereClauseBeNgam += " HinhThucPhatHien = 1 and ";
+            whereClauseBeNgam = String.format("(%s >= date '%s' and %s <= date '%s') and (",
+                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianbatdau(),
+                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianketthuc());
+
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
+
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanBinhCode));
+
+            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanTanPhuCode));
+            whereClauseBeNgam += " 1= 1)";
+        }
+
+
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(whereClause);
 
-        List<String> outFields = new ArrayList<>();
-        outFields.add(getString(R.string.trangthai));
 
 //        final ListenableFuture<FeatureQueryResult> feature =
 //                mServiceFeatureTable.populateFromServiceAsync(queryParameters, true, outFields);
@@ -265,6 +295,39 @@ public class ThongKeActivity extends AppCompatActivity {
             }
         });
 
+        //beNgam
+        QueryParameters queryParametersBeNgam = new QueryParameters();
+        queryParametersBeNgam.setWhereClause(whereClauseBeNgam);
+
+
+//        final ListenableFuture<FeatureQueryResult> feature =
+//                mServiceFeatureTable.populateFromServiceAsync(queryParameters, true, outFields);
+        final ListenableFuture<FeatureQueryResult> featureBeNgam = mServiceFeatureTable.queryFeaturesAsync(queryParametersBeNgam, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        featureBeNgam.addDoneListener(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    FeatureQueryResult result = featureBeNgam.get();
+                    Iterator<Feature> iterator = result.iterator();
+                    Feature item;
+                    while (iterator.hasNext()) {
+                        item = iterator.next();
+                        Object value = item.getAttributes().get(getString(R.string.trangthai));
+                        int trangThai = getResources().getInteger(R.integer.trang_thai_chua_sua_chua);
+                        if (value != null) {
+                            trangThai = Integer.parseInt(value.toString());
+                        }
+                        if (trangThai == getResources().getInteger(R.integer.trang_thai_chua_sua_chua))
+                            mBeNgam++;
+                    }
+                    displayReport();
+
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
 
     }
 
@@ -272,17 +335,22 @@ public class ThongKeActivity extends AppCompatActivity {
     private void displayReport() {
         int tongloaitrangthai = mChuaSuaChua + mDangSuaChua + mHoanThanh;
         mTxtTongSuCo.setText(getString(R.string.nav_thong_ke_tong_su_co) + tongloaitrangthai);
+
+        mChuaSuaChua -= mBeNgam;
         mTxtChuaSua.setText(mChuaSuaChua + "");
+        mTxtBeNgam.setText(mBeNgam + "");
         mTxtDangSua.setText(mDangSuaChua + "");
         mTxtHoanThanh.setText(mHoanThanh + "");
-        double percentChuaSua, percentDangSua, percentHoanThanh;
-        percentChuaSua = percentDangSua = percentHoanThanh = 0.0;
+        double percentChuaSua,percentBeNgam, percentDangSua, percentHoanThanh;
+        percentChuaSua =percentBeNgam= percentDangSua = percentHoanThanh = 0.0;
         if (tongloaitrangthai > 0) {
             percentChuaSua = (double) mChuaSuaChua * 100 / tongloaitrangthai;
+            percentBeNgam = (double) mBeNgam * 100 / tongloaitrangthai;
             percentDangSua = (double) mDangSuaChua * 100 / tongloaitrangthai;
             percentHoanThanh = (double) mHoanThanh * 100 / tongloaitrangthai;
         }
         mTxtPhanTramChuaSua.setText(new BigDecimal(percentChuaSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
+        mTxtPhanTramBeNgam.setText(new BigDecimal(percentBeNgam).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         mTxtPhanTramDangSua.setText(new BigDecimal(percentDangSua).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         mTxtPhanTramHoanThanh.setText(new BigDecimal(percentHoanThanh).setScale(2, RoundingMode.HALF_UP).doubleValue() + "%");
         PieChart mChart = findViewById(R.id.piechart);
@@ -313,10 +381,12 @@ public class ThongKeActivity extends AppCompatActivity {
         ArrayList<Entry> yVals1 = new ArrayList<>();
 
         yVals1.add(new Entry(mChuaSuaChua, 0));
-        yVals1.add(new Entry(mDangSuaChua, 1));
-        yVals1.add(new Entry(mHoanThanh, 2));
+        yVals1.add(new Entry(mBeNgam,1));
+        yVals1.add(new Entry(mDangSuaChua, 2));
+        yVals1.add(new Entry(mHoanThanh, 3));
         ArrayList<String> xVals = new ArrayList<>();
         xVals.add(getString(R.string.SuCo_TrangThai_ChuaSuaChua));
+        xVals.add(getString(R.string.SuCo_TrangThai_ChuaSuaChuaBeNgam));
         xVals.add(getString(R.string.SuCo_TrangThai_DangSuaChua));
         xVals.add(getString(R.string.SuCo_TrangThai_HoanThanh));
 
@@ -325,12 +395,13 @@ public class ThongKeActivity extends AppCompatActivity {
         set1.setSliceSpace(0f);
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(getResources().getColor(android.R.color.holo_red_light));
+        colors.add(getResources().getColor(android.R.color.holo_blue_light));
         colors.add(getResources().getColor(android.R.color.holo_orange_light));
         colors.add(getResources().getColor(android.R.color.holo_green_light));
         set1.setColors(colors);
         set1.setValueTextSize(15);
         PieData data = new PieData(xVals, set1);
-        data.setValueTextSize(20);
+//        data.setValueTextSize(20);
         data.setHighlightEnabled(true);
         chart.setData(data);
         chart.highlightValues(null);

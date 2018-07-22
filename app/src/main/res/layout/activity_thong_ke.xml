@@ -136,6 +136,35 @@
                     android:textSize="17sp" />
 
             </TableRow>
+            <TableRow android:layout_width="match_parent">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:padding="3dip"
+                    android:text="Bể ngầm"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtChuaSuaBeNgam"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/txtPhanTramChuaSuaBeNgam"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/cell_shape"
+                    android:gravity="right"
+                    android:padding="3dip"
+                    android:textSize="17sp" />
+
+            </TableRow>
 
             <TableRow android:layout_width="match_parent">
 

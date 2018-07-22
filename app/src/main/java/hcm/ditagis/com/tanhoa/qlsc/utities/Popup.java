@@ -275,16 +275,27 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             mBtnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    EditAsync editAsync = new EditAsync(mMainActivity,
-                            (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
-                            mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
-                        @Override
-                        public void processFinish(ArcGISFeature arcGISFeature) {
-                            mCallout.dismiss();
-                            dialog.dismiss();
+                    boolean isCheck = false;
+                    for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_HinhThucPhatHien))
+                                && item.getValue() != null) {
+                            isCheck = true;
+                            break;
                         }
-                    });
-                    editAsync.execute(mFeatureViewMoreInfoAdapter);
+
+                    if (isCheck) {
+                        EditAsync editAsync = new EditAsync(mMainActivity,
+                                (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
+                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                            @Override
+                            public void processFinish(ArcGISFeature arcGISFeature) {
+                                mCallout.dismiss();
+                                dialog.dismiss();
+                            }
+                        });
+                        editAsync.execute(mFeatureViewMoreInfoAdapter);
+                    } else
+                        MySnackBar.make(mBtnLeft, R.string.message_HinhThucPhatHien, true);
 
                 }
             });

@@ -103,6 +103,7 @@
     <string name="nav_thong_ke">Thống kê</string>
     <string name="nav_thong_ke_tong_su_co">Tổng các sự cố: </string>
     <string name="SuCo_TrangThai_ChuaSuaChua">Chưa sửa chữa</string>
+    <string name="SuCo_TrangThai_ChuaSuaChuaBeNgam">Chưa sửa chữa bể ngầm</string>
     <string name="SuCo_TrangThai_DangSuaChua">Đang sửa chữa</string>
     <string name="SuCo_TrangThai_DaSuaChua">Đã sửa chữa</string>
     <string name="SuCo_TrangThai_HoanThanh">Hoàn thành</string>
@@ -320,6 +321,7 @@
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
     <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
     <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
+    <string name="message_HinhThucPhatHien">Cần chọn hình thức phát hiện để thêm sự cố</string>
     <string name="message_soluong_themvattu">Số lượng không được để trống</string>
     <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
     <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
