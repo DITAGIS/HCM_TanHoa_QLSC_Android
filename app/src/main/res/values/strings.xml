@@ -202,6 +202,8 @@
     <string name="role_phong_giam_nuoc">pgn</string>
     <string name="sql_login">select *
 					 from &table_sys_account; where username = ? and password = ?</string>
+    <string name="sql_login_imei">select *
+					 from &table_sys_account; where username = ? and password = ? and imei = ?</string>
     <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
     <string name="sql_select_sys_layer">SELECT distinct * FROM &table_sys_layer;
         l  inner join &table_sys_layer_account; la  on l.id = la.Layer  where account = ? order by NumericalOder </string>

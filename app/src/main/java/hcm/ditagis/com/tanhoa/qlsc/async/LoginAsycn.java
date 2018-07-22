@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
-
 import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.ConnectionDB;
 import hcm.ditagis.com.tanhoa.qlsc.connectDB.LoginDB;
@@ -15,16 +14,18 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 public class LoginAsycn extends AsyncTask<String, Void, KhachHang> {
     private ProgressDialog mDialog;
     private Context mContext;
-
+    private String IMEI;
     private AsyncResponse mDelegate;
+    private boolean mIsIMEI;
 
     public interface AsyncResponse {
         void processFinish(KhachHang output);
     }
 
-    public LoginAsycn(Context context, AsyncResponse delegate) {
+    public LoginAsycn(Context context, boolean mIsIMEI, AsyncResponse delegate) {
         this.mContext = context;
         this.mDelegate = delegate;
+        this.mIsIMEI = mIsIMEI;
     }
 
     @Override
@@ -40,11 +41,18 @@ public class LoginAsycn extends AsyncTask<String, Void, KhachHang> {
     protected KhachHang doInBackground(String... params) {
         String danhBo = params[0];
         String pin = params[1];
+        String IMEI = "";
+        if (params.length > 2)
+            IMEI = params[2];
         try {
             ConnectionDB.getInstance().getConnection();
             publishProgress();
             LoginDB loginDB = new LoginDB(mContext);
-            KhachHang khachHang = loginDB.find(danhBo, pin);
+            KhachHang khachHang;
+            if (mIsIMEI)
+                khachHang = loginDB.find(danhBo, pin, IMEI);
+            else
+                khachHang = loginDB.find(danhBo, pin);
             KhachHangDangNhap.getInstance().setKhachHang(khachHang);
             return khachHang;
         } catch (Exception e) {

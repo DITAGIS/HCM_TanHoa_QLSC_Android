@@ -83,8 +83,47 @@ public class LoginDB implements IDB<KhachHang, Boolean, String> {
     }
 
     @Override
-    public KhachHang find(String s, String k1, String k2) {
-        return null;
+    public KhachHang find(String userName, String passWord, String IMEI) {
+        Connection cnn = ConnectionDB.getInstance().getConnection();
+        KhachHang khachHang = null;
+        ResultSet rs = null;
+        try {
+            if (cnn == null)
+                return null;
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            String query = mContext.getString(R.string.sql_login_imei);
+            PreparedStatement mStatement = cnn.prepareStatement(query);
+
+            String passEncoded = (new EncodeMD5()).encode(passWord + "_DITAGIS");
+
+
+            mStatement.setString(1, userName);
+            mStatement.setString(2, passEncoded);
+            mStatement.setString(3, IMEI);
+            rs = mStatement.executeQuery();
+
+            while (rs.next()) {
+
+                khachHang = new KhachHang();
+                khachHang.setUserName(userName);
+                khachHang.setDisplayName(rs.getString(mContext.getString(R.string.sql_coloumn_login_displayname)));
+                khachHang.setRole(rs.getString(mContext.getString(R.string.sql_coloumn_role_role)));
+//                khachHang.setTanBinh(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanbinh)));
+//                khachHang.setTanPhu(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_tanphu)));
+//                khachHang.setPhuNhuan(rs.getBoolean(mContext.getString(R.string.sql_coloumn_login_phunhuan)));
+            }
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+        } finally {
+            try {
+                if (rs != null && !rs.isClosed())
+                    rs.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return khachHang;
     }
 
     @Override

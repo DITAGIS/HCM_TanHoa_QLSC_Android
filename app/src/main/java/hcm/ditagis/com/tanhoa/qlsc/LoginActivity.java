@@ -1,8 +1,13 @@
 package hcm.ditagis.com.tanhoa.qlsc;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +23,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView mTxtPassword;
     private boolean isLastLogin;
     private TextView mTxtValidation;
-
+    private String IMEI = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTxtPassword = findViewById(R.id.txtPassword);
 
         mTxtValidation = findViewById(R.id.txt_login_validation);
+
         create();
     }
 
@@ -77,7 +83,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 //        handleLoginSuccess(userName,passWord);
         final String finalUserName = userName;
-        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
+        LoginAsycn loginAsycn = new LoginAsycn(this,false, new LoginAsycn.AsyncResponse() {
 
             @Override
             public void processFinish(KhachHang output) {
@@ -88,6 +94,42 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         loginAsycn.execute(userName, passWord);
+    }
+    private void loginWithIMEI() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        IMEI = ((TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+        if (!CheckConnectInternet.isOnline(this)) {
+            mTxtValidation.setText(R.string.validate_no_connect);
+            mTxtValidation.setVisibility(View.VISIBLE);
+            return;
+        }
+        mTxtValidation.setVisibility(View.GONE);
+
+        String userName;
+        if (isLastLogin)
+            userName = Preference.getInstance().loadPreference(getString(R.string.preference_username));
+        else
+            userName = mTxtUsername.getText().toString().trim();
+        final String passWord = mTxtPassword.getText().toString().trim();
+        if (userName.length() == 0 || passWord.length() == 0) {
+            handleInfoLoginEmpty();
+            return;
+        }
+//        handleLoginSuccess(userName,passWord);
+        final String finalUserName = userName;
+        LoginAsycn loginAsycn = new LoginAsycn(this,true, new LoginAsycn.AsyncResponse() {
+
+            @Override
+            public void processFinish(KhachHang output) {
+                if (output != null)
+                    handleLoginSuccess(output);
+                else
+                    handleLoginFail();
+            }
+        });
+        loginAsycn.execute(userName, passWord,IMEI);
     }
 
     private void handleInfoLoginEmpty() {
