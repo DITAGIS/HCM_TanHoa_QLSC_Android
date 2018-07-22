@@ -146,9 +146,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         String[] noDisplayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
         boolean isFoundField = false;
         boolean isSuCoFeature = false;
-        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
+        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
             isSuCoFeature = true;
-            mIDSuCo = attributes.get(mMainActivity.getString(R.string.Field_SuCo_IDSuCo)).toString();
+            mIDSuCo = attributes.get(mMainActivity.getResources().getString(R.string.Field_SuCo_IDSuCo)).toString();
         }
 
 
@@ -174,30 +174,30 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                     if (valueFeatureType != null) {
                         mLoaiSuCo = valueFeatureType.toString();
-                        mLoaiSuCoShort = (short) (Short.parseShort(attributes.get(mMainActivity.getString(R.string.Field_SuCo_LoaiSuCo)).toString()));
+                        mLoaiSuCoShort = (short) (Short.parseShort(attributes.get(mMainActivity.getResources().getString(R.string.Field_SuCo_LoaiSuCo)).toString()));
                         item.setValue(mLoaiSuCo);
                     } else continue;
                 } else if (field.getDomain() != null) {
                     List<CodedValue> codedValues = new ArrayList<>();
-                    if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))) {
-                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                    if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))) {
+                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                             codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
+                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
 
                         }
-                    } else if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_VatLieu))) {
-                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                    } else if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))) {
+                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                             codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
+                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
 
                         }
-                    } else if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))) {
-                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                    } else if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))) {
+                        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                             codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
+                                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
 
                         }
                     } else {
@@ -206,7 +206,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                     Object valueDomain = getValueDomain(codedValues, value.toString());
                     if (valueDomain != null) item.setValue(valueDomain.toString());
-                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
+                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
                     StringBuilder builder = new StringBuilder();
                     this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
                     for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
@@ -214,7 +214,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     }
                     builder.replace(builder.length() - 2, builder.length(), "");
                     item.setValue(builder.toString());
-                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+                } else if (isSuCoFeature && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
                     StringBuilder builder = new StringBuilder();
                     this.mListHoSoVatTuSuCoThuHoi = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
                     for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
@@ -270,14 +270,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final AlertDialog dialog = builder.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         if (isAddFeature) {
-            mBtnLeft.setText(mMainActivity.getString(R.string.btnLeftAddFeature));
-            btnRight.setText(mMainActivity.getString(R.string.btnRightAddFeature));
+            mBtnLeft.setText(mMainActivity.getResources().getString(R.string.btnLeftAddFeature));
+            btnRight.setText(mMainActivity.getResources().getString(R.string.btnRightAddFeature));
             mBtnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean isCheck = false;
                     for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
-                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_HinhThucPhatHien))
+                        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_HinhThucPhatHien))
                                 && item.getValue() != null) {
                             isCheck = true;
                             break;
@@ -308,14 +308,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             });
         } else {
             layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
-            mBtnLeft.setText(mMainActivity.getString(R.string.btnLeftUpdateFeature));
-            btnRight.setText(mMainActivity.getString(R.string.btnRightUpdateFeature));
+            mBtnLeft.setText(mMainActivity.getResources().getString(R.string.btnLeftUpdateFeature));
+            btnRight.setText(mMainActivity.getResources().getString(R.string.btnRightUpdateFeature));
             mBtnLeft.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     boolean isComplete = false;
                     for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
-                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_TrangThai))
+                        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_TrangThai))
                                 && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.SuCo_TrangThai_HoanThanh))) {
                             isComplete = true;
                         }
@@ -391,6 +391,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         String[] updateFields = mMainActivity.getResources().getStringArray(R.array.update_fields_arrays);
         String[] addFields = mMainActivity.getResources().getStringArray(R.array.add_fields_arrays);
         String[] no_displayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
+        String[] pgnFields = mMainActivity.getResources().getStringArray(R.array.pgn_fields_arrays);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         boolean isFoundContinue = false;
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
@@ -417,11 +418,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         break;
                     }
             }
+
             if (isFoundContinue) {
                 isFoundContinue = false;
                 continue;
             }
-            if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_IDSuCo))) {
+            if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_IDSuCo))) {
                 if (value != null) {
                     mIDSuCo = value.toString();
                     ((TextView) layout.findViewById(R.id.txt_alertdialog_id_su_co)).setText(mIDSuCo);
@@ -431,6 +433,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 FeatureViewMoreInfoAdapter.Item item = new FeatureViewMoreInfoAdapter.Item();
                 item.setAlias(field.getAlias());
                 item.setFieldName(field.getName());
+                item.setEdit(false);
+                boolean isPGNField_NotPGNRole = false;
+                for (String pgnField : pgnFields) {
+                    if (item.getFieldName().equals(pgnField))
+                        if (
+                                KhachHangDangNhap.getInstance().getKhachHang().getRole().equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc))) {
+                            item.setEdit(true);
+
+                        } else
+                            isPGNField_NotPGNRole = true;
+                }
+                if (isPGNField_NotPGNRole)
+                    continue;
+
                 if (value != null) {
                     if (item.getFieldName().equals(typeIdField)) {
                         List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
@@ -443,25 +459,25 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                     } else if (field.getDomain() != null) {
                         List<CodedValue> codedValues = new ArrayList<>();
-                        if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))) {
-                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                    || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                        if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))) {
+                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                    || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                                 codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
+                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
 
                             }
-                        } else if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_VatLieu))) {
-                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                    || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                        } else if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))) {
+                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                    || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                                 codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
+                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
 
                             }
-                        } else if (field.getName().equals(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))) {
-                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                                    || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+                        } else if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))) {
+                            if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                                    || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
                                 codedValues = ((CodedValueDomain) mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
+                                        .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
 
                             }
                         } else {
@@ -484,7 +500,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             break;
                     }
                 }
-                item.setEdit(false);
+
 //                boolean isAddField = false;
 //                for (String addField : addFields) {
 //                    if (addField.equals(item.getFieldName())) {
@@ -511,6 +527,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             break;
                         }
                     }
+
+
                 item.setFieldType(field.getFieldType());
                 mFeatureViewMoreInfoAdapter.add(item);
                 mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
@@ -559,8 +577,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 Button btnLeft = layout.findViewById(R.id.btn_updateinfo_left);
                 Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
 
-                btnLeft.setText(mMainActivity.getString(R.string.btnLeft_editItemViewMoreInfo));
-                btnRight.setText(mMainActivity.getString(R.string.btnRight_editItemViewMoreInfo));
+                btnLeft.setText(mMainActivity.getResources().getString(R.string.btnLeft_editItemViewMoreInfo));
+                btnRight.setText(mMainActivity.getResources().getString(R.string.btnRight_editItemViewMoreInfo));
 
 
                 builder.setView(layout);
@@ -590,28 +608,28 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void loadDataEdit(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
         //Load danh sách madma từ csdl
-        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_MADMA))) {
+        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_MADMA))) {
             loadDataEdit_DMA(item, layout);
         }
         //Trường hợp vị trí thì không dùng domain, vì còn có nhập khoảng cách
-        else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
+        else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_ViTri))) {
             loadDataEdit_ViTri(item, layout);
         }
         //Trường hợp nguyên nhân, không tự động lấy được domain
-        else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))) {
+        else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))) {
             loadDataEdit_NguyenNhan(item, layout);
         }
         //Trường hợp vật liệu, không tự động lấy được domain
-        else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatLieu))) {
+        else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))) {
             loadDataEdit_VatLieu(item, layout);
 
         }
         //Trường hợp vật tư, không tự động lấy được domain
-        else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
+        else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
             loadDataEdit_VatTu(item, layout);
-        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
             loadDataEdit_VatTuThuHoi(item, layout);
-        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))) {
+        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))) {
             loadDataEdit_DuongKinhOng(item, layout);
         } else {
             loadDataEdit_Another(item, layout);
@@ -634,10 +652,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
         layoutSpin.setVisibility(View.VISIBLE);
-        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongnganh_arrays));
             spin.setAdapter(adapter);
-        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
             layoutEditText.setVisibility(View.VISIBLE);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh1_arrays));
             spin.setAdapter(adapter);
@@ -652,10 +670,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         layoutSpin.setVisibility(View.VISIBLE);
         List<String> codes = new ArrayList<>();
-        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
             List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
+                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
             if (codedValues != null) {
                 for (CodedValue codedValue : codedValues)
                     codes.add(codedValue.getName());
@@ -675,10 +693,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         layoutSpin.setVisibility(View.VISIBLE);
         List<String> codes = new ArrayList<>();
-        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
             List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
+                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
             if (codedValues != null) {
                 for (CodedValue codedValue : codedValues)
                     codes.add(codedValue.getName());
@@ -696,10 +714,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         layoutSpin.setVisibility(View.VISIBLE);
         List<String> codes = new ArrayList<>();
-        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))
-                || mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh)))) {
+        if (mLoaiSuCo != null && (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))
+                || mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh)))) {
             List<CodedValue> codedValues = ((CodedValueDomain) this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
+                    .get(mLoaiSuCoShort - 1).getDomains().get(mMainActivity.getResources().getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
             if (codedValues != null) {
                 for (CodedValue codedValue : codedValues)
                     codes.add(codedValue.getName());
@@ -721,11 +739,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
         final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
 
-        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
             layoutAutoCompleteTV.setVisibility(View.VISIBLE);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngNganh);
             autoCompleteTextView.setAdapter(adapter);
-        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
             layoutAutoCompleteTV.setVisibility(View.VISIBLE);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngChinh);
             autoCompleteTextView.setAdapter(adapter);
@@ -773,7 +791,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 String tenVatTu = editable.toString();
-                if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
                     for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
                         if (vatTu.getTenVatTu().equals(tenVatTu)) {
                             txtDonViTinh.setText(vatTu.getDonViTinh());
@@ -781,7 +799,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             break;
                         }
                     }
-                } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
                     for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngChinhs()) {
                         if (vatTu.getTenVatTu().equals(tenVatTu)) {
                             txtDonViTinh.setText(vatTu.getDonViTinh());
@@ -796,7 +814,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if (etxtSoLuong.getText().toString().trim().length() == 0)
-                    MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_soluong_themvattu), true);
+                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
                 else {
                     try {
                         double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
@@ -814,7 +832,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             listViewVatTu.setLayoutParams(params);
                         }
                     } catch (NumberFormatException e) {
-                        MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_number_format_exception), true);
+                        MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
                     }
 
                 }
@@ -838,11 +856,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
         final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
 
-        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+        if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
             layoutAutoCompleteTV.setVisibility(View.VISIBLE);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngNganh);
             autoCompleteTextView.setAdapter(adapter);
-        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+        } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
             layoutAutoCompleteTV.setVisibility(View.VISIBLE);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTuOngChinh);
             autoCompleteTextView.setAdapter(adapter);
@@ -891,7 +909,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void afterTextChanged(Editable editable) {
                 String tenVatTu = editable.toString();
-                if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+                if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
                     for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
                         if (vatTu.getTenVatTu().equals(tenVatTu)) {
                             txtDonViTinh.setText(vatTu.getDonViTinh());
@@ -899,7 +917,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             break;
                         }
                     }
-                } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+                } else if (mLoaiSuCo != null && mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
                     for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngChinhs()) {
                         if (vatTu.getTenVatTu().equals(tenVatTu)) {
                             txtDonViTinh.setText(vatTu.getDonViTinh());
@@ -914,7 +932,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if (etxtSoLuong.getText().toString().trim().length() == 0)
-                    MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_soluong_themvattu), true);
+                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
                 else {
                     try {
                         double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
@@ -932,7 +950,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             listViewVatTu.setLayoutParams(params);
                         }
                     } catch (NumberFormatException e) {
-                        MySnackBar.make(etxtSoLuong, mMainActivity.getString(R.string.message_number_format_exception), true);
+                        MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
                     }
 
                 }
@@ -981,12 +999,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     spin.setSelection(codes.indexOf(item.getValue()));
 
 
-                if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_HinhThucPhatHien))) {
+                if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_HinhThucPhatHien))) {
                     spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             if (!KhachHangDangNhap.getInstance().getKhachHang().getRole()
-                                    .equals(mMainActivity.getString(R.string.role_phong_giam_nuoc)) && i == 0) {
+                                    .equals(mMainActivity.getResources().getString(R.string.role_phong_giam_nuoc)) && i == 0) {
                                 MySnackBar.make(spin, "Bạn không có quyền chọn lựa chọn: bể ngầm!!!", true);
                                 spin.setSelection(1);
                             }
@@ -1013,7 +1031,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             @Override
                             public void onClick(View view) {
                                 DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
-                                String s = String.format(getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+                                String s = String.format(mMainActivity.getResources().getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
 
                                 textView.setText(s);
                                 alertDialog.dismiss();
@@ -1052,15 +1070,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
 
         final Domain domain = mSelectedArcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
-        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_MADMA))) {
+        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_MADMA))) {
             item.setValue(spin.getSelectedItem().toString());
-        } else if (mLoaiSuCo != null && item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ViTri))) {
-            if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngNganh))) {
+        } else if (mLoaiSuCo != null && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_ViTri))) {
+            if (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
                 item.setValue(spin.getSelectedItem().toString());
-            } else if (mLoaiSuCo.equals(mMainActivity.getString(R.string.LoaiSuCo_OngChinh))) {
+            } else if (mLoaiSuCo.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
                 item.setValue(spin.getSelectedItem().toString() + editText.getText().toString());
             }
-        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTu))) {
+        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
             mListHoSoVatTuSuCo = new ArrayList<>();
 
             if (listViewVatTu.getAdapter() != null) {
@@ -1079,7 +1097,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 }
             }
 
-        } else if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
+        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
             mListHoSoVatTuSuCoThuHoi = new ArrayList<>();
 
             if (listViewVatTu.getAdapter() != null) {
@@ -1280,7 +1298,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         refreshPopup(mSelectedArcGISFeature);
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
         linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
-        if (featureLayer.getName().equals(mMainActivity.getString(R.string.ALIAS_DIEM_SU_CO))) {
+        if (featureLayer.getName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
             //user admin mới có quyền xóa
             if (KhachHangDangNhap.getInstance().getKhachHang().getRole().equals("quantri")) {
                 linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
@@ -1289,10 +1307,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             }
 
             //khi hoàn thành rồi thì không chỉnh sửa được
-//            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getString(R.string.Field_SuCo_TrangThai));
+//            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getResources().getString(R.string.Field_SuCo_TrangThai));
 //            if (o != null && Integer.parseInt(o.toString())
 //                    != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
-                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
 //            else
 //                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
         } else {
@@ -1321,7 +1339,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                    String idSuCo = "";
 //                    Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
 //                    for (Field field : mSelectedArcGISFeature.getFeatureTable().getFields()) {
-//                        if (field.getName().equals(mMainActivity.getString(R.string.Field_OBJECTID))) {
+//                        if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_OBJECTID))) {
 //                            idSuCo = attr.get(field.getName()).toString();
 //                            break;
 //                        }

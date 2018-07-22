@@ -7,6 +7,11 @@
         <!--<item>@string/Field_SuCo_VatTu</item>-->
         <item>@string/Field_SuCo_DuongKinhOng</item>
     </string-array>
+    <string-array name="pgn_fields_arrays">
+        <item>@string/Field_SuCo_KetCauDuong</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
+    </string-array>
     <string-array name="update_fields_arrays">
         <item>NgaySuaChua</item>
         <item>@string/Field_SuCo_NguyenNhan</item>
@@ -16,9 +21,6 @@
         <item>GhiChu</item>
         <item>@string/Field_SuCo_ThietBiKhac</item>
         <item>@string/Field_SuCo_VatTuThuHoi</item>
-        <item>@string/Field_SuCo_KetCauDuong</item>
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
         <item>PhanLoaiSuCo</item>
         <item>DonViSuaChua</item>
         <item>DuongKinhOng</item>
@@ -54,6 +56,8 @@
         <item>SoNha</item>
         <item>SDTNguoiBao</item>
         <item>@string/Field_SuCo_KetCauDuong</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
+        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
     </string-array>
     <string-array name="no_display_fields_arrays">
         <item>OBJECTID</item>
