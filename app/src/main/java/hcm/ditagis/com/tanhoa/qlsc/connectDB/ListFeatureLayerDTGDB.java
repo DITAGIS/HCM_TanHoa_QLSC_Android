@@ -62,7 +62,7 @@ public class ListFeatureLayerDTGDB implements IDB<HashMap<String, String>, Boole
 
             boolean isAddLayerThematic = false;
             while (rs.next()) {
-                if (rs.getString(mContext.getString(R.string.sql_coloumn_sys_id)).equals(mContext.getString(R.string.IDLayer_DiemSuCo)) ||
+                if (rs.getString(mContext.getString(R.string.sql_coloumn_sys_id)).equals(mContext.getString(R.string.IDLayer_DiemSuCoThiCong)) ||
                         rs.getString(mContext.getString(R.string.sql_coloumn_sys_id)).equals(mContext.getString(R.string.IDLayer_Basemap)))
                     layerDTGS.add(new LayerInfoDTG(rs.getString(mContext.getString(R.string.sql_coloumn_sys_id)),
                             rs.getString(mContext.getString(R.string.sql_coloumn_sys_title)), rs.getString(mContext.getString(R.string.sql_coloumn_sys_url)),

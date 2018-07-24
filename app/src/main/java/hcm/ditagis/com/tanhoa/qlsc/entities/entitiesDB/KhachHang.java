@@ -4,7 +4,7 @@ public class KhachHang {
     private String userName;
     private String passWord;
     private String displayName;
-
+    private String groupRole;
     private String role;
 
     public KhachHang() {
@@ -35,6 +35,14 @@ public class KhachHang {
 
     public String getRole() {
         return role;
+    }
+
+    public String getGroupRole() {
+        return groupRole;
+    }
+
+    public void setGroupRole(String groupRole) {
+        this.groupRole = groupRole;
     }
 
     public void setRole(String role) {

@@ -46,7 +46,7 @@ public class ListObjectDB {
         this.dmas = dmas;
     }
 
-    public List<LayerInfoDTG> getLstFeatureLayerDTG() {
+    public List<LayerInfoDTG> getListLayerInfoDTG() {
         return lstFeatureLayerDTG;
     }
 

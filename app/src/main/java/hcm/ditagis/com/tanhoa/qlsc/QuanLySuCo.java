@@ -122,8 +122,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private LinearLayout mLayoutTimKiem;
     private FloatingActionButton mFloatButtonLayer;
     private FloatingActionButton mFloatButtonLocation;
-    private List<FeatureLayerDTG> mFeatureLayerDTGS;
-    public static FeatureLayerDTG FeatureLayerDTGDiemSuCo;
+    public static FeatureLayerDTG FeatureLayerDTGDiemSuCoThiCong;
+    public static FeatureLayerDTG FeatureLayerDTGDiemSuCoGiamSat;
     private LinearLayout mLayoutDisplayLayerAdministration, mLayoutDisplayLayerThematic, mLayoutLegend;
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
@@ -193,7 +193,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         loadLegendAsycn.execute();
         mListLayerID.clear();
         mGeocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
-        mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.7554041, 106.6546293, 12);
+        mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.8035455, 106.6182534, 13);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //for camera begin
@@ -353,8 +353,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         try {
 
             // config feature layer service
-            mFeatureLayerDTGS = new ArrayList<>();
-            for (LayerInfoDTG layerInfoDTG : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+            for (LayerInfoDTG layerInfoDTG : ListObjectDB.getInstance().getListLayerInfoDTG()) {
                 if (layerInfoDTG.getId().substring(layerInfoDTG.getId().length() - 3,
                         layerInfoDTG.getId().length() - 1).equals("TBL") || !layerInfoDTG.isView())
                     continue;
@@ -380,7 +379,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     });
                     mArcGISMapImageLayerAdministrator.loadAsync();
 
-                } else if (layerInfoDTG.getId().equals(getString(R.string.IDLayer_DiemSuCo))) {
+                } else if (layerInfoDTG.getId().equals(getString(R.string.IDLayer_DiemSuCoThiCong))) {
                     ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                     FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
 
@@ -393,20 +392,49 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo), timePeriodReport.getItems().get(2).getThoigianbatdau()));
                     featureLayer.setId(layerInfoDTG.getId());
                     Callout callout = mMapView.getCallout();
-                    mPopUp = new Popup(callout, QuanLySuCo.this, mMapView, serviceFeatureTable, mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+
                     featureLayer.setPopupEnabled(true);
                     setRendererSuCoFeatureLayer(featureLayer);
-                    FeatureLayerDTGDiemSuCo = mFeatureLayerDTG;
+
+                    FeatureLayerDTGDiemSuCoThiCong = mFeatureLayerDTG;
 //
-                    mMapViewHandler = new MapViewHandler(callout, mFeatureLayerDTG, mMapView, mPopUp, QuanLySuCo.this, mGeocoder);
+                    mPopUp = new Popup(callout, QuanLySuCo.this, mMapView,
+                            mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
+                        featureLayer.setVisible(false);
+
+                    mMapView.getMap().getOperationalLayers().add(featureLayer);
+                } else if (layerInfoDTG.getId().equals(getString(R.string.IDLayer_DiemSuCoGiamSat))) {
+                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+
+                    featureLayer.setName(layerInfoDTG.getTitleLayer());
+                    featureLayer.setMaxScale(0);
+                    featureLayer.setMinScale(1000000);
+                    featureLayer.setId(layerInfoDTG.getId());
+                    mFeatureLayerDTG = new FeatureLayerDTG(featureLayer, layerInfoDTG);
+                    TimePeriodReport timePeriodReport = new TimePeriodReport(this);
+                    featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo), timePeriodReport.getItems().get(2).getThoigianbatdau()));
+                    featureLayer.setId(layerInfoDTG.getId());
+                    Callout callout = mMapView.getCallout();
+
+                    featureLayer.setPopupEnabled(true);
+                    setRendererSuCoFeatureLayer(featureLayer);
+                    FeatureLayerDTGDiemSuCoGiamSat = mFeatureLayerDTG;
 //
-                    mFeatureLayerDTGS.add(mFeatureLayerDTG);
-                    mMapViewHandler.setArcGISMapImageLayerAdmin(mArcGISMapImageLayerAdministrator);
+//
+                    mPopUp = new Popup(callout, QuanLySuCo.this, mMapView,
+                            mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_thicong)))
+                        featureLayer.setVisible(false);
+
                     mMapView.getMap().getOperationalLayers().add(featureLayer);
                 } else if (mArcGISMapImageLayerThematic == null) {
                     mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
                     mArcGISMapImageLayerThematic.setName(layerInfoDTG.getTitleLayer());
                     mArcGISMapImageLayerThematic.setId(layerInfoDTG.getId());
+                    mArcGISMapImageLayerThematic.setMaxScale(0);
+                    mArcGISMapImageLayerThematic.setMinScale(10000000);
                     mMapView.getMap().getOperationalLayers().add(mArcGISMapImageLayerThematic);
                     mArcGISMapImageLayerThematic.addDoneLoadingListener(new Runnable() {
                         @Override
@@ -422,6 +450,9 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     mArcGISMapImageLayerThematic.loadAsync();
                 }
             }
+            Callout callout = mMapView.getCallout();
+            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, QuanLySuCo.this, mGeocoder);
+            mMapViewHandler.setArcGISMapImageLayerAdmin(mArcGISMapImageLayerAdministrator);
         } catch (Exception e) {
             Log.e("error", e.toString());
         }
@@ -470,7 +501,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 //
 //                if (buttonView.isChecked()) {
-//                    for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
+//                    for (FeatureLayerDTG featureLayerDTG : mFeatureLayerS)
 //                        if (featureLayerDTG.getLayer().getName().contentEquals(textView.getText())
 //                                && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
 //                            tmpFeatureLayerDTGs.add(featureLayerDTG);
@@ -495,7 +526,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //        });
 //
 ////        checkBox.setChecked(true);
-////        for (FeatureLayerDTG featureLayerDTG : mFeatureLayerDTGS)
+////        for (FeatureLayerDTG featureLayerDTG : mFeatureLayerS)
 ////            if (featureLayerDTG.getLayer().getName().contentEquals(checkBox.getText())
 ////                    && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
 ////                tmpFeatureLayerDTGs.add(featureLayerDTG);
@@ -1268,7 +1299,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(),mPopUp.getmListHoSoVatTuThuHoiSuCo(),
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
                                     true, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {
@@ -1308,7 +1339,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 //                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, (ServiceFeatureTable)
                                     mFeatureLayerDTG.getLayer().getFeatureTable(), mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(),mPopUp.getmListHoSoVatTuThuHoiSuCo(),
+                                    true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
                                     false, new EditAsync.AsyncResponse() {
                                 @Override
                                 public void processFinish(ArcGISFeature arcGISFeature) {

@@ -71,7 +71,7 @@ public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
             Drawable drawableBeNgam = Drawable.createFromStream((
                     InputStream) new URL(mContext.getString(R.string.url_image_symbol_beNgam)).getContent(), "src");
             imgBeNgam.setImageDrawable(drawableBeNgam);
-            txtBeNgam.setText("Bể ngầm");
+            txtBeNgam.setText("Chưa sửa chữa bể ngầm");
 
             Drawable drawableChuaXuLy = Drawable.createFromStream((
                     InputStream) new URL(mContext.getString(R.string.url_image_symbol_chuasuachua)).getContent(), "src");

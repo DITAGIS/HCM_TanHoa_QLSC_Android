@@ -37,7 +37,7 @@ import hcm.ditagis.com.tanhoa.qlsc.R;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapAddFeatureAsync;
 import hcm.ditagis.com.tanhoa.qlsc.async.SingleTapMapViewAsync;
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 
 /**
  * Created by ThanLe on 2/2/2018.
@@ -46,17 +46,17 @@ import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 public class MapViewHandler extends Activity {
     private static final int REQUEST_ID_IMAGE_CAPTURE = 1;
     private static double DELTA_MOVE_Y = 0;//7000;
-    private final FeatureLayer suCoTanHoaLayer;
+    private FeatureLayer suCoTanHoaLayerThiCong, suCoTanHoaLayerGiamSat;
     private Callout mCallout;
     private android.graphics.Point mClickPoint;
     private ArcGISFeature mSelectedArcGISFeature;
     private MapView mMapView;
     private boolean isClickBtnAdd = false;
-    private ServiceFeatureTable mServiceFeatureTable;
+    private ServiceFeatureTable mServiceFeatureTableThiCong, mServiceFeatureTableGiamSat;
     private Popup mPopUp;
     private Context mContext;
     private Geocoder mGeocoder;
-    private FeatureLayerDTG mFeatureLayerDTG;
+    private boolean isThiCong;
 
     public void setArcGISMapImageLayerAdmin(ArcGISMapImageLayer arcGISMapImageLayer) {
         this.arcGISMapImageLayer = arcGISMapImageLayer;
@@ -64,15 +64,23 @@ public class MapViewHandler extends Activity {
 
     private ArcGISMapImageLayer arcGISMapImageLayer;
 
-    public MapViewHandler(Callout callout,FeatureLayerDTG featureLayerDTG, MapView mapView,
+    public MapViewHandler(Callout callout, MapView mapView,
                           Popup popupInfos, Context mContext, Geocoder geocoder) {
         this.mCallout = callout;
         this.mMapView = mapView;
-        this.mServiceFeatureTable = (ServiceFeatureTable) featureLayerDTG.getLayer().getFeatureTable();
+        if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null) {
+            this.mServiceFeatureTableThiCong = (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable();
+            this.suCoTanHoaLayerThiCong = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
+        }
+        if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat != null) {
+            this.mServiceFeatureTableGiamSat = (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable();
+
+            this.suCoTanHoaLayerGiamSat = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
+        }
         this.mPopUp = popupInfos;
         this.mContext = mContext;
-        this.mFeatureLayerDTG = featureLayerDTG;
-        this.suCoTanHoaLayer = featureLayerDTG.getLayer();
+
+        this.isThiCong = KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mContext.getString(R.string.group_role_thicong));
         this.mGeocoder = geocoder;
     }
 
@@ -84,16 +92,18 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTable, mMapView, mGeocoder, arcGISMapImageLayer, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTableThiCong, mServiceFeatureTableGiamSat, mMapView, mGeocoder, arcGISMapImageLayer, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
-                if (output != null && QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
-                    ArcGISFeature arcGISFeature = (ArcGISFeature) output;
-                    if (arcGISFeature.canEditAttachments() && arcGISFeature.canUpdateGeometry()) {
-                        mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
-                        mPopUp.showPopup(arcGISFeature, true);
-                    } else {
-                        MySnackBar.make(mMapView, "Điểm sự cố vừa thêm bị lỗi\nVui lòng liên hệ admin để xử lý", true);
+                if (output != null) {
+                    if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat != null ||
+                            QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null) {
+                        ArcGISFeature arcGISFeature = (ArcGISFeature) output;
+                        if (arcGISFeature.canEditAttachments() && arcGISFeature.canUpdateGeometry()) {
+                            mPopUp.showPopup(arcGISFeature, true);
+                        } else {
+                            MySnackBar.make(mMapView, "Điểm sự cố vừa thêm bị lỗi\nVui lòng liên hệ admin để xử lý", true);
+                        }
                     }
                 }
             }
@@ -119,7 +129,7 @@ public class MapViewHandler extends Activity {
             mMapView.setViewpointCenterAsync(clickPoint, 10);
         } else {
 
-            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mFeatureLayerDTG, mPopUp, mClickPoint, mMapView);
+            SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mContext, mPopUp, mClickPoint, mMapView);
             singleTapMapViewAsync.execute(clickPoint);
         }
     }
@@ -139,8 +149,11 @@ public class MapViewHandler extends Activity {
         final QueryParameters queryParameters = new QueryParameters();
         final String query = "OBJECTID = " + objectID;
         queryParameters.setWhereClause(query);
-
-        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        final ListenableFuture<FeatureQueryResult> feature;
+        if (isThiCong)
+            feature = ((ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        else
+            feature = ((ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable()).queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {
@@ -151,10 +164,11 @@ public class MapViewHandler extends Activity {
                         Envelope extent = item.getGeometry().getExtent();
 
                         mMapView.setViewpointGeometryAsync(extent);
-                        suCoTanHoaLayer.selectFeature(item);
-                        if (QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
+                        if (isThiCong)
+                            suCoTanHoaLayerThiCong.selectFeature(item);
+                        else suCoTanHoaLayerGiamSat.selectFeature(item);
+                        if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null) {
                             mSelectedArcGISFeature = (ArcGISFeature) item;
-                            mPopUp.setFeatureLayerDTG(QuanLySuCo.FeatureLayerDTGDiemSuCo);
                             if (mSelectedArcGISFeature != null)
                                 mPopUp.showPopup(mSelectedArcGISFeature, false);
                         }
@@ -167,15 +181,17 @@ public class MapViewHandler extends Activity {
         });
     }
 
+
     public void querySearch(String searchStr, final TraCuuAdapter adapter) {
         adapter.clear();
         adapter.notifyDataSetChanged();
         mCallout.dismiss();
 
-        suCoTanHoaLayer.clearSelection();
+        suCoTanHoaLayerThiCong.clearSelection();
+        suCoTanHoaLayerGiamSat.clearSelection();
         QueryParameters queryParameters = new QueryParameters();
         StringBuilder builder = new StringBuilder();
-//        for (Field field : mServiceFeatureTable.getFields()) {
+//        for (Field field : mServiceFeatureTableThiCong.getFields()) {
 //            switch (field.getFieldType()) {
 //                case INTEGER:
 //                case SHORT:
@@ -206,7 +222,11 @@ public class MapViewHandler extends Activity {
         builder.append("SoNha  like N'%").append(searchStr).append("%'");
 //        builder.append(" 1 = 2 ");
         queryParameters.setWhereClause(builder.toString());
-        final ListenableFuture<FeatureQueryResult> feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        final ListenableFuture<FeatureQueryResult> feature;
+        if (isThiCong)
+            feature = mServiceFeatureTableThiCong.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        else
+            feature = mServiceFeatureTableGiamSat.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {
@@ -243,5 +263,5 @@ public class MapViewHandler extends Activity {
         });
 
     }
-
 }
+

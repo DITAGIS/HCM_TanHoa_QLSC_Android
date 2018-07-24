@@ -46,7 +46,9 @@ import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
 import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
+import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -74,7 +76,6 @@ import hcm.ditagis.com.tanhoa.qlsc.entities.MyAddress;
 import hcm.ditagis.com.tanhoa.qlsc.entities.VatTu;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
 
 @SuppressLint("Registered")
 public class Popup extends AppCompatActivity implements View.OnClickListener {
@@ -84,7 +85,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private ArcGISFeature mSelectedArcGISFeature = null;
     private ServiceFeatureTable mServiceFeatureTable;
     private Callout mCallout;
-    private FeatureLayerDTG mFeatureLayerDTG;
     private List<String> lstFeatureType;
     private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
     private DialogInterface mDialog;
@@ -100,11 +100,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private Button mBtnLeft;
     private List<FeatureViewMoreInfoAdapter.Item> mListItemBeNgam;
 
-    public Popup(Callout callout, QuanLySuCo mainActivity, MapView mapView, ServiceFeatureTable serviceFeatureTable,
+    public Popup(Callout callout, QuanLySuCo mainActivity, MapView mapView,
                  LocationDisplay locationDisplay, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer) {
         this.mMainActivity = mainActivity;
         this.mMapView = mapView;
-        this.mServiceFeatureTable = serviceFeatureTable;
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
         this.mGeocoder = geocoder;
@@ -117,6 +116,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         this.mArcGISMapImageLayerAdmin = arcGISMapImageLayer;
         this.mListItemBeNgam = new ArrayList<>();
+
     }
 
     public DialogInterface getDialog() {
@@ -139,11 +139,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         return mListHoSoVatTuThuHoiSuCo;
     }
 
-    public void setFeatureLayerDTG(FeatureLayerDTG layerDTG) {
-        this.mFeatureLayerDTG = layerDTG;
-    }
 
-    public void refreshPopup(ArcGISFeature arcGISFeature) {
+    private void refreshPopup(ArcGISFeature arcGISFeature) {
         mSelectedArcGISFeature = arcGISFeature;
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
         ListView listView = linearLayout.findViewById(R.id.lstview_thongtinsuco);
@@ -234,7 +231,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     if (valueDomain != null) item.setValue(valueDomain.toString());
                 } else switch (field.getFieldType()) {
                     case DATE:
-                        item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
+                        if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienTuNgay))
+                                || item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienDenNgay)))
+                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                        else
+                            item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                         break;
                     case OID:
                     case TEXT:
@@ -298,7 +299,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                     if (isCheck) {
                         EditAsync editAsync = new EditAsync(mMainActivity,
-                                (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
+                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
                                 mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo,
                                 mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                             @Override
@@ -308,6 +309,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             }
                         });
                         editAsync.execute(mFeatureViewMoreInfoAdapter);
+                        EditAsync editAsyncGiamSat = new EditAsync(mMainActivity,
+                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
+                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo,
+                                mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                            @Override
+                            public void processFinish(ArcGISFeature arcGISFeature) {
+                                mCallout.dismiss();
+                                dialog.dismiss();
+                            }
+                        });
+                        editAsyncGiamSat.execute(mFeatureViewMoreInfoAdapter);
                     } else
                         MySnackBar.make(mBtnLeft, R.string.message_HinhThucPhatHien, true);
 
@@ -345,8 +357,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                     if (size == 0) {
                                         MySnackBar.make(mBtnLeft, R.string.message_ChupAnh_HoanThanh, true);
                                     } else {
-                                        EditAsync editAsync = new EditAsync(mMainActivity,
-                                                (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
+                                        EditAsync editAsync;
+                                        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
+                                            editAsync = new EditAsync(mMainActivity,
+                                                    (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
+                                                    mSelectedArcGISFeature, true, null,
+                                                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                                @Override
+                                                public void processFinish(ArcGISFeature arcGISFeature) {
+                                                    mCallout.dismiss();
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        else editAsync = new EditAsync(mMainActivity,
+                                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
                                                 mSelectedArcGISFeature, true, null,
                                                 mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                                             @Override
@@ -364,8 +388,21 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         });
 
                     } else {
-                        EditAsync editAsync = new EditAsync(mMainActivity,
-                                (ServiceFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable(),
+
+                        EditAsync editAsync;
+                        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
+                            editAsync = new EditAsync(mMainActivity,
+                                    (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
+                                    mSelectedArcGISFeature, true, null,
+                                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
+                                @Override
+                                public void processFinish(ArcGISFeature arcGISFeature) {
+                                    mCallout.dismiss();
+                                    dialog.dismiss();
+                                }
+                            });
+                        else editAsync = new EditAsync(mMainActivity,
+                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
                                 mSelectedArcGISFeature, true, null,
                                 mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                             @Override
@@ -403,7 +440,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void loadDataViewMoreInfo(boolean isAddFeature, View layout) {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
-
+        mListItemBeNgam.clear();
         String[] updateFields = mMainActivity.getResources().getStringArray(R.array.update_fields_arrays);
         String[] addFields = mMainActivity.getResources().getStringArray(R.array.add_fields_arrays);
         String[] no_displayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
@@ -503,7 +540,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         if (valueDomain != null) item.setValue(valueDomain.toString());
                     } else switch (field.getFieldType()) {
                         case DATE:
-                            item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
+                            if (item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienTuNgay))
+                                    || item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienDenNgay)))
+                                item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
+                            else
+                                item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                             break;
                         case OID:
                         case TEXT:
@@ -546,12 +587,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
                 item.setFieldType(field.getFieldType());
 
-                if (isAddFeature) {
-                    if (isPGNField) {
+
+                if (isPGNField) {
+                    if (!mListItemBeNgam.contains(item))
                         mListItemBeNgam.add(item);
-                        continue;
-                    }
-                } else if (isPGNField_NotPGNRole)
+                    continue;
+                }
+                if (isPGNField_NotPGNRole)
                     continue;
 
                 mFeatureViewMoreInfoAdapter.add(item);
@@ -1225,6 +1267,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
     private void deleteFeature() {
+        final LayerList operationalLayers = mMapView.getMap().getOperationalLayers();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
         builder.setTitle("Xác nhận");
         builder.setMessage("Bạn có chắc chắn xóa sự cố này?");
@@ -1242,39 +1285,46 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             Log.d(mMainActivity.getResources().getString(R.string.app_name), "Error while loading feature");
                         }
                         try {
-                            // update feature in the feature table
-                            ListenableFuture<Void> mapViewResult = mServiceFeatureTable.deleteFeatureAsync(mSelectedArcGISFeature);
-                            mapViewResult.addDoneListener(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // apply change to the server
-                                    final ListenableFuture<List<FeatureEditResult>> serverResult = mServiceFeatureTable.applyEditsAsync();
-                                    serverResult.addDoneListener(new Runnable() {
-                                        @Override
-                                        public void run() {
+                            for (final Layer layer : operationalLayers) {
+                                if (layer instanceof FeatureLayer) {
+                                    final FeatureLayer featureLayer = (FeatureLayer) layer;
+                                    if (featureLayer.getId().equals("diemsucoLYR")) {
+                                        // update feature in the feature table
+                                        ListenableFuture<Void> mapViewResult = ((ServiceFeatureTable) featureLayer.getFeatureTable()).deleteFeatureAsync(mSelectedArcGISFeature);
+                                        mapViewResult.addDoneListener(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // apply change to the server
+                                                final ListenableFuture<List<FeatureEditResult>> serverResult =
+                                                        ((ServiceFeatureTable) featureLayer.getFeatureTable()).applyEditsAsync();
+                                                serverResult.addDoneListener(new Runnable() {
+                                                    @Override
+                                                    public void run() {
 
-                                            List<FeatureEditResult> edits;
-                                            try {
-                                                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mMainActivity);
-                                                hoSoVatTuSuCoDB.delete(mIDSuCo);
-                                                HoSoVatTuThuHoiSuCoDB hoSoVatTuThuHoiSuCoDB = new HoSoVatTuThuHoiSuCoDB(mMainActivity);
-                                                hoSoVatTuThuHoiSuCoDB.delete(mIDSuCo);
-                                                edits = serverResult.get();
-                                                if (edits.size() > 0) {
-                                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                                        List<FeatureEditResult> edits;
+                                                        try {
+                                                            edits = serverResult.get();
+                                                            if (edits.size() > 0) {
+                                                                if (!edits.get(0).hasCompletedWithErrors()) {
 
-                                                        Log.e("", "Feature successfully updated");
+                                                                    Log.e("", "Feature successfully updated");
+                                                                }
+                                                            }
+                                                            HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mMainActivity);
+                                                            hoSoVatTuSuCoDB.delete(mIDSuCo);
+                                                            HoSoVatTuThuHoiSuCoDB hoSoVatTuThuHoiSuCoDB = new HoSoVatTuThuHoiSuCoDB(mMainActivity);
+                                                            hoSoVatTuThuHoiSuCoDB.delete(mIDSuCo);
+                                                        } catch (InterruptedException | ExecutionException e) {
+                                                            e.printStackTrace();
+                                                        }
+
                                                     }
-                                                }
-                                            } catch (InterruptedException | ExecutionException e) {
-                                                e.printStackTrace();
+                                                });
                                             }
-
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
-                            });
-
+                            }
                         } catch (Exception e) {
                             Log.e(mMainActivity.getResources().getString(R.string.app_name), "deteting feature in the feature table failed: " + e.getMessage());
                         }
@@ -1314,9 +1364,16 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void clearSelection() {
-        if (mFeatureLayerDTG != null) {
-            FeatureLayer featureLayer = mFeatureLayerDTG.getLayer();
-            featureLayer.clearSelection();
+        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(R.string.group_role_thicong)) {
+            if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer() != null) {
+                FeatureLayer featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
+                featureLayer.clearSelection();
+            }
+        } else {
+            if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer() != null) {
+                FeatureLayer featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
+                featureLayer.clearSelection();
+            }
         }
     }
 
@@ -1332,8 +1389,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         clearSelection();
         dimissCallout();
         this.mSelectedArcGISFeature = selectedArcGISFeature;
-
-        FeatureLayer featureLayer = mFeatureLayerDTG.getLayer();
+        FeatureLayer featureLayer;
+        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
+            featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
+        else
+            featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
         featureLayer.selectFeature(mSelectedArcGISFeature);
         lstFeatureType = new ArrayList<>();
         for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
@@ -1346,7 +1406,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         linearLayout.findViewById(R.id.imgBtn_layout_thongtinsuco).setOnClickListener(this);
         if (featureLayer.getName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
             //user admin mới có quyền xóa
-            if (KhachHangDangNhap.getInstance().getKhachHang().getRole().equals("quantri")) {
+            if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_admin))) {
                 linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
             } else {
                 linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);

@@ -9,36 +9,38 @@ import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ArcGISFeatureTable;
 import com.esri.arcgisruntime.geometry.Point;
+import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.GeoElement;
-import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import hcm.ditagis.com.tanhoa.qlsc.libs.FeatureLayerDTG;
+import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
+import hcm.ditagis.com.tanhoa.qlsc.R;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
 /**
  * Created by ThanLe on 4/16/2018.
  */
 
-public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Void> {
+public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> {
     private ProgressDialog mDialog;
-    private FeatureLayerDTG mFeatureLayerDTG;
     private MapView mMapView;
     private ArcGISFeature mSelectedArcGISFeature;
     private Popup mPopUp;
     private static double DELTA_MOVE_Y = 0;//7000;
     private android.graphics.Point mClickPoint;
     private boolean isFound = false;
+    private Context mContext;
 
-    public SingleTapMapViewAsync(Context context, FeatureLayerDTG featureLayerDTG, Popup popup, android.graphics.Point clickPoint, MapView mapview) {
+    public SingleTapMapViewAsync(Context context, Popup popup, android.graphics.Point clickPoint, MapView mapview) {
         this.mMapView = mapview;
-        this.mFeatureLayerDTG = featureLayerDTG;
         this.mPopUp = popup;
         this.mClickPoint = clickPoint;
+        this.mContext = context;
         this.mDialog = new ProgressDialog(context, android.R.style.Theme_Material_Dialog_Alert);
     }
 
@@ -59,8 +61,15 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
                                 mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
                                 long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
                                         getServiceLayerId();
-                                if(serviceLayerId == ((ArcGISFeatureTable) mFeatureLayerDTG.getLayer().getFeatureTable()).getServiceLayerId())
-                                publishProgress(mFeatureLayerDTG);
+                                if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mContext.getString(R.string.group_role_thicong))) {
+                                    if (serviceLayerId == ((ArcGISFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).getServiceLayerId())
+                                        publishProgress(QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer());
+                                }
+                                else
+                                {
+                                    if (serviceLayerId == ((ArcGISFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable()).getServiceLayerId())
+                                        publishProgress(QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer());
+                                }
                             }
                         }
                     }
@@ -97,11 +106,11 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayerDTG, Voi
     }
 
     @Override
-    protected void onProgressUpdate(FeatureLayerDTG... values) {
+    protected void onProgressUpdate(FeatureLayer... values) {
         super.onProgressUpdate(values);
-        if (values != null && mSelectedArcGISFeature != null) {
-            FeatureLayerDTG featureLayerDTG = values[0];
-            mPopUp.setFeatureLayerDTG(featureLayerDTG);
+        if (values != null && mSelectedArcGISFeature != null && values[0] != null) {
+
+            FeatureLayer featureLayer = values[0];
             mPopUp.showPopup(mSelectedArcGISFeature, false);
         }
         if (mDialog != null && mDialog.isShowing()) {

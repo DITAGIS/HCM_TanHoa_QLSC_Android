@@ -267,7 +267,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:onClick="onClickTextView"
-                        android:text="Ẩn/hiện lớp dữ liệu"
+                        android:text="Ẩn/hiện lớp dữ liệu chuyên đề"
                         android:textColor="@color/colorTextColor_1" />
                 </LinearLayout>
 

@@ -53,7 +53,7 @@ public class QueryFeatureAsycn extends AsyncTask<String, ArcGISFeature, Void> {
                     FeatureQueryResult result = feature.get();
                     if (result.iterator().hasNext()) {
                         Feature item = result.iterator().next();
-                        if (QuanLySuCo.FeatureLayerDTGDiemSuCo != null) {
+                        if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null || QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat != null) {
                             publishProgress((ArcGISFeature) item);
                         }
                     }

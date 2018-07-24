@@ -1,4 +1,4 @@
-<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account">]>
+<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account"><!ENTITY table_sys_role "TanHoaSystem..SYS_Role">]>
 <resources>
     <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -199,11 +199,17 @@
     <string name="sql_coloumn_lichsuds_nhanviends">nhanviends</string>
     <!--sql column lichsuds end-->
     <string name="sql_coloumn_role_role">role</string>
+    <string name="sql_coloumn_role_groupRole">groupRole</string>
     <string name="role_phong_giam_nuoc">pgn</string>
+    <string name="group_role_admin">admin</string>
+    <string name="group_role_thicong">tc</string>
+    <string name="group_role_giamsat">gs</string>
     <string name="sql_login">select *
-					 from &table_sys_account; where username = ? and password = ?</string>
+					 from &table_sys_account; a
+					 inner join &table_sys_role; r on r.id = a.Role where username = ? and password = ?</string>
     <string name="sql_login_imei">select *
-					 from &table_sys_account; where username = ? and password = ? and imei = ?</string>
+					 from &table_sys_account; a
+					 inner join &table_sys_role; r on r.id = a.Role where username = ? and password = ? and imei = ?</string>
     <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
     <string name="sql_select_sys_layer">SELECT distinct * FROM &table_sys_layer;
         l  inner join &table_sys_layer_account; la  on l.id = la.Layer  where account = ? order by NumericalOder </string>
@@ -294,6 +300,7 @@
     <string name="Field_SuCo_ThietBiKhac">ThietBiKhac</string>
     <string name="Field_SuCo_VatTuThuHoi">VatTuThuHoi</string>
     <string name="Field_SuCo_KetCauDuong">KetCauDuong</string>
+    <string name="Field_SuCo_DiaChiMoi">DiaChiMoi</string>
     <string name="Field_SuCo_ViTri">ViTri</string>
     <string name="Field_SuCo_PhuiDao1">PhuiDao1</string>
     <string name="Field_SuCo_PhuiDao1_Dai">PhuiDao1Dai</string>
@@ -329,6 +336,7 @@
     <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
     <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
     <string name="IDLayer_Basemap">BASEMAP</string>
-    <string name="IDLayer_DiemSuCo">diemsucoLYR</string>
+    <string name="IDLayer_DiemSuCoThiCong">diemsucoLYR</string>
+    <string name="IDLayer_DiemSuCoGiamSat">diemsucogiamsatLYR</string>
     <!--field sự cố end-->
 </resources>

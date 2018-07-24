@@ -59,7 +59,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             findViewById(R.id.layout_login_tool).setVisibility(View.VISIBLE);
             findViewById(R.id.layout_login_username).setVisibility(View.GONE);
         }
-        mTxtPassword.setText("ditagis@123");
 
     }
 
