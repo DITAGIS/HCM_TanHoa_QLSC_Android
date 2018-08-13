@@ -105,7 +105,8 @@ import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Preference;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
-public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
+public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        View.OnClickListener, AdapterView.OnItemClickListener {
     private Uri mUri;
     private Popup mPopUp;
     private MapView mMapView;

@@ -127,7 +127,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                             searchStr = mContext.getString(R.string.Field_SuCo_IDSuCo) + " like '%" + timeID + "'";
                         }
                         final QueryParameters queryParameters = new QueryParameters();
-                        queryParameters.setWhereClause(searchStr);
+//                        queryParameters.setWhereClause(searchStr);
+                        queryParameters.setWhereClause("1=1");
                         final String finalDateTime = dateTime;
                         final String finalTimeID = timeID;
 

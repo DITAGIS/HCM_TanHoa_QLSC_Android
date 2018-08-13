@@ -23,5 +23,5 @@
     <string name="direction_url_api">https://maps.googleapis.com/maps/api/directions/json?</string>
 
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBFjK8UInAeNGfhx8attCH8UNY6xzNjuwU</string>
-    <string name="google_api" templateMergeStrategy="preserve" translatable="false">AIzaSyDnwLF2-WfK8cVZt9OoDYJ9Y8kspXhEHfI</string>
+    <string name="google_api" templateMergeStrategy="preserve" translatable="false">AIzaSyD3SoI9GMAhb_RTE9rUjjxLxdzsKh6KmV0</string>
 </resources>

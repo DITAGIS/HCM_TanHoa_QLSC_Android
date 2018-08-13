@@ -40,21 +40,26 @@ import java.util.concurrent.ExecutionException;
 import hcm.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.LayerInfoDTG;
+import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import hcm.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class ThongKeActivity extends AppCompatActivity {
-    private TextView mTxtTongSuCo, mTxtChuaSua,mTxtBeNgam, mTxtDangSua, mTxtHoanThanh;
-    private TextView mTxtPhanTramChuaSua,mTxtPhanTramBeNgam, mTxtPhanTramDangSua, mTxtPhanTramHoanThanh;
+    private TextView mTxtTongSuCo, mTxtChuaSua, mTxtBeNgam, mTxtDangSua, mTxtHoanThanh;
+    private TextView mTxtPhanTramChuaSua, mTxtPhanTramBeNgam, mTxtPhanTramDangSua, mTxtPhanTramHoanThanh;
     private ServiceFeatureTable mServiceFeatureTable;
     private ThongKeAdapter mThongKeAdapter;
-    private int mChuaSuaChua,mBeNgam, mDangSuaChua, mHoanThanh;
+    private int mChuaSuaChua, mBeNgam, mDangSuaChua, mHoanThanh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_thong_ke);
-
-        mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.URL_DIEM_SU_CO));
+        for (LayerInfoDTG layerInfoDTG : ListObjectDB.getInstance().getListLayerInfoDTG())
+            if (layerInfoDTG.getId().equals(getString(R.string.IDLayer_DiemSuCoThiCong))) {
+                mServiceFeatureTable = new ServiceFeatureTable(getResources().getString(R.string.URL_DIEM_SU_CO));
+                break;
+            }
         TimePeriodReport timePeriodReport = new TimePeriodReport(this);
         List<ThongKeAdapter.Item> items = timePeriodReport.getItems();
         mThongKeAdapter = new ThongKeAdapter(this, items);
@@ -195,7 +200,7 @@ public class ThongKeActivity extends AppCompatActivity {
     }
 
     private void query(ThongKeAdapter.Item item) {
-        mChuaSuaChua =mBeNgam= mDangSuaChua = mHoanThanh = 0;
+        mChuaSuaChua = mBeNgam = mDangSuaChua = mHoanThanh = 0;
         ((TextView) ThongKeActivity.this.findViewById(R.id.txt_thongke_mota)).setText(item.getMota());
         TextView txtThoiGian = ThongKeActivity.this.findViewById(R.id.txt_thongke_thoigian);
         if (item.getThoigianhienthi() == null) txtThoiGian.setVisibility(View.GONE);
@@ -230,7 +235,7 @@ public class ThongKeActivity extends AppCompatActivity {
             whereClause += " 1 = 1)";
         }
 
-String whereClauseBeNgam ="";
+        String whereClauseBeNgam = "";
         //Bể ngầm
         if (item.getThoigianbatdau() == null || item.getThoigianketthuc() == null) {
             whereClauseBeNgam += " HinhThucPhatHien = 1 and (";
@@ -341,8 +346,8 @@ String whereClauseBeNgam ="";
         mTxtBeNgam.setText(mBeNgam + "");
         mTxtDangSua.setText(mDangSuaChua + "");
         mTxtHoanThanh.setText(mHoanThanh + "");
-        double percentChuaSua,percentBeNgam, percentDangSua, percentHoanThanh;
-        percentChuaSua =percentBeNgam= percentDangSua = percentHoanThanh = 0.0;
+        double percentChuaSua, percentBeNgam, percentDangSua, percentHoanThanh;
+        percentChuaSua = percentBeNgam = percentDangSua = percentHoanThanh = 0.0;
         if (tongloaitrangthai > 0) {
             percentChuaSua = (double) mChuaSuaChua * 100 / tongloaitrangthai;
             percentBeNgam = (double) mBeNgam * 100 / tongloaitrangthai;
@@ -381,7 +386,7 @@ String whereClauseBeNgam ="";
         ArrayList<Entry> yVals1 = new ArrayList<>();
 
         yVals1.add(new Entry(mChuaSuaChua, 0));
-        yVals1.add(new Entry(mBeNgam,1));
+        yVals1.add(new Entry(mBeNgam, 1));
         yVals1.add(new Entry(mDangSuaChua, 2));
         yVals1.add(new Entry(mHoanThanh, 3));
         ArrayList<String> xVals = new ArrayList<>();
