@@ -72,11 +72,6 @@ public class MapViewHandler extends Activity {
             this.mServiceFeatureTableThiCong = (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable();
             this.suCoTanHoaLayerThiCong = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
         }
-        if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat != null) {
-            this.mServiceFeatureTableGiamSat = (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable();
-
-            this.suCoTanHoaLayerGiamSat = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
-        }
         this.mPopUp = popupInfos;
         this.mContext = mContext;
 
@@ -96,8 +91,7 @@ public class MapViewHandler extends Activity {
             @Override
             public void processFinish(Feature output) {
                 if (output != null) {
-                    if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat != null ||
-                            QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null) {
+                    if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong != null) {
                         ArcGISFeature arcGISFeature = (ArcGISFeature) output;
                         if (arcGISFeature.canEditAttachments() && arcGISFeature.canUpdateGeometry()) {
                             mPopUp.showPopup(arcGISFeature, true);
@@ -150,10 +144,7 @@ public class MapViewHandler extends Activity {
         final String query = "OBJECTID = " + objectID;
         queryParameters.setWhereClause(query);
         final ListenableFuture<FeatureQueryResult> feature;
-        if (isThiCong)
-            feature = ((ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-        else
-            feature = ((ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable()).queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        feature = ((ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         feature.addDoneListener(new Runnable() {
             @Override
             public void run() {

@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo;
-import hcm.ditagis.com.tanhoa.qlsc.R;
-import hcm.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
 import hcm.ditagis.com.tanhoa.qlsc.utities.Popup;
 
 /**
@@ -61,15 +59,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
                                 mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
                                 long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
                                         getServiceLayerId();
-                                if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mContext.getString(R.string.group_role_thicong))) {
-                                    if (serviceLayerId == ((ArcGISFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).getServiceLayerId())
-                                        publishProgress(QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer());
-                                }
-                                else
-                                {
-                                    if (serviceLayerId == ((ArcGISFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable()).getServiceLayerId())
-                                        publishProgress(QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer());
-                                }
+                                if (serviceLayerId == ((ArcGISFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable()).getServiceLayerId())
+                                    publishProgress(QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer());
                             }
                         }
                     }

@@ -309,17 +309,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             }
                         });
                         editAsync.execute(mFeatureViewMoreInfoAdapter);
-                        EditAsync editAsyncGiamSat = new EditAsync(mMainActivity,
-                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
-                                mSelectedArcGISFeature, true, null, mListHoSoVatTuSuCo,
-                                mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
-                            @Override
-                            public void processFinish(ArcGISFeature arcGISFeature) {
-                                mCallout.dismiss();
-                                dialog.dismiss();
-                            }
-                        });
-                        editAsyncGiamSat.execute(mFeatureViewMoreInfoAdapter);
                     } else
                         MySnackBar.make(mBtnLeft, R.string.message_HinhThucPhatHien, true);
 
@@ -358,19 +347,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                                         MySnackBar.make(mBtnLeft, R.string.message_ChupAnh_HoanThanh, true);
                                     } else {
                                         EditAsync editAsync;
-                                        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
-                                            editAsync = new EditAsync(mMainActivity,
-                                                    (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
-                                                    mSelectedArcGISFeature, true, null,
-                                                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
-                                                @Override
-                                                public void processFinish(ArcGISFeature arcGISFeature) {
-                                                    mCallout.dismiss();
-                                                    dialog.dismiss();
-                                                }
-                                            });
-                                        else editAsync = new EditAsync(mMainActivity,
-                                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
+                                        editAsync = new EditAsync(mMainActivity,
+                                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
                                                 mSelectedArcGISFeature, true, null,
                                                 mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                                             @Override
@@ -390,19 +368,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     } else {
 
                         EditAsync editAsync;
-                        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
-                            editAsync = new EditAsync(mMainActivity,
-                                    (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
-                                    mSelectedArcGISFeature, true, null,
-                                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
-                                @Override
-                                public void processFinish(ArcGISFeature arcGISFeature) {
-                                    mCallout.dismiss();
-                                    dialog.dismiss();
-                                }
-                            });
-                        else editAsync = new EditAsync(mMainActivity,
-                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer().getFeatureTable(),
+                        editAsync = new EditAsync(mMainActivity,
+                                (ServiceFeatureTable) QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer().getFeatureTable(),
                                 mSelectedArcGISFeature, true, null,
                                 mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, isAddFeature, new EditAsync.AsyncResponse() {
                             @Override
@@ -1364,16 +1331,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void clearSelection() {
-        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(R.string.group_role_thicong)) {
-            if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer() != null) {
-                FeatureLayer featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
-                featureLayer.clearSelection();
-            }
-        } else {
-            if (QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer() != null) {
-                FeatureLayer featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
-                featureLayer.clearSelection();
-            }
+        if (QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer() != null) {
+            FeatureLayer featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
+            featureLayer.clearSelection();
         }
     }
 
@@ -1390,10 +1350,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         dimissCallout();
         this.mSelectedArcGISFeature = selectedArcGISFeature;
         FeatureLayer featureLayer;
-        if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mMainActivity.getString(R.string.group_role_thicong)))
-            featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
-        else
-            featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoGiamSat.getLayer();
+        featureLayer = QuanLySuCo.FeatureLayerDTGDiemSuCoThiCong.getLayer();
         featureLayer.selectFeature(mSelectedArcGISFeature);
         lstFeatureType = new ArrayList<>();
         for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
