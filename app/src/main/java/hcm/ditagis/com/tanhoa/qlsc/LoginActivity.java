@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 //do something
                 if (app.getmLocation() != null) {
                     Log.d("gửi", "hhi");
-                    Emitter emit = mSocket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID+ "," + "than");
+                    Emitter emit = mSocket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID+ "," + mTxtUsername.getText().toString());
                     Emitter emit1 = mSocket.emit(Constants.EVENT_LOCATION,
                             app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
                     Log.d("Kết quả vị trí", emit1.hasListeners(Constants.EVENT_LOCATION) + "");
