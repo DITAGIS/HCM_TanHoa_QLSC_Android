@@ -796,6 +796,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     }
 
     private void setViewPointCenter(final Point position) {
+        mIsAddFeature = true; // 14/8/2018
         final Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWebMercator());
         final ListenableFuture<Boolean> booleanListenableFuture = mMapView.setViewpointCenterAsync(geometry.getExtent().getCenter());
         booleanListenableFuture.addDoneListener(new Runnable() {
@@ -851,11 +852,11 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (mLocationDisplay!= null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mLocationDisplay.startAsync();
 
         } else {
-            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(QuanLySuCo.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -65,9 +65,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
     }
 
     public SingleTapAddFeatureAsync(android.graphics.Point clickPoint, Context context, byte[] image,
-                                    ServiceFeatureTable serviceFeatureTableThiCong, ServiceFeatureTable mServiceFeatureTableGiamSat, MapView mapView, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer, AsyncResponse delegate) {
+                                    ServiceFeatureTable serviceFeatureTableThiCong, MapView mapView, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer, AsyncResponse delegate) {
         this.mServiceFeatureTableThiCong = serviceFeatureTableThiCong;
-        this.mServiceFeatureTableGiamSat = mServiceFeatureTableGiamSat;
+//        this.mServiceFeatureTableGiamSat = mServiceFeatureTableGiamSat;
         this.mMapView = mapView;
         this.mImage = image;
         this.mContext = context;
@@ -93,30 +93,30 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
         final Feature featureThiCong, featureGiamSat;
         try {
             featureThiCong = mServiceFeatureTableThiCong.createFeature();
-            featureGiamSat = mServiceFeatureTableGiamSat.createFeature();
+//            featureGiamSat = mServiceFeatureTableGiamSat.createFeature();
             featureThiCong.setGeometry(clickPoint);
-            featureGiamSat.setGeometry(clickPoint);
+//            featureGiamSat.setGeometry(clickPoint);
             FindLocationAsycn findLocationAsycn = new FindLocationAsycn(mContext, false,
                     mGeocoder, mArcGISMapImageLayerAdmin, false, new FindLocationAsycn.AsyncResponse() {
                 @Override
                 public void processFinish(List<MyAddress> output) {
                     if (output != null) {
                         featureThiCong.getAttributes().put(mContext.getString(R.string.Field_SuCo_DiaChi), output.get(0).getLocation());
-                        featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_DiaChi), output.get(0).getLocation());
+//                        featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_DiaChi), output.get(0).getLocation());
                         String subAdminArea = output.get(0).getSubAdminArea();
                         if (subAdminArea.equals(mContext.getString(R.string.QuanPhuNhuanName))) {
                             featureThiCong.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));
-                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));
+//                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanPhuNhuanCode));
                         } else if (subAdminArea.equals(mContext.getString(R.string.QuanTanPhuName))) {
                             featureThiCong.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanPhuCode));
-                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanPhuCode));
+//                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanPhuCode));
                         } else if (subAdminArea.equals(mContext.getString(R.string.QuanTanBinhName))) {
                             featureThiCong.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanBinhCode));
-                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanBinhCode));
+//                            featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_MaQuan), mContext.getString(R.string.QuanTanBinhCode));
                         }
                         Short intObj = (short) 0;
                         featureThiCong.getAttributes().put(mContext.getString(R.string.Field_SuCo_TrangThai), intObj);
-                        featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_TrangThai), intObj);
+//                        featureGiamSat.getAttributes().put(mContext.getString(R.string.Field_SuCo_TrangThai), intObj);
 
                         String searchStr = "";
                         String dateTime = "";
@@ -139,14 +139,14 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Point, Feature, Void> {
                             public void run() {
                                 addFeatureAsync(featureQueryThiCong, featureThiCong, finalTimeID, finalDateTime, true);
 
-                                final ListenableFuture<FeatureQueryResult> featureQueryGiamSat =
-                                        mServiceFeatureTableGiamSat.queryFeaturesAsync(queryParameters);
-                                featureQueryGiamSat.addDoneListener(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        addFeatureAsync(featureQueryGiamSat, featureGiamSat, finalTimeID, finalDateTime, false);
-                                    }
-                                });
+//                                final ListenableFuture<FeatureQueryResult> featureQueryGiamSat =
+//                                        mServiceFeatureTableGiamSat.queryFeaturesAsync(queryParameters);
+//                                featureQueryGiamSat.addDoneListener(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        addFeatureAsync(featureQueryGiamSat, featureGiamSat, finalTimeID, finalDateTime, false);
+//                                    }
+//                                });
 
                             }
                         });

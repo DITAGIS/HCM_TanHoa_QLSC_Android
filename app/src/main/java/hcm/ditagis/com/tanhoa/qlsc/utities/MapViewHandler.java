@@ -87,7 +87,7 @@ public class MapViewHandler extends Activity {
     public void addFeature(byte[] image, Point pointFindLocation) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation);
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mClickPoint, mContext,
-                image, mServiceFeatureTableThiCong, mServiceFeatureTableGiamSat, mMapView, mGeocoder, arcGISMapImageLayer, new SingleTapAddFeatureAsync.AsyncResponse() {
+                image, mServiceFeatureTableThiCong, mMapView, mGeocoder, arcGISMapImageLayer, new SingleTapAddFeatureAsync.AsyncResponse() {
             @Override
             public void processFinish(Feature output) {
                 if (output != null) {
