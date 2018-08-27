@@ -7,7 +7,7 @@
 
     android:gravity="center_horizontal"
     android:orientation="vertical"
-    tools:context="hcm.ditagis.com.tanhoa.qlsc.LoginActivity">
+    tools:context="vn.com.capnuoctanhoa.qlsc.LoginActivity">
 
 
     <!--Layout top hiển thị logo-->
@@ -20,7 +20,7 @@
 
         android:layout_marginBottom="@dimen/login_activity_vertical_margin"
         android:layout_marginTop="@dimen/login_activity_vertical_margin"
-        android:src="@drawable/logo_tanhoa" />
+        android:src="@drawable/logo" />
 
     <!--Layout hiển thị icon đăng nhập và tên đăng nhập-->
     <LinearLayout

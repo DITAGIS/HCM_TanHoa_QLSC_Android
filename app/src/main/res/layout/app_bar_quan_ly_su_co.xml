@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hcm.ditagis.com.tanhoa.qlsc.QuanLySuCo">
+    tools:context="qlsctanhoa.hcm.ditagis.com.qlcln.tanhoa.hcm.ditagis.com.qlcln.QuanLyChatLuongNuoc">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,28 +19,24 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:subtitle=""
-            app:title="" />
+            app:title=""></android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-
-        layout="@layout/content_quan_ly_su_co" />
+    <include layout="@layout/content_quan_ly_su_co" />
 
     <LinearLayout
         android:id="@+id/layout_layer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
-        android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="60dp"
-        android:animateLayoutChanges="true"
         android:background="@drawable/layout_shape"
         android:orientation="vertical"
         android:padding="@dimen/padding_title_popup"
-        tools:ignore="RtlHardcoded">
+        android:visibility="invisible">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -48,29 +44,26 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="Chọn bản đồ nền"
                 android:textColor="@color/colorTextColor_1" />
 
             <Button
                 android:id="@+id/btn_layer_close"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="right"
                 android:background="@color/colorRed"
-                android:text="x"
-                tools:ignore="RtlHardcoded" />
+                android:text="x" />
         </FrameLayout>
+
         <!--chọn bản đồ nền-->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:baselineAligned="false"
             android:orientation="horizontal"
             android:weightSum="3">
-
 
             <LinearLayout
                 android:id="@+id/layout_layer_open_street_map"
@@ -78,15 +71,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_title_popup"
-                tools:ignore="UseCompoundDrawables">
+                android:padding="@dimen/padding_title_popup">
 
                 <ImageView
                     android:id="@+id/img_layer_open_street_map"
-                    android:layout_width="65dp"
-                    android:layout_height="55dp"
+                    android:layout_width="64dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/layout_shape_basemap"
-                    android:contentDescription="@string/todo"
                     android:src="@drawable/open_street_map" />
 
                 <TextView
@@ -95,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/text_layer_margin"
-                    android:text="@string/title_layer_default"
+                    android:text="Mặc định"
                     android:textColor="@color/colorPrimary"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -107,14 +98,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_title_popup"
-                tools:ignore="UseCompoundDrawables">
+                android:padding="@dimen/padding_title_popup">
 
                 <ImageView
                     android:id="@+id/img_layer_street_map"
-                    android:layout_width="65dp"
-                    android:layout_height="55dp"
-                    android:contentDescription="@string/todo"
+                    android:layout_width="64dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/street_map" />
 
                 <TextView
@@ -123,34 +112,32 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/text_layer_margin"
-                    android:text="@string/title_layer_street"
+                    android:text="Đường phố"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_layer_image"
+                android:id="@+id/layout_layer_topo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_title_popup"
-                tools:ignore="UseCompoundDrawables">
+                android:padding="@dimen/padding_title_popup">
 
                 <ImageView
-                    android:id="@+id/img_layer_image"
-                    android:layout_width="65dp"
-                    android:layout_height="55dp"
-                    android:contentDescription="@string/todo"
+                    android:id="@+id/img_layer_topo"
+                    android:layout_width="64dp"
+                    android:layout_height="50dp"
                     android:src="@drawable/imagery_with_labels" />
 
                 <TextView
-                    android:id="@+id/txt_layer_image"
+                    android:id="@+id/txt_layer_topo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="@dimen/text_layer_margin"
-                    android:text="@string/title_layer_satellite"
+                    android:text="Vệ tinh"
                     android:textSize="12sp"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -162,133 +149,27 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:background="@android:color/black" />
 
-        <ScrollView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_gravity="center_vertical"
+                android:text="Ẩn hiện lớp dữ liệu"
+                android:textColor="@color/colorTextColor_1" />
 
 
-                <TextView
-                    android:id="@+id/txt_quanlysuco_legend"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:onClick="onClickTextView"
-                    android:text="Chú thích"
-                    android:textColor="@color/colorTextColor_1" />
+        </FrameLayout>
 
-
-                <LinearLayout
-                    android:id="@+id/linearDisplayLayerLegend"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@android:color/black" />
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/ckb_quanlysuco_hanhchinh"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickCheckBox" />
-
-                    <TextView
-                        android:id="@+id/txt_quanlysuco_hanhchinh"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:onClick="onClickTextView"
-                        android:text="Ẩn/hiện dữ liệu hành chính"
-                        android:textColor="@color/colorTextColor_1" />
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/skbr_hanhchinh_app_bar_quan_ly_su_co"
-                    style="@style/MySeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="100"
-                    android:progress="100"
-                    android:visibility="visible" />
-
-
-                <LinearLayout
-                    android:id="@+id/linearDisplayLayerAdministration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:orientation="vertical" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="@dimen/margin_small"
-                    android:layout_marginTop="@dimen/margin_small"
-                    android:background="@android:color/black" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/ckb_quanlysuco_dulieu"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:onClick="onClickCheckBox" />
-
-                    <TextView
-                        android:id="@+id/txt_quanlysuco_dulieu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-
-                        android:layout_gravity="center_vertical"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:onClick="onClickTextView"
-                        android:text="Ẩn/hiện lớp dữ liệu chuyên đề"
-                        android:textColor="@color/colorTextColor_1" />
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/skbr_chuyende_app_bar_quan_ly_su_co"
-                    style="@style/MySeekBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="100"
-                    android:progress="100"
-                    android:visibility="visible" />
-
-                <LinearLayout
-                    android:id="@+id/linearDisplayLayerFeature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:orientation="vertical" />
-            </LinearLayout>
-
-        </ScrollView>
+        <LinearLayout
+            android:id="@+id/linnearDisplayLayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:orientation="vertical"></LinearLayout>
     </LinearLayout>
 
     <ImageView
@@ -296,7 +177,6 @@
         android:layout_width="64dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:contentDescription="Chọn vị trí"
         android:src="@drawable/pin"
         android:visibility="gone" />
 
@@ -305,9 +185,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
-        android:layout_marginEnd="@dimen/fab_margin"
+        android:layout_marginRight="@dimen/fab_margin"
         android:layout_marginTop="@dimen/fab_margin_top"
         android:src="@drawable/layer"
+        android:visibility="visible"
+        app:backgroundTint="@android:color/white" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatBtnHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="145dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:src="@drawable/home"
+        android:visibility="invisible"
         app:backgroundTint="@android:color/white" />
 
 
@@ -316,25 +208,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:src="@drawable/location"
+        app:backgroundTint="@android:color/white" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatBtnAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
         android:layout_marginBottom="15dp"
         android:layout_marginRight="@dimen/fab_margin"
-        android:background="@color/colorPrimary"
-        android:elevation="6dp"
-        android:src="@drawable/ic_location"
-        app:backgroundTint="@color/colorPrimary"
-        app:pressedTranslationZ="12dp"
-        tools:ignore="RtlHardcoded" />
+        android:src="@drawable/add"
+        app:backgroundTint="@android:color/white" />
 
     <LinearLayout
         android:id="@+id/linear_addfeature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
-        android:alpha="0.8"
         android:background="@color/colorWhite"
-        android:baselineAligned="false"
-        android:orientation="horizontal"
-        android:visibility="gone">
+android:visibility="gone"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -343,60 +239,46 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="5dp">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:paddingLeft="10dp"
                     android:text="Vĩ độ"
-                    android:textColor="@android:color/black"
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/edit_latitude_vido"
-                    android:layout_width="0dp"
+                    android:id="@+id/edit_latitude"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="@drawable/layout_edittext_black"
-                    android:inputType="numberDecimal"
-                    android:padding="5dp"
+                    android:text="10.7554041"
                     android:textSize="17sp" />
 
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="5dp"
-                tools:ignore="ExtraText">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingStart="10dp"
+                    android:paddingLeft="10dp"
                     android:text="Kinh độ"
-                    android:textColor="@android:color/black"
                     android:textSize="17sp" />
 
                 <EditText
-                    android:id="@+id/edit_longtitude_kinhdo"
-                    android:layout_width="0dp"
+                    android:id="@+id/edit_longtitude"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="@drawable/layout_edittext_black"
-                    android:inputType="numberDecimal"
-                    android:padding="5dp"
-                    android:textSize="17sp"
-                    tools:ignore="LabelFor" />
-
+                    android:text="106.6546293"
+                    android:textSize="17sp" />
+                />
             </LinearLayout>
         </LinearLayout>
 
@@ -405,15 +287,13 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical|right"
             android:orientation="horizontal"
-            tools:ignore="RtlHardcoded">
+            android:gravity="center_vertical|right">
 
             <ImageView
-                android:id="@+id/img_chonvitri_themdiemsuco"
+                android:id="@+id/img_layvitri"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:contentDescription="Lấy vị trí"
                 android:gravity="center_vertical"
                 android:src="@drawable/ic_get_location" />
 
@@ -428,6 +308,5 @@
 
 
     </LinearLayout>
-
 
 </android.support.design.widget.CoordinatorLayout>

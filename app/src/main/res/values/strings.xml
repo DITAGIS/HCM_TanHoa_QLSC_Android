@@ -1,26 +1,18 @@
-<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account"><!ENTITY table_sys_role "TanHoaSystem..SYS_Role">]>
 <resources>
-    <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="license">runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169</string>
-    <string name="action_search_title">Tìm kiếm</string>
-    <string name="changepassword_oldpassword">Nhập mật khẩu cũ</string>
-    <string name="changepassword_newpassword">Nhập mật khẩu mới</string>
-    <string name="changepassword_newpasswordconfirm">Nhập lại mật khẩu mới</string>
-
-    <string name="validate_change_password">Mật khẩu mới không khớp</string>
-    <string name="validate_change_password_fail">Đổi mật khẩu thất bại</string>
-    <string name="validate_change_password_lack">Mật khẩu phải đủ 6 ký tự</string>
-    <string name="validate_password_old">Mật khẩu cũ không đúng</string>
+    <string name="action_search">Tìm kiếm</string>
 
     <string name="app_name">Quản lý sự cố Tân Hòa</string>
     <string name="dialog_title_add">Thêm sự cố</string>
     <string name="btn_OK">OK</string>
-    <string name="btn_save">Lưu thay đổi</string>
-    <string name="btn_cancel">Hủy</string>
-    <string name="quit">THOÁT</string>
-    <string name="title_su_co">Sự cố</string>
+    <string name="btn_Accept">Cập nhật</string>
+    <string name="btn_Delete">Xóa</string>
+    <string name="btn_Cancel">Hủy</string>
+    <string name="btn_Esc">THOÁT</string>
+    <string name="title_layer">Điểm đánh giá nước</string>
+    <string name="title_add">Thêm</string>
     <string name="people_info_title">Thông tin liên hệ</string>
     <string name="hoten_field">Họ và tên</string>
     <string name="sdt_field">Số điện thoại</string>
@@ -32,86 +24,63 @@
     <string name="hinhanh_field">Hình ảnh đính kèm</string>
     <string name="vitrisuco_field">Vị trí sự cố</string>
 
-    <!--ALIAS START-->
-    <string name="ALIAS_DONG_HO_KHACH_HANG">Đồng hồ khách hàng</string>
-    <string name="ALIAS_DONG_HO_TONG">Đồng hồ tổng</string>
-    <string name="ALIAS_ONG_NGANH">Ống ngánh</string>
-    <string name="ALIAS_ONG_PHAN_PHOI">Ống phân phối</string>
-    <string name="ALIAS_ONG_TRUYEN_DAN">Ống truyền dẫn</string>
-    <string name="ALIAS_MOI_NOI">Mối nối</string>
-    <string name="ALIAS_TRU_HONG">Trụ họng</string>
-    <string name="ALIAS_DIEM_SU_CO">Điểm sự cố</string>
-    <string name="ALIAS_VAN">Van</string>
-    <string name="ALIAS_DIEM_AP_LUC">Điểm áp lực</string>
-    <string name="ALIAS_DIEM_CUOI_ONG">Điểm cuối ống</string>
-    <string name="ALIAS_DMA">DMA</string>
-    <string name="ALIAS_THUA_DAT">Thửa đất</string>
-    <string name="ALIAS_SONG_HO">Sông hồ</string>
-    <string name="ALIAS_GIAO_THONG">Giao thông</string>
-    <string name="ALIAS_HANH_CHINH">Hành chính</string>
-    <!--ALIAS END-->
-    <string name="URL_DIEM_SU_CO">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
-    <string name="URL_DONG_HO_KHACH_HANG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
-    <string name="URL_DONG_HO_TONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
-    <string name="URL_ONG_NGANH">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
-    <string name="URL_ONG_PHAN_PHOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
-    <string name="URL_ONG_TRUYEN_DAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
-    <string name="URL_MOI_NOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
-    <string name="URL_TRU_HONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/6</string>
-    <string name="URL_VAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
-    <string name="URL_DIEM_AP_LUC">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
-    <string name="URL_DIEM_CUOI_ONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DMA">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
-    <string name="URL_THUA_DAT">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
-    <string name="URL_SONG_HO">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
-    <string name="URL_GIAO_THONG">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
-    <string name="URL_HANH_CHINH">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3</string>
-    <!--URL START-->
-    <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
-    <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
-    <string name="url_image_symbol_beNgam">http://cholon.sawagis.vn/images/map/bengam.png</string>
-    <string name="url_image_symbol_hoanthanh">http://sawagis.vn/tanhoa/Content/images/map/3.png</string>
-    <!--URL END-->
     <string name="path_saveImage">.qlsc</string>
     <string name="attachment">attachment</string>
-    <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
-    <!--<string name="service_feature_table">https://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
-    <string name="world_elevation_service">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
-    <string name="service_feature_table">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
+    <!--DeclngayCapNhatalue config begin-->
+    <!--Url-->
 
+    <!--<string name="url_service_diemdanhgianuoc"> http://sampleserver6.arcgisonline.com/arcgis/rest/services/DamageAssessment/FeatureServer/0</string>-->
+    <string name="url_service_diemdanhgianuoc">http://113.161.88.180:800/arcgis/rest/services/TanHoa/ChatLuongNuoc/FeatureServer/0</string>
+    <string name="url_service_maudanhgia">http://113.161.88.180:800/arcgis/rest/services/TanHoa/ChatLuongNuoc/FeatureServer/1</string>
+    <!--Alias-->
+    <string name="alias_diemdanhgianuoc">Điểm đánh giá nước</string>
+    <string name="alias_maudanhgia">Mẫu đánh giá</string>
+    <!--Name-->
+    <string name="name_diemdanhgianuoc">DiemDanhGia</string>
+    <string name="name_maudanhgia">HoSo_MauDanhGia</string>
+    <!--DeclngayCapNhatalue config end-->
+
+    <!--Attribute begin-->
+    <string name="OBJECTID">OBJECTID</string>
+    <string name="IDDIEMDANHGIA">IDDiemDanhGia</string>
+    <string name="NGAY_CAP_NHAT">NgayCapNhat</string>
+    <!--Attribute end-->
+    <string name="DIACHI">DiaChi</string>
+
+    <!--Attribute MauKiemNghiem Begin-->TenMau
+    <string name="IDMAUKIEMNGHIEM">IDMauKiemNghiem</string>
+    <string name="TENMAU">TenMau</string>
+    <!--Attribute MauKiemNghiem End-->
+    <string name="SERVICES_URL">http://sawagis.vn/tanhoa1/api</string>
+
+    <string name="title_danhsachcacdiemdanhgia">Danh sách các mẫu đánh giá</string>
+    <string name="title_danhsachmaukiemnghiem">Danh sách mẫu kiểm nghiệm</string>
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
     <string name="ket_qua_objectid">ket_qua_objectid</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
     <!--thông báo-->
-    <string name="title_search">Tìm kiếm theo địa chỉ…</string>
+    <string name="title_search">Tìm kiếm mọi thứ...</string>
     <string name="notify_add_feature">Vui lòng click vào một điểm trên bản đồ để thêm một sự cố</string>
     <string name="location_permission_denied">Chưa có quyền truy cập vị trí</string>
 
     <!--navigation-->
-    <string name="nav_refresh">Làm mới dữ liệu</string>
     <string name="nav_tra_cuu">Tra cứu</string>
-    <string name="nav_find_route">Tìm đường đi</string>
-    <string name="nav_xoa_tim_kiem">Xóa các tìm kiếm</string>
-    <string name="nav_an_hien_nut_chuc_nang">Ẩn/hiện nút chức năng</string>
     <string name="nav_cai_dat">Cài đặt</string>
-    <string name="nav_change_password">Đổi mật khẩu</string>
+    <string name="nav_lam_moi_du_lieu">Làm mới dữ liệu</string>
     <string name="nav_log_out">Đăng xuất</string>
     <string name="nav_cai_dat_them_su_co_title">Phương thức thêm điểm sự cố</string>
     <string name="nav_cai_dat_tim_kiem_title">Tùy chọn tìm kiếm</string>
     <string name="nav_thong_ke">Thống kê</string>
-    <string name="nav_thong_ke_tong_su_co">Tổng các sự cố: </string>
-    <string name="SuCo_TrangThai_ChuaSuaChua">Chưa sửa chữa</string>
-    <string name="SuCo_TrangThai_ChuaSuaChuaBeNgam">Chưa sửa chữa bể ngầm</string>
-    <string name="SuCo_TrangThai_DangSuaChua">Đang sửa chữa</string>
-    <string name="SuCo_TrangThai_DaSuaChua">Đã sửa chữa</string>
-    <string name="SuCo_TrangThai_HoanThanh">Hoàn thành</string>
+    <string name="nav_thong_ke_tong_diem">Tổng số lượng: </string>
+    <string name="nav_thong_ke_chua_sua_chua">Chưa sửa chữa</string>
+    <string name="nav_thong_ke_dang_sua_chua">Đang sửa chữa</string>
+    <string name="nav_thong_ke_da_sua_chua">Đã sửa chữa</string>
 
     <!--async-->
-    <string name="async_dang_xu_ly">Đang xử lý…</string>
-    <string name="async_dang_lay_hinh_anh_dinh_kem">Đang tải hình ảnh đính kèm…</string>
-    <string name="async_dang_cap_nhat_giao_dien">Đang cập nhật giao diện…</string>
+    <string name="async_dang_xu_ly">Đang xử lý...</string>
+    <string name="async_dang_cap_nhat_giao_dien">Đang cập nhật giao diện...</string>
     <!--preference-->
     <string name="preference_settings_phuong_thuc_them_diem_su_co">preference_settings_phuong_thuc_them_diem_su_co</string>
     <string name="preference_settings_phuong_thuc_them_diem_su_co_cham_diem">Chấm điểm trên bản đồ</string>
@@ -121,258 +90,35 @@
     <string name="preference_settings_tuy_chon_tim_kiem">preference_settings_tuy_chon_tim_kiem</string>
     <string name="preference_settings_tuy_chon_tim_kiem_co_san">Tìm kiếm sự cố</string>
     <string name="preference_settings_tuy_chon_tim_kiem_chua_co">Tìm vị trí</string>
-
-    <string name="format_day_yearfirst">yyyy-MM-dd HH:mm:ss</string>
-    <string name="format_time_day_month_year">dd/MM/yyyy</string>
-
-    <!--Route begin-->
-    <string name="title_activity_find_route">Tìm đường đi</string>
-    <string name="find_route_xem_ban_do">Xem bản đồ</string>
-    <string name="find_route_cac_buoc">Các bước</string>
-    <string name="find_route_diem_bat_dau">Nhập điểm bắt đầu</string>
-    <string name="find_route_diem_ket_thuc">Nhập điểm kết thúc</string>
-    <string name="find_route_image_change">Đổi địa điểm</string>
-    <string name="find_route_image_route">Độ dài đường đi</string>
-    <string name="find_route_image_time">Thời gian đi</string>
-    <string name="find_route_image_menu">Menu</string>
-    <string name="find_route_textview_route">0 km</string>
-    <string name="find_route_textview_time">0 min</string>
-    <string name="find_route_textview_begin">Từ</string>
-    <string name="find_route_textview_end">Đến</string>
-    <string name="todo">TODO</string>
-    <string name="title_layer_default">Mặc định</string>
-    <string name="title_layer_street">Đường phố</string>
-    <string name="title_layer_satellite">Vệ tinh</string>
-    <!--Route end-->
-
-
-    <string name="action_logout">Đăng xuất</string>
-    <string name="validate_no_connect">Không có kết nối internet</string>
-    <string name="info_login_empty">Tên đăng nhập hoặc mật khẩu không được để trống</string>
-    <string name="validate_login_fail">Sai tên đăng nhập hoặc mật khẩu</string>
-    <string name="validate_hieuluc">Đồng hồ của khách hàng đã không còn hiệu lực\nVui lòng liên hệ công ty Cấp nước Tân Hòa\nđể biết thêm thông tin</string>
-    <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
-
-    <!--activity end-->
-    <string name="change_password_check_old_password_message">Đang kiểm tra mật khẩu cũ…</string>
-    <string name="change_password_message">Đang đổi mật khẩu…</string>
-    <string name="preparing">Đang khởi tạo bản đồ…</string>
-    <string name="loadingLegend">Đang khởi tạo chú thích…</string>
-    <!--preference begin-->
     <string name="preference_username">username</string>
     <string name="preference_password">pasword</string>
     <string name="preference_displayname">displayname</string>
-    <!--preference end-->
+    <string name="preference_login_api">preference_login_api</string>
 
-    <!--sql begin-->
-
-    <!--sql column login begin-->
-    <string name="sql_coloumn_login_displayname">displayname</string>
+    <string name="sql_coloumn_login_displayname">namedisplay</string>
     <string name="sql_coloumn_login_tanbinh">tanbinh</string>
     <string name="sql_coloumn_login_tanphu">tanphu</string>
     <string name="sql_coloumn_login_phunhuan">phunhuan</string>
-    <!--sql column login end-->
 
-    <!--sql column docso start-->
-    <string name="sql_coloumn_docso_cscu">cscu</string>
-    <string name="sql_coloumn_docso_csmoi">csmoi</string>
-    <string name="sql_coloumn_docso_tieuthucu">tieuthucu</string>
-    <string name="sql_coloumn_docso_tieuthumoi">tieuthumoi</string>
-    <string name="sql_coloumn_docso_tiennuoc">tiennuoc</string>
-    <string name="sql_coloumn_docso_thuevat">thue</string>
-    <string name="sql_coloumn_docso_phibvmt">bvmt</string>
-    <string name="sql_coloumn_docso_tongtien">tongtien</string>
-    <!--sql column docso end-->
-    <string name="sql_coloumn_sys_id">id</string>
-    <string name="sql_coloumn_sys_title">title</string>
-    <string name="sql_coloumn_sys_url">url</string>
-    <string name="sql_coloumn_sys_number_order">NumericalOder</string>
-    <string name="sql_coloumn_sys_iscreate">iscreate</string>
-    <string name="sql_coloumn_sys_isdelete">isdelete</string>
-    <string name="sql_coloumn_sys_isedit">isedit</string>
-    <string name="sql_coloumn_sys_isview">isview</string>
-    <string name="sql_coloumn_sys_outfield">outfields</string>
-    <string name="sql_coloumn_sys_definition">definition</string>
-    <!--sql column lichsuds begin-->
-    <string name="sql_coloumn_lichsuds_nam">nam</string>
-    <string name="sql_coloumn_lichsuds_ky">ky</string>
-    <string name="sql_coloumn_lichsuds_nhanviends">nhanviends</string>
-    <!--sql column lichsuds end-->
-    <string name="sql_coloumn_role_role">role</string>
-    <string name="sql_coloumn_role_groupRole">groupRole</string>
-    <string name="role_phong_giam_nuoc">pgn</string>
-    <string name="group_role_admin">admin</string>
-    <string name="group_role_thicong">tc</string>
-    <string name="group_role_giamsat">gs</string>
-    <string name="sql_login">select *
-					 from &table_sys_account; a
-					 inner join &table_sys_role; r on r.id = a.Role where username = ? and password = ?</string>
-    <string name="sql_login_imei">select *
-					 from &table_sys_account; a
-					 inner join &table_sys_role; r on r.id = a.Role where username = ? and password = ? and imei = ?</string>
-    <string name="sql_changepassword">update users set pass = ?, c_pass = ? where username = ?</string>
-    <string name="sql_select_sys_layer">SELECT distinct * FROM &table_sys_layer;
-        l  inner join &table_sys_layer_account; la  on l.id = la.Layer  where account = ? order by NumericalOder </string>
-    <string name="sql_select_ma_dma">  select madma from dma  order by madma asc</string>
-    <string name="sql_select_nguyennhan_ongchinh">  SELECT *  FROM NguyenNhanOngChinh</string>
-    <string name="sql_select_nguyennhan_ongnganh">  SELECT *  FROM NguyenNhanOngNganh</string>
-    <string name="sql_select_vatlieu_ongchinh">  SELECT *  FROM VatLieuOngChinh</string>
-    <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
-    <string name="sql_select_vattu_ongchinh">select * from vattuongchinh</string>
-    <string name="sql_select_vattu_ongnganh">select * from vattuongnganh</string>
-    <string name="sql_insert_hosovattu_suco">INSERT INTO &table_hoSoVatTuSuCo; VALUES (?,?,?)</string>
-    <string name="sql_select_hosovattu_suco">select soluong, h.mavattu, tenvattu, donvitinh
-        from &table_hoSoVatTuSuCo; h inner join vattu v on h.mavattu = v.MaVatTu
-        where idsuco = ?</string>
-    <string name="sql_delete_hosovattu_suco">delete from &table_hoSoVatTuSuCo; where idsuco = ?</string>
+    <string name="validate_no_connect">Không có kết nối internet</string>
+    <string name="info_login_empty">Danh bạ hoặc mật khẩu không được để trống</string>
+    <string name="validate_login_fail">Sai danh bạ hoặc mật khẩu</string>
 
-    <string name="sql_insert_hosovattuthuhoi_suco">INSERT INTO &table_hoSoVatTuThuHoiSuCo; VALUES (?,?,?)</string>
-    <string name="sql_select_hosovattuthuhoi_suco">select soluong, h.mavattu, tenvattu, donvitinh
-        from &table_hoSoVatTuThuHoiSuCo; h inner join vattu v on h.mavattu = v.MaVatTu
-        where idsuco = ?</string>
-    <string name="sql_delete_hosovattuthuhoi_suco">delete from &table_hoSoVatTuThuHoiSuCo; where idsuco = ?</string>
-
-    <!--sql end-->
-    <string name="find_khachhHang_message">Đang lấy thông tin khách hàng…</string>
+    <string name="format_day_yearfirst">yyyy-MM-dd HH:mm:ss</string>
+    <string name="format_time_day_month_year">dd/MM/yyyy</string>
     <string name="connect_message">Đang kết nối đến máy chủ…</string>
     <string name="login_message">Đang kiểm tra thông tin đăng nhập…</string>
 
-    <!--string format begin-->
-    <string name="format_content_trangchu_danhbo">Danh bộ: %s</string>
-    <string name="format_content_trangchu_diachi">%s %s</string>
-    <string name="format_content_trangchu_sh">SH: %d%%</string>
-    <string name="format_content_trangchu_sx">SX: %d%%</string>
-    <string name="format_content_trangchu_dv">DV: %d%%</string>
-    <string name="format_content_trangchu_hc">HC: %d%%</string>
-    <string name="format_number">%d</string>
-    <string name="format_nav_tenkh_over">Xin chào %s…</string>
-    <string name="format_nav_tenkh">Xin chào %s</string>
-    <string name="format_number_two">%02d</string>
-    <string name="format_number_money">%s đ</string>
-    <string name="format_number_m3">%d m3</string>
-    <string name="format_new_line">\n%s</string>
-    <string name="format_newline_address">\n%s %s</string>
-    <string name="format_monthyear">%02d/%d</string>
-    <string name="format_definitionExp_DiemSuCo">trangthai = 0 or trangthai = 1 or (trangthai = 3 and (NgayThongBao >= date\'%s\'))</string>
-    <!--string format end-->
-
-    <string name="trangthai">TrangThai</string>
-    <string name="giabieu">Giá biểu</string>
-    <string name="dinhmuc">Đinh mức</string>
-    <string name="cscu">Chỉ số cũ</string>
-    <string name="csmoi">Chỉ số mới</string>
-    <string name="tieuthu">Tiêu thụ</string>
-    <string name="tongtien">Tổng tiền</string>
-    <string name="validate_tracuutiennuoc">Vui lòng chọn thời gian cần tra cứu</string>
-    <string name="tiennuoc">Tiền nước</string>
-    <string name="thueVAT">Thuế VAT</string>
-    <string name="phiBVMT">Phí BVMT</string>
-    <string name="encode_string">DITAGIS*#</string>
+    <!--display process status -->
+    <string name="DATA_SUCCESSFULLY_INSERTED">Thêm dữ liệu thành công</string>
+    <string name="FAILED_TO_INSERT_DATA">Thêm dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_DELETED">Xóa dữ liệu thành công </string>
+    <string name="FAILED_TO_DELETE_DATA">Xóa dữ liệu không thành công</string>
+    <string name="DATA_SUCCESSFULLY_UPDATED">Cập nhật dữ liệu thành công </string>
+    <string name="FAILED_TO_UPDATE_DATA">Cập nhật dữ liệu không thành công</string>
+    <string name="INCORRECT_INPUT_FORMAT">Số liệu nhập vào không đúng định dạng!!!</string>
+    <string name="id_diemdanhgianuoc">diemdanhgiaLYR</string>
+    <string name="id_maudanhgia">hs_maukiemnghiem_TBL</string>
 
 
-    <string name="QuanPhuNhuanCode">768</string>
-    <string name="QuanTanBinhCode">766</string>
-    <string name="QuanTanPhuCode">767</string>
-    <string name="Name_DiemSuCo">DIEMSUCO</string>
-    <string name="message_not_area_management">Vị trí không thuộc địa bàn quản lý</string>
-    <string name="message_no_geocoder_available">Cần cập nhật phiên bản Google+ mới nhất để dùng tính năng này</string>
-    <string name="QuanPhuNhuanName">Phú Nhuận</string>
-    <string name="QuanTanBinhName">Tân Bình</string>
-    <string name="QuanTanPhuName">Tân Phú</string>
-    <string name="format_date_month_year">%02d_%02d_%d</string>
-
-    <string name="LoaiSuCo_OngNganh">Ống ngánh</string>
-    <string name="LoaiSuCo_OngChinh">Ống chính</string>
-
-    <string name="btnLeftAddFeature">Lưu</string>
-    <string name="btnRightAddFeature">Chụp ảnh</string>
-    <string name="btnLeftUpdateFeature">Cập nhật</string>
-    <string name="btnRightUpdateFeature">Chụp ảnh</string>
-    <string name="message_error_add_feature">Không tạo được thuộc tính. Vui lòng thử lại sau</string>
-
-    <!--field sự cố begin-->
-    <string name="Field_SuCo_LoaiSuCo">LoaiSuCo</string>
-    <string name="Field_SuCo_ThoiGianThiCongDuKienTuNgay">ThoiGianThiCongDuKienTuNgay</string>
-    <string name="Field_SuCo_ThoiGianThiCongDuKienDenNgay">ThoiGianThiCongDuKienDenNgay</string>
-    <string name="Field_SuCo_HinhThucPhatHien">HinhThucPhatHien</string>
-    <string name="Field_SuCo_NguyenNhan">NguyenNhan</string>
-    <string name="Field_SuCo_VatLieu">VatLieu</string>
-    <string name="Field_SuCo_ThietBiKhac">ThietBiKhac</string>
-    <string name="Field_SuCo_VatTuThuHoi">VatTuThuHoi</string>
-    <string name="Field_SuCo_KetCauDuong">KetCauDuong</string>
-    <string name="Field_SuCo_DiaChiMoi">DiaChiMoi</string>
-    <string name="Field_SuCo_ViTri">ViTri</string>
-    <string name="Field_SuCo_PhuiDao1">PhuiDao1</string>
-    <string name="Field_SuCo_PhuiDao1_Dai">PhuiDao1Dai</string>
-    <string name="Field_SuCo_PhuiDao1_Rong">PhuiDao1Rong</string>
-    <string name="Field_SuCo_PhuiDao1_Sau">PhuiDao1Sau</string>
-    <string name="Field_SuCo_PhuiDao2">PhuiDao2</string>
-    <string name="Field_SuCo_PhuiDao2_Dai">PhuiDao2Dai</string>
-    <string name="Field_SuCo_PhuiDao2_Rong">PhuiDao2Rong</string>
-    <string name="Field_SuCo_PhuiDao2_Sau">PhuiDao2Sau</string>
-    <string name="Field_SuCo_PhuiDao3">PhuiDao3</string>
-    <string name="Field_SuCo_PhuiDao3_Dai">PhuiDao3Dai</string>
-    <string name="Field_SuCo_PhuiDao3_Rong">PhuiDao3Rong</string>
-    <string name="Field_SuCo_PhuiDao3_Sau">PhuiDao3Sau</string>
-    <string name="Field_OBJECTID">OBJECTID</string>
-    <string name="Field_SuCo_IDSuCo">IDSuCo</string>
-    <string name="Field_SuCo_TrangThai">TrangThai</string>
-    <string name="Field_SuCo_NgayKhacPhuc">NgayKhacPhuc</string>
-    <string name="Field_SuCo_NgayThongBao">NgayThongBao</string>
-    <string name="Field_SuCo_MaQuan">MaQuan</string>
-    <string name="Field_SuCo_NguoiBaoSuCo">NGUOICAPNHAT</string>
-    <string name="Field_SuCo_NhanVienGiamSat">CONGNHANTHUCHIEN</string>
-    <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
-    <string name="Field_SuCo_ThoiGianThucHien">ThoiGianThucHien</string>
-    <string name="Field_MADMA">MADMA</string>
-    <string name="Field_SuCo_DiaChi">SoNha</string>
-    <string name="Field_SuCo_VatTu">VatTu</string>
-    <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
-    <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
-    <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
-    <string name="message_HinhThucPhatHien">Cần chọn hình thức phát hiện để thêm sự cố</string>
-    <string name="message_soluong_themvattu">Số lượng không được để trống</string>
-    <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
-    <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
-    <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
-    <string name="IDLayer_Basemap">BASEMAP</string>
-    <string name="IDLayer_DiemSuCoThiCong">diemsucoLYR</string>
-    <string name="IDLayer_DiemSuCoGiamSat">diemsucogiamsatLYR</string>
-    <!--field sự cố end-->
-
-
-
-
-
-
-
-
-
-
-
-    <string name="action_leave">Leave</string>
-    <string name="action_send">Send</string>
-    <string name="prompt_message">Message</string>
-
-    <string name="connect">Connected</string>
-    <string name="disconnect">Disconnected, Please check your internet connection</string>
-    <string name="error_connect">Failed to connect</string>
-
-    <!-- messages -->
-    <string name="message_welcome">Welcome to Socket.IO Chat –</string>
-    <plurals name="message_participants">
-        <item quantity="one">there\'s %d participant</item>
-        <item quantity="other">there are %d participants</item>
-    </plurals>
-    <string name="message_user_joined">%s joined</string>
-    <string name="message_user_left">%s left</string>
-    <string name="user_action_typing">is typing</string>
-    <string name="title_activity_login">Join</string>
-
-    <!-- Strings related to login -->
-    <string name="prompt_username">What\'s your nickname?</string>
-    <string name="action_sign_in">Join</string>
-    <string name="action_sign_in_short">Join</string>
-
-    <string name="error_field_required">This field is required</string>
 </resources>

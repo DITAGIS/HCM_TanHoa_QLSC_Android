@@ -30,39 +30,22 @@
                     android:id="@+id/nav_thongke"
                     android:icon="@drawable/ic_thongke"
                     android:title="@string/nav_thong_ke" />
-                <!--<item-->
-                    <!--android:id="@+id/nav_tracuu"-->
-                    <!--android:icon="@drawable/ic_search"-->
-                    <!--android:title="@string/nav_tra_cuu" />-->
                 <item
-                    android:id="@+id/nav_find_route"
-                    android:icon="@drawable/ic_navigation"
-                    android:title="@string/nav_find_route" />
+                    android:id="@+id/nav_tracuu"
+                    android:icon="@drawable/ic_search"
+                    android:title="@string/nav_tra_cuu" />
             </group>
         </menu>
     </item>
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_reload"
-            android:icon="@drawable/ic_refresh"
-            android:title="@string/nav_refresh" />
-        <item
-            android:id="@+id/nav_delete_searching"
-            android:icon="@drawable/ic_delete"
-            android:title="@string/nav_xoa_tim_kiem" />
-        <item
-            android:id="@+id/nav_visible_float_button"
-            android:icon="@drawable/ic_action_visible"
-            android:title="@string/nav_an_hien_nut_chuc_nang" />
+    <group android:checkableBehavior="single"> <item
+        android:id="@+id/refresh_setting"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/nav_lam_moi_du_lieu" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_settings"
             android:title="@string/nav_cai_dat" />
-        <item
-            android:id="@+id/nav_change_password"
-            android:icon="@drawable/ic_password"
-            android:title="@string/nav_change_password" />
         <item
             android:id="@+id/nav_logOut"
             android:icon="@drawable/ic_logout"
