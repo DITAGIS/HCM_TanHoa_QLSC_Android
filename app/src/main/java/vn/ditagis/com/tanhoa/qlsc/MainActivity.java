@@ -65,7 +65,6 @@ import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
-import com.esri.arcgisruntime.mapping.LayerList;
 import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.DefaultMapViewOnTouchListener;
@@ -450,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     Callout callout = mMapView.getCallout();
 
                                     mApplication.getDFeatureLayer.setLayer(featureLayer);
-                                    mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
+
 //
                                     mPopUp = new Popup(callout, MainActivity.this, mMapView,
                                             mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
@@ -473,6 +472,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                     featureLayer.setId(dLayerInfo.getId());
                     featureLayer.setName(dLayerInfo.getTitleLayer());
+                    mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
                     mApplication.getDFeatureLayer.setServiceFeatureTable((ServiceFeatureTable) featureLayer.getFeatureTable());
                 } else if (mArcGISMapImageLayerThematic == null) {
                     mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
@@ -1070,7 +1070,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     prepare();
                 break;
             case R.id.nav_logOut:
-                this.finish();
+                startSignIn();
                 break;
             case R.id.nav_delete_searching:
                 deleteSearching();

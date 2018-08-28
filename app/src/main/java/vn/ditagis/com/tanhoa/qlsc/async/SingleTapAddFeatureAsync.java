@@ -11,6 +11,8 @@ import android.widget.Toast;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Attachment;
+import com.esri.arcgisruntime.data.CodedValue;
+import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
@@ -125,8 +127,6 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                             output);
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI,
                             (short) 0);
-                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DON_VI,
-                            mApplication.getUserDangNhap.getRole());
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN,
                             mApplication.getUserDangNhap.getUserName());
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN,
@@ -140,6 +140,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                         suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT,
                                 c);
                     }
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DON_VI,
+                            mApplication.getUserDangNhap.getRole());
                     serviceFeatureTable.addFeatureAsync(suCoThongTinFeature).addDoneListener(() -> {
                         ListenableFuture<List<FeatureEditResult>> listListenableFuture = serviceFeatureTable.applyEditsAsync();
                         listListenableFuture.addDoneListener(() -> {

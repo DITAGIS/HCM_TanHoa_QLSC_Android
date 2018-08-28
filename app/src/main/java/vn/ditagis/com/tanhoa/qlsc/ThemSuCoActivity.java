@@ -55,6 +55,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
     ImageView mImage;
     private DApplication mApplication;
     private Uri mUri;
+    private List<CodedValue> mCodeValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +80,10 @@ public class ThemSuCoActivity extends AppCompatActivity {
 
         Domain domain = mApplication.getDFeatureLayer.getLayer().getFeatureTable().
                 getField(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN).getDomain();
-        List<CodedValue> codedValues = ((CodedValueDomain) domain).getCodedValues();
-        if (codedValues != null) {
+        mCodeValues = ((CodedValueDomain) domain).getCodedValues();
+        if (mCodeValues != null) {
             List<String> codes = new ArrayList<>();
-            for (CodedValue codedValue : codedValues)
+            for (CodedValue codedValue : mCodeValues)
                 codes.add(codedValue.getName());
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codes);
             spinHinhThucPhatHien.setAdapter(adapter);
@@ -123,7 +124,10 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     mApplication.getDiemSuCo.setQuan(etxtSubAdmin.getText().toString());
                     mApplication.getDiemSuCo.setPhuong(etxtLocality.getText().toString());
                     mApplication.getDiemSuCo.setGhiChu(etxtNote.getText().toString());
-                    mApplication.getDiemSuCo.setHinhThucPhatHien((short) spinHinhThucPhatHien.getSelectedItemPosition());
+                    for (CodedValue codedValue : mCodeValues) {
+                        if (codedValue.getName().equals(spinHinhThucPhatHien.getSelectedItem().toString()))
+                            mApplication.getDiemSuCo.setHinhThucPhatHien(Short.parseShort(codedValue.getCode().toString()));
+                    }
                     finish();
                 } else {
                     handlingEmpty();
