@@ -24,7 +24,7 @@ import vn.ditagis.com.tanhoa.qlsc.services.GetDMA;
 import vn.ditagis.com.tanhoa.qlsc.services.GetVatTu;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
-public class PreparingAsycn extends AsyncTask<Void, Void, Void> {
+public class PreparingByAPIAsycn extends AsyncTask<Void, Void, Void> {
     private ProgressDialog mDialog;
     private Activity mActivity;
     private AsyncResponse mDelegate;
@@ -34,7 +34,7 @@ public class PreparingAsycn extends AsyncTask<Void, Void, Void> {
         void processFinish(Void output);
     }
 
-    public PreparingAsycn(Activity activity, AsyncResponse delegate) {
+    public PreparingByAPIAsycn(Activity activity, AsyncResponse delegate) {
         this.mActivity = activity;
         this.mDelegate = delegate;
         mApplication = (DApplication) activity.getApplication();
@@ -85,7 +85,7 @@ public class PreparingAsycn extends AsyncTask<Void, Void, Void> {
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", Preference.getInstance().loadPreference(mActivity.getApplication().getString(R.string.preference_login_api)));
+                conn.setRequestProperty("Authorization", mApplication.getUserDangNhap.getToken());
                 conn.connect();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));

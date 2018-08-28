@@ -18,7 +18,7 @@
 
             android:textSize="20sp" />
         <ImageButton
-            android:id="@+id/imgBtn_layout_thongtinsuco"
+            android:id="@+id/imgBtn_cancel_layout_thongtinsuco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/white"

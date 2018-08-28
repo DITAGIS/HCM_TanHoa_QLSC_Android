@@ -92,8 +92,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
     private boolean isNotEmpty() {
         return !txtFullName.getText().toString().trim().isEmpty() &&
                 !etxtPhoneNumber.getText().toString().trim().isEmpty() &&
-                !etxtAddress.getText().toString().trim().isEmpty() &&
-                !etxtNote.getText().toString().trim().isEmpty();
+                !etxtAddress.getText().toString().trim().isEmpty();
     }
 
     private void handlingEmpty() {

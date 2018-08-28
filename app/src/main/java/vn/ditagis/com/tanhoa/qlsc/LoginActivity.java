@@ -2,6 +2,7 @@ package vn.ditagis.com.tanhoa.qlsc;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,49 +18,58 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-import vn.ditagis.com.tanhoa.qlsc.async.LoginAsycn;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
+import vn.ditagis.com.tanhoa.qlsc.async.LoginByAPIAsycn;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
+import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
-    private TextView mTxtUsername;
-    private TextView mTxtPassword;
-    private boolean isLastLogin;
-    private TextView mTxtValidation;
-    private String IMEI = "";
+    @BindView(R.id.txtUsername)
+    TextView mTxtUsername;
+    @BindView(R.id.txtPassword)
+    TextView mTxtPassword;
+    @BindView(R.id.txt_login_validation)
+    TextView mTxtValidation;
+    @BindView(R.id.txt_version_login)
+    TextView mTxtVersion;
     private Socket mSocket;
+    private boolean isLastLogin;
     private DApplication mApplication;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mApplication = (DApplication) getApplication();
+        ButterKnife.bind(this);
+        try {
+            mTxtVersion.setText("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
         Button btnLogin = (findViewById(R.id.btnLogin));
         btnLogin.setOnClickListener(this);
         findViewById(R.id.txt_login_changeAccount).setOnClickListener(this);
 
-        mTxtUsername = findViewById(R.id.txtUsername);
-        mTxtPassword = findViewById(R.id.txtPassword);
-
+        mTxtUsername.setText("ditagis");
+        mTxtPassword.setText("ditagis@123");
         mTxtValidation = findViewById(R.id.txt_login_validation);
         create();
 
 
     }
 
-    private Emitter.Listener onInfinity = new Emitter.Listener() {
-        @Override
-        public void call(Object... args) {
-            if (args != null && args.length > 0)
-                Log.d("Nhận", args[0].toString());
-        }
+    private Emitter.Listener onInfinity = args -> {
+        if (args != null && args.length > 0)
+            Log.d("Nhận", args[0].toString());
     };
 
     private void create() {
@@ -103,15 +113,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 //        handleLoginSuccess(userName,passWord);
         final String finalUserName = userName;
-        LoginAsycn loginAsycn = new LoginAsycn(this, new LoginAsycn.AsyncResponse() {
-
-            @Override
-            public void processFinish() {
-                if (mApplication.getUserDangNhap != null)
-                    handleLoginSuccess();
-                else
-                    handleLoginFail();
-            }
+        LoginByAPIAsycn loginAsycn = new LoginByAPIAsycn(this, () -> {
+            if (mApplication.getUserDangNhap != null)
+                handleLoginSuccess();
+            else
+                handleLoginFail();
         });
         loginAsycn.execute(userName, passWord);
     }

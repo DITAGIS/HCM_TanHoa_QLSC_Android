@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import vn.ditagis.com.tanhoa.qlsc.QuanLySuCo;
+import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 
 public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
@@ -20,13 +20,13 @@ public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
     private Context mContext;
     private AsyncResponse mDelegate;
     private LinearLayout mLayout;
-    private QuanLySuCo mActivity;
+    private MainActivity mActivity;
 
     public interface AsyncResponse {
         void processFinish(Void output);
     }
 
-    public LoadLegendAsycn(Context context, LinearLayout layout, QuanLySuCo quanLySuCo, AsyncResponse delegate) {
+    public LoadLegendAsycn(Context context, LinearLayout layout, MainActivity quanLySuCo, AsyncResponse delegate) {
         this.mDelegate = delegate;
         this.mLayout = layout;
         this.mContext = context;

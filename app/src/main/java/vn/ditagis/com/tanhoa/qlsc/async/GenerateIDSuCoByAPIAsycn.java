@@ -11,24 +11,24 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 
-public class GenerateIDSuCoAsycn extends AsyncTask<Void, Void, String> {
+public class GenerateIDSuCoByAPIAsycn extends AsyncTask<Void, Void, String> {
     private ProgressDialog mDialog;
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
     private AsyncResponse mDelegate;
+    private DApplication mApplication;
 
     public interface AsyncResponse {
         void processFinish(String output);
     }
 
-    GenerateIDSuCoAsycn(Activity activity, AsyncResponse delegate) {
+    GenerateIDSuCoByAPIAsycn(Activity activity, AsyncResponse delegate) {
         this.mActivity = activity;
         this.mDelegate = delegate;
+        this.mApplication = (DApplication) activity.getApplication();
     }
 
     @Override
@@ -45,12 +45,12 @@ public class GenerateIDSuCoAsycn extends AsyncTask<Void, Void, String> {
         //Tránh gặp lỗi networkOnMainThread nên phải dùng asyncTask
         String id = "";
         try {
-            URL url = new URL(((DApplication) mActivity.getApplication()).getConstant.GENERATE_ID_SUCO);
+            URL url = new URL(mApplication.getConstant.GENERATE_ID_SUCO);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", Preference.getInstance().loadPreference(mActivity.getString(R.string.preference_login_api)));
+                conn.setRequestProperty("Authorization", mApplication.getUserDangNhap.getToken());
                 conn.connect();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line = bufferedReader.readLine();

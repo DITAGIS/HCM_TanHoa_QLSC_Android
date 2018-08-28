@@ -16,23 +16,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
-import vn.ditagis.com.tanhoa.qlsc.entities.User;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
+import vn.ditagis.com.tanhoa.qlsc.entities.User;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 
-public class LoginAsycn extends AsyncTask<String, Void, Void> {
+public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
     private ProgressDialog mDialog;
     @SuppressLint("StaticFieldLeak")
     private Context mContext;
-    private LoginAsycn.AsyncResponse mDelegate;
+    private LoginByAPIAsycn.AsyncResponse mDelegate;
     private DApplication mApplication;
 
     public interface AsyncResponse {
         void processFinish();
     }
 
-    public LoginAsycn(Context context, LoginAsycn.AsyncResponse delegate) {
+    public LoginByAPIAsycn(Context context, LoginByAPIAsycn.AsyncResponse delegate) {
         this.mContext = context;
         this.mDelegate = delegate;
         mApplication = (DApplication) context.getApplicationContext();
@@ -69,11 +69,13 @@ public class LoginAsycn extends AsyncTask<String, Void, Void> {
                     break;
                 }
                 bufferedReader.close();
-                if (checkAccess()) {
-                    Preference.getInstance().savePreferences(mContext.getString(R.string.preference_login_api), stringBuilder.toString().replace("\"", ""));
+                String token = stringBuilder.toString().replace("\"", "");
+                if (checkAccess(token)) {
                     mApplication.getUserDangNhap = new User();
+                    mApplication.getUserDangNhap.setToken(token);
                     mApplication.getUserDangNhap.setDisplayName(getDisplayName());
                     mApplication.getUserDangNhap.setUserName(userName);
+
                 }
             } catch (Exception e1) {
                 Log.e("Lỗi login", e1.toString());
@@ -98,7 +100,7 @@ public class LoginAsycn extends AsyncTask<String, Void, Void> {
 //        }
     }
 
-    private Boolean checkAccess() {
+    private Boolean checkAccess(String token) {
         boolean isAccess = false;
         try {
             URL url = new URL(mApplication.getConstant.IS_ACCESS);
@@ -106,7 +108,7 @@ public class LoginAsycn extends AsyncTask<String, Void, Void> {
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", Preference.getInstance().loadPreference(mContext.getString(R.string.preference_login_api)));
+                conn.setRequestProperty("Authorization", token);
                 conn.connect();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));

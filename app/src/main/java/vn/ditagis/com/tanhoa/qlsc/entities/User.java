@@ -7,7 +7,7 @@ public class User {
 
     private boolean isCreate;
     private boolean isValid;
-    public static User userDangNhap;
+    private String token;
 
     public User() {
 
@@ -61,11 +61,11 @@ public class User {
         isValid = valid;
     }
 
-    public static User getUserDangNhap() {
-        return userDangNhap;
+    public String getToken() {
+        return token;
     }
 
-    public static void setUserDangNhap(User userDangNhap) {
-        User.userDangNhap = userDangNhap;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

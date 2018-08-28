@@ -3,12 +3,15 @@ package vn.ditagis.com.tanhoa.qlsc.async;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
+import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
@@ -94,7 +97,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
     }
 
     private void addFeatureAsync(Feature feature) {
-        new GenerateIDSuCoAsycn(mActivity, output -> {
+        new GenerateIDSuCoByAPIAsycn(mActivity, output -> {
             if (output.isEmpty()) {
                 publishProgress();
                 return;
@@ -126,6 +129,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                                     FeatureQueryResult result = featuresAsync.get();
                                     if (result.iterator().hasNext()) {
                                         Feature item = result.iterator().next();
+                                        ArcGISFeature arcGISFeature = (ArcGISFeature) item;
+                                        addAttachment(arcGISFeature, feature);
                                         publishProgress(item);
                                     }
                                 } catch (InterruptedException | ExecutionException e) {
@@ -145,6 +150,45 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
         }).execute();
     }
 
+    private void addAttachment(ArcGISFeature arcGISFeature, final Feature feature) {
+        final String attachmentName = mApplication.getApplicationContext().getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
+        final ListenableFuture<Attachment> addResult = arcGISFeature.addAttachmentAsync(
+                mApplication.getDiemSuCo.getImage(), Bitmap.CompressFormat.PNG.toString(), attachmentName);
+        addResult.addDoneListener(() -> {
+            if (mDialog != null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
+            try {
+                Attachment attachment = addResult.get();
+                if (attachment.getSize() > 0) {
+                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(arcGISFeature);
+                    tableResult.addDoneListener(() -> {
+                        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                        updatedServerResult.addDoneListener(() -> {
+                            List<FeatureEditResult> edits;
+                            try {
+                                edits = updatedServerResult.get();
+                                if (edits.size() > 0) {
+                                    if (!edits.get(0).hasCompletedWithErrors()) {
+                                        publishProgress(feature);
+                                    }
+                                }
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                            } finally {
+                                if (mDialog != null && mDialog.isShowing()) {
+                                    mDialog.dismiss();
+                                }
+                            }
+
+                        });
+                    });
+                }
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+    }
 
     @Override
     protected void onProgressUpdate(Feature... values) {
