@@ -1,6 +1,5 @@
-<!DOCTYPE resources [<!ENTITY url_server "http://113.161.88.180:800"><!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account"><!ENTITY table_sys_role "TanHoaSystem..SYS_Role">]>
+<!DOCTYPE resources [<!ENTITY table_hoSoVatTuSuCo "dbo.hosovattusuco"><!ENTITY table_hoSoVatTuThuHoiSuCo "dbo.hosovattuthuhoisuco"><!ENTITY table_sys_layer "TanHoaSystem..SYS_Layer"><!ENTITY table_sys_layer_account "TanHoaSystem..SYS_Layer_Account"><!ENTITY table_sys_account "TanHoaSystem..SYS_Account"><!ENTITY table_sys_role "TanHoaSystem..SYS_Role">]>
 <resources>
-    <string name="URL_SERVER">&url_server;</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="license">runtimelite,1000,rud6046938574,none,4N5X0H4AH5JB003AD169</string>
@@ -50,22 +49,6 @@
     <string name="ALIAS_GIAO_THONG">Giao thông</string>
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
-    <string name="URL_DIEM_SU_CO">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
-    <string name="URL_DONG_HO_KHACH_HANG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/0</string>
-    <string name="URL_DONG_HO_TONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/1</string>
-    <string name="URL_ONG_NGANH">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/2</string>
-    <string name="URL_ONG_PHAN_PHOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/3</string>
-    <string name="URL_ONG_TRUYEN_DAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/4</string>
-    <string name="URL_MOI_NOI">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/5</string>
-    <string name="URL_TRU_HONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/6</string>
-    <string name="URL_VAN">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/7</string>
-    <string name="URL_DIEM_AP_LUC">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/8</string>
-    <string name="URL_DIEM_CUOI_ONG">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/9</string>
-    <string name="URL_DMA">&url_server;/arcgis/rest/services/TanHoa/TANHOAGIS/MapServer/10</string>
-    <string name="URL_THUA_DAT">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/0</string>
-    <string name="URL_SONG_HO">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/1</string>
-    <string name="URL_GIAO_THONG">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/2</string>
-    <string name="URL_HANH_CHINH">&url_server;/arcgis/rest/services/TanHoa/TANHOABasemap/MapServer/3</string>
     <!--URL START-->
     <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
     <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
@@ -74,10 +57,6 @@
     <!--URL END-->
     <string name="path_saveImage">.qlsc</string>
     <string name="attachment">attachment</string>
-    <!--<string name="world_elevation_service">https://ditagis.com:6443/arcgis/rest/services/HoChiMinh/SuCo_TanHoa/MapServer</string>-->
-    <!--<string name="service_feature_table">https://113.161.88.180:800/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>-->
-    <string name="world_elevation_service">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/MapServer</string>
-    <string name="service_feature_table">&url_server;/arcgis/rest/services/TanHoa/TanHoaSuCo/FeatureServer/0</string>
 
     <string name="tongloaitrangthai">tongloaitrangthai</string>
     <string name="title_activity_tra_cuu">TraCuuActivity</string>
@@ -183,16 +162,15 @@
     <string name="sql_coloumn_docso_phibvmt">bvmt</string>
     <string name="sql_coloumn_docso_tongtien">tongtien</string>
     <!--sql column docso end-->
-    <string name="sql_coloumn_sys_id">id</string>
-    <string name="sql_coloumn_sys_title">title</string>
-    <string name="sql_coloumn_sys_url">url</string>
-    <string name="sql_coloumn_sys_number_order">NumericalOder</string>
-    <string name="sql_coloumn_sys_iscreate">iscreate</string>
-    <string name="sql_coloumn_sys_isdelete">isdelete</string>
-    <string name="sql_coloumn_sys_isedit">isedit</string>
-    <string name="sql_coloumn_sys_isview">isview</string>
-    <string name="sql_coloumn_sys_outfield">outfields</string>
-    <string name="sql_coloumn_sys_definition">definition</string>
+    <string name="sql_coloumn_sys_id">LayerID</string>
+    <string name="sql_coloumn_sys_title">LayerTitle</string>
+    <string name="sql_coloumn_sys_url">Url</string>
+    <string name="sql_coloumn_sys_iscreate">IsCreate</string>
+    <string name="sql_coloumn_sys_isdelete">IsDelete</string>
+    <string name="sql_coloumn_sys_isedit">IsEdit</string>
+    <string name="sql_coloumn_sys_isview">IsView</string>
+    <string name="sql_coloumn_sys_outfield">OutFields</string>
+    <string name="sql_coloumn_sys_definition">Definition</string>
     <!--sql column lichsuds begin-->
     <string name="sql_coloumn_lichsuds_nam">nam</string>
     <string name="sql_coloumn_lichsuds_ky">ky</string>
@@ -220,11 +198,13 @@
     <string name="sql_select_vatlieu_ongnganh">  SELECT *  FROM VatLieuOngNganh</string>
     <string name="sql_select_vattu_ongchinh">select * from vattuongchinh</string>
     <string name="sql_select_vattu_ongnganh">select * from vattuongnganh</string>
-    <string name="sql_insert_hosovattu_suco">INSERT INTO &table_hoSoVatTuSuCo; VALUES (?,?,?)</string>
+    <string name="sql_insert_hosovattu_suco">INSERT INTO &table_hoSoVatTuSuCo;
+        VALUES (?,?,?)</string>
     <string name="sql_select_hosovattu_suco">select soluong, h.mavattu, tenvattu, donvitinh
         from &table_hoSoVatTuSuCo; h inner join vattu v on h.mavattu = v.MaVatTu
         where idsuco = ?</string>
-    <string name="sql_delete_hosovattu_suco">delete from &table_hoSoVatTuSuCo; where idsuco = ?</string>
+    <string name="sql_delete_hosovattu_suco">delete from &table_hoSoVatTuSuCo;
+        where idsuco = ?</string>
 
     <string name="sql_insert_hosovattuthuhoi_suco">INSERT INTO &table_hoSoVatTuThuHoiSuCo; VALUES (?,?,?)</string>
     <string name="sql_select_hosovattuthuhoi_suco">select soluong, h.mavattu, tenvattu, donvitinh
@@ -289,45 +269,8 @@
     <string name="btnLeftUpdateFeature">Cập nhật</string>
     <string name="btnRightUpdateFeature">Chụp ảnh</string>
     <string name="message_error_add_feature">Không tạo được thuộc tính. Vui lòng thử lại sau</string>
-
-    <!--field sự cố begin-->
-    <string name="Field_SuCo_LoaiSuCo">LoaiSuCo</string>
-    <string name="Field_SuCo_ThoiGianThiCongDuKienTuNgay">ThoiGianThiCongDuKienTuNgay</string>
-    <string name="Field_SuCo_ThoiGianThiCongDuKienDenNgay">ThoiGianThiCongDuKienDenNgay</string>
-    <string name="Field_SuCo_HinhThucPhatHien">HinhThucPhatHien</string>
-    <string name="Field_SuCo_NguyenNhan">NguyenNhan</string>
-    <string name="Field_SuCo_VatLieu">VatLieu</string>
-    <string name="Field_SuCo_ThietBiKhac">ThietBiKhac</string>
-    <string name="Field_SuCo_VatTuThuHoi">VatTuThuHoi</string>
-    <string name="Field_SuCo_KetCauDuong">KetCauDuong</string>
-    <string name="Field_SuCo_DiaChiMoi">DiaChiMoi</string>
-    <string name="Field_SuCo_ViTri">ViTri</string>
-    <string name="Field_SuCo_PhuiDao1">PhuiDao1</string>
-    <string name="Field_SuCo_PhuiDao1_Dai">PhuiDao1Dai</string>
-    <string name="Field_SuCo_PhuiDao1_Rong">PhuiDao1Rong</string>
-    <string name="Field_SuCo_PhuiDao1_Sau">PhuiDao1Sau</string>
-    <string name="Field_SuCo_PhuiDao2">PhuiDao2</string>
-    <string name="Field_SuCo_PhuiDao2_Dai">PhuiDao2Dai</string>
-    <string name="Field_SuCo_PhuiDao2_Rong">PhuiDao2Rong</string>
-    <string name="Field_SuCo_PhuiDao2_Sau">PhuiDao2Sau</string>
-    <string name="Field_SuCo_PhuiDao3">PhuiDao3</string>
-    <string name="Field_SuCo_PhuiDao3_Dai">PhuiDao3Dai</string>
-    <string name="Field_SuCo_PhuiDao3_Rong">PhuiDao3Rong</string>
-    <string name="Field_SuCo_PhuiDao3_Sau">PhuiDao3Sau</string>
-    <string name="Field_OBJECTID">OBJECTID</string>
-    <string name="Field_SuCo_IDSuCo">IDSuCo</string>
-    <string name="Field_SuCo_TrangThai">TrangThai</string>
-    <string name="Field_SuCo_NgayKhacPhuc">NgayKhacPhuc</string>
-    <string name="Field_SuCo_NgayThongBao">NgayThongBao</string>
-    <string name="Field_SuCo_MaQuan">MaQuan</string>
-    <string name="Field_SuCo_NguoiBaoSuCo">NGUOICAPNHAT</string>
-    <string name="Field_SuCo_NhanVienGiamSat">CONGNHANTHUCHIEN</string>
-    <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
-    <string name="Field_SuCo_ThoiGianThucHien">ThoiGianThucHien</string>
-    <string name="Field_MADMA">MADMA</string>
-    <string name="Field_SuCo_DiaChi">SoNha</string>
-    <string name="Field_SuCo_VatTu">VatTu</string>
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
+    <string name="arcgis_query_by_IDSuCo">IDSuCo = \'%1$s\'</string>
     <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
     <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
     <string name="message_HinhThucPhatHien">Cần chọn hình thức phát hiện để thêm sự cố</string>
@@ -336,18 +279,8 @@
     <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
     <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
     <string name="IDLayer_Basemap">BASEMAP</string>
-    <string name="IDLayer_DiemSuCoThiCong">diemsucoLYR</string>
-    <string name="IDLayer_DiemSuCoGiamSat">diemsucogiamsatLYR</string>
+    <string name="IDLayer_DiemSuCo">diemsucoLYR</string>
     <!--field sự cố end-->
-
-
-
-
-
-
-
-
-
 
 
     <string name="action_leave">Leave</string>
@@ -375,4 +308,17 @@
     <string name="action_sign_in_short">Join</string>
 
     <string name="error_field_required">This field is required</string>
+    <string name="sql_column_login_displayname">DisplayName</string>
+    <string name="sql_column_sys_definition">Definition</string>
+    <string name="sql_column_sys_out_fields_arr">OutFields</string>
+    <string name="sql_column_sys_add_fields_arr">AddFields</string>
+    <string name="sql_column_sys_update_fields_arr">UpdateFields</string>
+    <string name="LayerInfo_DMA">dmaLYR</string>
+    <string name="field_DMA_maDMA">MADMA</string>
+    <string name="LayerInfo_vatTu">vattuTBL</string>
+    <string name="field_VatTu_maVatTu">MaVatTu</string>
+    <string name="field_VatTu_tenVatTu">TenVatTu</string>
+    <string name="field_VatTu_donViTinh">DonViTinh</string>
+
+    <string name="load_map_not_complete">Chưa khởi tạo xong bản đồ. Vui lòng làm mới dữ liệu để tải lại</string>
 </resources>

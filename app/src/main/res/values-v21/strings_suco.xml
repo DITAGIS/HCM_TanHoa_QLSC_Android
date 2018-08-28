@@ -1,0 +1,13 @@
+<resources>
+    <string name="Field_SuCo_LoaiSuCo">LoaiSuCo</string>
+    <string name="Field_SuCo_TrangThai">TrangThai</string>
+    <string name="Field_SuCo_NguyenNhan">NguyenNhan</string>
+    <string name="Field_SuCo_VatLieu">VatLieu</string>
+    <string name="Field_SuCo_DuongKinhOng">DuongKinhOng</string>
+    <string name="Field_SuCo_NgayKhacPhuc">TGKhacPhuc</string>
+    <string name="Field_SuCo_NgayThongBao">TGPhanAnh</string>
+    <string name="Field_SuCo_HinhThucPhatHien">HinhThucPhatHien</string>
+    <string name="Field_SuCo_IDSuCo">IDSuCo</string>
+    <string name="Field_SuCo_DiaChi">DiaChi</string>
+    <string name="Field_OBJECTID">OBJECTID</string>
+</resources>

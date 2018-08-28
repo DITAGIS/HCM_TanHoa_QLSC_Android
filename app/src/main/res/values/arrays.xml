@@ -14,63 +14,18 @@
     <item>@color/username10</item>
     <item>@color/username11</item>
 </array>
-    <string-array name="field_subtype_array">
-        <item>@string/Field_SuCo_NguyenNhan</item>
-        <item>@string/Field_SuCo_VatLieu</item>
-        <item>@string/Field_SuCo_ViTri</item>
-        <!--<item>@string/Field_SuCo_VatTu</item>-->
-        <item>@string/Field_SuCo_DuongKinhOng</item>
-    </string-array>
-    <string-array name="pgn_fields_arrays">
+    <!--<string-array name="field_subtype_array">-->
+        <!--<item>@string/Field_SuCo_NguyenNhan</item>-->
+        <!--<item>@string/Field_SuCo_VatLieu</item>-->
+        <!--<item>@string/Field_SuCo_ViTri</item>-->
+        <!--&lt;!&ndash;<item>@string/Field_SuCo_VatTu</item>&ndash;&gt;-->
+        <!--<item>@string/Field_SuCo_DuongKinhOng</item>-->
+    <!--</string-array>-->
+    <!--<string-array name="pgn_fields_arrays">-->
 
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
-    </string-array>
-    <string-array name="update_fields_arrays">
-        <item>NgaySuaChua</item>
-        <item>@string/Field_SuCo_NguyenNhan</item>
-        <item>NguoiSuaChua</item>
-        <item>GhiChuVatTu</item>
-        <item>@string/Field_SuCo_ViTri</item>
-        <item>GhiChu</item>
-        <item>@string/Field_SuCo_ThietBiKhac</item>
-        <item>@string/Field_SuCo_VatTuThuHoi</item>
-        <item>@string/Field_SuCo_DiaChiMoi</item>
-        <item>PhanLoaiSuCo</item>
-        <item>DonViSuaChua</item>
-        <item>DuongKinhOng</item>
-        <item>@string/Field_SuCo_VatLieu</item>
-        <item>@string/Field_SuCo_TrangThai</item>
-        <item>VatTu</item>
-        <item>KetQuaKiemTra</item>
-        <item>ApLuc</item>
-        <item>VatLieuOng</item>
-        <item>@string/Field_SuCo_LoaiSuCo</item>
-        <item>MADMA</item>
-        <item>TIETDIENBE</item>
-        <item>@string/Field_SuCo_PhuiDao1</item>
-        <item>@string/Field_SuCo_PhuiDao1_Dai</item>
-        <item>@string/Field_SuCo_PhuiDao1_Sau</item>
-        <item>@string/Field_SuCo_PhuiDao1_Rong</item>
-        <item>@string/Field_SuCo_PhuiDao2</item>>
-        <item>@string/Field_SuCo_PhuiDao2_Dai</item>
-        <item>@string/Field_SuCo_PhuiDao2_Sau</item>
-        <item>@string/Field_SuCo_PhuiDao2_Rong</item>
-        <item>@string/Field_SuCo_PhuiDao3</item>
-        <item>@string/Field_SuCo_PhuiDao3_Dai</item>
-        <item>@string/Field_SuCo_PhuiDao3_Sau</item>
-        <item>@string/Field_SuCo_PhuiDao3_Rong</item>
-    </string-array>
-    <string-array name="add_fields_arrays">
-        <item>IDSuCo</item>
-        <item>NgayXayRa</item>
-        <item>HinhThucPhatHien</item>
-        <item>SoNha</item>
-        <item>SDTNguoiBao</item>
-        <item>@string/Field_SuCo_KetCauDuong</item>
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>
-        <item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>
-    </string-array>
+        <!--<item>@string/Field_SuCo_ThoiGianThiCongDuKienTuNgay</item>-->
+        <!--<item>@string/Field_SuCo_ThoiGianThiCongDuKienDenNgay</item>-->
+    <!--</string-array>-->
     <string-array name="no_display_fields_arrays">
         <item>OBJECTID</item>
         <item>VatLieuOng</item>

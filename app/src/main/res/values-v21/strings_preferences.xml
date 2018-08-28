@@ -1,0 +1,6 @@
+<resources>
+    <string name="preference_username">username</string>
+    <string name="preference_password">pasword</string>
+    <string name="preference_displayname">displayname</string>
+    <string name="preference_login_api">preference_login_api</string>
+</resources>
