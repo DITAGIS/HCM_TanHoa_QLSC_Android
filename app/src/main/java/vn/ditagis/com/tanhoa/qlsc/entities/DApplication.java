@@ -5,14 +5,9 @@ import android.location.Location;
 
 import java.net.URISyntaxException;
 
-import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
-import vn.ditagis.com.tanhoa.qlsc.entities.DFeatureLayer;
-import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
-import vn.ditagis.com.tanhoa.qlsc.entities.DiemSuCo;
-import vn.ditagis.com.tanhoa.qlsc.entities.User;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 
 public class DApplication extends Application {
     public Constant getConstant;
@@ -29,14 +24,10 @@ public class DApplication extends Application {
 
 
     public User getUserDangNhap;
-    private DFeatureLayer mDFeatureLayer;
+    public DFeatureLayer getDFeatureLayer;
 
-    public DFeatureLayer getDFeatureLayer() {
-        return mDFeatureLayer;
-    }
-
-    public void setDFeatureLayer(DFeatureLayer dFeatureLayer) {
-        this.mDFeatureLayer = dFeatureLayer;
+    {
+        getDFeatureLayer = new DFeatureLayer();
     }
 
 

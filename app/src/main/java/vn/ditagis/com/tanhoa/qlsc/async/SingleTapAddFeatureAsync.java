@@ -6,7 +6,6 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -14,14 +13,10 @@ import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Attachment;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
-import com.esri.arcgisruntime.data.FeatureQueryResult;
-import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
@@ -75,7 +70,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.getAttributes().put(Constant.FIELD_SUCO.NGUOI_PHAN_ANH, mApplication.getDiemSuCo.getNguoiPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN, mApplication.getDiemSuCo.getHinhThucPhatHien());
-            addFeatureAsync(feature);
+            addFeature(feature);
 
         } catch (Exception e) {
             publishProgress();
@@ -83,63 +78,28 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
         return null;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private String getDateString() {
-//        String timeStamp = Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
-        writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
-        return writeDate.format(Calendar.getInstance().getTime());
-    }
-
-    private String getTimeID() {
-        return Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-    }
-
-    private void addFeatureAsync(Feature feature) {
+    private void addFeature(Feature feature) {
         new GenerateIDSuCoByAPIAsycn(mActivity, output -> {
             if (output.isEmpty()) {
                 publishProgress();
                 return;
             }
             feature.getAttributes().put(Constant.FIELD_SUCO.ID_SUCO, output);
-            Short intObj = (short) 1;
+            Short intObj = (short) 0;
             feature.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI, intObj);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Calendar c = Calendar.getInstance();
                 feature.getAttributes().put(Constant.FIELD_SUCO.TGPHAN_ANH, c);
             }
 
-            String finalOutput = output;
             mServiceFeatureTable.addFeatureAsync(feature).addDoneListener(() -> {
                 final ListenableFuture<List<FeatureEditResult>> listListenableEditAsync = mServiceFeatureTable.applyEditsAsync();
                 listListenableEditAsync.addDoneListener(() -> {
                     try {
                         List<FeatureEditResult> featureEditResults = listListenableEditAsync.get();
                         if (featureEditResults.size() > 0) {
-                            long objectId = featureEditResults.get(0).getObjectId();
-                            final QueryParameters queryParameters = new QueryParameters();
-//                            final String query = String.format(mActivity.getString(R.string.arcgis_query_by_OBJECTID), objectId);
-                            final String query = mActivity.getString(R.string.arcgis_query_by_IDSuCo, finalOutput);
-                            queryParameters.setWhereClause(query);
-                            final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable
-                                    .queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.IDS_ONLY);
-                            featuresAsync.addDoneListener(() -> {
-                                try {
-                                    FeatureQueryResult result = featuresAsync.get();
-                                    if (result.iterator().hasNext()) {
-                                        Feature item = result.iterator().next();
-                                        ArcGISFeature arcGISFeature = (ArcGISFeature) item;
-                                        addAttachment(arcGISFeature, feature);
-                                        publishProgress(item);
-                                    }
-                                } catch (InterruptedException | ExecutionException e) {
-                                    e.printStackTrace();
-                                    publishProgress();
-                                }
-
-                            });
-                        }
+                            addServiceFeatureTable((ArcGISFeature) feature, feature);
+                        } else publishProgress();
                     } catch (InterruptedException | ExecutionException e) {
                         publishProgress();
                         e.printStackTrace();
@@ -147,7 +107,59 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
 
                 });
             });
-        }).execute();
+        }).execute(mApplication.getConstant.GENERATE_ID_SUCO);
+    }
+
+    private void addServiceFeatureTable(ArcGISFeature arcGISFeature, Feature feature) {
+        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTable();
+        serviceFeatureTable.loadAsync();
+        serviceFeatureTable.addDoneLoadingListener(() -> {
+            String idSuCo = feature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString();
+            new GenerateIDSuCoByAPIAsycn(mActivity, output -> {
+                if (output != null) {
+
+                    Feature suCoThongTinFeature = serviceFeatureTable.createFeature();
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.ID_SUCO,
+                            idSuCo);
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT,
+                            output);
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI,
+                            (short) 0);
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DON_VI,
+                            mApplication.getUserDangNhap.getRole());
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN,
+                            mApplication.getUserDangNhap.getUserName());
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN,
+                            mApplication.getDiemSuCo.getHinhThucPhatHien());
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DIA_CHI,
+                            mApplication.getDiemSuCo.getVitri());
+                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.GHI_CHU,
+                            mApplication.getDiemSuCo.getGhiChu());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Calendar c = Calendar.getInstance();
+                        suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT,
+                                c);
+                    }
+                    serviceFeatureTable.addFeatureAsync(suCoThongTinFeature).addDoneListener(() -> {
+                        ListenableFuture<List<FeatureEditResult>> listListenableFuture = serviceFeatureTable.applyEditsAsync();
+                        listListenableFuture.addDoneListener(() -> {
+                            try {
+                                List<FeatureEditResult> featureEditResults = listListenableFuture.get();
+                                if (featureEditResults.size() > 0) {
+                                    addAttachment(arcGISFeature, feature);
+                                    publishProgress(feature);
+                                } else publishProgress();
+                            } catch (InterruptedException | ExecutionException e) {
+                                e.printStackTrace();
+                                publishProgress();
+                            }
+                        });
+                    });
+                    addAttachment(arcGISFeature, feature);
+                    publishProgress(feature);
+                }
+            }).execute(mApplication.getConstant.getGENERATE_ID_SUCOTHONGTIN(idSuCo));
+        });
     }
 
     private void addAttachment(ArcGISFeature arcGISFeature, final Feature feature) {

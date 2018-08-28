@@ -100,7 +100,6 @@ import vn.ditagis.com.tanhoa.qlsc.async.PreparingByAPIAsycn;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DAddress;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.entities.DFeatureLayer;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
@@ -279,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView = findViewById(R.id.mapView);
         mMapView.setMap(mMap);
 
-        mMap.addDoneLoadingListener(() -> handleArcgisMapDoneLoading());
+        mMapView.getMap().addDoneLoadingListener(() -> handleArcgisMapDoneLoading());
         changeStatusOfLocationDataSource();
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
@@ -444,23 +443,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     setRendererSuCoFeatureLayer(featureLayer);
                     featureLayer.addDoneLoadingListener(() -> {
                         if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
-                            Callout callout = mMapView.getCallout();
+                            //Tìm servicefeaturetable
+                            for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+                                if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                                    ServiceFeatureTable serviceFeatureTable1 = new ServiceFeatureTable(item.getUrl());
+                                    Callout callout = mMapView.getCallout();
 
-                            mApplication.setDFeatureLayer(new DFeatureLayer(featureLayer, dLayerInfo));
+                                    mApplication.getDFeatureLayer.setLayer(featureLayer);
+                                    mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
 //
-                            mPopUp = new Popup(callout, MainActivity.this, mMapView,
-                                    mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+                                    mPopUp = new Popup(callout, MainActivity.this, mMapView,
+                                            mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
 //                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
 //                        featureLayer.setVisible(false);
 
-                            mMapView.getMap().getOperationalLayers().add(featureLayer);
+                                    mMapView.getMap().getOperationalLayers().add(featureLayer);
 //                    Callout callout = mMapView.getCallout();
-                            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
-                            mLoadedOnMap++;
-                            if (mLoadedOnMap == 3)
-                                handleFeatureDoneLoading();
+                                    mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
+                                    mLoadedOnMap++;
+                                    if (mLoadedOnMap == 3)
+                                        handleFeatureDoneLoading();
+                                }
+                            }
+
                         }
                     });
+                } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                    featureLayer.setId(dLayerInfo.getId());
+                    featureLayer.setName(dLayerInfo.getTitleLayer());
+                    mApplication.getDFeatureLayer.setServiceFeatureTable((ServiceFeatureTable) featureLayer.getFeatureTable());
                 } else if (mArcGISMapImageLayerThematic == null) {
                     mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
                     mArcGISMapImageLayerThematic.setName(dLayerInfo.getTitleLayer());
@@ -615,7 +628,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mLayoutDisplayLayerThematic.removeAllViews();
         mLayoutDisplayLayerAdministration.removeAllViews();
 
-        LayerList layers = mMapView.getMap().getOperationalLayers();
         setServices();
 //        for (final Layer layer : layers) {
 ////            if (layer.getId().equals(getString(R.string.IDLayer_DiemSuCo)))

@@ -14,7 +14,7 @@ import java.net.URL;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
 
-public class GenerateIDSuCoByAPIAsycn extends AsyncTask<Void, Void, String> {
+public class GenerateIDSuCoByAPIAsycn extends AsyncTask<String, Void, String> {
     private ProgressDialog mDialog;
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
@@ -41,11 +41,11 @@ public class GenerateIDSuCoByAPIAsycn extends AsyncTask<Void, Void, String> {
     }
 
     @Override
-    protected String doInBackground(Void... params) {
+    protected String doInBackground(String... params) {
         //Tránh gặp lỗi networkOnMainThread nên phải dùng asyncTask
         String id = "";
         try {
-            URL url = new URL(mApplication.getConstant.GENERATE_ID_SUCO);
+            URL url = new URL(params[0]);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             try {
                 conn.setDoOutput(false);

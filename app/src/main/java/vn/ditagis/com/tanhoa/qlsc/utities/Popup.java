@@ -68,6 +68,7 @@ import vn.ditagis.com.tanhoa.qlsc.adapter.VatTuAdapter;
 import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
+import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.ViewAttachmentAsync;
 import vn.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
 import vn.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuThuHoiSuCoDB;
@@ -106,8 +107,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                  LocationDisplay locationDisplay, Geocoder geocoder, ArcGISMapImageLayer arcGISMapImageLayer) {
         this.mMainActivity = mainActivity;
         mApplication = (DApplication) mainActivity.getApplication();
-        if (mApplication.getDFeatureLayer().getLayer() != null)
-            mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer().getLayer().getFeatureTable();
+        if (mApplication.getDFeatureLayer.getLayer() != null)
+            mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable();
         this.mMapView = mapView;
         this.mCallout = callout;
         this.mLocationDisplay = locationDisplay;
@@ -260,7 +261,21 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
     }
 
+    /**
+     * Kiểm tra đã có sự cố thông tin của đơn vị mình hay chưa
+     * Nếu có, trả về sự cố thông tin đó
+     *
+     * @return
+     */
+
     private void viewMoreInfo(ArcGISFeature feature, final boolean isAddFeature) {
+        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
+                mMainActivity, mSelectedArcGISFeature, output -> {
+            if (output == null) {
+
+            }
+        });
+        queryServiceFeatureTableAsync.execute();
         AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
         @SuppressLint("InflateParams") final View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
         mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<>());
@@ -379,8 +394,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private void loadDataViewMoreInfo(boolean isAddFeature, View layout) {
         Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
         mListItemBeNgam.clear();
-        String[] updateFields = mApplication.getDFeatureLayer().getLayerInfoDTG().getUpdateFields().split(",");
-        String[] addFields = mApplication.getDFeatureLayer().getLayerInfoDTG().getAddFields().split(",");
+        String[] updateFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getUpdateFields().split(",");
+        String[] addFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getAddFields().split(",");
         String[] no_displayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
 //        String[] pgnFields = mMainActivity.getResources().getStringArray(R.array.pgn_fields_arrays);
         String[] pgnFields = new String[]{};
@@ -1263,7 +1278,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void clearSelection() {
         if (mServiceFeatureTable != null) {
-            FeatureLayer featureLayer = mApplication.getDFeatureLayer().getLayer();
+            FeatureLayer featureLayer = mApplication.getDFeatureLayer.getLayer();
             featureLayer.clearSelection();
         }
     }
@@ -1281,7 +1296,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         dimissCallout();
         this.mSelectedArcGISFeature = selectedArcGISFeature;
         FeatureLayer featureLayer;
-        featureLayer = mApplication.getDFeatureLayer().getLayer();
+        featureLayer = mApplication.getDFeatureLayer.getLayer();
         featureLayer.selectFeature(mSelectedArcGISFeature);
         lstFeatureType = new ArrayList<>();
         for (int i = 0; i < mSelectedArcGISFeature.getFeatureTable().getFeatureTypes().size(); i++) {
@@ -1294,7 +1309,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         linearLayout.findViewById(R.id.imgBtn_cancel_layout_thongtinsuco).setOnClickListener(view -> mCallout.dismiss());
         if (featureLayer.getName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
             //user admin mới có quyền xóa
-            if (mApplication.getDFeatureLayer().getLayerInfoDTG().isDelete()) {
+            if (mApplication.getDFeatureLayer.getLayerInfoDTG().isDelete()) {
                 linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
             } else {
                 linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
@@ -1319,28 +1334,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         // show CallOut
         mCallout.setLocation(envelope.getCenter());
         mCallout.setContent(linearLayout);
-        this.runOnUiThread(() -> {
-            mCallout.refresh();
-            mCallout.show();
-            if (isAddFeature) {
-//                    QueryFeatureAsycn queryFeatureAsycn = new QueryFeatureAsycn(mMainActivity, mServiceFeatureTable, new QueryFeatureAsycn.AsyncResponse() {
-//                        @Override
-//                        public void processFinish(ArcGISFeature output) {
-//
-//                        }
-//                    });
-//                    String idSuCo = "";
-//                    Map<String, Object> attr = mSelectedArcGISFeature.getAttributes();
-//                    for (Field field : mSelectedArcGISFeature.getFeatureTable().getFields()) {
-//                        if (field.getName().equals(mMainActivity.getResources().getString(R.string.Field_OBJECTID))) {
-//                            idSuCo = attr.get(field.getName()).toString();
-//                            break;
-//                        }
-//                    }
-//                    queryFeatureAsycn.execute(idSuCo);
-                viewMoreInfo(mSelectedArcGISFeature, true);
-            }
-        });
+        mCallout.show();
     }
 
     @SuppressLint("InflateParams")

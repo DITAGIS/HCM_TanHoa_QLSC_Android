@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 public class Constant {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
     public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
+    public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
     public static final int REQUEST_CODE_LAYER = 6;
@@ -17,23 +18,6 @@ public class Constant {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    public final String[] OUT_FIELDS_ARR = new String[]{
-            FIELD_SUCO.ID_SUCO,
-            FIELD_SUCO.DIA_CHI,
-            FIELD_SUCO.GHI_CHU,
-            FIELD_SUCO.TGPHAN_ANH,
-            FIELD_SUCO.NGUYEN_NHAN
-    };
-    public final String[] ADD_FIELDS_ARR = new String[]{
-            FIELD_SUCO.ID_SUCO,
-            FIELD_SUCO.DIA_CHI,
-            FIELD_SUCO.GHI_CHU,
-            FIELD_SUCO.NGUYEN_NHAN,
-            FIELD_SUCO.TRANG_THAI,
-            FIELD_SUCO.NGUOI_PHAN_ANH,
-            FIELD_SUCO.TGPHAN_ANH,
-            FIELD_SUCO.SDT
-    };
     //    public static final String SERVER_API = "http://gis.capnuoccholon.com.vn/cholon/api";
     private final String SERVER_API = "http://sawagis.vn/tanhoa1/api";
 
@@ -56,6 +40,10 @@ public class Constant {
 
     {
         GENERATE_ID_SUCO = SERVER_API + "/QuanLySuCo/GenerateIDSuCo";
+    }
+
+    public String getGENERATE_ID_SUCOTHONGTIN(String idSuCo) {
+        return SERVER_API + "/QuanLySuCo/GenerateIDSuCoThongTin/" + idSuCo;
     }
 
     public String LAYER_INFO;
@@ -105,6 +93,25 @@ public class Constant {
         public static final String NGUYEN_NHAN = "NGUYENNHAN";
         public static final String VAT_LIEU = "VatLieu";
         public static final String DUONG_KINH_ONG = "DuongKinhOng";
+
+    }
+
+    public class FIELD_SUCOTHONGTIN {
+        public static final String ID_SUCO = "SuCo";
+        public static final String ID_SUCOTT = "IDSuCoTT";
+        public static final String LOAI_SU_CO = "LoaiSuCo";
+        public static final String TRANG_THAI = "TrangThai";
+        public static final String GHI_CHU = "GhiChu";
+        public static final String NHAN_VIEN = "NhanVien";
+        public static final String TG_CAP_NHAT = "TGCapNhat";
+        public static final String DIA_CHI = "DiaChi";
+        public static final String HINH_THUC_PHAT_HIEN = "HinhThucPhatHien";
+        public static final String NGUYEN_NHAN = "NGUYENNHAN";
+        public static final String VAT_LIEU = "VatLieu";
+        public static final String DUONG_KINH_ONG = "DuongKinhOng";
+        public static final String DON_VI = "DonVi";
+        public static final String TGTC_DU_KIEN_TU = "TGTCDuKienTu";
+        public static final String TGTC_DU_KIEN_DEN = "TGTCDuKienDen";
 
     }
 

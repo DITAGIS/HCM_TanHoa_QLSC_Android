@@ -58,7 +58,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         mApplication = (DApplication) activity.getApplication();
 
         this.mDelegate = delegate;
-        mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer().getLayer().getFeatureTable();
+        mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable();
         mSelectedArcGISFeature = selectedArcGISFeature;
         mDialog = new ProgressDialog(activity, android.R.style.Theme_Material_Dialog_Alert);
         this.isUpdateAttachment = isUpdateAttachment;

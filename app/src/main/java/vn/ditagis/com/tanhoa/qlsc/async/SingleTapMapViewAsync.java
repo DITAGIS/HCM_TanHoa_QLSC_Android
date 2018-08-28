@@ -61,8 +61,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
                                 mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
                                 long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
                                         getServiceLayerId();
-                                if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer().getLayer().getFeatureTable()).getServiceLayerId())
-                                    publishProgress(mApplication.getDFeatureLayer().getLayer());
+                                if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable()).getServiceLayerId())
+                                    publishProgress(mApplication.getDFeatureLayer.getLayer());
                             }
                         }
                     }

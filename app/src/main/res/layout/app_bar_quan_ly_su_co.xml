@@ -306,6 +306,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
         android:layout_marginEnd="@dimen/fab_margin"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/fab_margin_top"
         android:src="@drawable/layer"
         app:backgroundTint="@android:color/white" />
@@ -322,6 +323,7 @@
         android:elevation="6dp"
         android:src="@drawable/ic_location"
         app:backgroundTint="@color/colorPrimary"
+        android:visibility="gone"
         app:pressedTranslationZ="12dp"
         tools:ignore="RtlHardcoded" />
 

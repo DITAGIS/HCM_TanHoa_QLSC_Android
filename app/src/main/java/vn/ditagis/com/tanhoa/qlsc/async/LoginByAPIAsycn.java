@@ -73,7 +73,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
                 if (checkAccess(token)) {
                     mApplication.getUserDangNhap = new User();
                     mApplication.getUserDangNhap.setToken(token);
-                    mApplication.getUserDangNhap.setDisplayName(getDisplayName());
+                    getProfile();
                     mApplication.getUserDangNhap.setUserName(userName);
 
                 }
@@ -128,23 +128,22 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
 
     }
 
-    private String getDisplayName() {
+    private void getProfile() {
 
 //        String API_URL = "http://sawagis.vn/tanhoa1/api/Account/Profile";
-        String displayName = "";
         try {
             URL url = new URL(mApplication.getConstant.DISPLAY_NAME);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", Preference.getInstance().loadPreference(mContext.getString(R.string.preference_login_api)));
+                conn.setRequestProperty("Authorization",mApplication.getUserDangNhap.getToken());
                 conn.connect();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    displayName = pajsonRouteeJSon(line);
+                    pajsonRouteeJSon(line);
 
                     break;
                 }
@@ -157,7 +156,6 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
         } catch (Exception e) {
             Log.e("error", e.toString());
         } finally {
-            return displayName;
         }
     }
 
@@ -170,7 +168,8 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
         JSONArray jsonRoutes = jsonData.getJSONArray("account");
         for (int i = 0; i < jsonRoutes.length(); i++) {
             JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
-            displayName = jsonRoute.getString(mContext.getString(R.string.sql_column_login_displayname));
+            mApplication.getUserDangNhap.setDisplayName(jsonRoute.getString(mContext.getString(R.string.sql_column_login_displayname)));
+            mApplication.getUserDangNhap.setRole(jsonRoute.getString(mContext.getString(R.string.sql_column_login_role)));
         }
         return displayName;
 

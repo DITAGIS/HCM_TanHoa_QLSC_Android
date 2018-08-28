@@ -60,9 +60,9 @@ public class MapViewHandler extends Activity {
         mApplication = (DApplication) activity.getApplication();
         this.mCallout = callout;
         this.mMapView = mapView;
-        if (mApplication.getDFeatureLayer().getLayer() != null) {
-            this.mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer().getLayer().getFeatureTable();
-            this.suCoTanHoaLayerThiCong = mApplication.getDFeatureLayer().getLayer();
+        if (mApplication.getDFeatureLayer.getLayer() != null) {
+            this.mServiceFeatureTable = (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable();
+            this.suCoTanHoaLayerThiCong = mApplication.getDFeatureLayer.getLayer();
         }
         this.mPopUp = popupInfos;
 //        this.isThiCong = KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(mActivity.getString(R.string.group_role_thicong));
@@ -136,7 +136,7 @@ public class MapViewHandler extends Activity {
 
                         mMapView.setViewpointGeometryAsync(extent);
                         suCoTanHoaLayerThiCong.selectFeature(item);
-                        if (mApplication.getDFeatureLayer().getLayer() != null) {
+                        if (mApplication.getDFeatureLayer.getLayer() != null) {
                             mSelectedArcGISFeature = (ArcGISFeature) item;
                             if (mSelectedArcGISFeature != null)
                                 mPopUp.showPopup(mSelectedArcGISFeature, false);
