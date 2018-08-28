@@ -155,7 +155,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         String[] noDisplayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
         boolean isFoundField = false;
 //        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
-        mIDSuCo = attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString();
+        mIDSuCo =mApplication.getDiemSuCo.getIdSuCo();
 //        }
 
 
