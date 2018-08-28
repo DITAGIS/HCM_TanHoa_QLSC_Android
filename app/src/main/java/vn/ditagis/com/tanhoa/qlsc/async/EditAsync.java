@@ -26,8 +26,6 @@ import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
-import vn.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuSuCoDB;
-import vn.ditagis.com.tanhoa.qlsc.connectDB.HoSoVatTuThuHoiSuCoDB;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
@@ -90,10 +88,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
         String trangThai = "";
         boolean hasDomain = false;
         for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
-            if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_LoaiSuCo))) {
+            if (item.getFieldName().equals(Constant.FIELD_SUCO.LOAI_SU_CO)) {
                 loaiSuCo = item.getValue();
 
-            } else if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_TrangThai)))
+            } else if (item.getFieldName().equals(Constant.FIELD_SUCO.TRANG_THAI))
                 trangThai = item.getValue();
         }
         List<FeatureType> featureTypes = mSelectedArcGISFeature.getFeatureTable().getFeatureTypes();
@@ -127,12 +125,12 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
             if (domain != null) {
                 hasDomain = true;
                 //Trường hợp nguyên nhân, không tự động lấy được domain
-                if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_NguyenNhan))) {
+                if (item.getFieldName().equals(Constant.FIELD_SUCO.NGUYEN_NHAN)) {
                     if (finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngNganh))
                             || finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngChinh))) {
 
                         List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(finalLoaiSuCoShort - 1).getDomains().get(mActivity.getString(R.string.Field_SuCo_NguyenNhan))).getCodedValues();
+                                .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.NGUYEN_NHAN)).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues) {
                                 if (codedValue.getName().equals(item.getValue())) {
@@ -144,11 +142,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                     }
                 }
                 //Trường hợp vật liệu, không tự động lấy được domain
-                else if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_VatLieu))) {
+                else if (item.getFieldName().equals(Constant.FIELD_SUCO.VAT_LIEU)) {
                     if (finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngNganh))
                             || finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngChinh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(finalLoaiSuCoShort - 1).getDomains().get(mActivity.getString(R.string.Field_SuCo_VatLieu))).getCodedValues();
+                                .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.VAT_LIEU)).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues) {
                                 if (codedValue.getName().equals(item.getValue())) {
@@ -158,11 +156,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
                             }
                         }
                     }
-                } else if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_DuongKinhOng))) {
+                } else if (item.getFieldName().equals(Constant.FIELD_SUCO.DUONG_KINH_ONG)) {
                     if (finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngNganh))
                             || finalLoaiSuCo.equals(mActivity.getString(R.string.LoaiSuCo_OngChinh))) {
                         List<CodedValue> codedValues = ((CodedValueDomain) EditAsync.this.mSelectedArcGISFeature.getFeatureTable().getFeatureTypes()
-                                .get(finalLoaiSuCoShort - 1).getDomains().get(mActivity.getString(R.string.Field_SuCo_DuongKinhOng))).getCodedValues();
+                                .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.DUONG_KINH_ONG)).getCodedValues();
                         if (codedValues != null) {
                             for (CodedValue codedValue : codedValues) {
                                 if (codedValue.getName().equals(item.getValue())) {
@@ -263,9 +261,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, Void, Void>
 
         {
             c[0] = Calendar.getInstance();
-            mSelectedArcGISFeature.getAttributes().put(mActivity.getString(R.string.Field_SuCo_NgayKhacPhuc), c[0]);
+            mSelectedArcGISFeature.getAttributes().put(Constant.FIELD_SUCO.TGKHAC_PHUC, c[0]);
             long ngayKhacPhuc = c[0].getTimeInMillis();
-            long ngayThongBao = ((Calendar) mSelectedArcGISFeature.getAttributes().get(mActivity.getString(R.string.Field_SuCo_NgayThongBao))).getTimeInMillis();
+            long ngayThongBao = ((Calendar) mSelectedArcGISFeature.getAttributes().
+                    get(Constant.FIELD_SUCO.TGPHAN_ANH)).getTimeInMillis();
             double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayThongBao) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
 //            mSelectedArcGISFeature.getAttributes().put((mActivity.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
         }

@@ -32,6 +32,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
@@ -41,8 +42,6 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -90,6 +89,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
@@ -118,7 +119,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private Uri mUri;
     private Popup mPopUp;
     private MapView mMapView;
-    private ArcGISMap mMap;
     private MapViewHandler mMapViewHandler;
     private TraCuuAdapter mSearchAdapter;
     private LocationDisplay mLocationDisplay;
@@ -143,6 +143,8 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private int colors[];
     private DApplication mApplication;
     private int mLoadedOnMap;
+    @BindView(R.id.txt_info_appbar)
+    TextView mTxtInfo;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -174,7 +176,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quan_ly_su_co);
         mListLayerID = new ArrayList<>();
-
+        ButterKnife.bind(this);
         states = new int[][]{{android.R.attr.state_checked}, {}};
         colors = new int[]{R.color.colorTextColor_1, R.color.colorTextColor_1};
         findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
@@ -189,11 +191,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        mLocationHelper = new LocationHelper(this, new LocationHelper.AsyncResponse() {
-            @Override
-            public void processFinish(double longtitude, double latitude) {
-
-            }
+        mLocationHelper = new LocationHelper(this, (longtitude, latitude) -> {
 
         });
         mLocationHelper.checkpermission();
@@ -233,6 +231,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             // TODO: Consider calling
             return;
         }
+        assert locationManager != null;
         locationManager.requestLocationUpdates("gps", 5000, 0, listener);
     }
 
@@ -243,22 +242,20 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
     @SuppressLint("ClickableViewAccessibility")
     private void prepare() {
+        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete)));
         setLicense();
         mArcGISMapImageLayerAdministrator = mArcGISMapImageLayerThematic = null;
         mLayoutDisplayLayerThematic = findViewById(R.id.linearDisplayLayerFeature);
         mLayoutDisplayLayerAdministration = findViewById(R.id.linearDisplayLayerAdministration);
         mLayoutLegend = findViewById(R.id.linearDisplayLayerLegend);
         mLayoutLegend.removeAllViews();
-        LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend, QuanLySuCo.this, new LoadLegendAsycn.AsyncResponse() {
-            @Override
-            public void processFinish(Void output) {
+        LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend, QuanLySuCo.this, output -> {
 
-            }
         });
         loadLegendAsycn.execute();
         mListLayerID.clear();
         mGeocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
-        mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.8035455, 106.6182534, 13);
+        ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.8035455, 106.6182534, 13);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         //for camera begin
@@ -289,8 +286,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             }
         });
         changeStatusOfLocationDataSource();
-        final EditText edit_latitude_vido = findViewById(R.id.edit_latitude_vido);
-        final EditText edit_longtitude_kinhdo = findViewById(R.id.edit_longtitude_kinhdo);
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -319,9 +314,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                     Graphic graphic = new Graphic(center, symbol);
                     mGraphicsOverlay.getGraphics().clear();
                     mGraphicsOverlay.getGraphics().add(graphic);
-                    double[] location = mMapViewHandler.onScroll(e1, e2, distanceX, distanceY);
-                    edit_longtitude_kinhdo.setText(location[0] + "");
-                    edit_latitude_vido.setText(location[1] + "");
 
                     mPopUp.getCallout().setLocation(center);
                     mPointFindLocation = center;
@@ -339,8 +331,6 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
             @Override
             public void onLocationChanged(LocationDisplay.LocationChangedEvent locationChangedEvent) {
                 Point position = locationChangedEvent.getLocation().getPosition();
-                edit_longtitude_kinhdo.setText(position.getX() + "");
-                edit_latitude_vido.setText(position.getY() + "");
                 setViewPointCenter(position);
             }
         });
@@ -396,9 +386,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
 
         mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
         mFloatButtonLayer.setOnClickListener(this);
-        findViewById(R.id.btn_add_feature_close).setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
-        findViewById(R.id.img_chonvitri_themdiemsuco).setOnClickListener(this);
         mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
         mFloatButtonLocation.setOnClickListener(this);
         mLayoutTimSuCo = findViewById(R.id.layout_tim_su_co);
@@ -415,6 +403,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
     private void setServices() {
         try {
             mLoadedOnMap = 0;
+            mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete)));
             // config feature layer service
             for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
                 if (dLayerInfo.getId().substring(dLayerInfo.getId().length() - 3,
@@ -441,7 +430,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 }
                                 mLoadedOnMap++;
                                 if (mLoadedOnMap == 3)
-                                    Toast.makeText(QuanLySuCo.this, "Đã tải xong bản đồ", Toast.LENGTH_SHORT).show();
+                                    mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete)));
                             }
                         }
                     });
@@ -477,7 +466,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, QuanLySuCo.this);
                         mLoadedOnMap++;
                         if (mLoadedOnMap == 3)
-                            Toast.makeText(QuanLySuCo.this, "Đã tải xong bản đồ", Toast.LENGTH_SHORT).show();
+                            mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete)));
                     });
                 } else if (mArcGISMapImageLayerThematic == null) {
                     mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
@@ -496,7 +485,7 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                                 }
                                 mLoadedOnMap++;
                                 if (mLoadedOnMap == 3)
-                                    Toast.makeText(QuanLySuCo.this, "Đã tải xong bản đồ", Toast.LENGTH_SHORT).show();
+                                    mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete)));
                             }
                         }
                     });
@@ -599,20 +588,16 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
         checkBox.setChecked(false);
         layer.setVisible(false);
         CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (buttonView.isChecked()) {
-                    if (textView.getText().equals(layer.getName()))
-                        layer.setVisible(true);
+            if (buttonView.isChecked()) {
+                if (textView.getText().equals(layer.getName()))
+                    layer.setVisible(true);
 
 
-                } else {
-                    if (textView.getText().equals(layer.getName()))
-                        layer.setVisible(false);
-                }
+            } else {
+                if (textView.getText().equals(layer.getName()))
+                    layer.setVisible(false);
             }
         });
         if (!mListLayerID.contains(layer.getName())) {
@@ -1217,23 +1202,27 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
                 findViewById(R.id.floatBtnLayer).setVisibility(View.VISIBLE);
                 break;
-            case R.id.img_chonvitri_themdiemsuco:
-//                themDiemSuCo();
-                themDiemSuCoNoCapture();
-                break;
-            case R.id.btn_add_feature_close:
-                if (mMapViewHandler != null) {
-                    findViewById(R.id.linear_addfeature).setVisibility(View.GONE);
-                    findViewById(R.id.img_map_pin).setVisibility(View.GONE);
-                    mMapViewHandler.setClickBtnAdd(false);
-                }
-                break;
+//            case R.id.img_chonvitri_themdiemsuco:
+////                themDiemSuCo();
+//                themDiemSuCoNoCapture();
+//                break;
+//            case R.id.btn_add_feature_close:
+//                if (mMapViewHandler != null) {
+//                    findViewById(R.id.llayout_info_app_bar).setVisibility(View.GONE);
+//                    findViewById(R.id.img_map_pin).setVisibility(View.GONE);
+//                    mMapViewHandler.setClickBtnAdd(false);
+//                }
+//                break;
             case R.id.floatBtnLocation:
                 if (!mLocationDisplay.isStarted()) {
                     mLocationDisplay.startAsync();
+                    mIsAddFeature = true;
                     setViewPointCenter(mLocationDisplay.getMapLocation());
 
-                } else mLocationDisplay.stop();
+                } else {
+                    mLocationDisplay.stop();
+                    mIsAddFeature = false;
+                }
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
 //                themDiemSuCo();

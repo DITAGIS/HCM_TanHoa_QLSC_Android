@@ -38,6 +38,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHangDangNhap;
@@ -224,8 +225,8 @@ public class ThongKeActivity extends AppCompatActivity {
         } else {
 
             whereClause = String.format("(%s >= date '%s' and %s <= date '%s') and (",
-                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianbatdau(),
-                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianketthuc());
+                    Constant.FIELD_SUCO.TGPHAN_ANH, item.getThoigianbatdau(),
+                   Constant.FIELD_SUCO.TGKHAC_PHUC, item.getThoigianketthuc());
 
 //            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
 //
@@ -249,8 +250,8 @@ public class ThongKeActivity extends AppCompatActivity {
         } else {
             whereClauseBeNgam += " HinhThucPhatHien = 1 and ";
             whereClauseBeNgam = String.format("(%s >= date '%s' and %s <= date '%s') and (",
-                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianbatdau(),
-                    getString(R.string.Field_SuCo_NgayThongBao), item.getThoigianketthuc());
+                    Constant.FIELD_SUCO.TGPHAN_ANH, item.getThoigianbatdau(),
+                Constant.FIELD_SUCO.TGKHAC_PHUC, item.getThoigianketthuc());
 
 //            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
 //

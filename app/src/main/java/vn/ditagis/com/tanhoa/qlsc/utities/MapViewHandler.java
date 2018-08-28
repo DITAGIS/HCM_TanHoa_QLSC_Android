@@ -169,7 +169,7 @@ public class MapViewHandler extends Activity {
                     Feature item = (Feature) iterator.next();
                     Map<String, Object> attributes = item.getAttributes();
                     String format_date = "";
-                    String[] split = attributes.get(mActivity.getString(R.string.Field_SuCo_IDSuCo)).toString().split("_");
+                    String[] split = attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString().split("_");
                     try {
                         format_date = Constant.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
                     } catch (Exception ignored) {
@@ -177,13 +177,13 @@ public class MapViewHandler extends Activity {
                     }
                     String viTri = "";
                     try {
-                        viTri = attributes.get(mActivity.getString(R.string.Field_SuCo_DiaChi)).toString();
+                        viTri = attributes.get(Constant.FIELD_SUCO.DIA_CHI).toString();
                     } catch (Exception ignored) {
 
                     }
                     adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(mActivity.getString(R.string.Field_OBJECTID)).toString()),
-                            attributes.get(mActivity.getString(R.string.Field_SuCo_IDSuCo)).toString(),
-                            Integer.parseInt(attributes.get(mActivity.getString(R.string.Field_SuCo_TrangThai)).toString()), format_date, viTri));
+                            attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                            Integer.parseInt(attributes.get(Constant.FIELD_SUCO.TRANG_THAI).toString()), format_date, viTri));
                     adapter.notifyDataSetChanged();
 
 //                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));

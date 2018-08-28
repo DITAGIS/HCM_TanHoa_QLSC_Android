@@ -319,6 +319,8 @@
     <string name="field_VatTu_maVatTu">MaVatTu</string>
     <string name="field_VatTu_tenVatTu">TenVatTu</string>
     <string name="field_VatTu_donViTinh">DonViTinh</string>
-
     <string name="load_map_not_complete">Chưa khởi tạo xong bản đồ. Vui lòng làm mới dữ liệu để tải lại</string>
+    <string name="info_appbar_load_map_not_complete"><![CDATA[Chưa khởi tạo xong bản đồ.
+        Vui lòng đợi trong giây lát hoặc <font color=#0082c6>làm mới dữ liệu</font> để tải lại]]></string>
+    <string name="info_appbar_load_map_complete"><![CDATA[<font color=#0082c6>Đã tải xong bản đồ</font>]]></string>
 </resources>

@@ -91,6 +91,7 @@ public class Constant {
 
     public class FIELD_SUCO {
         public static final String ID_SUCO = "IDSuCo";
+        public static final String LOAI_SU_CO = "LoaiSuCo";
         public static final String TRANG_THAI = "TrangThai";
         public static final String GHI_CHU = "GhiChu";
         public static final String NGUOI_PHAN_ANH = "NguoiPhanAnh";
@@ -102,6 +103,8 @@ public class Constant {
         public static final String HINH_THUC_PHAT_HIEN = "HinhThucPhatHien";
         public static final String SDT = "SDTPhanAnh";
         public static final String NGUYEN_NHAN = "NGUYENNHAN";
+        public static final String VAT_LIEU = "VatLieu";
+        public static final String DUONG_KINH_ONG = "DuongKinhOng";
 
     }
 
