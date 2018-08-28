@@ -21,7 +21,7 @@ public class Constant {
             FIELD_SUCO.ID_SUCO,
             FIELD_SUCO.DIA_CHI,
             FIELD_SUCO.GHI_CHU,
-            FIELD_SUCO.NGAY_THONG_BAO,
+            FIELD_SUCO.TGPHAN_ANH,
             FIELD_SUCO.NGUYEN_NHAN
     };
     public final String[] ADD_FIELDS_ARR = new String[]{
@@ -30,27 +30,12 @@ public class Constant {
             FIELD_SUCO.GHI_CHU,
             FIELD_SUCO.NGUYEN_NHAN,
             FIELD_SUCO.TRANG_THAI,
-            FIELD_SUCO.NGUOI_CAP_NHAT,
-            FIELD_SUCO.NGAY_THONG_BAO,
+            FIELD_SUCO.NGUOI_PHAN_ANH,
+            FIELD_SUCO.TGPHAN_ANH,
             FIELD_SUCO.SDT
     };
     //    public static final String SERVER_API = "http://gis.capnuoccholon.com.vn/cholon/api";
     private final String SERVER_API = "http://sawagis.vn/tanhoa1/api";
-    public String URL_SUCO;
-
-    {
-//        URL_SUCO = "http://112.78.5.191:6080/arcgis/rest/services/TruyenDan/TruyenDanDiemSuCo/FeatureServer/0";
-//        URL_SUCO = "https://sawagis.vn/arcgis/rest/services/TruyenDan/TruyenDanDiemSuCo/FeatureServer/0";
-        URL_SUCO = "https://prgrd.hcmpc.com.vn/arcgis/rest/services/GISGOVAP/LuoiDien_KT_H/FeatureServer/0";
-    }
-
-    public String URL_VATTU;
-
-    {
-//        URL_SUCO = "http://112.78.5.191:6080/arcgis/rest/services/TruyenDan/TruyenDanDiemSuCo/FeatureServer/0";
-//        URL_SUCO = "https://sawagis.vn/arcgis/rest/services/TruyenDan/TruyenDanDiemSuCo/FeatureServer/0";
-        URL_VATTU = "http://113.161.88.180:800/arcgis/rest/services/TanHoa/THSuCo/FeatureServer/2";
-    }
 
     public String API_LOGIN;
 
@@ -108,10 +93,13 @@ public class Constant {
         public static final String ID_SUCO = "IDSuCo";
         public static final String TRANG_THAI = "TrangThai";
         public static final String GHI_CHU = "GhiChu";
-        public static final String NGUOI_CAP_NHAT = "NguoiPhanAnh";
+        public static final String NGUOI_PHAN_ANH = "NguoiPhanAnh";
         public static final String TGKHAC_PHUC = "TGKhacPhuc";
-        public static final String NGAY_THONG_BAO = "TGPhanAnh";
+        public static final String TGPHAN_ANH = "TGPhanAnh";
         public static final String DIA_CHI = "DiaChi";
+        public static final String QUAN = "Quan";
+        public static final String PHUONG = "Phuong";
+        public static final String HINH_THUC_PHAT_HIEN = "HinhThucPhatHien";
         public static final String SDT = "SDTPhanAnh";
         public static final String NGUYEN_NHAN = "NGUYENNHAN";
 

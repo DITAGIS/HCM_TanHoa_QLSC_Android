@@ -79,7 +79,7 @@ public class MapViewHandler extends Activity {
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mActivity,
                 mServiceFeatureTable, output -> {
             if (output != null) {
-                mPopUp.showPopup((ArcGISFeature) output, true);
+//                mPopUp.showPopup((ArcGISFeature) output, true);
             }
         });
         singleTapAdddFeatureAsync.execute();

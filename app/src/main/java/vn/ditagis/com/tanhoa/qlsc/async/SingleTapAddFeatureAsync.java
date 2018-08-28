@@ -66,9 +66,12 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(mApplication.getDiemSuCo.getPoint());
             feature.getAttributes().put(Constant.FIELD_SUCO.DIA_CHI, mApplication.getDiemSuCo.getVitri());
+            feature.getAttributes().put(Constant.FIELD_SUCO.QUAN, mApplication.getDiemSuCo.getQuan());
+            feature.getAttributes().put(Constant.FIELD_SUCO.PHUONG, mApplication.getDiemSuCo.getPhuong());
             feature.getAttributes().put(Constant.FIELD_SUCO.GHI_CHU, mApplication.getDiemSuCo.getGhiChu());
-            feature.getAttributes().put(Constant.FIELD_SUCO.NGUOI_CAP_NHAT, mApplication.getDiemSuCo.getNguoiCapNhat());
-            feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdt());
+            feature.getAttributes().put(Constant.FIELD_SUCO.NGUOI_PHAN_ANH, mApplication.getDiemSuCo.getNguoiPhanAnh());
+            feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
+            feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN, mApplication.getDiemSuCo.getHinhThucPhatHien());
             addFeatureAsync(feature);
 
         } catch (Exception e) {
@@ -101,7 +104,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI, intObj);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Calendar c = Calendar.getInstance();
-                feature.getAttributes().put(Constant.FIELD_SUCO.NGAY_THONG_BAO, c);
+                feature.getAttributes().put(Constant.FIELD_SUCO.TGPHAN_ANH, c);
             }
 
             String finalOutput = output;
@@ -127,7 +130,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                                     }
                                 } catch (InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
-                                    publishProgress( );
+                                    publishProgress();
                                 }
 
                             });

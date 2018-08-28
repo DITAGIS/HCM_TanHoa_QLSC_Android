@@ -75,7 +75,7 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                 List<Address> addressList = mGeocoder.getFromLocationName(text, 5);
                 for (Address address : addressList)
                     lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),
-                            address.getSubAdminArea(), address.getAddressLine(0), "", "", ""));
+                            address.getSubAdminArea(),address.getLocality(), address.getAddressLine(0), "", "", ""));
                 publishProgress(lstLocation);
             } catch (IOException ignored) {
                 //todo grpc failed
@@ -86,8 +86,9 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                 if (!mIsAddFeature) {
                     List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
                     for (Address address : addressList)
+
                         lstLocation.add(new MyAddress(address.getLongitude(), address.getLatitude(),
-                                address.getSubAdminArea(), address.getAddressLine(0), "", "", ""));
+                                address.getSubAdminArea(),address.getLocality(), address.getAddressLine(0), "", "", ""));
                     publishProgress(lstLocation);
                 } else {
                     if (MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdmin).getSFTLayerHanhChinh() != null) {
@@ -120,7 +121,7 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                                         List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
                                         for (Address address : addressList) {
                                             location = address.getAddressLine(0);
-                                            lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(), location, "", "", ""));
+                                            lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(),address.getLocality(), location, "", "", ""));
                                         }
                                         publishProgress(lstLocation);
 //                                    }
@@ -180,7 +181,7 @@ public class FindLocationAsycn extends AsyncTask<String, List<MyAddress>, Void> 
                                         List<Address> addressList = mGeocoder.getFromLocation(mLatitude, mLongtitude, 1);
                                         for (Address address : addressList) {
                                             location = address.getAddressLine(0);
-                                            lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(), location, "", "", ""));
+                                            lstLocation.add(new MyAddress(mLongtitude, mLatitude, address.getSubAdminArea(),address.getLocality(), location, "", "", ""));
                                         }
                                         publishProgress(lstLocation);
                                     }

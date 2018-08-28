@@ -4,15 +4,17 @@ public class MyAddress {
     private double longtitude;
     private double latitude;
     private String subAdminArea;
+    private String locality;
     private String location;
     private String maDuong;
     private String maPhuong;
     private String maDMA;
 
-    public MyAddress(double longtitude, double latitude, String subAdminArea, String location, String maDuong, String maPhuong, String maDMA) {
+    public MyAddress(double longtitude, double latitude, String subAdminArea, String locality, String location, String maDuong, String maPhuong, String maDMA) {
         this.longtitude = longtitude;
         this.latitude = latitude;
         this.subAdminArea = subAdminArea;
+        this.locality = locality;
         this.location = location;
         this.maDuong = maDuong;
         this.maPhuong = maPhuong;
@@ -29,6 +31,10 @@ public class MyAddress {
 
     public String getSubAdminArea() {
         return subAdminArea;
+    }
+
+    public String getLocality() {
+        return locality;
     }
 
     public String getLocation() {

@@ -28,6 +28,9 @@
     <dimen name="width_title_item_popup">100dp</dimen>
     <dimen name="padding_small">8dp</dimen>
     <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">60dp</dimen>
     <dimen name="padding_layout">20dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
 
 </resources>

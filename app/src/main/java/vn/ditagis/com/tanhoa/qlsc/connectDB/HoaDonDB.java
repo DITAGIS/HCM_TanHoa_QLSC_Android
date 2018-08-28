@@ -250,9 +250,9 @@ public class HoaDonDB implements IDB<HoaDon, Boolean, String> {
                 String denNgay = formatter.format(rs.getDate(11));
                 code1 = rs.getString(12);
                 sanLuong_1 = rs.getString(13);
-//                mStatement = cnn.prepareStatement("SELECT tenkh,so, duong, sdt, sh,sx,dv,hc FROM KhachHang where MLT2 = ?");
+//                mStatement = cnn.prepareStatement("SELECT tenkh,so, duong, sdtPhanAnh, sh,sx,dv,hc FROM KhachHang where MLT2 = ?");
 //                mStatement.setString(1, maLoTrinh);
-                query = "SELECT tenkh,so, duong, sdt, sh,sx,dv,hc FROM KhachHang where danhba = '" + danhBo + "'";
+                query = "SELECT tenkh,so, duong, sdtPhanAnh, sh,sx,dv,hc FROM KhachHang where danhba = '" + danhBo + "'";
                 ResultSet rs1 = mStatement.executeQuery(query);
                 if (rs1.next()) {
                     tenKhachHang = rs1.getString(1);

@@ -96,6 +96,7 @@ import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.LoadLegendAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.PreparingAsycn;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.DFeatureLayer;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
@@ -109,7 +110,6 @@ import vn.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import vn.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable;
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 import vn.ditagis.com.tanhoa.qlsc.utities.Popup;
-import vn.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport;
 
 public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener, AdapterView.OnItemClickListener,
@@ -901,15 +901,20 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                 @Override
                 public void processFinish(List<MyAddress> output) {
                     if (output != null) {
-                        mApplication.getDiemSuCo.setPoint(mPointFindLocation);
+
                         String subAdminArea = output.get(0).getSubAdminArea();
                         //nếu tài khoản có quyền truy cập vào
                         if (subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
                                 subAdminArea.equals(getString(R.string.QuanTanBinhName)) ||
                                 subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
+                            mApplication.getDiemSuCo.setPoint(mPointFindLocation);
+                            mApplication.getDiemSuCo.setVitri(output.get(0).getLocation());
+                            mApplication.getDiemSuCo.setQuan(subAdminArea);
+                            mApplication.getDiemSuCo.setPhuong(output.get(0).getLocality());
+                            Intent intent = new Intent(QuanLySuCo.this, ThemSuCoActivity.class);
+                            startActivityForResult(intent, Constant.REQUEST_CODE_ADD_FEATURE);
                             mTxtSearchView.setQuery("", true);
-                            mMapViewHandler.addFeature(mPointFindLocation);
-                            deleteSearching();
+
                         } else {
                             Toast.makeText(QuanLySuCo.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                         }
@@ -1354,6 +1359,12 @@ public class QuanLySuCo extends AppCompatActivity implements NavigationView.OnNa
                         if (CheckConnectInternet.isOnline(this))
                             preparingAsycn.execute();
                     }
+                case Constant.REQUEST_CODE_ADD_FEATURE:
+                    if (mApplication.getDiemSuCo.getPoint() != null) {
+                        mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
+                        deleteSearching();
+                    }
+                    break;
 
             }
         } catch (Exception ignored) {
