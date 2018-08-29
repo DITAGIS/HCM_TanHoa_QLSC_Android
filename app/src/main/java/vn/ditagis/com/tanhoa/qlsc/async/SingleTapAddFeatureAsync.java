@@ -11,10 +11,10 @@ import android.widget.Toast;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Attachment;
-import com.esri.arcgisruntime.data.CodedValue;
-import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureEditResult;
+import com.esri.arcgisruntime.data.FeatureQueryResult;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
 import java.util.Calendar;
@@ -148,8 +148,29 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                             try {
                                 List<FeatureEditResult> featureEditResults = listListenableFuture.get();
                                 if (featureEditResults.size() > 0) {
-                                    addAttachment(arcGISFeature, feature);
-                                    publishProgress(feature);
+                                    final QueryParameters queryParameters = new QueryParameters();
+//                            final String query = String.format(mActivity.getString(R.string.arcgis_query_by_OBJECTID), objectId);
+                                    final String query = mActivity.getString(R.string.arcgis_query_by_IDSuCo, idSuCo);
+                                    queryParameters.setWhereClause(query);
+                                    final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable
+                                            .queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.IDS_ONLY);
+                                    featuresAsync.addDoneListener(() -> {
+                                        try {
+                                            FeatureQueryResult result = featuresAsync.get();
+                                            if (result.iterator().hasNext()) {
+                                                Feature item = result.iterator().next();
+                                                ArcGISFeature arcGISFeature1 = (ArcGISFeature) item;
+                                                addAttachment(arcGISFeature1, feature);
+                                                publishProgress(item);
+                                            }
+                                        } catch (InterruptedException | ExecutionException e) {
+                                            e.printStackTrace();
+                                            publishProgress();
+                                        }
+
+                                    });
+//                                    addAttachment(arcGISFeature, feature);
+//                                    publishProgress(feature);
                                 } else publishProgress();
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
@@ -157,8 +178,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                             }
                         });
                     });
-                    addAttachment(arcGISFeature, feature);
-                    publishProgress(feature);
+//                    addAttachment(arcGISFeature, feature);
+//                    publishProgress(feature);
                 }
             }).execute(mApplication.getConstant.getGENERATE_ID_SUCOTHONGTIN(idSuCo));
         });
@@ -169,13 +190,13 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
         final ListenableFuture<Attachment> addResult = arcGISFeature.addAttachmentAsync(
                 mApplication.getDiemSuCo.getImage(), Bitmap.CompressFormat.PNG.toString(), attachmentName);
         addResult.addDoneListener(() -> {
-            if (mDialog != null && mDialog.isShowing()) {
-                mDialog.dismiss();
-            }
+//            if (mDialog != null && mDialog.isShowing()) {
+//                mDialog.dismiss();
+//            }
             try {
                 Attachment attachment = addResult.get();
                 if (attachment.getSize() > 0) {
-                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(arcGISFeature);
+                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(feature);
                     tableResult.addDoneListener(() -> {
                         final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
                         updatedServerResult.addDoneListener(() -> {
@@ -184,15 +205,15 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                                 edits = updatedServerResult.get();
                                 if (edits.size() > 0) {
                                     if (!edits.get(0).hasCompletedWithErrors()) {
-                                        publishProgress(feature);
+//                                        publishProgress(feature);
                                     }
                                 }
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             } finally {
-                                if (mDialog != null && mDialog.isShowing()) {
-                                    mDialog.dismiss();
-                                }
+//                                if (mDialog != null && mDialog.isShowing()) {
+//                                    mDialog.dismiss();
+//                                }
                             }
 
                         });

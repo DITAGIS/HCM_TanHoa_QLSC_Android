@@ -79,7 +79,7 @@ public class MapViewHandler extends Activity {
         SingleTapAddFeatureAsync singleTapAdddFeatureAsync = new SingleTapAddFeatureAsync(mActivity,
                 mServiceFeatureTable, output -> {
             if (output != null) {
-                if(mCallout != null && mCallout.isShowing())
+                if (mCallout != null && mCallout.isShowing())
                     mCallout.dismiss();
 //                mPopUp.showPopup((ArcGISFeature) output, true);
             }
@@ -183,9 +183,18 @@ public class MapViewHandler extends Activity {
                     } catch (Exception ignored) {
 
                     }
-                    adapter.add(new TraCuuAdapter.Item(Integer.parseInt(attributes.get(mActivity.getString(R.string.Field_OBJECTID)).toString()),
-                            attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString(),
-                            Integer.parseInt(attributes.get(Constant.FIELD_SUCO.TRANG_THAI).toString()), format_date, viTri));
+                    int objectID = Integer.parseInt(attributes.get(mActivity.getString(R.string.Field_OBJECTID)).toString());
+                    boolean isFound = false;
+                    for (TraCuuAdapter.Item itemTraCuu : adapter.getItems()) {
+                        if (itemTraCuu.getObjectID() == objectID) {
+                            isFound = true;
+                            break;
+                        }
+                    }
+                    if (!isFound)
+                        adapter.add(new TraCuuAdapter.Item(objectID,
+                                attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                                Integer.parseInt(attributes.get(Constant.FIELD_SUCO.TRANG_THAI).toString()), format_date, viTri));
                     adapter.notifyDataSetChanged();
 
 //                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));
