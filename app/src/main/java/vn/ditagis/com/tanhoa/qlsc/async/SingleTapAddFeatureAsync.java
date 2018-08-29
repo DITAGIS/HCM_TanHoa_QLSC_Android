@@ -150,18 +150,16 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                                 if (featureEditResults.size() > 0) {
                                     final QueryParameters queryParameters = new QueryParameters();
 //                            final String query = String.format(mActivity.getString(R.string.arcgis_query_by_OBJECTID), objectId);
-                                    final String query = mActivity.getString(R.string.arcgis_query_by_IDSuCo, idSuCo);
+                                    final String query = String.format("%s = '%s'", Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT, output);
                                     queryParameters.setWhereClause(query);
-                                    final ListenableFuture<FeatureQueryResult> featuresAsync = mServiceFeatureTable
+                                    final ListenableFuture<FeatureQueryResult> featuresAsync = serviceFeatureTable
                                             .queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.IDS_ONLY);
                                     featuresAsync.addDoneListener(() -> {
                                         try {
                                             FeatureQueryResult result = featuresAsync.get();
                                             if (result.iterator().hasNext()) {
                                                 Feature item = result.iterator().next();
-                                                ArcGISFeature arcGISFeature1 = (ArcGISFeature) item;
-                                                addAttachment(arcGISFeature1, feature);
-                                                publishProgress(item);
+                                                addAttachment(item, serviceFeatureTable);
                                             }
                                         } catch (InterruptedException | ExecutionException e) {
                                             e.printStackTrace();
@@ -185,8 +183,9 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
         });
     }
 
-    private void addAttachment(ArcGISFeature arcGISFeature, final Feature feature) {
-        final String attachmentName = mApplication.getApplicationContext().getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
+    private void addAttachment(final Feature feature, ServiceFeatureTable serviceFeatureTable) {
+        ArcGISFeature arcGISFeature = (ArcGISFeature) feature;
+        final String attachmentName = mApplication.getApplicationContext().getString(R.string.attachment_add) + "_" + System.currentTimeMillis() + ".png";
         final ListenableFuture<Attachment> addResult = arcGISFeature.addAttachmentAsync(
                 mApplication.getDiemSuCo.getImage(), Bitmap.CompressFormat.PNG.toString(), attachmentName);
         addResult.addDoneListener(() -> {
@@ -196,26 +195,22 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             try {
                 Attachment attachment = addResult.get();
                 if (attachment.getSize() > 0) {
-                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(feature);
+                    final ListenableFuture<Void> tableResult = serviceFeatureTable.updateFeatureAsync(feature);
                     tableResult.addDoneListener(() -> {
-                        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+                        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = serviceFeatureTable.applyEditsAsync();
                         updatedServerResult.addDoneListener(() -> {
                             List<FeatureEditResult> edits;
                             try {
                                 edits = updatedServerResult.get();
                                 if (edits.size() > 0) {
                                     if (!edits.get(0).hasCompletedWithErrors()) {
-//                                        publishProgress(feature);
+                                        publishProgress(feature);
                                     }
                                 }
                             } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
-                            } finally {
-//                                if (mDialog != null && mDialog.isShowing()) {
-//                                    mDialog.dismiss();
-//                                }
+                                publishProgress();
                             }
-
                         });
                     });
                 }

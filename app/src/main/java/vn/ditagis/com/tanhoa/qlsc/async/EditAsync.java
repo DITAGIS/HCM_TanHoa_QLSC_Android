@@ -301,18 +301,15 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 
         final String attachmentName = mActivity.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
         final ListenableFuture<Attachment> addResult = arcGISFeature.addAttachmentAsync(mImage, Bitmap.CompressFormat.PNG.toString(), attachmentName);
-        addResult.addDoneListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Attachment attachment = addResult.get();
-                    if (attachment.getSize() > 0) {
-                        final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(arcGISFeature);
-                        tableResult.addDoneListener(() -> applyEdit(arcGISFeature));
-                    }
-                } catch (Exception ignored) {
-                    publishProgress();
+        addResult.addDoneListener(() -> {
+            try {
+                Attachment attachment = addResult.get();
+                if (attachment.getSize() > 0) {
+                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(arcGISFeature);
+                    tableResult.addDoneListener(() -> applyEdit(arcGISFeature));
                 }
+            } catch (Exception ignored) {
+                publishProgress();
             }
         });
     }

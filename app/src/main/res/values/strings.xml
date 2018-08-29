@@ -50,6 +50,7 @@
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
     <string name="path_saveImage">.qlsc</string>
+    <string name="attachment_add">attachment_add</string>
     <string name="attachment">attachment</string>
 
     <string name="tongloaitrangthai">tongloaitrangthai</string>
