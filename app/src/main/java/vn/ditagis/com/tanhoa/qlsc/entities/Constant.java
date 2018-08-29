@@ -19,7 +19,7 @@ public class Constant {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //    public static final String SERVER_API = "http://gis.capnuoccholon.com.vn/cholon/api";
-    private final String SERVER_API = "http://sawagis.vn/tanhoa1/api";
+    private final String SERVER_API = "http://112.78.5.173/tanhoa1/api";
 
     public String API_LOGIN;
 

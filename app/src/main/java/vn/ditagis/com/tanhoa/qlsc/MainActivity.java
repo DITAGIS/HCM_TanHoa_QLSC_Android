@@ -125,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayout mLayoutTimSuCo;
     private LinearLayout mLayoutTimDiaChi;
     private LinearLayout mLayoutTimKiem;
-    private FloatingActionButton mFloatButtonLayer;
-    private FloatingActionButton mFloatButtonLocation;
+    @BindView(R.id.floatBtnLayer)
+    FloatingActionButton mFloatButtonLayer;
+    @BindView(R.id.floatBtnLocation)
+    FloatingActionButton mFloatButtonLocation;
     private LinearLayout mLayoutDisplayLayerAdministration, mLayoutDisplayLayerThematic, mLayoutLegend;
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
@@ -377,10 +379,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mImageStreetMap = findViewById(R.id.img_layer_street_map);
         mImageImageWithLabel = findViewById(R.id.img_layer_image);
 
-        mFloatButtonLayer = findViewById(R.id.floatBtnLayer);
         mFloatButtonLayer.setOnClickListener(this);
         findViewById(R.id.btn_layer_close).setOnClickListener(this);
-        mFloatButtonLocation = findViewById(R.id.floatBtnLocation);
         mFloatButtonLocation.setOnClickListener(this);
         mLayoutTimSuCo = findViewById(R.id.layout_tim_su_co);
         mLayoutTimSuCo.setOnClickListener(this);
@@ -440,6 +440,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     featureLayer.setPopupEnabled(true);
                     featureLayer.setVisible(true);
                     setRendererSuCoFeatureLayer(featureLayer);
+                    mMapView.getMap().getOperationalLayers().add(featureLayer);
                     featureLayer.addDoneLoadingListener(() -> {
                         if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
                             //Tìm servicefeaturetable
@@ -456,7 +457,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
 //                        featureLayer.setVisible(false);
 
-                                    mMapView.getMap().getOperationalLayers().add(featureLayer);
+
 //                    Callout callout = mMapView.getCallout();
                                     mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
                                     mLoadedOnMap++;
@@ -1120,9 +1121,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void disableLocation() {
-        mLocationDisplay.stop();
-        mmIsLocating = false;
-        mPopUp.getCallout().dismiss();
+        if (mLocationDisplay.isStarted()) {
+            mLocationDisplay.stop();
+            mmIsLocating = false;
+        }
+        if (mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+            mPopUp.getCallout().dismiss();
     }
 
     private void enableLocation() {
@@ -1382,6 +1386,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (mApplication.getDiemSuCo.getPoint() != null) {
                         mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
                         deleteSearching();
+                        disableLocation();
                     }
                     break;
 
