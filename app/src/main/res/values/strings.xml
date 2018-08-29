@@ -49,12 +49,6 @@
     <string name="ALIAS_GIAO_THONG">Giao thông</string>
     <string name="ALIAS_HANH_CHINH">Hành chính</string>
     <!--ALIAS END-->
-    <!--URL START-->
-    <string name="url_image_symbol_chuasuachua">http://sawagis.vn/tanhoa/Content/images/map/0.png</string>
-    <string name="url_image_symbol_dangsuachua">http://sawagis.vn/tanhoa/Content/images/map/1.png</string>
-    <string name="url_image_symbol_beNgam">http://cholon.sawagis.vn/images/map/bengam.png</string>
-    <string name="url_image_symbol_hoanthanh">http://sawagis.vn/tanhoa/Content/images/map/3.png</string>
-    <!--URL END-->
     <string name="path_saveImage">.qlsc</string>
     <string name="attachment">attachment</string>
 
@@ -261,8 +255,6 @@
     <string name="QuanTanPhuName">Tân Phú</string>
     <string name="format_date_month_year">%02d_%02d_%d</string>
 
-    <string name="LoaiSuCo_OngNganh">Ống ngánh</string>
-    <string name="LoaiSuCo_OngChinh">Ống chính</string>
 
     <string name="btnLeftAddFeature">Lưu</string>
     <string name="btnRightAddFeature">Chụp ảnh</string>

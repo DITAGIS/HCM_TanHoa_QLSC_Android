@@ -227,7 +227,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mLocationHelper.checkpermission();
             }
         };
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
@@ -249,7 +252,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mLayoutDisplayLayerAdministration = findViewById(R.id.linearDisplayLayerAdministration);
         mLayoutLegend = findViewById(R.id.linearDisplayLayerLegend);
         mLayoutLegend.removeAllViews();
-        LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend, MainActivity.this, output -> {
+        LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend,
+                MainActivity.this, output -> {
 
         });
         loadLegendAsycn.execute();
@@ -434,7 +438,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    featureLayer.setMinScale(1000000);
                     featureLayer.setId(dLayerInfo.getId());
 //                    TimePeriodReport timePeriodReport = new TimePeriodReport(this);
-//                    featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo), timePeriodReport.getItems().get(2).getThoigianbatdau()));
+//                    featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo),
+// timePeriodReport.getItems().get(2).getThoigianbatdau()));
                     featureLayer.setDefinitionExpression(dLayerInfo.getDefinition());
                     featureLayer.setId(dLayerInfo.getId());
                     featureLayer.setPopupEnabled(true);
@@ -661,23 +666,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
-        uniqueValueRenderer.getFieldNames().add("TrangThai");
-        uniqueValueRenderer.getFieldNames().add("HinhThucPhatHien");
+        uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
+        uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
 
 
-        PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_chuasuachua));
+        PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA);
         chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         chuaXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol dangXuLySymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_dangsuachua));
+        PictureMarkerSymbol dangXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_DANG_SUA_CHUA);
         dangXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol hoanThanhSymBol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_hoanthanh));
+        PictureMarkerSymbol hoanThanhSymBol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_HOAN_THANH);
         hoanThanhSymBol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         hoanThanhSymBol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(getString(R.string.url_image_symbol_beNgam));
+        PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
         beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         beNgamSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
@@ -1414,15 +1419,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    true, new EditAsync.AsyncResponse() {
-                                @Override
-                                public void processFinish(ArcGISFeature arcGISFeature) {
-//                                    mPopUp.getDialog().dismiss();
-                                    mPopUp.getCallout().dismiss();
-                                    if (!arcGISFeature.canEditAttachments())
-                                        MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
-                                }
-                            });
+                                    arcGISFeature -> {
+    //                                    mPopUp.getDialog().dismiss();
+                                        mPopUp.getCallout().dismiss();
+                                        if (!arcGISFeature.canEditAttachments())
+                                            MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
+                                    });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }
                     } catch (Exception ignored) {
@@ -1453,14 +1455,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    false, new EditAsync.AsyncResponse() {
-                                @Override
-                                public void processFinish(ArcGISFeature arcGISFeature) {
-                                    mPopUp.getCallout().dismiss();
-                                    if (!arcGISFeature.canEditAttachments())
-                                        MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
-                                }
-                            });
+                                    arcGISFeature -> {
+                                        mPopUp.getCallout().dismiss();
+                                        if (!arcGISFeature.canEditAttachments())
+                                            MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
+                                    });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }
                     } catch (Exception ignored) {

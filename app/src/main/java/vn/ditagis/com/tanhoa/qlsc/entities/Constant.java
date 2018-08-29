@@ -19,8 +19,16 @@ public class Constant {
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //    public static final String SERVER_API = "http://gis.capnuoccholon.com.vn/cholon/api";
-    private final String SERVER_API = "http://112.78.5.173/tanhoa1/api";
+    private final String SERVER = "http://112.78.5.173";
+    private String SERVER_API = SERVER + "/tanhoa1/api";
+    public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/tanhoa/Content/images/map/0.png";
+    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = "http://tanhoa.sawagis.vn/images/map/bengam.png";
+    public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/tanhoa/Content/images/map/1.png";
+    public String URL_SYMBOL_HOAN_THANH = SERVER + "/tanhoa/Content/images/map/3.png";
 
+    public static  final short LOAISUCO_ONGNGANH = 1;
+    public static  final short LOAISUCO_ONGCHINH = 2;
+    public static  final short LOAISUCO_CHUAPHANLOAI = 3;
     public String API_LOGIN;
 
 

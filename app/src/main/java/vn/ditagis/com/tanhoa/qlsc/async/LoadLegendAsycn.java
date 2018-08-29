@@ -14,6 +14,7 @@ import java.net.URL;
 
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
 public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
     private ProgressDialog mDialog;
@@ -43,9 +44,9 @@ public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
     }
 
 
-
     @Override
     protected Void doInBackground(Void... params) {
+        DApplication application = (DApplication) mActivity.getApplication();
         final LinearLayout layoutFeatureBeNgam = (LinearLayout) mActivity.getLayoutInflater().inflate(R.layout.layout_legend, null);
         final ImageView imgBeNgam = layoutFeatureBeNgam.findViewById(R.id.img_layout_legend);
         final TextView txtBeNgam = layoutFeatureBeNgam.findViewById(R.id.txt_layout_legend);
@@ -69,22 +70,22 @@ public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
 
         try {
             Drawable drawableBeNgam = Drawable.createFromStream((
-                    InputStream) new URL(mContext.getString(R.string.url_image_symbol_beNgam)).getContent(), "src");
+                    InputStream) new URL(application.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM).getContent(), "src");
             imgBeNgam.setImageDrawable(drawableBeNgam);
             txtBeNgam.setText("Chưa sửa chữa bể ngầm");
 
             Drawable drawableChuaXuLy = Drawable.createFromStream((
-                    InputStream) new URL(mContext.getString(R.string.url_image_symbol_chuasuachua)).getContent(), "src");
+                    InputStream) new URL(application.getConstant.URL_SYMBOL_CHUA_SUA_CHUA).getContent(), "src");
             imgChuaXuLy.setImageDrawable(drawableChuaXuLy);
             txtChuaXuLy.setText("Chưa sửa chữa");
 
             Drawable drawableDangXuLy = Drawable.createFromStream((
-                    InputStream) new URL(mContext.getString(R.string.url_image_symbol_dangsuachua)).getContent(), "src");
+                    InputStream) new URL(application.getConstant.URL_SYMBOL_DANG_SUA_CHUA).getContent(), "src");
             imgDangXuLy.setImageDrawable(drawableDangXuLy);
             txtDangXuLy.setText("Đang sửa chữa");
 
             Drawable drawableHoanThanh = Drawable.createFromStream((
-                    InputStream) new URL(mContext.getString(R.string.url_image_symbol_hoanthanh)).getContent(), "src");
+                    InputStream) new URL(application.getConstant.URL_SYMBOL_HOAN_THANH).getContent(), "src");
             imgHoanThanh.setImageDrawable(drawableHoanThanh);
             txtHoanThanh.setText("Hoàn thành");
 
