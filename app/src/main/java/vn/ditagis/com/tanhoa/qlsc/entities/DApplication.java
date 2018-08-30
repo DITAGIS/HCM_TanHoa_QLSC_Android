@@ -3,6 +3,8 @@ package vn.ditagis.com.tanhoa.qlsc.entities;
 import android.app.Application;
 import android.location.Location;
 
+import com.esri.arcgisruntime.data.ArcGISFeature;
+
 import java.net.URISyntaxException;
 
 import io.socket.client.IO;
@@ -39,6 +41,16 @@ public class DApplication extends Application {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private ArcGISFeature arcGISFeature;
+
+    public ArcGISFeature getArcGISFeature() {
+        return arcGISFeature;
+    }
+
+    public void setArcGISFeature(ArcGISFeature arcGISFeature) {
+        this.arcGISFeature = arcGISFeature;
     }
 
     public Socket getSocket() {

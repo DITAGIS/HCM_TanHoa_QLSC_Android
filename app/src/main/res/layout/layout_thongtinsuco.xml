@@ -84,6 +84,17 @@
         tools:ignore="RtlHardcoded">
 
         <ImageButton
+            android:id="@+id/imgBtn_cap_nhat_vat_tu"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:contentDescription="Cập nhật vật tư"
+            android:paddingEnd="@dimen/padding_title_popup"
+            android:paddingRight="@dimen/padding_title_popup"
+            android:src="@drawable/bolts"
+            tools:ignore="RtlSymmetry" />
+        <ImageButton
             android:id="@+id/imgBtn_ViewMoreInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

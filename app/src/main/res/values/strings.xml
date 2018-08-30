@@ -309,12 +309,13 @@
     <string name="sql_column_sys_update_fields_arr">UpdateFields</string>
     <string name="LayerInfo_DMA">dmaLYR</string>
     <string name="field_DMA_maDMA">MADMA</string>
-    <string name="LayerInfo_vatTu">vattuTBL</string>
-    <string name="field_VatTu_maVatTu">MaVatTu</string>
-    <string name="field_VatTu_tenVatTu">TenVatTu</string>
-    <string name="field_VatTu_donViTinh">DonViTinh</string>
+
+
     <string name="load_map_not_complete">Chưa khởi tạo xong bản đồ. Vui lòng làm mới dữ liệu để tải lại</string>
     <string name="info_appbar_load_map_not_complete"><![CDATA[Chưa khởi tạo xong bản đồ.
         Vui lòng đợi trong giây lát hoặc <font color=#0082c6>làm mới dữ liệu</font> để tải lại]]></string>
     <string name="info_appbar_load_map_complete"><![CDATA[<font color=#0082c6>Đã tải xong bản đồ</font>]]></string>
+    <string name="info_vattu_complete"><![CDATA[<font color=#0082c6>Đã cập nhật xong vật tư</font>]]></string>
+    <string name="info_vattu_fail"><![CDATA[<font color=#e21400>Có lỗi xảy ra!!!</font>]]></string>
+    <string name="info_vattu_loading"><![CDATA[<font color=#0082c6>Đang tải danh sách vật tư…</font>]]></string>
 </resources>

@@ -58,11 +58,15 @@
             android:name=".FindRouteActivity"
             android:label="@string/title_activity_find_route"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity" />
         <activity
             android:name=".DoiMatKhauActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ThemSuCoActivity"></activity>
+        <activity android:name=".ThemSuCoActivity" />
+        <activity
+            android:name=".VatTuActivity"
+            android:label="Vật tư"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

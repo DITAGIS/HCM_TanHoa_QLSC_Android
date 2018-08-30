@@ -43,7 +43,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     private boolean isUpdateAttachment;
     private byte[] mImage;
     private AsyncResponse mDelegate;
-    private List<HoSoVatTuSuCo> mListHoSoVatTuSuCo, mListHoSoVatTuSuCoThuHoi;
+    private List<HoSoVatTuSuCo> mHoSoVatTuSuCos;
     private DApplication mApplication;
 
     public interface AsyncResponse {
@@ -57,13 +57,12 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         mApplication = (DApplication) activity.getApplication();
 
         this.mDelegate = delegate;
-        mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTable();
+        mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
         mSelectedArcGISFeature = selectedArcGISFeature;
         mDialog = new ProgressDialog(activity, android.R.style.Theme_Material_Dialog_Alert);
         this.isUpdateAttachment = isUpdateAttachment;
         this.mImage = image;
-        this.mListHoSoVatTuSuCo = hoSoVatTu_suCos;
-        this.mListHoSoVatTuSuCoThuHoi = hoSoVatTuThuHoi_suCos;
+        this.mHoSoVatTuSuCos = hoSoVatTu_suCos;
     }
 
     @Override
@@ -268,7 +267,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
             }
 //        arcGISFeature.getAttributes().put(mActivity.getString(R.string.Field_SuCo_NhanVienGiamSat),
 //               mApplication.getUserDangNhap.getUserName());
-
             mServiceFeatureTable.loadAsync();
             mServiceFeatureTable.addDoneLoadingListener(() -> {
                 // update feature in the feature table
@@ -296,6 +294,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 
         return null;
     }
+
+
 
     private void addAttachment(ArcGISFeature arcGISFeature) {
 

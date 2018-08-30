@@ -8,9 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,9 +60,9 @@ import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.VatTuActivity;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
-import vn.ditagis.com.tanhoa.qlsc.adapter.VatTuAdapter;
 import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.NotifyDataSetChangeAsync;
@@ -273,7 +271,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 mFeatureViewMoreInfoAdapter = new FeatureViewMoreInfoAdapter(mMainActivity, new ArrayList<>());
                 final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
                 mBtnLeft = layout.findViewById(R.id.btn_updateinfo_left);
-                Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
+                Button btnRight = layout.findViewById(R.id.btn_update_right);
                 layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
 
                 layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(v -> viewAttachment());
@@ -542,7 +540,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 @SuppressLint("InflateParams") final LinearLayout layout = (LinearLayout) mMainActivity.getLayoutInflater().
                         inflate(R.layout.layout_dialog_update_feature_listview, null);
                 Button btnLeft = layout.findViewById(R.id.btn_updateinfo_left);
-                Button btnRight = layout.findViewById(R.id.btn_updateinfo_right);
+                Button btnRight = layout.findViewById(R.id.btn_update_right);
 
                 btnLeft.setText(mMainActivity.getResources().getString(R.string.btnLeft_editItemViewMoreInfo));
                 btnRight.setText(mMainActivity.getResources().getString(R.string.btnRight_editItemViewMoreInfo));
@@ -647,7 +645,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private void loadDataEdit_VatLieu(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout, ArcGISFeature arcGISFeatureSuCoThongTin) {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
+        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
 
         layoutSpin.setVisibility(View.VISIBLE);
@@ -689,208 +687,107 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-    private void loadDataEdit_VatTu(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
-        final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.layout_edit_viewmoreinfo_AutoCompleteTV);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
-        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-        final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
-        final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong);
-        final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
-        final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
 
-        if (mLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
-            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTus);
-            autoCompleteTextView.setAdapter(adapter);
-        }
-        final VatTuAdapter vatTuAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
-        final String[] maVatTu = {""};
-        listViewVatTu.setAdapter(vatTuAdapter);
-
-        //Nhấn và giữ một item để xóa
-        listViewVatTu.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
-                builder.setTitle("Xóa vật tư");
-                builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
-                builder.setCancelable(false).setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
-                    vatTuAdapter.remove(itemVatTu);
-                    vatTuAdapter.notifyDataSetChanged();
-                    dialogInterface.dismiss();
-                });
-                AlertDialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
-                return false;
-            }
-        });
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String tenVatTu = editable.toString();
-                if (mLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH) {
-                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
-                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
-                            txtDonViTinh.setText(vatTu.getDonViTinh());
-                            maVatTu[0] = vatTu.getMaVatTu();
-                            break;
-                        }
-                    }
-                } else if (mLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
-                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
-                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
-                            txtDonViTinh.setText(vatTu.getDonViTinh());
-                            maVatTu[0] = vatTu.getMaVatTu();
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        txtThemVatTu.setOnClickListener(view -> {
-            if (etxtSoLuong.getText().toString().trim().length() == 0)
-                MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
-            else {
-                try {
-                    double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
-                    vatTuAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
-                            soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
-                    vatTuAdapter.notifyDataSetChanged();
-
-                    autoCompleteTextView.setText("");
-                    etxtSoLuong.setText("");
-                    txtDonViTinh.setText("");
-
-                    if (listViewVatTu.getHeight() > 500) {
-                        ViewGroup.LayoutParams params = listViewVatTu.getLayoutParams();
-                        params.height = 500;
-                        listViewVatTu.setLayoutParams(params);
-                    }
-                } catch (NumberFormatException e) {
-                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
-                }
-
-            }
-        });
-
-        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-            vatTuAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
-                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
-        }
-        vatTuAdapter.notifyDataSetChanged();
-
-    }
-
-    private void loadDataEdit_VatTuThuHoi(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
-        final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.layout_edit_viewmoreinfo_AutoCompleteTV);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
-        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-        final ListView listViewVatTuThuHoi = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
-        final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong);
-        final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh);
-        final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
-
-        if (mLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
-            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTus);
-            autoCompleteTextView.setAdapter(adapter);
-        }
-        final VatTuAdapter vatTuThuHoiAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
-        final String[] maVatTu = {""};
-        listViewVatTuThuHoi.setAdapter(vatTuThuHoiAdapter);
-
-        //Nhấn và giữ một item để xóa
-        listViewVatTuThuHoi.setOnItemLongClickListener((adapterView, view, i, l) -> {
-            final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
-            final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
-            builder.setTitle("Xóa vật tư");
-            builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
-            builder.setCancelable(false).setNegativeButton("Hủy",
-                    (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
-                vatTuThuHoiAdapter.remove(itemVatTu);
-                vatTuThuHoiAdapter.notifyDataSetChanged();
-
-                dialogInterface.dismiss();
-            });
-            AlertDialog dialog = builder.create();
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.show();
-            return false;
-        });
-        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                String tenVatTu = editable.toString();
-                if (mLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH) {
-                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
-                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
-                            txtDonViTinh.setText(vatTu.getDonViTinh());
-                            maVatTu[0] = vatTu.getMaVatTu();
-                            break;
-                        }
-                    }
-                } else if (mLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
-                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
-                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
-                            txtDonViTinh.setText(vatTu.getDonViTinh());
-                            maVatTu[0] = vatTu.getMaVatTu();
-                            break;
-                        }
-                    }
-                }
-            }
-        });
-        txtThemVatTu.setOnClickListener(view -> {
-            if (etxtSoLuong.getText().toString().trim().length() == 0)
-                MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
-            else {
-                try {
-                    double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
-                    vatTuThuHoiAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
-                            soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
-                    vatTuThuHoiAdapter.notifyDataSetChanged();
-
-                    autoCompleteTextView.setText("");
-                    etxtSoLuong.setText("");
-                    txtDonViTinh.setText("");
-
-                    if (listViewVatTuThuHoi.getHeight() > 500) {
-                        ViewGroup.LayoutParams params = listViewVatTuThuHoi.getLayoutParams();
-                        params.height = 500;
-                        listViewVatTuThuHoi.setLayoutParams(params);
-                    }
-                } catch (NumberFormatException e) {
-                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
-                }
-
-            }
-        });
-
-        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
-            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
-                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
-        }
-        vatTuThuHoiAdapter.notifyDataSetChanged();
-
-    }
+//    private void loadDataEdit_VatTuThuHoi(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
+//        final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.llayout_AutoCompleteTV_vattu);
+//        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
+//        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
+//        final ListView listViewVatTuThuHoi = layout.findViewById(R.id.lstview_vattu);
+//        final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong_vattu);
+//        final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh_vattu);
+//        final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
+//
+//        if (mLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
+//            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
+//            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTus);
+//            autoCompleteTextView.setAdapter(adapter);
+//        }
+//        final VatTuAdapter vatTuThuHoiAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
+//        final String[] maVatTu = {""};
+//        listViewVatTuThuHoi.setAdapter(vatTuThuHoiAdapter);
+//
+//        //Nhấn và giữ một item để xóa
+//        listViewVatTuThuHoi.setOnItemLongClickListener((adapterView, view, i, l) -> {
+//            final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
+//            final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
+//            builder.setTitle("Xóa vật tư");
+//            builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
+//            builder.setCancelable(false).setNegativeButton("Hủy",
+//                    (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
+//                vatTuThuHoiAdapter.remove(itemVatTu);
+//                vatTuThuHoiAdapter.notifyDataSetChanged();
+//
+//                dialogInterface.dismiss();
+//            });
+//            AlertDialog dialog = builder.create();
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            dialog.show();
+//            return false;
+//        });
+//        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                String tenVatTu = editable.toString();
+//                if (mLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH) {
+//                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
+//                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+//                            txtDonViTinh.setText(vatTu.getDonViTinh());
+//                            maVatTu[0] = vatTu.getMaVatTu();
+//                            break;
+//                        }
+//                    }
+//                } else if (mLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
+//                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
+//                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+//                            txtDonViTinh.setText(vatTu.getDonViTinh());
+//                            maVatTu[0] = vatTu.getMaVatTu();
+//                            break;
+//                        }
+//                    }
+//                }
+//            }
+//        });
+//        txtThemVatTu.setOnClickListener(view -> {
+//            if (etxtSoLuong.getText().toString().trim().length() == 0)
+//                MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
+//            else {
+//                try {
+//                    double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
+//                    vatTuThuHoiAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
+//                            soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
+//                    vatTuThuHoiAdapter.notifyDataSetChanged();
+//
+//                    autoCompleteTextView.setText("");
+//                    etxtSoLuong.setText("");
+//                    txtDonViTinh.setText("");
+//
+//                    if (listViewVatTuThuHoi.getHeight() > 500) {
+//                        ViewGroup.LayoutParams params = listViewVatTuThuHoi.getLayoutParams();
+//                        params.height = 500;
+//                        listViewVatTuThuHoi.setLayoutParams(params);
+//                    }
+//                } catch (NumberFormatException e) {
+//                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
+//                }
+//
+//            }
+//        });
+//
+//        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
+//            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
+//                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+//        }
+//        vatTuThuHoiAdapter.notifyDataSetChanged();
+//
+//    }
 
     private void loadDataEdit_Another(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout, ArcGISFeature arcGISFeature) {
         final FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
@@ -900,7 +797,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
+        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
 
         final Domain domain = arcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
@@ -1009,9 +906,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_edit_viewmoreinfo);
+        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
         autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-        final ListView listViewVatTu = layout.findViewById(R.id.lstview_viewmoreinfo_autoCompleteTV);
+        final ListView listViewVatTu = layout.findViewById(R.id.lstview_vattu);
 
         final Domain domain = arcGISFeatureSuCoThongTin.getFeatureTable().getField(item.getFieldName()).getDomain();
 //        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_MADMA))) {
@@ -1088,7 +985,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         mLoaiSuCoShort = (Short.parseShort(featureType.getId().toString()));
                         //reset những field ảnh hưởng bởi subtype
                         FeatureViewMoreInfoAdapter adapter = (FeatureViewMoreInfoAdapter) parent.getAdapter();
-                        for(FeatureViewMoreInfoAdapter.Item item1: adapter.getItems()){
+                        for (FeatureViewMoreInfoAdapter.Item item1 : adapter.getItems()) {
                             if (item1.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN) ||
                                     item1.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.VAT_LIEU) ||
                                     item1.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG)) {
@@ -1240,6 +1137,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     @SuppressLint("InflateParams")
     public void showPopup(final ArcGISFeature selectedArcGISFeature,
                           final boolean isAddFeature) {
+        mApplication.setArcGISFeature(selectedArcGISFeature);
+        mIDSuCo = selectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString();
+        mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
         clearSelection();
         dimissCallout();
         this.mSelectedArcGISFeature = selectedArcGISFeature;
@@ -1255,26 +1155,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         refreshPopup(mSelectedArcGISFeature);
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
         linearLayout.findViewById(R.id.imgBtn_cancel_layout_thongtinsuco).setOnClickListener(view -> mCallout.dismiss());
-        if (featureLayer.getName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
-            //user admin mới có quyền xóa
-            if (mApplication.getDFeatureLayer.getLayerInfoDTG().isDelete()) {
-                linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
-            } else {
-                linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
-            }
-
-            //khi hoàn thành rồi thì không chỉnh sửa được
-//            Object o = mSelectedArcGISFeature.getAttributes().get(mMainActivity.getResources().getString(R.string.Field_SuCo_TrangThai));
-//            if (o != null && Integer.parseInt(o.toString())
-//                    != mMainActivity.getResources().getInteger(R.integer.trang_thai_hoan_thanh))
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-//            else
-//                linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
+        //user admin mới có quyền xóa
+        if (mApplication.getDFeatureLayer.getLayerInfoDTG().isDelete()) {
+            linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
         } else {
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.INVISIBLE);
-            linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.INVISIBLE);
+            linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
         }
-
+        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
+        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu).setOnClickListener(this::onClick);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         Envelope envelope = mSelectedArcGISFeature.getGeometry().getExtent();
@@ -1374,6 +1262,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.imgBtn_ViewMoreInfo:
                 viewMoreInfo(mSelectedArcGISFeature, false);
+                break;
+            case R.id.imgBtn_cap_nhat_vat_tu:
+                Intent intent = new Intent(mMainActivity, VatTuActivity.class);
+                mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+                mMainActivity.startActivity(intent);
                 break;
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();

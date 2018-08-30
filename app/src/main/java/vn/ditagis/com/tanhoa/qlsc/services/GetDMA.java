@@ -1,6 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.services;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
@@ -15,20 +16,26 @@ import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.LayerInfoDTG;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 
 
-public class GetDMA {
+public class GetDMA extends AsyncTask<Void, Boolean, Void> {
     private Context mContext;
 
+    private AsyncResponse mDelegate;
 
-    public GetDMA(Context context) {
+    public interface AsyncResponse {
+
+        void processFinish();
+    }
+
+    public GetDMA(Context context, AsyncResponse delegate) {
         this.mContext = context;
+        this.mDelegate = delegate;
     }
 
 
-    public void getMaDMAFromService() {
+    private void getMaDMAFromService() {
 
         String layerInfoVatTu = mContext.getString(R.string.LayerInfo_DMA);
 
@@ -54,11 +61,12 @@ public class GetDMA {
                             if (dma != null)
                                 dmaList.add(dma.toString());
                         }
+                        ListObjectDB.getInstance().setDmas(dmaList);
+                        publishProgress(true);
 
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
-                    } finally {
-                        ListObjectDB.getInstance().setDmas(dmaList);
+                        publishProgress();
                     }
 
 
@@ -71,4 +79,16 @@ public class GetDMA {
     }
 
 
+    @Override
+    protected Void doInBackground(Void... voids) {
+        getMaDMAFromService();
+        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(Boolean... values) {
+        super.onProgressUpdate(values);
+        if(values!= null && values.length >0 && values[0])
+            mDelegate.processFinish();
+    }
 }

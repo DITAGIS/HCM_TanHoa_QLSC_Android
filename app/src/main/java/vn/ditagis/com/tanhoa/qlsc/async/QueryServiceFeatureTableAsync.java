@@ -43,7 +43,7 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
         this.mSelectedArcGISFeature = selectedArcGISFeature;
-        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTable();
+        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
         this.mDelegate = delegate;
     }
 
@@ -72,7 +72,7 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void
                         Feature feature = (Feature) iterator.next();
                         publishProgress(feature);
                     } else {
-                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTable();
+                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
                         serviceFeatureTable.loadAsync();
                         serviceFeatureTable.addDoneLoadingListener(() -> {
                             new GenerateIDSuCoByAPIAsycn(mActivity, output -> {

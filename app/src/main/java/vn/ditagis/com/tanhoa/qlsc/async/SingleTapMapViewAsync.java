@@ -17,6 +17,7 @@ import com.esri.arcgisruntime.mapping.view.MapView;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.utities.Popup;
 
@@ -101,12 +102,25 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     @Override
     protected void onProgressUpdate(FeatureLayer... values) {
         super.onProgressUpdate(values);
-        if (values != null && mSelectedArcGISFeature != null && values.length > 0 && values[0] != null) {
-
-            FeatureLayer featureLayer = values[0];
-            mPopUp.showPopup(mSelectedArcGISFeature, false);
-        }
-        if (mDialog != null && mDialog.isShowing()) {
+//        if (values != null && mSelectedArcGISFeature != null && values.length > 0 && values[0] != null) {
+//
+//            FeatureLayer featureLayer = values[0];
+//            mPopUp.showPopup(mSelectedArcGISFeature, false);
+//        }
+//        if (mDialog != null && mDialog.isShowing()) {
+//            mDialog.dismiss();
+//        }
+        if (values != null && values.length > 0 && mSelectedArcGISFeature != null) {
+            HoSoVatTuSuCoAsync hoSoVatTuSuCoAsync = new HoSoVatTuSuCoAsync(mActivity, object -> {
+                //Không kiểm tra object khác null, vì có thể sự cố đó chưa có vật tư
+                mPopUp.showPopup(mSelectedArcGISFeature, false);
+                if (mDialog != null && mDialog.isShowing()) {
+                    mDialog.dismiss();
+                }
+            });
+            hoSoVatTuSuCoAsync.execute(Constant.HOSOVATTUSUCO_METHOD.FIND, mSelectedArcGISFeature.getAttributes()
+                    .get(Constant.FIELD_SUCO.ID_SUCO));
+        } else if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
     }

@@ -33,108 +33,6 @@
 
     </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/layout_edit_viewmoreinfo_AutoCompleteTV"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/margin_popup"
-        android:layout_marginRight="@dimen/margin_popup"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-
-        <TextView
-            style="@style/MyTextAppearance.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Thêm vật tư" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Nhập vật tư" />
-
-            <AutoCompleteTextView
-                android:id="@+id/autoCompleteTV_edit_viewmoreinfo"
-                style="@style/MyTextAppearance.Black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:background="@drawable/layout_border"
-                android:gravity="right"
-                android:maxLines="1"
-                android:padding="@dimen/padding_small" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Số lượng" />
-
-            <EditText
-                android:id="@+id/etxt_soLuong"
-                style="@style/MyTextAppearance.Black"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:background="@drawable/layout_border"
-                android:gravity="right"
-                android:inputType="numberDecimal"
-                android:padding="@dimen/padding_small" />
-
-            <TextView
-                android:id="@+id/txt_donvitinh"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/txt_them_vattu"
-            style="@style/MyTextAppearance.White"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginBottom="@dimen/margin_popup"
-            android:background="@color/colorPrimary"
-            android:clickable="true"
-            android:padding="@dimen/padding_small"
-            android:text="Thêm" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/colorPrimary" />
-
-        <TextView
-            style="@style/MyTextAppearance.Black"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_small"
-            android:text="Danh sách vật tư" />
-
-        <ListView
-            android:id="@+id/lstview_viewmoreinfo_autoCompleteTV"
-            android:layout_width="match_parent"
-
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/layout_edit_viewmoreinfo_Spinner"
@@ -187,7 +85,7 @@
             android:background="@drawable/layout_border_transparent" />
 
         <Button
-            android:id="@+id/btn_updateinfo_right"
+            android:id="@+id/btn_update_right"
             style="@style/MyTextAppearance.White"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

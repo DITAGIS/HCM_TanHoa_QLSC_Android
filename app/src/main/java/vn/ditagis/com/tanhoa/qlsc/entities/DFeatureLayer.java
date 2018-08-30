@@ -12,11 +12,20 @@ public class DFeatureLayer {
 
 
     private FeatureLayer layer;
-    private ServiceFeatureTable serviceFeatureTable;
+    private ServiceFeatureTable serviceFeatureTableSuCoThonTin;
     private DLayerInfo layerInfoDTG;
+    private ServiceFeatureTable serviceFeatureTableHoSoVatTuSuCo;
 
-    public DFeatureLayer(){
+    public DFeatureLayer() {
 
+    }
+
+    public ServiceFeatureTable getServiceFeatureTableHoSoVatTuSuCo() {
+        return serviceFeatureTableHoSoVatTuSuCo;
+    }
+
+    public void setServiceFeatureTableHoSoVatTuSuCo(ServiceFeatureTable serviceFeatureTableHoSoVatTuSuCo) {
+        this.serviceFeatureTableHoSoVatTuSuCo = serviceFeatureTableHoSoVatTuSuCo;
     }
 
     public void setLayer(FeatureLayer layer) {
@@ -31,13 +40,13 @@ public class DFeatureLayer {
         return layer;
     }
 
-    public void setServiceFeatureTable(ServiceFeatureTable serviceFeatureTable) {
+    public void setServiceFeatureTableSuCoThonTin(ServiceFeatureTable serviceFeatureTableSuCoThonTin) {
 
-        this.serviceFeatureTable = serviceFeatureTable;
+        this.serviceFeatureTableSuCoThonTin = serviceFeatureTableSuCoThonTin;
     }
 
-    public ServiceFeatureTable getServiceFeatureTable() {
-        return serviceFeatureTable;
+    public ServiceFeatureTable getServiceFeatureTableSuCoThonTin() {
+        return serviceFeatureTableSuCoThonTin;
     }
 
 

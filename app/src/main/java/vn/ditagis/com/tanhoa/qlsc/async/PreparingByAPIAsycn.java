@@ -22,16 +22,16 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import vn.ditagis.com.tanhoa.qlsc.services.GetDMA;
 import vn.ditagis.com.tanhoa.qlsc.services.GetVatTu;
-import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
-public class PreparingByAPIAsycn extends AsyncTask<Void, Void, Void> {
+public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
     private ProgressDialog mDialog;
     private Activity mActivity;
-    private AsyncResponse mDelegate;
     private DApplication mApplication;
+    private AsyncResponse mDelegate;
 
     public interface AsyncResponse {
-        void processFinish(Void output);
+
+        void processFinish();
     }
 
     public PreparingByAPIAsycn(Activity activity, AsyncResponse delegate) {
@@ -53,26 +53,33 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... params) {
         try {
             getLayerInfoAPI();
-            new GetVatTu(mActivity.getApplicationContext()).getVatTuFromService();
-            new GetDMA(mActivity.getApplicationContext()).getMaDMAFromService();
+            new GetVatTu(mActivity.getApplicationContext(), () -> {
+                new GetDMA(mActivity.getApplicationContext(), () -> {
+                    publishProgress(true);
+                }).execute();
+
+            }).execute();
         } catch (Exception e) {
             Log.e("Lỗi lấy danh sách DMA", e.toString());
+            publishProgress();
         }
         return null;
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
+    protected void onProgressUpdate(Boolean... values) {
         super.onProgressUpdate(values);
-
+        if (values != null && values.length > 0 && values[0] && mDialog != null && mDialog.isShowing()) {
+            mDialog.dismiss();
+            this.mDelegate.processFinish();
+        }
 
     }
 
     @Override
     protected void onPostExecute(Void value) {
 //        if (khachHang != null) {
-        mDialog.dismiss();
-        this.mDelegate.processFinish(value);
+
 //        }
     }
 
@@ -138,7 +145,7 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Void, Void> {
                     jsonRoute.getBoolean(mActivity.getString(R.string.sql_coloumn_sys_isedit)), jsonRoute.getBoolean(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_isview)),
                     definition,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_out_fields_arr)),
-                addFields,
+                    addFields,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_update_fields_arr))));
 
 

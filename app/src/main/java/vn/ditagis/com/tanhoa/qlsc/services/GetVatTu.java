@@ -1,6 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.services;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
@@ -13,25 +14,30 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.VatTu;
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.LayerInfoDTG;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 
 
-public class GetVatTu {
+public class GetVatTu extends AsyncTask<Void, Boolean, Void> {
     private Context mContext;
+    private AsyncResponse mDelegate;
 
-
-    public GetVatTu(Context context) {
-        this.mContext = context;
+    public interface AsyncResponse {
+        void processFinish();
     }
 
 
-    public void getVatTuFromService() {
+    public GetVatTu(Context context, AsyncResponse delegate) {
+        this.mContext = context;
+        this.mDelegate = delegate;
+    }
 
-        String layerInfoVatTu = mContext.getString(R.string.LayerInfo_vatTu);
+
+    private void getVatTuFromService() {
+
+        String layerInfoVatTu = Constant.ID_VAT_TU_TABLE;
 
         for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
             if (dLayerInfo.getId().equals(layerInfoVatTu)) {
@@ -51,18 +57,18 @@ public class GetVatTu {
                         Feature item;
                         while (iterator.hasNext()) {
                             item = iterator.next();
-                            String maVatTu = (String) item.getAttributes().get(mContext.getString(R.string.field_VatTu_maVatTu));
-                            String tenVatTu = (String) item.getAttributes().get(mContext.getString(R.string.field_VatTu_tenVatTu));
-                            String donViTinh = (String) item.getAttributes().get(mContext.getString(R.string.field_VatTu_donViTinh));
+                            String maVatTu = (String) item.getAttributes().get(Constant.FIELD_VATTU.MA_VAT_TU);
+                            String tenVatTu = (String) item.getAttributes().get(Constant.FIELD_VATTU.TEN_VAT_TU);
+                            String donViTinh = (String) item.getAttributes().get(Constant.FIELD_VATTU.DON_VI_TINH);
                             VatTu vatTu = new VatTu(maVatTu, tenVatTu, donViTinh);
                             vatTuList.add(vatTu);
                         }
+                        ListObjectDB.getInstance().setVatTus(vatTuList);
+                        publishProgress(true);
 
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
-                    }
-                    finally {
-                        ListObjectDB.getInstance().setVatTus(vatTuList);
+                        publishProgress();
                     }
 
 
@@ -75,4 +81,16 @@ public class GetVatTu {
     }
 
 
+    @Override
+    protected Void doInBackground(Void... voids) {
+        getVatTuFromService();
+        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(Boolean... values) {
+        super.onProgressUpdate(values);
+        if(values!= null && values.length > 0 && values[0])
+            mDelegate.processFinish();
+    }
 }

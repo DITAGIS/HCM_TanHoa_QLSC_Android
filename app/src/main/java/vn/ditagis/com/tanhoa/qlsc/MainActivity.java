@@ -402,8 +402,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             handleFeatureLoading();
             // config feature layer service
             for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                if (dLayerInfo.getId().substring(dLayerInfo.getId().length() - 3,
-                        dLayerInfo.getId().length() - 1).equals("TBL") || !dLayerInfo.isView() ||
+                if (!dLayerInfo.isView() ||
                         //Bỏ áp lực, vì áp lực publish lên folder riêng, không thuộc TanHoaGis
                         dLayerInfo.getUrl().contains("ApLuc"))
                     continue;
@@ -479,7 +478,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     featureLayer.setId(dLayerInfo.getId());
                     featureLayer.setName(dLayerInfo.getTitleLayer());
                     mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
-                    mApplication.getDFeatureLayer.setServiceFeatureTable((ServiceFeatureTable) featureLayer.getFeatureTable());
+                    mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThonTin((ServiceFeatureTable) featureLayer.getFeatureTable());
+                } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
+                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                    featureLayer.setId(dLayerInfo.getId());
+                    featureLayer.setName(dLayerInfo.getTitleLayer());
+                    mApplication.getDFeatureLayer.setServiceFeatureTableHoSoVatTuSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
                 } else if (mArcGISMapImageLayerThematic == null) {
                     mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
                     mArcGISMapImageLayerThematic.setName(dLayerInfo.getTitleLayer());
@@ -618,18 +623,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void handleFeatureLoading() {
         mLoadedOnMap = 0;
-        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete)));
+        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.GONE);
         mFloatButtonLayer.setVisibility(View.GONE);
     }
 
     private void handleFeatureDoneLoading() {
-        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete)));
+        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.VISIBLE);
         mFloatButtonLayer.setVisibility(View.VISIBLE);
     }
 
     private void handleArcgisMapDoneLoading() {
+
         mLocationDisplay = mMapView.getLocationDisplay();
         mLayoutDisplayLayerThematic.removeAllViews();
         mLayoutDisplayLayerAdministration.removeAllViews();
@@ -1378,12 +1384,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     } else {
                         mGeocoder = new Geocoder(this);
                         // create an empty map instance
-                        final PreparingByAPIAsycn preparingAsycn = new PreparingByAPIAsycn(this, new PreparingByAPIAsycn.AsyncResponse() {
-                            @Override
-                            public void processFinish(Void output) {
-                                prepare();
-                            }
-                        });
+                        final PreparingByAPIAsycn preparingAsycn = new PreparingByAPIAsycn(this, this::prepare);
                         if (CheckConnectInternet.isOnline(this))
                             preparingAsycn.execute();
                     }
@@ -1420,7 +1421,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
                                     arcGISFeature -> {
-    //                                    mPopUp.getDialog().dismiss();
+                                        //                                    mPopUp.getDialog().dismiss();
                                         mPopUp.getCallout().dismiss();
                                         if (!arcGISFeature.canEditAttachments())
                                             MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);

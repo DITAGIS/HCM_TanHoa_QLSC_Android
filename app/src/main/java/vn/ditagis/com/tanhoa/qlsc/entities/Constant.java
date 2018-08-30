@@ -8,6 +8,8 @@ public class Constant {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
     public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
+    public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
+    public static final String ID_VAT_TU_TABLE = "vattuTBL";
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
     public static final int REQUEST_CODE_LAYER = 6;
@@ -122,7 +124,18 @@ public class Constant {
         public static final String TGTC_DU_KIEN_DEN = "TGTCDuKienDen";
 
     }
+    public class FIELD_VATTU {
+        public static final String ID_SU_CO = "IDSuCo";
+        public static final String MA_VAT_TU = "MaVatTu";
+        public static final String SO_LUONG = "SoLuong";
+        public static final String TEN_VAT_TU = "TenVatTu";
+        public static final String DON_VI_TINH = "DonViTinh";
 
+    }
+    public class HOSOVATTUSUCO_METHOD {
+        public static final int FIND = 0;
+        public static final int INSERT = 2;
+    }
     public Constant() {
     }
 }
