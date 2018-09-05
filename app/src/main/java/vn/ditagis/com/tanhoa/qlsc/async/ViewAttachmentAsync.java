@@ -36,6 +36,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
     private ArcGISFeature mSelectedArcGISFeature = null;
     private AlertDialog.Builder builder;
     private View layout;
+
     public ViewAttachmentAsync(MainActivity context, ArcGISFeature selectedArcGISFeature) {
         mMainActivity = context;
         mSelectedArcGISFeature = selectedArcGISFeature;
@@ -61,10 +62,12 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
 
         final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
         lstViewAttachment.setAdapter(attachmentsAdapter);
-        final ListenableFuture<List<Attachment>> attachmentResults = mSelectedArcGISFeature.fetchAttachmentsAsync();
-        attachmentResults.addDoneListener(new Runnable() {
-            @Override
-            public void run() {
+
+
+        new QueryServiceFeatureTableAsync(mMainActivity, mSelectedArcGISFeature, output -> {
+            ArcGISFeature arcGISFeature = (ArcGISFeature) output;
+            final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeature.fetchAttachmentsAsync();
+            attachmentResults.addDoneListener(() -> {
                 try {
 
                     final List<Attachment> attachments = attachmentResults.get();
@@ -81,15 +84,15 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                                     @Override
                                     public void run() {
                                         try {
-                                                InputStream inputStream = inputStreamListenableFuture.get();
-                                                item.setImg(IOUtils.toByteArray(inputStream));
-                                                attachmentsAdapter.add(item);
-                                                attachmentsAdapter.notifyDataSetChanged();
-                                                size[0]--;
-                                                //Kiểm tra nếu adapter có phần tử và attachment là phần tử cuối cùng thì show dialog
+                                            InputStream inputStream = inputStreamListenableFuture.get();
+                                            item.setImg(IOUtils.toByteArray(inputStream));
+                                            attachmentsAdapter.add(item);
+                                            attachmentsAdapter.notifyDataSetChanged();
+                                            size[0]--;
+                                            //Kiểm tra nếu adapter có phần tử và attachment là phần tử cuối cùng thì show dialog
 
 
-                                                publishProgress(size[0]);
+                                            publishProgress(size[0]);
 
                                         } catch (InterruptedException | ExecutionException | IOException e) {
                                             e.printStackTrace();
@@ -108,8 +111,9 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                 } catch (Exception e) {
                     Log.e("ERROR", e.getMessage());
                 }
-            }
-        });
+            });
+        }).execute();
+
         return null;
     }
 

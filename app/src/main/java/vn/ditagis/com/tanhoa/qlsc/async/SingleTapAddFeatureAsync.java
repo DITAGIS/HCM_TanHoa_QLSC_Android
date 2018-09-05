@@ -213,6 +213,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                             }
                         });
                     });
+                }else{
+                    publishProgress();
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
