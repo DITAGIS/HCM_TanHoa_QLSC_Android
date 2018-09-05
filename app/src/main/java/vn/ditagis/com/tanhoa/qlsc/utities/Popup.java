@@ -645,8 +645,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private void loadDataEdit_VatLieu(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout, ArcGISFeature arcGISFeatureSuCoThongTin) {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
-        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
 
         layoutSpin.setVisibility(View.VISIBLE);
         List<String> codes = new ArrayList<>();
@@ -797,8 +795,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
-        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
 
         final Domain domain = arcGISFeature.getFeatureTable().getField(item.getFieldName()).getDomain();
         if (item.getFieldName().equals(arcGISFeature.getFeatureTable().getTypeIdField())) {
@@ -906,9 +902,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final TextView textView = layout.findViewById(R.id.txt_edit_viewmoreinfo);
         final EditText editText = layout.findViewById(R.id.etxt_edit_viewmoreinfo);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
-        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-        final ListView listViewVatTu = layout.findViewById(R.id.lstview_vattu);
 
         final Domain domain = arcGISFeatureSuCoThongTin.getFeatureTable().getField(item.getFieldName()).getDomain();
 //        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_MADMA))) {

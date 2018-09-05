@@ -391,8 +391,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mLayoutTimDiaChi = findViewById(R.id.layout_tim_dia_chi);
         mLayoutTimDiaChi.setOnClickListener(this);
         mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
-        ((TextView) findViewById(R.id.txt_nav_header_tenNV)).setText(mApplication.getUserDangNhap.getUserName());
-        ((TextView) findViewById(R.id.txt_nav_header_displayname)).setText(mApplication.getUserDangNhap.getDisplayName());
+        if (mApplication.getUserDangNhap != null && mApplication.getUserDangNhap.getUserName() != null
+                && mApplication.getUserDangNhap.getDisplayName() != null) {
+            ((TextView) findViewById(R.id.txt_nav_header_tenNV)).setText(mApplication.getUserDangNhap.getUserName());
+            ((TextView) findViewById(R.id.txt_nav_header_displayname)).setText(mApplication.getUserDangNhap.getDisplayName());
+        }
         optionSearchFeature();
 
     }
