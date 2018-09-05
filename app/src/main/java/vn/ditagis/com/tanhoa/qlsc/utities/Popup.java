@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -151,7 +150,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         FeatureViewInfoAdapter featureViewInfoAdapter = new FeatureViewInfoAdapter(mMainActivity, new ArrayList<FeatureViewInfoAdapter.Item>());
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
-        String[] noDisplayFields = mMainActivity.getResources().getStringArray(R.array.no_display_fields_arrays);
+        String[] outFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getOutFields().split(",");
         boolean isFoundField = false;
 //        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
         mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
@@ -159,13 +158,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            for (String noDisplayField : noDisplayFields)
-                if (noDisplayField.equals(field.getName())) {
+            for (String outField : outFields)
+                if (outField.equals(field.getName())) {
                     isFoundField = true;
                     break;
                 }
             if (isFoundField) {
                 isFoundField = false;
+            } else {
                 continue;
             }
             Object value = attributes.get(field.getName());
@@ -683,7 +683,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         if (item.getValue() != null)
             spin.setSelection(codes.indexOf(item.getValue()));
     }
-
 
 
 //    private void loadDataEdit_VatTuThuHoi(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {

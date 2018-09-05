@@ -138,13 +138,16 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
             } catch (Exception ignored) {
 
             }
-            layerDTGS.add(new DLayerInfo(jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_id)),
+            String outFields = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_out_fields_arr));
+            String id = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_id));
+
+            layerDTGS.add(new DLayerInfo(id,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_title)),
                     url,
                     jsonRoute.getBoolean(mActivity.getString(R.string.sql_coloumn_sys_iscreate)), jsonRoute.getBoolean(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_isdelete)),
                     jsonRoute.getBoolean(mActivity.getString(R.string.sql_coloumn_sys_isedit)), jsonRoute.getBoolean(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_isview)),
                     definition,
-                    jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_out_fields_arr)),
+                    outFields,
                     addFields,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_update_fields_arr))));
 
