@@ -66,7 +66,7 @@
         <activity
             android:name=".VatTuActivity"
             android:label="Vật tư"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

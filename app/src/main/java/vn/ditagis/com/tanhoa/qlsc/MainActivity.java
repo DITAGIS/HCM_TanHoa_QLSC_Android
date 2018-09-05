@@ -144,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int mLoadedOnMap;
     @BindView(R.id.txt_info_appbar)
     TextView mTxtInfo;
+    @BindView(R.id.llayout_info_app_bar)
+    LinearLayout mLLayoutInfo;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -626,13 +628,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void handleFeatureLoading() {
         mLoadedOnMap = 0;
+        mLLayoutInfo.setVisibility(View.VISIBLE);
         mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.GONE);
         mFloatButtonLayer.setVisibility(View.GONE);
     }
 
     private void handleFeatureDoneLoading() {
-        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
+        mLLayoutInfo.setVisibility(View.INVISIBLE);
+//        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.VISIBLE);
         mFloatButtonLayer.setVisibility(View.VISIBLE);
     }

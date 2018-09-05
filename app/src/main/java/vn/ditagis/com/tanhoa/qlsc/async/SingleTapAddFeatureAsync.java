@@ -67,7 +67,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.setGeometry(mApplication.getDiemSuCo.getPoint());
             feature.getAttributes().put(Constant.FIELD_SUCO.DIA_CHI, mApplication.getDiemSuCo.getVitri());
             feature.getAttributes().put(Constant.FIELD_SUCO.QUAN, mApplication.getDiemSuCo.getQuan());
-            feature.getAttributes().put(Constant.FIELD_SUCO.PHUONG, mApplication.getDiemSuCo.getPhuong());
+            if (mApplication.getDiemSuCo.getPhuong() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUONG, mApplication.getDiemSuCo.getPhuong());
             feature.getAttributes().put(Constant.FIELD_SUCO.GHI_CHU, mApplication.getDiemSuCo.getGhiChu());
             feature.getAttributes().put(Constant.FIELD_SUCO.NGUOI_PHAN_ANH, mApplication.getDiemSuCo.getNguoiPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
@@ -213,7 +214,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                             }
                         });
                     });
-                }else{
+                } else {
                     publishProgress();
                 }
             } catch (InterruptedException | ExecutionException e) {

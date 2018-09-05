@@ -76,7 +76,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
         txtFullName.setText(mApplication.getUserDangNhap.getUserName());
         etxtAddress.setText(mApplication.getDiemSuCo.getVitri());
         etxtSubAdmin.setText(mApplication.getDiemSuCo.getQuan());
-        etxtLocality.setText(mApplication.getDiemSuCo.getPhuong());
+//        etxtLocality.setText(mApplication.getDiemSuCo.getPhuong());
 
         Domain domain = mApplication.getDFeatureLayer.getLayer().getFeatureTable().
                 getField(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN).getDomain();
