@@ -807,19 +807,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // No error is reported, then continue.
             if (dataSourceStatusChangedEvent.getError() == null) return;
 
-            // If an error is found, handle the failure to start.
-            // Check permissions to see if failure may be due to lack of permissions.
-            boolean permissionCheck1 = ContextCompat.checkSelfPermission(MainActivity.this,
-                    reqPermissions[0]) == PackageManager.PERMISSION_GRANTED;
-            boolean permissionCheck2 = ContextCompat.checkSelfPermission(MainActivity.this,
-                    reqPermissions[1]) == PackageManager.PERMISSION_GRANTED;
-
-            if (!(permissionCheck1 && permissionCheck2)) {
-                // If permissions are not already granted, request permission from the user.
-                ActivityCompat.requestPermissions(MainActivity.this, reqPermissions, requestCode);
-            }  // Report other unknown failure types to the user - for example, location services may not // be enabled on the device. //                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent //                            .getSource().getLocationDataSource().getError().getMessage()); //                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
 
         });
+    }
+    public void requestPermisson() {
+        boolean permissionCheck1 = ContextCompat.checkSelfPermission(this,
+                Constant.REQUEST_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCheck2 = ContextCompat.checkSelfPermission(this,
+                Constant.REQUEST_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCheck3 = ContextCompat.checkSelfPermission(this,
+                Constant.REQUEST_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+        boolean permissionCheck4 = ContextCompat.checkSelfPermission(this,
+                Constant.REQUEST_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
+
+        if (!(permissionCheck1 && permissionCheck2 && permissionCheck3 && permissionCheck4)) {
+            // If permissions are not already granted, request permission from the user.
+            ActivityCompat.requestPermissions(this, Constant.REQUEST_PERMISSIONS, Constant.REQUEST_CODE_PERMISSION);
+        }  // Report other unknown failure types to the user - for example, location services may not // be enabled on the device. //                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent //                            .getSource().getLocationDataSource().getError().getMessage()); //                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
+
     }
 
     private void setViewPointCenter(final Point position) {
@@ -863,23 +868,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void requestPermisson() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) !=
-                PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                        != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CALL_PHONE,
-                    Manifest.permission.READ_PHONE_STATE}, getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE));
-        }
-//        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
-//                android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-//                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
-//                this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-//        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
@@ -1076,10 +1064,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 intent = new Intent(this, FindRouteActivity.class);
                 this.startActivity(intent);
                 break;
-            case R.id.nav_setting:
-                intent = new Intent(this, SettingsActivity.class);
-                this.startActivityForResult(intent, 1);
-                break;
+//            case R.id.nav_setting:
+//                intent = new Intent(this, SettingsActivity.class);
+//                this.startActivityForResult(intent, 1);
+//                break;
             case R.id.nav_change_password:
                 Intent intentChangePassword = new Intent(this, DoiMatKhauActivity.class);
                 startActivity(intentChangePassword);
