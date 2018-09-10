@@ -158,15 +158,18 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            for (String outField : outFields)
-                if (outField.equals(field.getName())) {
-                    isFoundField = true;
-                    break;
-                }
-            if (isFoundField) {
-                isFoundField = false;
+            if (outFields.length == 1 && outFields[0].equals("*")) {
             } else {
-                continue;
+                for (String outField : outFields)
+                    if (outField.equals(field.getName())) {
+                        isFoundField = true;
+                        break;
+                    }
+                if (isFoundField) {
+                    isFoundField = false;
+                } else {
+                    continue;
+                }
             }
             Object value = attributes.get(field.getName());
             FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();

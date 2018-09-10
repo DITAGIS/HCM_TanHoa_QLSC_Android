@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -87,12 +88,28 @@ public class ThemSuCoActivity extends AppCompatActivity {
                 codes.add(codedValue.getName());
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codes);
             spinHinhThucPhatHien.setAdapter(adapter);
+            spinHinhThucPhatHien.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    if (Constant.HINH_THUC_PHAT_HIEN_BE_NGAM.toLowerCase().equals(adapter.getItem(i).toLowerCase())
+                            && !mApplication.getUserDangNhap.getRole().toLowerCase().startsWith(Constant.ROLE_PGN)) {
+                        Toast.makeText(ThemSuCoActivity.this, "Bạn không có quyền chọn hình thức phát hiện Bể ngầm!", Toast.LENGTH_LONG).show();
+                        if (adapter.getCount() > 1)
+                            spinHinhThucPhatHien.setSelection(1);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
         }
     }
 
     private boolean isNotEmpty() {
         return !txtFullName.getText().toString().trim().isEmpty() &&
-                !etxtPhoneNumber.getText().toString().trim().isEmpty() &&
+//                !etxtPhoneNumber.getText().toString().trim().isEmpty() &&
                 !etxtAddress.getText().toString().trim().isEmpty();
     }
 

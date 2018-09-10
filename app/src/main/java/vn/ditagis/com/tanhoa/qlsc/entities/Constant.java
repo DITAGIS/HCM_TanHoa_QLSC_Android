@@ -10,11 +10,14 @@ public class Constant {
     public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
     public static final String ID_VAT_TU_TABLE = "vattuTBL";
+    public static final String ROLE_PGN = "pgn";
+    public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
     public static final int REQUEST_CODE_LAYER = 6;
     public static final int REQUEST_CODE_ADD_FEATURE = 7;
     public static final int REQUEST_CODE_ADD_FEATURE_ATTACHMENT = 8;
+    public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
     public static final String[] REQUEST_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -85,7 +88,7 @@ public class Constant {
     public int MAX_SCALE_IMAGE_WITH_LABLES;
 
     {
-        MAX_SCALE_IMAGE_WITH_LABLES = 5;
+        MAX_SCALE_IMAGE_WITH_LABLES = 4;
     }
 
     public class FIELD_SUCO {
@@ -104,6 +107,7 @@ public class Constant {
         public static final String NGUYEN_NHAN = "NGUYENNHAN";
         public static final String VAT_LIEU = "VatLieu";
         public static final String DUONG_KINH_ONG = "DuongKinhOng";
+        public static final String DOI_TUONG_PHAT_HIEN = "DoiTuongPhatHien";
 
     }
 
