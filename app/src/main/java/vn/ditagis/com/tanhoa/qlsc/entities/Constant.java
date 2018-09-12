@@ -2,6 +2,8 @@ package vn.ditagis.com.tanhoa.qlsc.entities;
 
 import android.Manifest;
 
+import com.esri.arcgisruntime.mapping.view.Callout;
+
 import java.text.SimpleDateFormat;
 
 public class Constant {
@@ -17,6 +19,7 @@ public class Constant {
     public static final int REQUEST_CODE_LAYER = 6;
     public static final int REQUEST_CODE_ADD_FEATURE = 7;
     public static final int REQUEST_CODE_ADD_FEATURE_ATTACHMENT = 8;
+    public static final int REQUEST_CODE_LIST_TASK = 9;
     public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
     public static final String[] REQUEST_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -140,6 +143,13 @@ public class Constant {
     public class HOSOVATTUSUCO_METHOD {
         public static final int FIND = 0;
         public static final int INSERT = 2;
+    }
+
+    public class TRANG_THAI_SU_CO {
+        public static final short CHUA_XU_LY = 0;
+        public static final short DANG_XU_LY = 1;
+        public static final short HOAN_THANH = 2;
+
     }
     public Constant() {
     }

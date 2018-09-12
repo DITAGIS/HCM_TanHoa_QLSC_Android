@@ -3,6 +3,7 @@ package vn.ditagis.com.tanhoa.qlsc;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -132,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LinearLayout mLayoutDisplayLayerAdministration, mLayoutDisplayLayerThematic, mLayoutLegend;
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
-    private boolean mIsAddFeature, mmIsLocating;
+    private boolean mIsAddFeature;
     private ImageView mImageOpenStreetMap, mImageStreetMap, mImageImageWithLabel;
     private TextView mTxtOpenStreetMap, mTxtStreetMap, mTxtImageWithLabel;
     private SearchView mTxtSearchView;
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_SEARCH = 1;
 
     private ArcGISFeature mSelectedArcGISFeature;
-    String[] reqPermissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+    private boolean mIsFirstLocating = true;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -178,15 +179,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_quan_ly_su_co);
         mListLayerID = new ArrayList<>();
         ButterKnife.bind(this);
-        mmIsLocating = false;
         states = new int[][]{{android.R.attr.state_checked}, {}};
         colors = new int[]{R.color.colorTextColor_1, R.color.colorTextColor_1};
         findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
+        mApplication = (DApplication) getApplication();
         requestPermisson();
 
+
+    }
+
+    private void init() {
         startGPS();
         startSignIn();
-        mApplication = (DApplication) getApplication();
     }
 
     private void startGPS() {
@@ -286,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView.setMap(mMap);
 
         mMapView.getMap().addDoneLoadingListener(() -> handleArcgisMapDoneLoading());
-        changeStatusOfLocationDataSource();
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -520,83 +523,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-//    private void addCheckBox(final FeatureLayer layer,
-//                             final List<FeatureLayerDTG> tmpFeatureLayerDTGs, int[][] states, int[] colors) {
-//        LinearLayout layoutFeature = (LinearLayout) getLayoutInflater().inflate(R.layout.layout_feature, null);
-//        final SeekBar seekBar = layoutFeature.findViewById(R.id.skbr_layout_feature);
-//        final CheckBox checkBox = layoutFeature.findViewById(R.id.ckb_layout_feature);
-//        final TextView textView = layoutFeature.findViewById(R.id.txt_layout_feature);
-//        textView.setTextColor(getResources().getColor(android.R.color.black));
-//        textView.setText(layer.getName());
-//        textView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (seekBar.getVisibility() == View.VISIBLE)
-//                    seekBar.setVisibility(View.GONE);
-//                else seekBar.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-//            @Override
-//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-//                layer.setOpacity((float) i / 100);
-//            }
-//
-//            @Override
-//            public void onStartTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//
-//            @Override
-//            public void onStopTrackingTouch(SeekBar seekBar) {
-//
-//            }
-//        });
-//        checkBox.setChecked(false);
-//        layer.setVisible(false);
-//        CompoundButtonCompat.setButtonTintList(checkBox, new ColorStateList(states, colors));
-//        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//
-//                if (buttonView.isChecked()) {
-//                    for (FeatureLayerDTG featureLayerDTG : mFeatureLayerS)
-//                        if (featureLayerDTG.getLayer().getName().contentEquals(textView.getText())
-//                                && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
-//                            tmpFeatureLayerDTGs.add(featureLayerDTG);
-//                            layer.setVisible(true);
-//                            break;
-//                        }
-//
-//                } else {
-//                    for (FeatureLayerDTG featureLayerDTG : tmpFeatureLayerDTGs)
-//                        if (featureLayerDTG.getLayer().getName().contentEquals(textView.getText())
-//                                && tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
-//                            tmpFeatureLayerDTGs.remove(featureLayerDTG);
-//                            layer.setVisible(false);
-//                            break;
-//                        }
-//
-//                }
-//                if (mMapViewHandler != null)
-//                    mMapViewHandler.setArcGISMapImageLayerAdmin(tmpFeatureLayerDTGs);
-//
-//            }
-//        });
-//
-////        checkBox.setChecked(true);
-////        for (FeatureLayerDTG featureLayerDTG : mFeatureLayerS)
-////            if (featureLayerDTG.getLayer().getName().contentEquals(checkBox.getText())
-////                    && !tmpFeatureLayerDTGs.contains(featureLayerDTG)) {
-////                tmpFeatureLayerDTGs.add(featureLayerDTG);
-////                layer.setVisible(true);
-////                break;
-////            }
-//        if (mMapViewHandler != null)
-//            mMapViewHandler.setArcGISMapImageLayerAdmin(tmpFeatureLayerDTGs);
-//    }
 
     private void addCheckBox(final ArcGISMapImageSublayer layer, int[][] states, int[] colors, boolean isAdministrator) {
         LinearLayout layoutFeature = (LinearLayout) getLayoutInflater().inflate(R.layout.layout_feature, null);
@@ -644,15 +570,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void handleArcgisMapDoneLoading() {
 
         mLocationDisplay = mMapView.getLocationDisplay();
+        mLocationDisplay.startAsync();
         mLayoutDisplayLayerThematic.removeAllViews();
         mLayoutDisplayLayerAdministration.removeAllViews();
 
         setServices();
-//        for (final Layer layer : layers) {
-////            if (layer.getId().equals(getString(R.string.IDLayer_DiemSuCo)))
-////                addCheckBox((FeatureLayer) layer, tmpFeatureLayerDTGs, states, colors);
-////
-////        }
     }
 
     private void setLicense() {
@@ -796,20 +718,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    private void changeStatusOfLocationDataSource() {
 
-//        changeStatusOfLocationDataSource();
-        mLocationDisplay.addDataSourceStatusChangedListener(dataSourceStatusChangedEvent -> {
-
-            // If LocationDisplay started OK, then continue.
-            if (dataSourceStatusChangedEvent.isStarted()) return;
-
-            // No error is reported, then continue.
-            if (dataSourceStatusChangedEvent.getError() == null) return;
-
-
-        });
-    }
     public void requestPermisson() {
         boolean permissionCheck1 = ContextCompat.checkSelfPermission(this,
                 Constant.REQUEST_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED;
@@ -824,7 +733,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // If permissions are not already granted, request permission from the user.
             ActivityCompat.requestPermissions(this, Constant.REQUEST_PERMISSIONS, Constant.REQUEST_CODE_PERMISSION);
         }  // Report other unknown failure types to the user - for example, location services may not // be enabled on the device. //                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent //                            .getSource().getLocationDataSource().getError().getMessage()); //                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
-
+        else {
+            init();
+        }
     }
 
     private void setViewPointCenter(final Point position) {
@@ -868,16 +779,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (mLocationDisplay != null && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            mLocationDisplay.startAsync();
-
-        } else {
-//            Toast.makeText(MainActivity.this, getResources().getString(R.string.location_permission_denied), Toast.LENGTH_SHORT).show();
+        boolean isGranted = true;
+        for (int i : grantResults) {
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                isGranted = false;
+                break;
+            }
         }
+        if (isGranted) {
+            init();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("1Cần cho phép ứng dụng truy cập những quyền trên!");
+            builder.setPositiveButton("OK", (dialogInterface, i) -> {
+                dialogInterface.dismiss();
+                finish();
+                Intent intent = getBaseContext().getPackageManager()
+                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
     }
 
     private void optionSearchFeature() {
@@ -1079,6 +1007,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_logOut:
                 startSignIn();
                 break;
+            case R.id.nav_list_task:
+                Intent intentListTask = new Intent(MainActivity.this, ListTaskActivity.class);
+                startActivityForResult(intentListTask, Constant.REQUEST_CODE_LIST_TASK);
+                break;
             case R.id.nav_delete_searching:
                 deleteSearching();
                 break;
@@ -1126,23 +1058,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void disableLocation() {
-        if (mLocationDisplay.isStarted()) {
+    private void handlingLocation() {
+        if (mIsFirstLocating) {
+            mIsFirstLocating = false;
             mLocationDisplay.stop();
-            mmIsLocating = false;
-        }
-        if (mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
-            mPopUp.getCallout().dismiss();
-    }
-
-    private void enableLocation() {
-        if (!mLocationDisplay.isStarted()) {
             mLocationDisplay.startAsync();
             setViewPointCenter(mLocationDisplay.getMapLocation());
-            mmIsLocating = true;
             mIsAddFeature = true;
+        } else {
+            if (mLocationDisplay.isStarted()) {
+                mLocationDisplay.stop();
+            }
+            if (mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                mPopUp.getCallout().dismiss();
+            if (!mLocationDisplay.isStarted()) {
+                mLocationDisplay.startAsync();
+                setViewPointCenter(mLocationDisplay.getMapLocation());
+                mIsAddFeature = true;
+            }
         }
     }
+
 
     public void onClickCheckBox(View v) {
         if (v instanceof CheckBox) {
@@ -1248,21 +1184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                }
 //                break;
             case R.id.floatBtnLocation:
-//                if (!mLocationDisplay.isStarted()) {
-//                    mLocationDisplay.startAsync();
-//                    mIsAddFeature = true;
-//                    setViewPointCenter(mLocationDisplay.getMapLocation());
-//
-//                } else {
-//                    mLocationDisplay.stop();
-//                    mIsAddFeature = false;
-//                }
-                if (mmIsLocating) {
-                    disableLocation();
+                handlingLocation();
 
-                } else {
-                    enableLocation();
-                }
                 break;
             case R.id.imgBtn_timkiemdiachi_themdiemsuco:
 //                themDiemSuCo();
@@ -1362,9 +1285,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void handlingListTaskActivityResult() {
+        //query sự cố theo idsuco, lấy objectid
+        String idSuCo = mApplication.getSelectedIDSuCo();
+
+        //gọi query by objectid từ mapviewhandler
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
-
             switch (requestCode) {
                 case REQUEST_SEARCH:
                     final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
@@ -1387,10 +1316,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (mApplication.getDiemSuCo.getPoint() != null) {
                         mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
                         deleteSearching();
-                        disableLocation();
+                        handlingLocation();
                     }
                     break;
-
+                case Constant.REQUEST_CODE_LIST_TASK:
+                    if (resultCode == Activity.RESULT_OK)
+                        handlingListTaskActivityResult();
+                    break;
             }
         } catch (Exception ignored) {
         }

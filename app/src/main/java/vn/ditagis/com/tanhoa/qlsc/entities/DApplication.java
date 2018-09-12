@@ -43,6 +43,16 @@ public class DApplication extends Application {
         }
     }
 
+    private String selectedIDSuCo;
+
+    public String getSelectedIDSuCo() {
+        return selectedIDSuCo;
+    }
+
+    public void setSelectedIDSuCo(String selectedIDSuCo) {
+        this.selectedIDSuCo = selectedIDSuCo;
+    }
+
     private ArcGISFeature arcGISFeature;
 
     public ArcGISFeature getArcGISFeature() {

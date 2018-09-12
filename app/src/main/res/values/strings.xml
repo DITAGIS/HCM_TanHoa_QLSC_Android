@@ -67,6 +67,7 @@
     <string name="nav_refresh">Làm mới dữ liệu</string>
     <string name="nav_tra_cuu">Tra cứu</string>
     <string name="nav_find_route">Tìm đường đi</string>
+    <string name="nav_list_task">Danh sách công việc</string>
     <string name="nav_xoa_tim_kiem">Xóa các tìm kiếm</string>
     <string name="nav_an_hien_nut_chuc_nang">Ẩn/hiện nút chức năng</string>
     <string name="nav_cai_dat">Cài đặt</string>
@@ -318,4 +319,11 @@
     <string name="info_vattu_complete"><![CDATA[<font color=#0082c6>Đã cập nhật xong vật tư</font>]]></string>
     <string name="info_vattu_fail"><![CDATA[<font color=#e21400>Có lỗi xảy ra!!!</font>]]></string>
     <string name="info_vattu_loading"><![CDATA[<font color=#0082c6>Đang tải danh sách vật tư…</font>]]></string>
+
+
+    <string name="txt_list_task_chua_xu_ly">Công việc chưa xử lý: %1$d</string>
+    <string name="txt_list_task_dang_xu_ly">Công việc đang xử lý: %1$d</string>
+    <string name="txt_list_task_hoan_thanh">Công việc đã hoàn thành: %1$d</string>
+
+
 </resources>

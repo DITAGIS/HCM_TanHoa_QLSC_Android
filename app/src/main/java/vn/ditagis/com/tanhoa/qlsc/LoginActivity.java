@@ -59,8 +59,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnLogin.setOnClickListener(this);
         findViewById(R.id.txt_login_changeAccount).setOnClickListener(this);
 
-//        mTxtUsername.setText("ditagis");
-//        mTxtPassword.setText("ditagis@123");
+        mTxtUsername.setText("ditagis");
+        mTxtPassword.setText("ditagis@123");
         mTxtValidation = findViewById(R.id.txt_login_validation);
         create();
 

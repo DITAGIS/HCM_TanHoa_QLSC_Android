@@ -67,6 +67,10 @@
             android:name=".VatTuActivity"
             android:label="Vật tư"
             android:parentActivityName=".MainActivity" />
+        <activity
+            android:label="Danh sách công việc"
+            android:name=".ListTaskActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

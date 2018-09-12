@@ -75,7 +75,7 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
                 break;
         }
 
-        TextView txtID =  convertView.findViewById(R.id.txt_top);
+        TextView txtID = convertView.findViewById(R.id.txt_top);
         if (item.getId() == null || item.getId().isEmpty())
             txtID.setVisibility(View.GONE);
         else
@@ -94,7 +94,6 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             txtNgayCapNhat.setText(item.getNgayCapNhat());
 
 
-
         return convertView;
     }
 
@@ -109,6 +108,8 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
         String diaChi;
         double latitude;
         double longtitude;
+
+
 
         public Item(int objectID, String id, int trangThai, String ngayCapNhat, String diaChi) {
             this.objectID = objectID;

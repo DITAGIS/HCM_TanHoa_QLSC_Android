@@ -36,8 +36,12 @@
                     <!--android:title="@string/nav_tra_cuu" />-->
                 <item
                     android:id="@+id/nav_find_route"
-                    android:icon="@drawable/ic_navigation"
+                    android:icon="@drawable/ic_list_task_black_24dp"
                     android:title="@string/nav_find_route" />
+                <item
+                    android:id="@+id/nav_list_task"
+                    android:icon="@drawable/ic_navigation"
+                    android:title="@string/nav_list_task" />
             </group>
         </menu>
     </item>

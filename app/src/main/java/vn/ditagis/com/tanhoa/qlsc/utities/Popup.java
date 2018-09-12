@@ -57,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import vn.ditagis.com.tanhoa.qlsc.ListTaskActivity;
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.VatTuActivity;
@@ -267,7 +268,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     private void viewMoreInfo(ArcGISFeature feature, final boolean isAddFeature) {
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
                 mMainActivity, mSelectedArcGISFeature, output -> {
-            if (output != null) {
+            if (output == null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
+                builder.setTitle("Sự cố chưa được giao việc!")
+                        .setMessage("Vui lòng xem danh sách công việc hoặc liên hệ admin để biết thêm thông tin!")
+                        .setPositiveButton("OK", (dialog, i) -> dialog.dismiss())
+                        .setNegativeButton("Danh sách công việc", (dialog, i) -> {
+                            //todo danh sách công việc
+                            Intent intent = new Intent(mMainActivity, ListTaskActivity.class);
+                            mMainActivity.startActivity(intent);
+                            dialog.dismiss();
+                        }).setCancelable(false);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else {
                 ArcGISFeature arcGISFeatureSuCoThongTin = (ArcGISFeature) output;
                 AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_NoActionBar_Fullscreen);
                 @SuppressLint("InflateParams") final View layout = mMainActivity.getLayoutInflater().inflate(R.layout.layout_viewmoreinfo_feature, null);
