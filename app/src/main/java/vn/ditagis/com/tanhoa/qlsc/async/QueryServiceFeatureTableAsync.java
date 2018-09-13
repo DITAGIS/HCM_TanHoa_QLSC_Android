@@ -3,19 +3,15 @@ package vn.ditagis.com.tanhoa.qlsc.async;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.os.Build;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Feature;
-import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
-import java.util.Calendar;
 import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
@@ -25,10 +21,9 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
  * Created by ThanLe on 4/16/2018.
  */
 
-public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void> {
+public class QueryServiceFeatureTableAsync extends AsyncTask<String, Feature, Void> {
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
-    private ArcGISFeature mSelectedArcGISFeature;
     @SuppressLint("StaticFieldLeak")
     private AsyncResponse mDelegate;
     private DApplication mApplication;
@@ -39,11 +34,10 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void
     }
 
     public QueryServiceFeatureTableAsync(Activity activity,
-                                         ArcGISFeature selectedArcGISFeature, AsyncResponse delegate) {
+                                          ServiceFeatureTable serviceFeatureTable, AsyncResponse delegate) {
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
-        this.mSelectedArcGISFeature = selectedArcGISFeature;
-        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        this.mServiceFeatureTable = serviceFeatureTable;
         this.mDelegate = delegate;
     }
 
@@ -53,27 +47,25 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void
     }
 
     @Override
-    protected Void doInBackground(Void... aVoids) {
+    protected Void doInBackground(String... params) {
         try {
-            String idSuCo = mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString();
-            QueryParameters queryParameters = new QueryParameters();
-            String queryClause = String.format("%s = '%s' and %s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.ID_SUCO, idSuCo,
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
-            queryParameters.setWhereClause(queryClause);
+            if (params != null && params.length > 0) {
+                QueryParameters queryParameters = new QueryParameters();
 
-            ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-            featureQueryResultListenableFuture.addDoneListener(() -> {
-                try {
-                    FeatureQueryResult result = featureQueryResultListenableFuture.get();
-                    Iterator iterator = result.iterator();
+                queryParameters.setWhereClause(params[0]);
 
-                    if (iterator.hasNext()) {
-                        Feature feature = (Feature) iterator.next();
-                        publishProgress(feature);
-                    } else {
-                        publishProgress();
-                        //tạo sự cố thông tin nếu chưa có
+                ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+                featureQueryResultListenableFuture.addDoneListener(() -> {
+                    try {
+                        FeatureQueryResult result = featureQueryResultListenableFuture.get();
+                        Iterator iterator = result.iterator();
+
+                        if (iterator.hasNext()) {
+                            Feature feature = (Feature) iterator.next();
+                            publishProgress(feature);
+                        } else {
+                            publishProgress();
+                            //tạo sự cố thông tin nếu chưa có
 //                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
 //                        serviceFeatureTable.loadAsync();
 //                        serviceFeatureTable.addDoneLoadingListener(() -> {
@@ -119,13 +111,14 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<Void, Feature, Void
 //                                }
 //                            }).execute(mApplication.getConstant.getGENERATE_ID_SUCOTHONGTIN(idSuCo));
 //                        });
-                    }
+                        }
 
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                    publishProgress();
-                }
-            });
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                        publishProgress();
+                    }
+                });
+            } else publishProgress();
         } catch (Exception e) {
             publishProgress();
         }

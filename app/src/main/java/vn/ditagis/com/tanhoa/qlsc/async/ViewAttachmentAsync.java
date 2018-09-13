@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAttachmentsAdapter;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
+import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
 /**
  * Created by ThanLe on 4/16/2018.
@@ -63,8 +65,12 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
         final FeatureViewMoreInfoAttachmentsAdapter attachmentsAdapter = new FeatureViewMoreInfoAttachmentsAdapter(mMainActivity, new ArrayList<FeatureViewMoreInfoAttachmentsAdapter.Item>());
         lstViewAttachment.setAdapter(attachmentsAdapter);
 
-
-        new QueryServiceFeatureTableAsync(mMainActivity, mSelectedArcGISFeature, output -> {
+        DApplication mApplication = (DApplication) mMainActivity.getApplication();
+        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+        new QueryServiceFeatureTableAsync(mMainActivity,
+                ((DApplication) mMainActivity.getApplication()).getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             ArcGISFeature arcGISFeature = (ArcGISFeature) output;
             final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeature.fetchAttachmentsAsync();
             attachmentResults.addDoneListener(() -> {
@@ -112,7 +118,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                     Log.e("ERROR", e.getMessage());
                 }
             });
-        }).execute();
+        }).execute(queryClause);
 
         return null;
     }

@@ -13,6 +13,8 @@ public class Constant {
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
     public static final String ID_VAT_TU_TABLE = "vattuTBL";
     public static final String ROLE_PGN = "pgn";
+    public static final String ROLE_TC = "tc";
+    public static final String ROLE_GS = "gs";
     public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
@@ -111,6 +113,10 @@ public class Constant {
         public static final String VAT_LIEU = "VatLieu";
         public static final String DUONG_KINH_ONG = "DuongKinhOng";
         public static final String DOI_TUONG_PHAT_HIEN = "DoiTuongPhatHien";
+        public static final String TRANG_THAI_THI_CONG = "TrangThaiThiCong";
+        public static final String TRANG_THAI_GIAM_SAT = "TrangThaiGiamSat";
+        public static final String HINH_THUC_PHAT_HIEN_THI_CONG = "HinhThucPhatHienThiCong";
+        public static final String HINH_THUC_PHAT_HIEN_GIAM_SAT = "HinhThucPhatHienGiamSat";
 
     }
 

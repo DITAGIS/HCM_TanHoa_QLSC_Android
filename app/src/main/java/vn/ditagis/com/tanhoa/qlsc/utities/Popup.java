@@ -267,7 +267,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void viewMoreInfo(ArcGISFeature feature, final boolean isAddFeature) {
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                mMainActivity, mSelectedArcGISFeature, output -> {
+                mMainActivity, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             if (output == null) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity);
                 builder.setTitle("Sự cố chưa được giao việc!")
@@ -355,7 +355,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 dialog.show();
             }
         });
-        queryServiceFeatureTableAsync.execute();
+
+        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+        queryServiceFeatureTableAsync.execute(queryClause);
 
     }
 

@@ -7,4 +7,5 @@
     <string name="message_click_list_task">Bạn có muốn xem thông tin sự cố có id là: %1$s?</string>
     <string name="message_btn_ok">OK</string>
     <string name="message_btn_cancel">Hủy</string>
+    <string name="message_permission">Cần cho phép ứng dụng truy cập những quyền trên!</string>
 </resources>

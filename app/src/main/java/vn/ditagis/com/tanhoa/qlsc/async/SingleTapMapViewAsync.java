@@ -47,38 +47,36 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
 
     @Override
     protected Void doInBackground(Point... points) {
+
         final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
-        listListenableFuture.addDoneListener(new Runnable() {
-            @Override
-            public void run() {
-                List<IdentifyLayerResult> identifyLayerResults = null;
-                try {
-                    identifyLayerResults = listListenableFuture.get();
-                    for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
-                        {
-                            List<GeoElement> elements = identifyLayerResult.getElements();
-                            if (elements.size() > 0 && elements.get(0) instanceof ArcGISFeature && !isFound) {
-                                isFound = true;
-                                mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
-                                long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
-                                        getServiceLayerId();
-                                if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable()).getServiceLayerId())
-                                    publishProgress(mApplication.getDFeatureLayer.getLayer());
-                            }
+        listListenableFuture.addDoneListener(() -> {
+            List<IdentifyLayerResult> identifyLayerResults = null;
+            try {
+                identifyLayerResults = listListenableFuture.get();
+                for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
+                    {
+                        List<GeoElement> elements = identifyLayerResult.getElements();
+                        if (elements.size() > 0 && elements.get(0) instanceof ArcGISFeature && !isFound) {
+                            isFound = true;
+                            mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
+                            long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
+                                    getServiceLayerId();
+                            if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable()).getServiceLayerId())
+                                publishProgress(mApplication.getDFeatureLayer.getLayer());
                         }
                     }
-                    publishProgress();
-                } catch (
-                        InterruptedException e)
-
-                {
-                    e.printStackTrace();
-                } catch (
-                        ExecutionException e)
-
-                {
-                    e.printStackTrace();
                 }
+                publishProgress();
+            } catch (
+                    InterruptedException e)
+
+            {
+                e.printStackTrace();
+            } catch (
+                    ExecutionException e)
+
+            {
+                e.printStackTrace();
             }
         });
         return null;

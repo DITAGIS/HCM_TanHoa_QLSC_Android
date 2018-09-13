@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.FeatureQueryResult;
+import com.esri.arcgisruntime.data.Geodatabase;
 import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
+import com.esri.arcgisruntime.geometry.Geometry;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -28,7 +30,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
  * Created by ThanLe on 4/16/2018.
  */
 
-public class QueryServiceFeatureTableListTaskAsync extends AsyncTask<Void, List<Feature>, Void> {
+public class QueryFeatureGetListGeometryAsync extends AsyncTask<List<String>, List<Geometry>, Void> {
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
     @SuppressLint("StaticFieldLeak")
@@ -38,14 +40,14 @@ public class QueryServiceFeatureTableListTaskAsync extends AsyncTask<Void, List<
     private AlertDialog mDialog;
 
     public interface AsyncResponse {
-        void processFinish(List<Feature> output);
+        void processFinish(List<Geometry> output);
     }
 
-    public QueryServiceFeatureTableListTaskAsync(Activity activity,
-                                                 AsyncResponse delegate) {
+    public QueryFeatureGetListGeometryAsync(Activity activity, ServiceFeatureTable serviceFeatureTable,
+                                            AsyncResponse delegate) {
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
-        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        this.mServiceFeatureTable = serviceFeatureTable;
         this.mDelegate = delegate;
     }
 
@@ -78,32 +80,41 @@ public class QueryServiceFeatureTableListTaskAsync extends AsyncTask<Void, List<
 
     }
 
+    @SafeVarargs
     @Override
-    protected Void doInBackground(Void... aVoids) {
+    protected final Void doInBackground(List<String>... lists) {
         try {
-            QueryParameters queryParameters = new QueryParameters();
-            String queryClause = String.format("%s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
-            queryParameters.setWhereClause(queryClause);
-
-            ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-            featureQueryResultListenableFuture.addDoneListener(() -> {
-                try {
-                    FeatureQueryResult result = featureQueryResultListenableFuture.get();
-                    Iterator<Feature> iterator = result.iterator();
-                    Feature item;
-                    List<Feature> features = new ArrayList<>();
-                    while (iterator.hasNext()) {
-                        item = iterator.next();
-                        features.add(item);
-                    }
-                    publishProgress(features);
-
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                    publishProgress();
+            if (lists != null && lists.length > 0) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
+                for (String idSuCo : lists[0]) {
+                    builder.append(String.format("'%s' ,", idSuCo));
                 }
-            });
+                builder.append("'')");
+                QueryParameters queryParameters = new QueryParameters();
+                queryParameters.setWhereClause(builder.toString());
+
+                ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+                featureQueryResultListenableFuture.addDoneListener(() -> {
+                    try {
+                        FeatureQueryResult result = featureQueryResultListenableFuture.get();
+                        Iterator<Feature> iterator = result.iterator();
+                        Feature item;
+                        List<Geometry> geometries = new ArrayList<>();
+                        while (iterator.hasNext()) {
+                            item = iterator.next();
+
+                            geometries.add(item.getGeometry());
+                        }
+                        publishProgress(geometries);
+
+                    } catch (InterruptedException | ExecutionException e) {
+                        e.printStackTrace();
+                        publishProgress();
+                    }
+                });
+            } else
+                publishProgress();
         } catch (Exception e) {
             publishProgress();
         }
@@ -111,7 +122,7 @@ public class QueryServiceFeatureTableListTaskAsync extends AsyncTask<Void, List<
     }
 
     @Override
-    protected void onProgressUpdate(List<Feature>... values) {
+    protected void onProgressUpdate(List<Geometry>... values) {
         if (values == null) {
             mDelegate.processFinish(null);
         } else if (values.length > 0) mDelegate.processFinish(values[0]);

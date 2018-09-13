@@ -38,7 +38,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     private ProgressDialog mDialog;
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
-    private ServiceFeatureTable mServiceFeatureTable;
+    private ServiceFeatureTable mServiceFeatureTableSuCoThongTin, mServiceFeatureTableSuCo;
     private ArcGISFeature mSelectedArcGISFeature = null;
     private boolean isUpdateAttachment;
     private byte[] mImage;
@@ -57,7 +57,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         mApplication = (DApplication) activity.getApplication();
 
         this.mDelegate = delegate;
-        mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        mServiceFeatureTableSuCoThongTin = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        mServiceFeatureTableSuCo = (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable();
         mSelectedArcGISFeature = selectedArcGISFeature;
         mDialog = new ProgressDialog(activity, android.R.style.Theme_Material_Dialog_Alert);
         this.isUpdateAttachment = isUpdateAttachment;
@@ -77,7 +78,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                mActivity, mSelectedArcGISFeature, output -> {
+                mActivity, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             ArcGISFeature arcGISFeature = (ArcGISFeature) output;
             final FeatureViewMoreInfoAdapter adapter = params[0];
             mDialog.setMax(adapter.getCount());
@@ -106,17 +107,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
             //todo loaiSuCo - 1 chưa rõ nguyên nhân
             final short finalLoaiSuCoShort = loaiSuCoShort;
             final String finalTrangThai = trangThai;
-//        mServiceFeatureTable.addDoneLoadingListener(new Runnable() {
-//            @Override
-//            public void run() {
-//                // update feature in the feature table
-//                mServiceFeatureTable.updateFeatureAsync(mSelectedArcGISFeature).addDoneListener(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mServiceFeatureTable.applyEditsAsync().addDoneListener(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
 
             for (FeatureViewMoreInfoAdapter.Item item : adapter.getItems()) {
                 if (item.getValue() == null || !item.isEdit() || !item.isEdited()) continue;
@@ -171,25 +161,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                         codeDomain = getCodeDomain(codedValues, item.getValue());
                     }
                 }
-//            else if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_VatTu))) {
-//                hasDomain = false;
-//                HoSoVatTuSuCoDB hoSoVatTuSuCoDB = new HoSoVatTuSuCoDB(mActivity);
-//                if (mListHoSoVatTuSuCo.size() > 0)
-//                    hoSoVatTuSuCoDB.delete(mListHoSoVatTuSuCo.get(0).getIdSuCo());
-//                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-//                    hoSoVatTuSuCoDB.insert(hoSoVatTuSuCo);
-//                }
-//                continue;
-//            } else if (item.getFieldName().equals(mActivity.getString(R.string.Field_SuCo_VatTuThuHoi))) {
-//                hasDomain = false;
-//                HoSoVatTuThuHoiSuCoDB hoSoVatTuThuHoiSuCoDB = new HoSoVatTuThuHoiSuCoDB(mActivity);
-//                if (mListHoSoVatTuSuCoThuHoi.size() > 0)
-//                    hoSoVatTuThuHoiSuCoDB.delete(mListHoSoVatTuSuCoThuHoi.get(0).getIdSuCo());
-//                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCoThuHoi) {
-//                    hoSoVatTuThuHoiSuCoDB.insert(hoSoVatTuSuCo);
-//                }
-//                continue;
-//            }
                 if (item.getFieldName().equals(arcGISFeature.getFeatureTable().getTypeIdField())) {
                     arcGISFeature.getAttributes().put(item.getFieldName(), finalLoaiSuCoShort);
                 } else switch (item.getFieldType()) {
@@ -267,11 +238,11 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
             }
 //        arcGISFeature.getAttributes().put(mActivity.getString(R.string.Field_SuCo_NhanVienGiamSat),
 //               mApplication.getUserDangNhap.getUserName());
-            mServiceFeatureTable.loadAsync();
-            mServiceFeatureTable.addDoneLoadingListener(() -> {
+            mServiceFeatureTableSuCoThongTin.loadAsync();
+            mServiceFeatureTableSuCoThongTin.addDoneLoadingListener(() -> {
                 // update feature in the feature table
-                mServiceFeatureTable.updateFeatureAsync(arcGISFeature).addDoneListener(() ->
-                        mServiceFeatureTable.applyEditsAsync().addDoneListener(() -> {
+                mServiceFeatureTableSuCoThongTin.updateFeatureAsync(arcGISFeature).addDoneListener(() ->
+                        mServiceFeatureTableSuCoThongTin.applyEditsAsync().addDoneListener(() -> {
                             if (isUpdateAttachment && mImage != null) {
                                 if (arcGISFeature.canEditAttachments())
                                     addAttachment(arcGISFeature);
@@ -283,19 +254,48 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                             }
                         }));
             });
-//                            }
-//                        });
-//                    }
-//                });
-//            }
-//        });
+            updateSuCo(arcGISFeature);
+
         });
-        queryServiceFeatureTableAsync.execute();
+        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+        queryServiceFeatureTableAsync.execute(queryClause);
 
         return null;
     }
 
+    private void updateSuCo(ArcGISFeature arcGISFeature) {
+        String queryClause = String.format("%s = '%s'",
+                Constant.FIELD_SUCO.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString());
+        new QueryServiceFeatureTableAsync(mActivity, (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable(), output -> {
+            if (output != null) {
+                ArcGISFeature arcGISFeatureSuCo = (ArcGISFeature) output;
+                if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_TC)) {
+                    arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG,
+                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
+                    arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG,
+                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN).toString()));
 
+                } else if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_GS)) {
+                    arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT,
+                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
+                    arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT,
+                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN).toString()));
+                }
+                mServiceFeatureTableSuCo.loadAsync();
+                mServiceFeatureTableSuCo.addDoneLoadingListener(() -> {
+                    // update feature in the feature table
+                    mServiceFeatureTableSuCo.updateFeatureAsync(arcGISFeatureSuCo).addDoneListener(() ->
+                            mServiceFeatureTableSuCo.applyEditsAsync().addDoneListener(() -> {
+                            }));
+                });
+            }
+        }).execute(queryClause);
+        mServiceFeatureTableSuCo.loadAsync();
+        mServiceFeatureTableSuCo.addDoneLoadingListener(() -> {
+        });
+    }
 
     private void addAttachment(ArcGISFeature arcGISFeature) {
 
@@ -305,7 +305,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
             try {
                 Attachment attachment = addResult.get();
                 if (attachment.getSize() > 0) {
-                    final ListenableFuture<Void> tableResult = mServiceFeatureTable.updateFeatureAsync(arcGISFeature);
+                    final ListenableFuture<Void> tableResult = mServiceFeatureTableSuCoThongTin.updateFeatureAsync(arcGISFeature);
                     tableResult.addDoneListener(() -> applyEdit(arcGISFeature));
                 }
             } catch (Exception ignored) {
@@ -317,7 +317,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 
     private void applyEdit(ArcGISFeature arcGISFeature) {
 
-        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTable.applyEditsAsync();
+        final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTableSuCoThongTin.applyEditsAsync();
         updatedServerResult.addDoneListener(() -> {
             List<FeatureEditResult> edits;
             try {

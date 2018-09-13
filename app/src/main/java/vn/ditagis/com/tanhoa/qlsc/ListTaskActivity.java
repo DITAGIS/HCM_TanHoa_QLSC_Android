@@ -22,7 +22,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
-import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableListTaskAsync;
+import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableGetListAsync;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
@@ -70,7 +70,7 @@ public class ListTaskActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
 
         });
-        new QueryServiceFeatureTableListTaskAsync(this, output -> {
+        new QueryServiceFeatureTableGetListAsync(this, output -> {
             if (output != null && output.size() > 0) {
                 handlingQuerySuccess(output);
             }

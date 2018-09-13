@@ -59,15 +59,16 @@ private String mIDSuCo;
         ButterKnife.bind(this);
         mApplication = (DApplication) getApplication();
          mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
-        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(this, mApplication.getArcGISFeature(), new QueryServiceFeatureTableAsync.AsyncResponse() {
-            @Override
-            public void processFinish(Feature output) {
-                init();
-                loadVatTu();
-                mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
-            }
-        });
-        queryServiceFeatureTableAsync.execute();
+        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
+                this,mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                    init();
+                    loadVatTu();
+                    mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+                });
+        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+        queryServiceFeatureTableAsync.execute(queryClause);
     }
 
     private void loadVatTu() {

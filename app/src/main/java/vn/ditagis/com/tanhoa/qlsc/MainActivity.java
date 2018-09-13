@@ -54,6 +54,7 @@ import com.esri.arcgisruntime.ArcGISRuntimeEnvironment;
 import com.esri.arcgisruntime.ArcGISRuntimeException;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
@@ -97,6 +98,8 @@ import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.LoadLegendAsycn;
 import vn.ditagis.com.tanhoa.qlsc.async.PreparingByAPIAsycn;
+import vn.ditagis.com.tanhoa.qlsc.async.QueryFeatureGetListGeometryAsync;
+import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableGetListAsync;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DAddress;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
@@ -120,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private MapViewHandler mMapViewHandler;
     private TraCuuAdapter mSearchAdapter;
     private LocationDisplay mLocationDisplay;
-    private int requestCode = 2;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean mIsSearchingFeature = false;
     private LinearLayout mLayoutTimSuCo;
@@ -223,11 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                startActivity(i);
                 mLocationHelper.execute();
 
-                mLocationHelper = new LocationHelper(MainActivity.this, new LocationHelper.AsyncResponse() {
-                    @Override
-                    public void processFinish(double longtitude, double latitude) {
-
-                    }
+                mLocationHelper = new LocationHelper(MainActivity.this, (longtitude, latitude) -> {
 
                 });
                 mLocationHelper.checkpermission();
@@ -237,7 +235,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             return;
         }
         assert locationManager != null;
@@ -251,7 +248,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressLint("ClickableViewAccessibility")
     private void prepare() {
-        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete)));
+        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY));
         setLicense();
         mArcGISMapImageLayerAdministrator = mArcGISMapImageLayerThematic = null;
         mLayoutDisplayLayerThematic = findViewById(R.id.linearDisplayLayerFeature);
@@ -289,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView = findViewById(R.id.mapView);
         mMapView.setMap(mMap);
 
-        mMapView.getMap().addDoneLoadingListener(() -> handleArcgisMapDoneLoading());
+        mMapView.getMap().addDoneLoadingListener(this::handleArcgisMapDoneLoading);
         mMapView.setOnTouchListener(new DefaultMapViewOnTouchListener(this, mMapView) {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -330,17 +327,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 return super.onScale(detector);
             }
         });
-        mLocationDisplay.addLocationChangedListener(new LocationDisplay.LocationChangedListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onLocationChanged(LocationDisplay.LocationChangedEvent locationChangedEvent) {
+        mLocationDisplay.addLocationChangedListener(locationChangedEvent -> {
 //                Point position = locationChangedEvent.getLocation().getPosition();
 //                setViewPointCenter(position);
-            }
         });
         mGraphicsOverlay = new GraphicsOverlay();
         mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
-
+        mGraphicsOverlay.setRenderer(getRendererSuCo());
 
         mSeekBarAdministrator = findViewById(R.id.skbr_hanhchinh_app_bar_quan_ly_su_co);
         mSeekBarThematic = findViewById(R.id.skbr_chuyende_app_bar_quan_ly_su_co);
@@ -408,127 +401,173 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setServices() {
         try {
             handleFeatureLoading();
-            // config feature layer service
-            for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                if (!dLayerInfo.isView() ||
-                        //Bỏ áp lực, vì áp lực publish lên folder riêng, không thuộc TanHoaGis
-                        dLayerInfo.getUrl().contains("ApLuc"))
-                    continue;
-                String url = dLayerInfo.getUrl();
-                if (!dLayerInfo.getUrl().startsWith("http"))
-                    url = "http:" + dLayerInfo.getUrl();
-                if (dLayerInfo.getId().equals(getString(R.string.IDLayer_Basemap))
-                        && mArcGISMapImageLayerAdministrator == null) {
-                    mArcGISMapImageLayerAdministrator = new ArcGISMapImageLayer(url);
-                    mArcGISMapImageLayerAdministrator.setId(dLayerInfo.getId());
-                    mMapView.getMap().getOperationalLayers().add(mArcGISMapImageLayerAdministrator);
-                    mArcGISMapImageLayerAdministrator.addDoneLoadingListener(() -> {
-                        if (mArcGISMapImageLayerAdministrator.getLoadStatus() == LoadStatus.LOADED) {
-                            MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdministrator);
-                            ListenableList<ArcGISSublayer> sublayerList = mArcGISMapImageLayerAdministrator.getSublayers();
-                            for (ArcGISSublayer sublayer : sublayerList) {
-                                addCheckBox((ArcGISMapImageSublayer) sublayer, states, colors, true);
-                            }
-                            mLoadedOnMap++;
-                            if (mLoadedOnMap == 3)
-                                handleFeatureDoneLoading();
+            DLayerInfo dLayerInfoSuCo = setService_Table();
+            new QueryServiceFeatureTableGetListAsync(MainActivity.this, output -> {
+                setService_ArcGISImageLayer();
+                setService_GraphicsOverLay(dLayerInfoSuCo, getListIDSuCoFromSuCoThongTins(output));
+            }).execute();
+        } catch (Exception e) {
+            Log.e("Lỗi set service", e.toString());
+        }
+
+    }
+
+    private void setService_ArcGISImageLayer() {
+        for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+            if (!dLayerInfo.isView() ||
+                    //Bỏ áp lực, vì áp lực publish lên folder riêng, không thuộc TanHoaGis
+                    dLayerInfo.getUrl().contains("ApLuc"))
+                continue;
+            String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
+            if (dLayerInfo.getId().equals(getString(R.string.IDLayer_Basemap))
+                    && mArcGISMapImageLayerAdministrator == null) {
+                mArcGISMapImageLayerAdministrator = new ArcGISMapImageLayer(url);
+                mArcGISMapImageLayerAdministrator.setId(dLayerInfo.getId());
+                mMapView.getMap().getOperationalLayers().add(mArcGISMapImageLayerAdministrator);
+                mArcGISMapImageLayerAdministrator.addDoneLoadingListener(() -> {
+                    if (mArcGISMapImageLayerAdministrator.getLoadStatus() == LoadStatus.LOADED) {
+                        MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdministrator);
+                        ListenableList<ArcGISSublayer> sublayerList = mArcGISMapImageLayerAdministrator.getSublayers();
+                        for (ArcGISSublayer sublayer : sublayerList) {
+                            addCheckBox((ArcGISMapImageSublayer) sublayer, states, colors, true);
                         }
-                    });
-                    mArcGISMapImageLayerAdministrator.loadAsync();
+                        mLoadedOnMap++;
+                        if (mLoadedOnMap == 3)
+                            handleFeatureDoneLoading();
+                    }
+                });
+                mArcGISMapImageLayerAdministrator.loadAsync();
 
-                } else if (dLayerInfo.getId().equals(getString(R.string.IDLayer_DiemSuCo))) {
-                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
-                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+            } else if (mArcGISMapImageLayerThematic == null) {
+                mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
+                mArcGISMapImageLayerThematic.setName(dLayerInfo.getTitleLayer());
+                mArcGISMapImageLayerThematic.setId(dLayerInfo.getId());
+//                    mArcGISMapImageLayerThematic.setMaxScale(0);
+//                    mArcGISMapImageLayerThematic.setMinScale(10000000);
+                mMapView.getMap().getOperationalLayers().add(mArcGISMapImageLayerThematic);
+                mArcGISMapImageLayerThematic.addDoneLoadingListener(() -> {
+                    if (mArcGISMapImageLayerThematic.getLoadStatus() == LoadStatus.LOADED) {
+                        ListenableList<ArcGISSublayer> sublayerList = mArcGISMapImageLayerThematic.getSublayers();
+                        for (ArcGISSublayer sublayer : sublayerList) {
+                            addCheckBox((ArcGISMapImageSublayer) sublayer, states, colors, false);
+                        }
+                        mLoadedOnMap++;
+                        if (mLoadedOnMap == 3)
+                            handleFeatureDoneLoading();
+                    }
+                });
+                mArcGISMapImageLayerThematic.loadAsync();
+            }
+        }
+    }
 
-                    featureLayer.setName(dLayerInfo.getTitleLayer());
-//                    featureLayer.setMaxScale(0);
-//                    featureLayer.setMinScale(1000000);
-                    featureLayer.setId(dLayerInfo.getId());
-//                    TimePeriodReport timePeriodReport = new TimePeriodReport(this);
-//                    featureLayer.setDefinitionExpression(String.format(getString(R.string.format_definitionExp_DiemSuCo),
-// timePeriodReport.getItems().get(2).getThoigianbatdau()));
-                    featureLayer.setDefinitionExpression(dLayerInfo.getDefinition());
-                    featureLayer.setId(dLayerInfo.getId());
-                    featureLayer.setPopupEnabled(true);
-                    featureLayer.setVisible(true);
-                    setRendererSuCoFeatureLayer(featureLayer);
-                    mMapView.getMap().getOperationalLayers().add(featureLayer);
-                    featureLayer.addDoneLoadingListener(() -> {
-                        if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
-                            //Tìm servicefeaturetable
-                            for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                                if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
-                                    ServiceFeatureTable serviceFeatureTable1 = new ServiceFeatureTable(item.getUrl());
-                                    Callout callout = mMapView.getCallout();
+    private DLayerInfo setService_Table() {
+        DLayerInfo dLayerInfoSuCo = new DLayerInfo();
+        for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+            if (!dLayerInfo.isView() ||
+                    //Bỏ áp lực, vì áp lực publish lên folder riêng, không thuộc TanHoaGis
+                    dLayerInfo.getUrl().contains("ApLuc"))
+                continue;
+            String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
+            if (dLayerInfo.getId().equals(getString(R.string.IDLayer_DiemSuCo))) {
+                dLayerInfoSuCo = dLayerInfo;
 
-                                    mApplication.getDFeatureLayer.setLayer(featureLayer);
+            } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                featureLayer.setId(dLayerInfo.getId());
+                featureLayer.setName(dLayerInfo.getTitleLayer());
+                mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
+                mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThonTin((ServiceFeatureTable) featureLayer.getFeatureTable());
+            } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
+                ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                featureLayer.setId(dLayerInfo.getId());
+                featureLayer.setName(dLayerInfo.getTitleLayer());
+                mApplication.getDFeatureLayer.setServiceFeatureTableHoSoVatTuSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
+            }
+        }
+        return dLayerInfoSuCo;
+    }
+
+    private List<String> getListIDSuCoFromSuCoThongTins(List<Feature> features) {
+        List<String> output = new ArrayList<>();
+        for (Feature feature : features) {
+            output.add(feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString());
+        }
+        return output;
+    }
+
+    private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList) {
+        String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
+        ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+        FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+
+        featureLayer.setName(dLayerInfo.getTitleLayer());
+        featureLayer.setId(dLayerInfo.getId());
+        featureLayer.setId(dLayerInfo.getId());
+        featureLayer.setPopupEnabled(true);
+        featureLayer.setVisible(true);
+        setRendererSuCoFeatureLayer(featureLayer);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
+        for (String idSuCo : idSuCoList) {
+            builder.append(String.format("'%s' ,", idSuCo));
+        }
+        builder.append("'')");
+        featureLayer.setDefinitionExpression(builder.toString());
+        mMapView.getMap().getOperationalLayers().add(featureLayer);
+        featureLayer.addDoneLoadingListener(() -> {
+            if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
+                new QueryFeatureGetListGeometryAsync(MainActivity.this,
+                        serviceFeatureTable, (List<Geometry> output) -> {
+//                    for (Geometry geometry : output) {
+//                        Graphic graphic = new Graphic(geometry.getExtent().getCenter());
+//                        mGraphicsOverlay.getGraphics().add(graphic);
+//
+//                    }
+                    for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+                        if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                            Callout callout = mMapView.getCallout();
+
+                            mApplication.getDFeatureLayer.setLayer(featureLayer);
 
 //
-                                    mPopUp = new Popup(callout, MainActivity.this, mMapView,
-                                            mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+                            mPopUp = new Popup(callout, MainActivity.this, mMapView,
+                                    mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
 //                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
 //                        featureLayer.setVisible(false);
 
 
 //                    Callout callout = mMapView.getCallout();
-                                    mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
-                                    mLoadedOnMap++;
-                                    if (mLoadedOnMap == 3)
-                                        handleFeatureDoneLoading();
-                                }
-                            }
-
-                        }
-                    });
-                } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
-                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
-                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-                    featureLayer.setId(dLayerInfo.getId());
-                    featureLayer.setName(dLayerInfo.getTitleLayer());
-                    mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
-                    mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThonTin((ServiceFeatureTable) featureLayer.getFeatureTable());
-                } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
-                    ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
-                    FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
-                    featureLayer.setId(dLayerInfo.getId());
-                    featureLayer.setName(dLayerInfo.getTitleLayer());
-                    mApplication.getDFeatureLayer.setServiceFeatureTableHoSoVatTuSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
-                } else if (mArcGISMapImageLayerThematic == null) {
-                    mArcGISMapImageLayerThematic = new ArcGISMapImageLayer(url.replaceFirst("FeatureServer(.*)", "MapServer"));
-                    mArcGISMapImageLayerThematic.setName(dLayerInfo.getTitleLayer());
-                    mArcGISMapImageLayerThematic.setId(dLayerInfo.getId());
-//                    mArcGISMapImageLayerThematic.setMaxScale(0);
-//                    mArcGISMapImageLayerThematic.setMinScale(10000000);
-                    mMapView.getMap().getOperationalLayers().add(mArcGISMapImageLayerThematic);
-                    mArcGISMapImageLayerThematic.addDoneLoadingListener(() -> {
-                        if (mArcGISMapImageLayerThematic.getLoadStatus() == LoadStatus.LOADED) {
-                            ListenableList<ArcGISSublayer> sublayerList = mArcGISMapImageLayerThematic.getSublayers();
-                            for (ArcGISSublayer sublayer : sublayerList) {
-                                addCheckBox((ArcGISMapImageSublayer) sublayer, states, colors, false);
-                            }
+                            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
                             mLoadedOnMap++;
                             if (mLoadedOnMap == 3)
                                 handleFeatureDoneLoading();
                         }
-                    });
-                    mArcGISMapImageLayerThematic.loadAsync();
-                }
-            }
-//            Callout callout = mMapView.getCallout();
-//            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this, mGeocoder);
-//            mMapViewHandler.setArcGISMapImageLayerAdmin(mArcGISMapImageLayerAdministrator);
-        } catch (Exception e) {
-            Log.e("error", e.toString());
-        }
+                    }
+                }).execute(idSuCoList);
+                //Tìm servicefeaturetable
 
+
+            }
+        });
     }
 
+    private String getUrlFromDLayerInfo(String input) {
+        String output = input;
+        if (!input.startsWith("http"))
+            output = "http:" + input;
+        return output;
+    }
 
     private void addCheckBox(final ArcGISMapImageSublayer layer, int[][] states, int[] colors, boolean isAdministrator) {
-        LinearLayout layoutFeature = (LinearLayout) getLayoutInflater().inflate(R.layout.layout_feature, null);
+        @SuppressLint("InflateParams") LinearLayout layoutFeature = (LinearLayout) getLayoutInflater()
+                .inflate(R.layout.layout_feature, null);
         final CheckBox checkBox = layoutFeature.findViewById(R.id.ckb_layout_feature);
         final TextView textView = layoutFeature.findViewById(R.id.txt_layout_feature);
-        textView.setTextColor(getResources().getColor(android.R.color.black));
+        textView.setTextColor(MainActivity.this.getColor(android.R.color.black));
         textView.setText(layer.getName());
         checkBox.setChecked(false);
         layer.setVisible(false);
@@ -600,10 +639,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
-        UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
-        uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
-        uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
 
+        mSuCoTanHoaLayer.setRenderer(getRendererSuCo());
+        mSuCoTanHoaLayer.loadAsync();
+
+
+    }
+
+    private UniqueValueRenderer getRendererSuCo() {
+        UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
+        if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_TC)) {
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG);
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG);
+        } else if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_GS)) {
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT);
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT);
+        }
 
         PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA);
         chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
@@ -712,12 +763,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue4));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue5));
-        mSuCoTanHoaLayer.setRenderer(uniqueValueRenderer);
-        mSuCoTanHoaLayer.loadAsync();
 
-
+        return uniqueValueRenderer;
     }
-
 
     public void requestPermisson() {
         boolean permissionCheck1 = ContextCompat.checkSelfPermission(this,
@@ -793,15 +841,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             init();
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("1Cần cho phép ứng dụng truy cập những quyền trên!");
-            builder.setPositiveButton("OK", (dialogInterface, i) -> {
-                dialogInterface.dismiss();
-                finish();
-                Intent intent = getBaseContext().getPackageManager()
-                        .getLaunchIntentForPackage(getBaseContext().getPackageName());
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            });
+            builder.setMessage(MainActivity.this.getApplicationContext().getString(R.string.message_permission));
+            builder.setPositiveButton(MainActivity.this.getApplicationContext().getString(R.string.message_btn_ok),
+                    (dialogInterface, i) -> {
+                        dialogInterface.dismiss();
+                        finish();
+                        Intent intent = getBaseContext().getPackageManager()
+                                .getLaunchIntentForPackage(getBaseContext().getPackageName());
+                        assert intent != null;
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    });
             AlertDialog dialog = builder.create();
             dialog.show();
         }
@@ -1430,3 +1480,4 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 }
+
