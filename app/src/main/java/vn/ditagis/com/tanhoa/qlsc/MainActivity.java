@@ -1287,9 +1287,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void handlingListTaskActivityResult() {
         //query sự cố theo idsuco, lấy objectid
-        String idSuCo = mApplication.getSelectedIDSuCo();
-
-        //gọi query by objectid từ mapviewhandler
+        String selectedIDSuCo = mApplication.getSelectedIDSuCo();
+        mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

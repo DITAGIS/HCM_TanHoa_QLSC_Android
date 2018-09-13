@@ -125,27 +125,51 @@ public class MapViewHandler extends Activity {
         queryParameters.setWhereClause(query);
         final ListenableFuture<FeatureQueryResult> feature;
         feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-        feature.addDoneListener(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FeatureQueryResult result = feature.get();
-                    if (result.iterator().hasNext()) {
-                        Feature item = result.iterator().next();
-                        Envelope extent = item.getGeometry().getExtent();
+        feature.addDoneListener(() -> {
+            try {
+                FeatureQueryResult result = feature.get();
+                if (result.iterator().hasNext()) {
+                    Feature item = result.iterator().next();
+                    Envelope extent = item.getGeometry().getExtent();
 
-                        mMapView.setViewpointGeometryAsync(extent);
-                        suCoTanHoaLayerThiCong.selectFeature(item);
-                        if (mApplication.getDFeatureLayer.getLayer() != null) {
-                            mSelectedArcGISFeature = (ArcGISFeature) item;
-                            if (mSelectedArcGISFeature != null)
-                                mPopUp.showPopup(mSelectedArcGISFeature, false);
-                        }
+                    mMapView.setViewpointGeometryAsync(extent);
+                    suCoTanHoaLayerThiCong.selectFeature(item);
+                    if (mApplication.getDFeatureLayer.getLayer() != null) {
+                        mSelectedArcGISFeature = (ArcGISFeature) item;
+                        if (mSelectedArcGISFeature != null)
+                            mPopUp.showPopup(mSelectedArcGISFeature, false);
                     }
-
-                } catch (InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
                 }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void query(String query) {
+        final QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(query);
+        final ListenableFuture<FeatureQueryResult> feature;
+        feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+        feature.addDoneListener(() -> {
+            try {
+                FeatureQueryResult result = feature.get();
+                if (result.iterator().hasNext()) {
+                    Feature item = result.iterator().next();
+                    Envelope extent = item.getGeometry().getExtent();
+
+                    mMapView.setViewpointGeometryAsync(extent);
+                    suCoTanHoaLayerThiCong.selectFeature(item);
+                    if (mApplication.getDFeatureLayer.getLayer() != null) {
+                        mSelectedArcGISFeature = (ArcGISFeature) item;
+                        if (mSelectedArcGISFeature != null)
+                            mPopUp.showPopup(mSelectedArcGISFeature, false);
+                    }
+                }
+
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
             }
         });
     }

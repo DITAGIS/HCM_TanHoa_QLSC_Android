@@ -28,7 +28,7 @@
                 <item
                     
                     android:id="@+id/nav_thongke"
-                    android:icon="@drawable/ic_thongke"
+                    android:icon="@drawable/ic_statistic_black_24dp"
                     android:title="@string/nav_thong_ke" />
                 <!--<item-->
                     <!--android:id="@+id/nav_tracuu"-->
@@ -36,11 +36,11 @@
                     <!--android:title="@string/nav_tra_cuu" />-->
                 <item
                     android:id="@+id/nav_find_route"
-                    android:icon="@drawable/ic_list_task_black_24dp"
+                    android:icon="@drawable/ic_navigation_black_24dp"
                     android:title="@string/nav_find_route" />
                 <item
                     android:id="@+id/nav_list_task"
-                    android:icon="@drawable/ic_navigation"
+                    android:icon="@drawable/ic_list_task_black_24dp"
                     android:title="@string/nav_list_task" />
             </group>
         </menu>
@@ -49,15 +49,15 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_reload"
-            android:icon="@drawable/ic_refresh"
+            android:icon="@drawable/ic_refresh_black_24dp"
             android:title="@string/nav_refresh" />
         <item
             android:id="@+id/nav_delete_searching"
-            android:icon="@drawable/ic_delete"
+            android:icon="@drawable/ic_delete_black_24dp"
             android:title="@string/nav_xoa_tim_kiem" />
         <item
             android:id="@+id/nav_visible_float_button"
-            android:icon="@drawable/ic_action_visible"
+            android:icon="@drawable/ic_visible_black_24dp"
             android:title="@string/nav_an_hien_nut_chuc_nang" />
         <!--<item-->
             <!--android:id="@+id/nav_setting"-->
@@ -65,11 +65,11 @@
             <!--android:title="@string/nav_cai_dat" />-->
         <item
             android:id="@+id/nav_change_password"
-            android:icon="@drawable/ic_password"
+            android:icon="@drawable/ic_lock_black_24dp"
             android:title="@string/nav_change_password" />
         <item
             android:id="@+id/nav_logOut"
-            android:icon="@drawable/ic_logout"
+            android:icon="@drawable/ic_logout_black_24dp"
             android:title="@string/nav_log_out" />
     </group>
 

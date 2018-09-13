@@ -115,6 +115,7 @@ public class Constant {
     }
 
     public class FIELD_SUCOTHONGTIN {
+        public static final String OBJECT_ID = "OBJECTID";
         public static final String ID_SUCO = "SuCo";
         public static final String ID_SUCOTT = "IDSuCoTT";
         public static final String LOAI_SU_CO = "LoaiSuCo";

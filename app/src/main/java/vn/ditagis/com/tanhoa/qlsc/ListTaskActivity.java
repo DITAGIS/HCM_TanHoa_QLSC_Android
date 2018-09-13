@@ -80,7 +80,8 @@ public class ListTaskActivity extends AppCompatActivity {
     private void handlingQuerySuccess(List<Feature> output) {
         for (Feature feature : output) {
             Map<String, Object> attributes = feature.getAttributes();
-            TraCuuAdapter.Item item = new TraCuuAdapter.Item(0,
+            TraCuuAdapter.Item item = new TraCuuAdapter.Item(
+                    Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
                     attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                     Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
                     Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT)).getTime()),
