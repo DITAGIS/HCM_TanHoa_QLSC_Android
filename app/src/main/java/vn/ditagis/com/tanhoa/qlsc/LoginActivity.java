@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //        handleLoginSuccess(userName,passWord);
         final String finalUserName = userName;
         LoginByAPIAsycn loginAsycn = new LoginByAPIAsycn(this, () -> {
-            if (mApplication.getUserDangNhap != null)
+            if (mApplication.getUserDangNhap() != null)
                 handleLoginSuccess();
             else
                 handleLoginFail();
@@ -145,9 +145,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 //do something
                 if (app.getmLocation() != null) {
                     Log.d("gửi", "hhi");
-                    if (mApplication.getUserDangNhap != null &&
-                            mApplication.getUserDangNhap.getUserName() != null)
-                        mSocket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID + "," + mApplication.getUserDangNhap.getUserName());
+                    if (mApplication.getUserDangNhap() != null &&
+                            mApplication.getUserDangNhap().getUserName() != null)
+                        mSocket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID + "," + mApplication.getUserDangNhap().getUserName());
                     Emitter emit1 = mSocket.emit(Constants.EVENT_LOCATION,
                             app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
                     Log.d("Kết quả vị trí", emit1.hasListeners(Constants.EVENT_LOCATION) + "");
@@ -162,9 +162,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTxtUsername.setText("");
         mTxtPassword.setText("");
 
-        Preference.getInstance().savePreferences(getString(R.string.preference_username), mApplication.getUserDangNhap.getUserName());
-        Preference.getInstance().savePreferences(getString(R.string.preference_password), mApplication.getUserDangNhap.getPassWord());
-        Preference.getInstance().savePreferences(getString(R.string.preference_displayname), mApplication.getUserDangNhap.getDisplayName());
+        Preference.getInstance().savePreferences(getString(R.string.preference_username), mApplication.getUserDangNhap().getUserName());
+        Preference.getInstance().savePreferences(getString(R.string.preference_password), mApplication.getUserDangNhap().getPassWord());
+        Preference.getInstance().savePreferences(getString(R.string.preference_displayname), mApplication.getUserDangNhap().getDisplayName());
 
         Intent intent = new Intent();
         setResult(RESULT_OK, intent);

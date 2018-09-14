@@ -283,6 +283,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
+//        Menu menu = navigationView.getMenu();
+//        MenuItem menuItem = menu.findItem(R.id.nav_version);
+//        try {
+//            menuItem.setTitle("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+//        } catch (PackageManager.NameNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
         mMapView = findViewById(R.id.mapView);
         mMapView.setMap(mMap);
 
@@ -389,10 +397,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mLayoutTimDiaChi = findViewById(R.id.layout_tim_dia_chi);
         mLayoutTimDiaChi.setOnClickListener(this);
         mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
-        if (mApplication.getUserDangNhap != null && mApplication.getUserDangNhap.getUserName() != null
-                && mApplication.getUserDangNhap.getDisplayName() != null) {
-            ((TextView) findViewById(R.id.txt_nav_header_tenNV)).setText(mApplication.getUserDangNhap.getUserName());
-            ((TextView) findViewById(R.id.txt_nav_header_displayname)).setText(mApplication.getUserDangNhap.getDisplayName());
+        if (mApplication.getUserDangNhap() != null && mApplication.getUserDangNhap().getUserName() != null
+                && mApplication.getUserDangNhap().getDisplayName() != null) {
+            ((TextView) findViewById(R.id.txt_nav_header_tenNV)).setText(mApplication.getUserDangNhap().getUserName());
+            ((TextView) findViewById(R.id.txt_nav_header_displayname)).setText(mApplication.getUserDangNhap().getDisplayName());
         }
         optionSearchFeature();
 
@@ -508,7 +516,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         featureLayer.setId(dLayerInfo.getId());
         featureLayer.setPopupEnabled(true);
         featureLayer.setVisible(true);
-        setRendererSuCoFeatureLayer(featureLayer);
+        featureLayer.setRenderer(getRendererSuCo());
 
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
@@ -638,24 +646,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        });
     }
 
-    private void setRendererSuCoFeatureLayer(FeatureLayer mSuCoTanHoaLayer) {
-
-        mSuCoTanHoaLayer.setRenderer(getRendererSuCo());
-        mSuCoTanHoaLayer.loadAsync();
-
-
-    }
 
     private UniqueValueRenderer getRendererSuCo() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
-        if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_TC)) {
+        if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG);
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG);
-        } else if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_GS)) {
+        } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT);
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT);
+        } else {
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
+            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
         }
-
         PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA);
         chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         chuaXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
@@ -1007,8 +1010,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         return true;
                     }
                 });
+
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

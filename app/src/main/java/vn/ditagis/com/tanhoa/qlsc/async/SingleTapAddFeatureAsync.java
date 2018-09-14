@@ -130,7 +130,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI,
                             (short) 0);
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN,
-                            mApplication.getUserDangNhap.getUserName());
+                            mApplication.getUserDangNhap().getUserName());
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN,
                             mApplication.getDiemSuCo.getHinhThucPhatHien());
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DIA_CHI,
@@ -143,7 +143,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                                 c);
                     }
                     suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DON_VI,
-                            mApplication.getUserDangNhap.getRole());
+                            mApplication.getUserDangNhap().getRole());
                     serviceFeatureTable.addFeatureAsync(suCoThongTinFeature).addDoneListener(() -> {
                         ListenableFuture<List<FeatureEditResult>> listListenableFuture = serviceFeatureTable.applyEditsAsync();
                         listListenableFuture.addDoneListener(() -> {

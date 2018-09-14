@@ -259,7 +259,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         });
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
         queryServiceFeatureTableAsync.execute(queryClause);
 
         return null;
@@ -271,13 +271,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         new QueryServiceFeatureTableAsync(mActivity, (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable(), output -> {
             if (output != null) {
                 ArcGISFeature arcGISFeatureSuCo = (ArcGISFeature) output;
-                if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_TC)) {
+                if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG,
                             Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG,
                             Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN).toString()));
 
-                } else if (mApplication.getUserDangNhap.getRole().equals(Constant.ROLE_GS)) {
+                } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT,
                             Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT,

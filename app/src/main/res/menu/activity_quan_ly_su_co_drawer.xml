@@ -26,14 +26,14 @@
         <menu>
             <group android:checkableBehavior="single">
                 <item
-                    
+
                     android:id="@+id/nav_thongke"
                     android:icon="@drawable/ic_statistic_black_24dp"
                     android:title="@string/nav_thong_ke" />
                 <!--<item-->
-                    <!--android:id="@+id/nav_tracuu"-->
-                    <!--android:icon="@drawable/ic_search"-->
-                    <!--android:title="@string/nav_tra_cuu" />-->
+                <!--android:id="@+id/nav_tracuu"-->
+                <!--android:icon="@drawable/ic_search"-->
+                <!--android:title="@string/nav_tra_cuu" />-->
                 <item
                     android:id="@+id/nav_find_route"
                     android:icon="@drawable/ic_navigation_black_24dp"
@@ -60,9 +60,9 @@
             android:icon="@drawable/ic_visible_black_24dp"
             android:title="@string/nav_an_hien_nut_chuc_nang" />
         <!--<item-->
-            <!--android:id="@+id/nav_setting"-->
-            <!--android:icon="@drawable/ic_settings"-->
-            <!--android:title="@string/nav_cai_dat" />-->
+        <!--android:id="@+id/nav_setting"-->
+        <!--android:icon="@drawable/ic_settings"-->
+        <!--android:title="@string/nav_cai_dat" />-->
         <item
             android:id="@+id/nav_change_password"
             android:icon="@drawable/ic_lock_black_24dp"
@@ -72,6 +72,9 @@
             android:icon="@drawable/ic_logout_black_24dp"
             android:title="@string/nav_log_out" />
     </group>
+    <item
+        android:id="@+id/nav_version"
+        android:title=""></item>
 
 
 </menu>

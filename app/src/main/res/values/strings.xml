@@ -302,8 +302,6 @@
     <string name="action_sign_in_short">Join</string>
 
     <string name="error_field_required">This field is required</string>
-    <string name="sql_column_login_displayname">DisplayName</string>
-    <string name="sql_column_login_role">Role</string>
     <string name="sql_column_sys_definition">Definition</string>
     <string name="sql_column_sys_out_fields_arr">OutFields</string>
     <string name="sql_column_sys_add_fields_arr">AddFields</string>

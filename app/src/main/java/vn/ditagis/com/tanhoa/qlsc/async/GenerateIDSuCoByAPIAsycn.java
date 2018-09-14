@@ -50,7 +50,7 @@ public class GenerateIDSuCoByAPIAsycn extends AsyncTask<String, Void, String> {
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", mApplication.getUserDangNhap.getToken());
+                conn.setRequestProperty("Authorization", mApplication.getUserDangNhap().getToken());
                 conn.connect();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
                 String line = bufferedReader.readLine();

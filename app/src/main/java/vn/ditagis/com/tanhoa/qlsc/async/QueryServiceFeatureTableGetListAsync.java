@@ -83,7 +83,7 @@ public class QueryServiceFeatureTableGetListAsync extends AsyncTask<Void, List<F
         try {
             QueryParameters queryParameters = new QueryParameters();
             String queryClause = String.format("%s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
             queryParameters.setWhereClause(queryClause);
 
             ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);

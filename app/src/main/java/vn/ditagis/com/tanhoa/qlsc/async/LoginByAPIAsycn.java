@@ -16,9 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.User;
-import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 
 public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
@@ -71,10 +71,10 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
                 bufferedReader.close();
                 String token = stringBuilder.toString().replace("\"", "");
                 if (checkAccess(token)) {
-                    mApplication.getUserDangNhap = new User();
-                    mApplication.getUserDangNhap.setToken(token);
+                    mApplication.setUserDangNhap(new User());
+                    mApplication.getUserDangNhap().setToken(token);
                     getProfile();
-                    mApplication.getUserDangNhap.setUserName(userName);
+                    mApplication.getUserDangNhap().setUserName(userName);
 
                 }
             } catch (Exception e1) {
@@ -137,7 +137,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
             try {
                 conn.setDoOutput(false);
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization",mApplication.getUserDangNhap.getToken());
+                conn.setRequestProperty("Authorization", mApplication.getUserDangNhap().getToken());
                 conn.connect();
 
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -149,12 +149,12 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
                 }
 
             } catch (Exception e) {
-                Log.e("error", e.toString());
+                Log.e("lỗi lấy profile", e.toString());
             } finally {
                 conn.disconnect();
             }
         } catch (Exception e) {
-            Log.e("error", e.toString());
+            Log.e("lỗi lấy profile", e.toString());
         } finally {
         }
     }
@@ -168,8 +168,9 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
         JSONArray jsonRoutes = jsonData.getJSONArray("account");
         for (int i = 0; i < jsonRoutes.length(); i++) {
             JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
-            mApplication.getUserDangNhap.setDisplayName(jsonRoute.getString(mContext.getString(R.string.sql_column_login_displayname)));
-            mApplication.getUserDangNhap.setRole(jsonRoute.getString(mContext.getString(R.string.sql_column_login_role)));
+            mApplication.getUserDangNhap().setDisplayName(jsonRoute.getString(Constant.FIELD_ACCOUNT.DISPLAY_NAME));
+            mApplication.getUserDangNhap().setRole(jsonRoute.getString(Constant.FIELD_ACCOUNT.ROLE));
+            mApplication.getUserDangNhap().setGroupRole(jsonRoute.getString(Constant.FIELD_ACCOUNT.GROUP_ROLE));
         }
         return displayName;
 

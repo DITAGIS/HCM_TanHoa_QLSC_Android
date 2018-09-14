@@ -68,7 +68,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
         DApplication mApplication = (DApplication) mMainActivity.getApplication();
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
         new QueryServiceFeatureTableAsync(mMainActivity,
                 ((DApplication) mMainActivity.getApplication()).getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             ArcGISFeature arcGISFeature = (ArcGISFeature) output;

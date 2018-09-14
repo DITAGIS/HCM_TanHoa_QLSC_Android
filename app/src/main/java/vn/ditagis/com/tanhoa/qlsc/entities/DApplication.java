@@ -24,8 +24,16 @@ public class DApplication extends Application {
         getDiemSuCo = new DiemSuCo();
     }
 
+    private User userDangNhap;
 
-    public User getUserDangNhap;
+    public User getUserDangNhap() {
+        return userDangNhap;
+    }
+
+    public void setUserDangNhap(User userDangNhap) {
+        this.userDangNhap = userDangNhap;
+    }
+
     public DFeatureLayer getDFeatureLayer;
 
     {

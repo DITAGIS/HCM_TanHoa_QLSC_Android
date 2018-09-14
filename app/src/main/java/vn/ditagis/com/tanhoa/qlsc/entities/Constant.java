@@ -2,8 +2,6 @@ package vn.ditagis.com.tanhoa.qlsc.entities;
 
 import android.Manifest;
 
-import com.esri.arcgisruntime.mapping.view.Callout;
-
 import java.text.SimpleDateFormat;
 
 public class Constant {
@@ -13,8 +11,8 @@ public class Constant {
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
     public static final String ID_VAT_TU_TABLE = "vattuTBL";
     public static final String ROLE_PGN = "pgn";
-    public static final String ROLE_TC = "tc";
-    public static final String ROLE_GS = "gs";
+    public static final String GROUPROLE_TC = "tc";
+    public static final String GROUPROLE_GS = "gs";
     public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
@@ -28,8 +26,6 @@ public class Constant {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    //    public static final String SERVER_API = "http://gis.capnuoccholon.com.vn/cholon/api";
-//    private final String SERVER = "http://112.78.5.173";
     private final String SERVER = "http://sawagis.vn";
     private String SERVER_API = SERVER + "/tanhoa1/api";
     public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/tanhoa/Content/images/map/0.png";
@@ -37,9 +33,9 @@ public class Constant {
     public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/tanhoa/Content/images/map/1.png";
     public String URL_SYMBOL_HOAN_THANH = SERVER + "/tanhoa/Content/images/map/3.png";
 
-    public static  final short LOAISUCO_ONGNGANH = 1;
-    public static  final short LOAISUCO_ONGCHINH = 2;
-    public static  final short LOAISUCO_CHUAPHANLOAI = 3;
+    public static final short LOAISUCO_ONGNGANH = 1;
+    public static final short LOAISUCO_ONGCHINH = 2;
+    public static final short LOAISUCO_CHUAPHANLOAI = 3;
     public String API_LOGIN;
 
 
@@ -139,6 +135,7 @@ public class Constant {
         public static final String TGTC_DU_KIEN_DEN = "TGTCDuKienDen";
 
     }
+
     public class FIELD_VATTU {
         public static final String ID_SU_CO = "IDSuCo";
         public static final String MA_VAT_TU = "MaVatTu";
@@ -147,6 +144,7 @@ public class Constant {
         public static final String DON_VI_TINH = "DonViTinh";
 
     }
+
     public class HOSOVATTUSUCO_METHOD {
         public static final int FIND = 0;
         public static final int INSERT = 2;
@@ -158,6 +156,13 @@ public class Constant {
         public static final short HOAN_THANH = 2;
 
     }
+
+    public class FIELD_ACCOUNT {
+        public static final String ROLE = "Role";
+        public static final String GROUP_ROLE = "GroupRole";
+        public static final String DISPLAY_NAME = "DisplayName";
+    }
+
     public Constant() {
     }
 }

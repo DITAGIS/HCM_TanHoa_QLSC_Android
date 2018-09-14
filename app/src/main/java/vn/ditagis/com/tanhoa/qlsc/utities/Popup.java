@@ -159,7 +159,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
 
         for (Field field : this.mSelectedArcGISFeature.getFeatureTable().getFields()) {
-            if (outFields.length == 1 && outFields[0].equals("*")) {
+            if (outFields.length == 1 && (outFields[0].equals("*") || outFields[0].equals("null"))) {
             } else {
                 for (String outField : outFields)
                     if (outField.equals(field.getName())) {
@@ -358,7 +358,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap.getUserName());
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
         queryServiceFeatureTableAsync.execute(queryClause);
 
     }

@@ -9,9 +9,17 @@ public class User {
     private boolean isValid;
     private String token;
     private String role;
-
+    private String groupRole;
 
     public User() {
+    }
+
+    public String getGroupRole() {
+        return groupRole;
+    }
+
+    public void setGroupRole(String groupRole) {
+        this.groupRole = groupRole;
     }
 
     public void setUserName(String userName) {

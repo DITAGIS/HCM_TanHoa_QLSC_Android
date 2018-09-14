@@ -74,6 +74,13 @@ public class ListTaskActivity extends AppCompatActivity {
             if (output != null && output.size() > 0) {
                 handlingQuerySuccess(output);
             }
+            mAdapterChuaXuLy.notifyDataSetChanged();
+            mAdapterDangXuLy.notifyDataSetChanged();
+            mAdapterHoanThanh.notifyDataSetChanged();
+
+            mTxtChuaXuLy.setText(ListTaskActivity.this.getString(R.string.txt_list_task_chua_xu_ly, mAdapterChuaXuLy.getCount()));
+            mTxtDangXuLy.setText(ListTaskActivity.this.getString(R.string.txt_list_task_dang_xu_ly, mAdapterDangXuLy.getCount()));
+            mTxtHoanThanh.setText(ListTaskActivity.this.getString(R.string.txt_list_task_hoan_thanh, mAdapterHoanThanh.getCount()));
         }).execute();
     }
 
@@ -103,13 +110,6 @@ public class ListTaskActivity extends AppCompatActivity {
                         break;
                 }
             }
-            mAdapterChuaXuLy.notifyDataSetChanged();
-            mAdapterDangXuLy.notifyDataSetChanged();
-            mAdapterHoanThanh.notifyDataSetChanged();
-
-            mTxtChuaXuLy.setText(ListTaskActivity.this.getString(R.string.txt_list_task_chua_xu_ly, mAdapterChuaXuLy.getCount()));
-            mTxtDangXuLy.setText(ListTaskActivity.this.getString(R.string.txt_list_task_chua_xu_ly, mAdapterDangXuLy.getCount()));
-            mTxtHoanThanh.setText(ListTaskActivity.this.getString(R.string.txt_list_task_chua_xu_ly, mAdapterHoanThanh.getCount()));
         }
     }
 

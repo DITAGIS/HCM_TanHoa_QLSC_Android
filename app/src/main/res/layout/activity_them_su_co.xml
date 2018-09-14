@@ -291,7 +291,7 @@
             android:focusable="true"
             android:onClick="onClickTextView"
             android:padding="@dimen/padding_medium"
-            android:text="Phản ánh" />
+            android:text="Báo sự cố" />
     </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
