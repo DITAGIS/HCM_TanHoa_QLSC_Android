@@ -36,19 +36,20 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_user" />
+                        android:src="@drawable/ic_user_black_24dp" />
 
-                    <TextView
-                        android:id="@+id/txtFullName_add_feature"
+                    <EditText
+                        android:id="@+id/eTxtFullName_add_feature"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginRight="@dimen/margin_medium"
+                        android:inputType="text|textCapWords"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/etxtPhoneNumber_add_feature"
                         android:textCursorDrawable="@null" />
@@ -63,12 +64,12 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_phone_number" />
+                        android:src="@drawable/ic_phone_black_24dp" />
 
                     <EditText
                         android:id="@+id/etxtPhoneNumber_add_feature"
@@ -78,6 +79,36 @@
                         android:layout_marginRight="@dimen/margin_medium"
                         android:hint="Số điện thoại"
                         android:inputType="number"
+
+                        android:maxLines="1"
+                        android:nextFocusDown="@+id/etxtAddress_add_feature"
+                        android:textCursorDrawable="@null" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorWhite"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:src="@drawable/ic_email_black_24dp" />
+
+                    <EditText
+                        android:id="@+id/etxtEmail_add_feature"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:hint="Email"
+                        android:inputType="text"
 
                         android:maxLines="1"
                         android:nextFocusDown="@+id/etxtAddress_add_feature"
@@ -102,12 +133,12 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_location_add_feature" />
+                        android:src="@drawable/ic_location_black_24dp" />
 
                     <EditText
                         android:id="@+id/etxtAddress_add_feature"
@@ -129,12 +160,12 @@
                     android:background="@color/colorWhite"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
@@ -159,13 +190,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorWhite"
-                    android:focusable="true" android:visibility="gone"
+                    android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
                     <TextView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
@@ -185,6 +217,7 @@
                         android:nextFocusDown="@+id/spin_hinh_thuc_phat_hien_add_feature"
                         android:textCursorDrawable="@null" />
                 </LinearLayout>
+
                 <LinearLayout
 
                     android:layout_width="match_parent"
@@ -195,12 +228,12 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_hinh_thuc_phat_hien" />
+                        android:src="@drawable/ic_unlink_black_24dp" />
 
                     <Spinner
                         android:id="@+id/spin_hinh_thuc_phat_hien_add_feature"
@@ -221,12 +254,12 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_note" />
+                        android:src="@drawable/ic_notebook_black_24dp" />
 
                     <EditText
                         android:id="@+id/etxtNote_add_feature"
@@ -251,12 +284,12 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="30dp"
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_photo" />
+                        android:src="@drawable/ic_camera_black_24dp" />
 
                     <Button
                         android:id="@+id/btnAttachemnt_add_feature"

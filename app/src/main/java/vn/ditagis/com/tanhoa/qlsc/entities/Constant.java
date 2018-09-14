@@ -98,6 +98,7 @@ public class Constant {
         public static final String TRANG_THAI = "TrangThai";
         public static final String GHI_CHU = "GhiChu";
         public static final String NGUOI_PHAN_ANH = "NguoiPhanAnh";
+        public static final String EMAIL_NGUOI_PHAN_ANH = "EmailNguoiPhanAnh";
         public static final String TGKHAC_PHUC = "TGKhacPhuc";
         public static final String TGPHAN_ANH = "TGPhanAnh";
         public static final String DIA_CHI = "DiaChi";

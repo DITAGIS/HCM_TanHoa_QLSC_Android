@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.data.CodedValue;
@@ -38,10 +37,12 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.utities.ImageFile;
 
 public class ThemSuCoActivity extends AppCompatActivity {
-    @BindView(R.id.txtFullName_add_feature)
-    TextView txtFullName;
+    @BindView(R.id.eTxtFullName_add_feature)
+    EditText txtFullName;
     @BindView(R.id.etxtPhoneNumber_add_feature)
     EditText etxtPhoneNumber;
+    @BindView(R.id.etxtEmail_add_feature)
+    EditText etxtEmail;
     @BindView(R.id.etxtAddress_add_feature)
     EditText etxtAddress;
     @BindView(R.id.etxtSubAdmin_add_feature)
@@ -135,12 +136,13 @@ public class ThemSuCoActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.txt_add_feature_add_feature:
                 if (isNotEmpty()) {
-                    mApplication.getDiemSuCo.setNguoiPhanAnh(txtFullName.getText().toString());
-                    mApplication.getDiemSuCo.setSdtPhanAnh(etxtPhoneNumber.getText().toString());
-                    mApplication.getDiemSuCo.setVitri(etxtAddress.getText().toString());
-                    mApplication.getDiemSuCo.setQuan(etxtSubAdmin.getText().toString());
-                    mApplication.getDiemSuCo.setPhuong(etxtLocality.getText().toString());
-                    mApplication.getDiemSuCo.setGhiChu(etxtNote.getText().toString());
+                    mApplication.getDiemSuCo.setNguoiPhanAnh(txtFullName.getText().toString().trim());
+                    mApplication.getDiemSuCo.setSdtPhanAnh(etxtPhoneNumber.getText().toString().trim());
+                    mApplication.getDiemSuCo.setEmailPhanAnh(etxtEmail.getText().toString().trim());
+                    mApplication.getDiemSuCo.setVitri(etxtAddress.getText().toString().trim());
+                    mApplication.getDiemSuCo.setQuan(etxtSubAdmin.getText().toString().trim());
+                    mApplication.getDiemSuCo.setPhuong(etxtLocality.getText().toString().trim());
+                    mApplication.getDiemSuCo.setGhiChu(etxtNote.getText().toString().trim());
                     for (CodedValue codedValue : mCodeValues) {
                         if (codedValue.getName().equals(spinHinhThucPhatHien.getSelectedItem().toString()))
                             mApplication.getDiemSuCo.setHinhThucPhatHien(Short.parseShort(codedValue.getCode().toString()));

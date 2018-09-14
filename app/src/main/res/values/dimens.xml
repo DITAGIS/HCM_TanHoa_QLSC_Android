@@ -32,5 +32,6 @@
     <dimen name="margin_large">60dp</dimen>
     <dimen name="padding_layout">20dp</dimen>
     <dimen name="padding_medium">16dp</dimen>
+    <dimen name="size_image_them_su_co">24dp</dimen>
 
 </resources>

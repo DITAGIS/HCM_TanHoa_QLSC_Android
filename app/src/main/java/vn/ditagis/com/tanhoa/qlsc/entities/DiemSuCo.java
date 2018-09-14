@@ -10,6 +10,7 @@ public class DiemSuCo {
     public Date ngayPhanAnh;
     private String nguoiPhanAnh;
     public String sdtPhanAnh;
+    public String emailPhanAnh;
     public short trangThai;
     public short hinhThucPhatHien;
     public String quan;
@@ -22,6 +23,14 @@ public class DiemSuCo {
     public byte[] image;
 
     public DiemSuCo() {
+    }
+
+    public String getEmailPhanAnh() {
+        return emailPhanAnh;
+    }
+
+    public void setEmailPhanAnh(String emailPhanAnh) {
+        this.emailPhanAnh = emailPhanAnh;
     }
 
     public String getIdSuCo() {
