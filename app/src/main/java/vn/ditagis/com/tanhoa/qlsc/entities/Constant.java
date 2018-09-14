@@ -35,7 +35,6 @@ public class Constant {
 
     public static final short LOAISUCO_ONGNGANH = 1;
     public static final short LOAISUCO_ONGCHINH = 2;
-    public static final short LOAISUCO_CHUAPHANLOAI = 3;
     public String API_LOGIN;
 
 

@@ -8,4 +8,5 @@
     <string name="message_btn_ok">OK</string>
     <string name="message_btn_cancel">Hủy</string>
     <string name="message_permission">Cần cho phép ứng dụng truy cập những quyền trên!</string>
+    <string name="message_select_loai_su_co">Vui lòng chọn loại sự cố!</string>
 </resources>
