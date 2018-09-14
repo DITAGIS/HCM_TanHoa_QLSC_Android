@@ -116,7 +116,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                     hasDomain = true;
                     //Trường hợp nguyên nhân, không tự động lấy được domain
                     if (item.getFieldName().equals(Constant.FIELD_SUCO.NGUYEN_NHAN)) {
-                        if (finalLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
+                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeature.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.NGUYEN_NHAN)).getCodedValues();
                             if (codedValues != null) {
@@ -131,7 +131,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                     }
                     //Trường hợp vật liệu, không tự động lấy được domain
                     else if (item.getFieldName().equals(Constant.FIELD_SUCO.VAT_LIEU)) {
-                        if (finalLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
+                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeature.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.VAT_LIEU)).getCodedValues();
                             if (codedValues != null) {
@@ -144,7 +144,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                             }
                         }
                     } else if (item.getFieldName().equals(Constant.FIELD_SUCO.DUONG_KINH_ONG)) {
-                        if (finalLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
+                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeature.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.DUONG_KINH_ONG)).getCodedValues();
                             if (codedValues != null) {
