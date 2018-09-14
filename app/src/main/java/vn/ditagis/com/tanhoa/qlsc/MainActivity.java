@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int colors[];
     private DApplication mApplication;
     private int mLoadedOnMap;
-    @BindView(R.id.txt_info_appbar)
+    @BindView(R.id.txt_appbar_info)
     TextView mTxtInfo;
     @BindView(R.id.llayout_info_app_bar)
     LinearLayout mLLayoutInfo;

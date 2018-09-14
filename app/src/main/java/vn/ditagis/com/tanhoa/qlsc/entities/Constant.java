@@ -125,9 +125,10 @@ public class Constant {
         public static final String GHI_CHU = "GhiChu";
         public static final String NHAN_VIEN = "NhanVien";
         public static final String TG_CAP_NHAT = "TGCapNhat";
+        public static final String TG_GIAO_VIEC = "TGGiaoViec";
         public static final String DIA_CHI = "DiaChi";
         public static final String HINH_THUC_PHAT_HIEN = "HinhThucPhatHien";
-        public static final String NGUYEN_NHAN = "NGUYENNHAN";
+        public static final String NGUYEN_NHAN = "NguyenNhan";
         public static final String VAT_LIEU = "VatLieu";
         public static final String DUONG_KINH_ONG = "DuongKinhOng";
         public static final String DON_VI = "DonVi";

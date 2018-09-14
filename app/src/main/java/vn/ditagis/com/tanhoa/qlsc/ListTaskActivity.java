@@ -91,7 +91,7 @@ public class ListTaskActivity extends AppCompatActivity {
                     Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
                     attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                     Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
-                    Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT)).getTime()),
+                    Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
                     attributes.get(Constant.FIELD_SUCOTHONGTIN.DIA_CHI).toString());
             Object value = feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI);
             if (value == null) {

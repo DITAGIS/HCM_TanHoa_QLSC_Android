@@ -8,8 +8,8 @@ import android.os.AsyncTask;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ArcGISFeatureTable;
+import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
 import com.esri.arcgisruntime.mapping.view.MapView;
@@ -25,7 +25,7 @@ import vn.ditagis.com.tanhoa.qlsc.utities.Popup;
  * Created by ThanLe on 4/16/2018.
  */
 
-public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> {
+public class SingleTapMapViewAsync extends AsyncTask<Point, Feature, Void> {
     private ProgressDialog mDialog;
     private MapView mMapView;
     private ArcGISFeature mSelectedArcGISFeature;
@@ -50,38 +50,45 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
 
         final ListenableFuture<List<IdentifyLayerResult>> listListenableFuture = mMapView.identifyLayersAsync(mClickPoint, 5, false, 1);
         listListenableFuture.addDoneListener(() -> {
-            List<IdentifyLayerResult> identifyLayerResults = null;
+            List<IdentifyLayerResult> identifyLayerResults;
             try {
                 identifyLayerResults = listListenableFuture.get();
-                for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
-                    {
-                        List<GeoElement> elements = identifyLayerResult.getElements();
-                        if (elements.size() > 0 && elements.get(0) instanceof ArcGISFeature && !isFound) {
-                            isFound = true;
-                            mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
-                            long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
-                                    getServiceLayerId();
-                            if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable()).getServiceLayerId())
-                                publishProgress(mApplication.getDFeatureLayer.getLayer());
+                if (identifyLayerResults.size() > 0)
+                    for (IdentifyLayerResult identifyLayerResult : identifyLayerResults) {
+                        {
+                            List<GeoElement> elements = identifyLayerResult.getElements();
+                            if (elements.size() > 0 && elements.get(0) instanceof ArcGISFeature && !isFound) {
+                                isFound = true;
+                                mSelectedArcGISFeature = (ArcGISFeature) elements.get(0);
+                                long serviceLayerId = mSelectedArcGISFeature.getFeatureTable().
+                                        getServiceLayerId();
+                                if (serviceLayerId == ((ArcGISFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable()).getServiceLayerId()) {
+                                    querySuCoThongTin();
+                                }
+                            }
                         }
                     }
-                }
+                else publishProgress();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
                 publishProgress();
-            } catch (
-                    InterruptedException e)
-
-            {
-                e.printStackTrace();
-            } catch (
-                    ExecutionException e)
-
-            {
-                e.printStackTrace();
             }
         });
         return null;
     }
 
+    private void querySuCoThongTin() {
+        mApplication.setGeometry(mSelectedArcGISFeature.getGeometry());
+        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+        new QueryServiceFeatureTableAsync(mActivity,
+                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+            if (output != null) {
+                publishProgress(output);
+            }
+        }).execute(queryClause);
+    }
 
     @Override
     protected void onPreExecute() {
@@ -98,7 +105,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
     }
 
     @Override
-    protected void onProgressUpdate(FeatureLayer... values) {
+    protected void onProgressUpdate(Feature... values) {
         super.onProgressUpdate(values);
 //        if (values != null && mSelectedArcGISFeature != null && values.length > 0 && values[0] != null) {
 //
@@ -108,10 +115,11 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, FeatureLayer, Void> 
 //        if (mDialog != null && mDialog.isShowing()) {
 //            mDialog.dismiss();
 //        }
-        if (values != null && values.length > 0 && mSelectedArcGISFeature != null) {
+        if (values != null && values.length > 0) {
             HoSoVatTuSuCoAsync hoSoVatTuSuCoAsync = new HoSoVatTuSuCoAsync(mActivity, object -> {
                 //Không kiểm tra object khác null, vì có thể sự cố đó chưa có vật tư
-                mPopUp.showPopup(mSelectedArcGISFeature, false);
+
+                mPopUp.showPopup((ArcGISFeature) values[0], false);
                 if (mDialog != null && mDialog.isShowing()) {
                     mDialog.dismiss();
                 }

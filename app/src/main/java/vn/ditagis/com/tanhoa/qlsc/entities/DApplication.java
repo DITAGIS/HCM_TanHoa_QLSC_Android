@@ -4,6 +4,7 @@ import android.app.Application;
 import android.location.Location;
 
 import com.esri.arcgisruntime.data.ArcGISFeature;
+import com.esri.arcgisruntime.geometry.Geometry;
 
 import java.net.URISyntaxException;
 
@@ -59,6 +60,16 @@ public class DApplication extends Application {
 
     public void setSelectedIDSuCo(String selectedIDSuCo) {
         this.selectedIDSuCo = selectedIDSuCo;
+    }
+
+    private Geometry geometry;
+
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
     }
 
     private ArcGISFeature arcGISFeature;

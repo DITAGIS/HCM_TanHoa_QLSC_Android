@@ -124,7 +124,7 @@
     <string name="action_logout">Đăng xuất</string>
     <string name="validate_no_connect">Không có kết nối internet</string>
     <string name="info_login_empty">Tên đăng nhập hoặc mật khẩu không được để trống</string>
-    <string name="validate_login_fail">Sai tên đăng nhập hoặc mật khẩu</string>
+    <string name="validate_login_fail">Sai tên đăng nhập hoặc mật khẩu\nHoặc tài khoản không có quyền truy cập ứng dụng!</string>
     <string name="validate_hieuluc">Đồng hồ của khách hàng đã không còn hiệu lực\nVui lòng liên hệ công ty Cấp nước Tân Hòa\nđể biết thêm thông tin</string>
     <string name="validate_tracuutiennuoc_invalidtime">Chưa đến đợt đọc số!\nVui lòng chọn thời gian khác để tra cứu</string>
 

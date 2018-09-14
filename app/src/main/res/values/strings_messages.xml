@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="message_list_task_title">Vui lòng đợi!</string>
+    <string name="message_progress_title">Vui lòng đợi!</string>
+    <string name="message_viewmore_message">Đang lấy thông tin sự cố</string>
     <string name="message_list_task_message">Đang lấy danh sách công việc…</string>
     <string name="message_click_feature_complete">Sự cố đã hoàn thành!</string>
     <string name="message_title_confirm">Xác nhận</string>
