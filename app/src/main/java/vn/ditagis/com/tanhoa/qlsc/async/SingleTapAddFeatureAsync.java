@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutionException;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
+import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
+import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 
 /**
  * Created by ThanLe on 4/16/2018.
@@ -66,16 +68,37 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature = mServiceFeatureTable.createFeature();
             feature.setGeometry(mApplication.getDiemSuCo.getPoint());
             feature.getAttributes().put(Constant.FIELD_SUCO.DIA_CHI, mApplication.getDiemSuCo.getVitri());
-            feature.getAttributes().put(Constant.FIELD_SUCO.QUAN, mApplication.getDiemSuCo.getQuan());
-            if (mApplication.getDiemSuCo.getPhuong() != null)
-                feature.getAttributes().put(Constant.FIELD_SUCO.PHUONG, mApplication.getDiemSuCo.getPhuong());
+
             feature.getAttributes().put(Constant.FIELD_SUCO.GHI_CHU, mApplication.getDiemSuCo.getGhiChu());
             feature.getAttributes().put(Constant.FIELD_SUCO.NGUOI_PHAN_ANH, mApplication.getDiemSuCo.getNguoiPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.EMAIL_NGUOI_PHAN_ANH, mApplication.getDiemSuCo.getEmailPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN, mApplication.getDiemSuCo.getHinhThucPhatHien());
             feature.getAttributes().put(Constant.FIELD_SUCO.DOI_TUONG_PHAT_HIEN, Constant.DOI_TUONG_PHAT_HIEN_CBCNV);
-            addFeature(feature);
+
+            for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG())
+                if (dLayerInfo.getId().equals(Constant.ID_BASENAP)) {
+                    ServiceFeatureTable serviceFeatureTableHanhChinh = new ServiceFeatureTable(
+                            dLayerInfo.getUrl() + Constant.URL_BASEMAP);
+                    QueryParameters queryParameters = new QueryParameters();
+                    queryParameters.setGeometry(feature.getGeometry());
+                    new QueryServiceFeatureTableAsync(mActivity, serviceFeatureTableHanhChinh, output -> {
+                        if (output != null) {
+                            Object phuong = output.getAttributes().get(Constant.FIELD_HANHCHINH.ID_HANH_CHINH);
+                            Object quan = output.getAttributes().get(Constant.FIELD_HANHCHINH.MA_HUYEN);
+                            if (quan != null) {
+                                feature.getAttributes().put(Constant.FIELD_SUCO.QUAN, quan.toString());
+                            }
+                            if (phuong != null)
+                                feature.getAttributes().put(Constant.FIELD_SUCO.PHUONG, phuong.toString());
+                        }
+                        addFeature(feature);
+                    }).execute(queryParameters);
+
+
+                    break;
+                }
+
 
         } catch (Exception e) {
             publishProgress();

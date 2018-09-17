@@ -21,7 +21,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
  * Created by ThanLe on 4/16/2018.
  */
 
-public class QueryServiceFeatureTableAsync extends AsyncTask<String, Feature, Void> {
+public class QueryServiceFeatureTableAsync extends AsyncTask<QueryParameters, Feature, Void> {
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
     @SuppressLint("StaticFieldLeak")
@@ -47,14 +47,12 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<String, Feature, Vo
     }
 
     @Override
-    protected Void doInBackground(String... params) {
+    protected Void doInBackground(QueryParameters... params) {
         try {
             if (params != null && params.length > 0) {
-                QueryParameters queryParameters = new QueryParameters();
 
-                queryParameters.setWhereClause(params[0]);
 
-                ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+                ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(params[0], ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
                 featureQueryResultListenableFuture.addDoneListener(() -> {
                     try {
                         FeatureQueryResult result = featureQueryResultListenableFuture.get();

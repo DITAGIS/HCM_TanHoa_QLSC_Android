@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.esri.arcgisruntime.data.Feature;
+import com.esri.arcgisruntime.data.QueryParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,10 +66,13 @@ private String mIDSuCo;
                     loadVatTu();
                     mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
                 });
+
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                 Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-        queryServiceFeatureTableAsync.execute(queryClause);
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(queryClause);
+        queryServiceFeatureTableAsync.execute(queryParameters);
     }
 
     private void loadVatTu() {

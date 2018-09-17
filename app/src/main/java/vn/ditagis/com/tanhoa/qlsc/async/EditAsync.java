@@ -14,6 +14,7 @@ import com.esri.arcgisruntime.data.CodedValueDomain;
 import com.esri.arcgisruntime.data.Domain;
 import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
 import java.text.ParseException;
@@ -259,7 +260,9 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                 Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-        queryServiceFeatureTableAsync.execute(queryClause);
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(queryClause);
+        queryServiceFeatureTableAsync.execute(queryParameters);
 
         return null;
     }
@@ -267,6 +270,8 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     private void updateSuCo(ArcGISFeature arcGISFeature) {
         String queryClause = String.format("%s = '%s'",
                 Constant.FIELD_SUCO.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString());
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(queryClause);
         new QueryServiceFeatureTableAsync(mActivity, (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable(), output -> {
             if (output != null) {
                 ArcGISFeature arcGISFeatureSuCo = (ArcGISFeature) output;
@@ -290,7 +295,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                             }));
                 });
             }
-        }).execute(queryClause);
+        }).execute(queryParameters);
         mServiceFeatureTableSuCo.loadAsync();
         mServiceFeatureTableSuCo.addDoneLoadingListener(() -> {
         });

@@ -9,6 +9,7 @@ import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.ArcGISFeatureTable;
 import com.esri.arcgisruntime.data.Feature;
+import com.esri.arcgisruntime.data.QueryParameters;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.mapping.GeoElement;
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult;
@@ -82,12 +83,14 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, Feature, Void> {
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
                 Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(queryClause);
         new QueryServiceFeatureTableAsync(mActivity,
                 mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             if (output != null) {
                 publishProgress(output);
             }
-        }).execute(queryClause);
+        }).execute(queryParameters);
     }
 
     @Override

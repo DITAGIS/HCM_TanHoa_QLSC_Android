@@ -10,6 +10,7 @@ public class Constant {
     public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
     public static final String ID_VAT_TU_TABLE = "vattuTBL";
+    public static final String ID_BASENAP = "BASEMAP";
     public static final String ROLE_PGN = "pgn";
     public static final String GROUPROLE_TC = "tc";
     public static final String GROUPROLE_GS = "gs";
@@ -24,6 +25,7 @@ public class Constant {
     public static final int REQUEST_CODE_LIST_TASK = 9;
     public static final int REQUEST_CODE_NOTIFICATION = 100;
     public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
+    public static final String URL_BASEMAP = "/3";
     public static final String[] REQUEST_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -146,6 +148,12 @@ public class Constant {
         public static final String SO_LUONG = "SoLuong";
         public static final String TEN_VAT_TU = "TenVatTu";
         public static final String DON_VI_TINH = "DonViTinh";
+
+    }
+
+    public class FIELD_HANHCHINH {
+        public static final String ID_HANH_CHINH = "IDHanhChinh";
+        public static final String MA_HUYEN = "MaHuyen";
 
     }
 

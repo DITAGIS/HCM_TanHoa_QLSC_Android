@@ -168,13 +168,15 @@ public class MapViewHandler extends Activity {
                         String queryClause = String.format("%s = '%s' and %s = '%s'",
                                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, item.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
                                 Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+                        QueryParameters queryParameters1 = new QueryParameters();
+                        queryParameters1.setWhereClause(queryClause);
                         new QueryServiceFeatureTableAsync(mActivity,
                                 mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
                             if (output != null) {
                                 mApplication.setArcGISFeature((ArcGISFeature) output);
                                 mPopUp.showPopup();
                             }
-                        }).execute(queryClause);
+                        }).execute(queryParameters1);
 
                     }
                 }

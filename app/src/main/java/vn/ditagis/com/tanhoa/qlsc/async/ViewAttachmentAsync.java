@@ -13,6 +13,7 @@ import android.widget.ListView;
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.data.Attachment;
+import com.esri.arcgisruntime.data.QueryParameters;
 
 import org.apache.commons.io.IOUtils;
 
@@ -69,6 +70,8 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                 Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+        QueryParameters queryParameters = new QueryParameters();
+        queryParameters.setWhereClause(queryClause);
         new QueryServiceFeatureTableAsync(mMainActivity,
                 ((DApplication) mMainActivity.getApplication()).getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
             ArcGISFeature arcGISFeature = (ArcGISFeature) output;
@@ -118,7 +121,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                     Log.e("ERROR", e.getMessage());
                 }
             });
-        }).execute(queryClause);
+        }).execute(queryParameters);
 
         return null;
     }
