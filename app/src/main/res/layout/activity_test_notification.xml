@@ -1,0 +1,33 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="startRepeatingTimer"
+        android:padding="@dimen/padding_medium"
+        android:text="bắt đầu"
+        tools:context=".WidgetAlarmManagerActivity" />
+
+    <Button
+        android:id="@+id/btCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="cancelRepeatingTimer"
+        android:padding="@dimen/padding_medium"
+        android:text="Hủy"
+        tools:context=".WidgetAlarmManagerActivity" />
+
+    <Button
+        android:id="@+id/btOneTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onetimeTimer"
+        android:padding="@dimen/padding_medium"
+        android:text="1 lần"
+        tools:context=".WidgetAlarmManagerActivity" />
+</LinearLayout>

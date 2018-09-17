@@ -118,8 +118,8 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, Feature, Void> {
         if (values != null && values.length > 0) {
             HoSoVatTuSuCoAsync hoSoVatTuSuCoAsync = new HoSoVatTuSuCoAsync(mActivity, object -> {
                 //Không kiểm tra object khác null, vì có thể sự cố đó chưa có vật tư
-
-                mPopUp.showPopup((ArcGISFeature) values[0], false);
+                mApplication.setArcGISFeature((ArcGISFeature) values[0]);
+                mPopUp.showPopup( );
                 if (mDialog != null && mDialog.isShowing()) {
                     mDialog.dismiss();
                 }

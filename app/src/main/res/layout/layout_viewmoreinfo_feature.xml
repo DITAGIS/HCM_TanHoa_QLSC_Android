@@ -72,9 +72,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/margin_small"
-        android:gravity="right|center_vertical"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         tools:ignore="RtlHardcoded">
+
+        <Button
+            android:id="@+id/btn_updateinfo_start"
+            style="@style/MyTextAppearance.Blue"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Hoàn thành"
+            android:background="@drawable/layout_border_transparent" />
 
         <Button
             android:id="@+id/btn_updateinfo_left"

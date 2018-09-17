@@ -81,8 +81,10 @@
             android:id="@+id/btn_updateinfo_left"
             style="@style/MyTextAppearance.Blue"
             android:layout_width="wrap_content"
+            android:text="Hoàn thành"
             android:layout_height="wrap_content"
-            android:background="@drawable/layout_border_transparent" />
+            android:background="@drawable/layout_border_transparent"
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/btn_update_right"

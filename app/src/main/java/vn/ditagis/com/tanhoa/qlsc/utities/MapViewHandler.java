@@ -31,6 +31,7 @@ import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
+import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.SingleTapAddFeatureAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.SingleTapMapViewAsync;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
@@ -46,7 +47,6 @@ public class MapViewHandler extends Activity {
     private FeatureLayer suCoTanHoaLayerThiCong;
     private Callout mCallout;
     private android.graphics.Point mClickPoint;
-    private ArcGISFeature mSelectedArcGISFeature;
     private MapView mMapView;
     private boolean isClickBtnAdd = false;
     private ServiceFeatureTable mServiceFeatureTable;
@@ -119,35 +119,38 @@ public class MapViewHandler extends Activity {
         return Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
     }
 
-    public void queryByObjectID(int objectID) {
-        final QueryParameters queryParameters = new QueryParameters();
-        final String query = "OBJECTID = " + objectID;
-        queryParameters.setWhereClause(query);
-        final ListenableFuture<FeatureQueryResult> feature;
-        feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-        feature.addDoneListener(() -> {
-            try {
-                FeatureQueryResult result = feature.get();
-                if (result.iterator().hasNext()) {
-                    Feature item = result.iterator().next();
-                    Envelope extent = item.getGeometry().getExtent();
-
-                    mMapView.setViewpointGeometryAsync(extent);
-                    suCoTanHoaLayerThiCong.selectFeature(item);
-                    if (mApplication.getDFeatureLayer.getLayer() != null) {
-                        mSelectedArcGISFeature = (ArcGISFeature) item;
-                        if (mSelectedArcGISFeature != null)
-                            mPopUp.showPopup(mSelectedArcGISFeature, false);
-                    }
-                }
-
-            } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        });
-    }
+//    public void queryByObjectID(int objectID) {
+//        final QueryParameters queryParameters = new QueryParameters();
+//        final String query = "OBJECTID = " + objectID;
+//        queryParameters.setWhereClause(query);
+//        final ListenableFuture<FeatureQueryResult> feature;
+//        feature = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
+//        feature.addDoneListener(() -> {
+//            try {
+//                FeatureQueryResult result = feature.get();
+//                if (result.iterator().hasNext()) {
+//                    Feature item = result.iterator().next();
+//                    Envelope extent = item.getGeometry().getExtent();
+//mApplication.setGeometry(item.getGeometry());
+//                    mMapView.setViewpointGeometryAsync(extent);
+//                    suCoTanHoaLayerThiCong.selectFeature(item);
+//                    if (mApplication.getDFeatureLayer.getLayer() != null) {
+//                        mSelectedArcGISFeature = (ArcGISFeature) item;
+//                        if (mSelectedArcGISFeature != null) {
+//                            mApplication.setArcGISFeature(mSelectedArcGISFeature);
+//                            mPopUp.showPopup(mSelectedArcGISFeature, false);
+//                        }
+//                    }
+//                }
+//
+//            } catch (InterruptedException | ExecutionException e) {
+//                e.printStackTrace();
+//            }
+//        });
+//    }
 
     public void query(String query) {
+
         final QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(query);
         final ListenableFuture<FeatureQueryResult> feature;
@@ -158,13 +161,21 @@ public class MapViewHandler extends Activity {
                 if (result.iterator().hasNext()) {
                     Feature item = result.iterator().next();
                     Envelope extent = item.getGeometry().getExtent();
-
+                    mApplication.setGeometry(item.getGeometry());
                     mMapView.setViewpointGeometryAsync(extent);
                     suCoTanHoaLayerThiCong.selectFeature(item);
                     if (mApplication.getDFeatureLayer.getLayer() != null) {
-                        mSelectedArcGISFeature = (ArcGISFeature) item;
-                        if (mSelectedArcGISFeature != null)
-                            mPopUp.showPopup(mSelectedArcGISFeature, false);
+                        String queryClause = String.format("%s = '%s' and %s = '%s'",
+                                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, item.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+                        new QueryServiceFeatureTableAsync(mActivity,
+                                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                            if (output != null) {
+                                mApplication.setArcGISFeature((ArcGISFeature) output);
+                                mPopUp.showPopup();
+                            }
+                        }).execute(queryClause);
+
                     }
                 }
 

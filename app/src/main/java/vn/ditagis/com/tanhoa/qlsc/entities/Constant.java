@@ -14,12 +14,15 @@ public class Constant {
     public static final String GROUPROLE_TC = "tc";
     public static final String GROUPROLE_GS = "gs";
     public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
+    public static final int NOTIFICATION_ID = 12345;
+
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
     public static final int REQUEST_CODE_LAYER = 6;
     public static final int REQUEST_CODE_ADD_FEATURE = 7;
     public static final int REQUEST_CODE_ADD_FEATURE_ATTACHMENT = 8;
     public static final int REQUEST_CODE_LIST_TASK = 9;
+    public static final int REQUEST_CODE_NOTIFICATION = 100;
     public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
     public static final String[] REQUEST_PERMISSIONS = new String[]{
             Manifest.permission.ACCESS_FINE_LOCATION,

@@ -16,8 +16,6 @@ import com.esri.arcgisruntime.data.FeatureEditResult;
 import com.esri.arcgisruntime.data.FeatureType;
 import com.esri.arcgisruntime.data.ServiceFeatureTable;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -225,19 +223,18 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                 }
                 hasDomain = false;
             }
-            if (finalTrangThai.equals(mActivity.getString(R.string.SuCo_TrangThai_HoanThanh)))
-
-            {
-                c[0] = Calendar.getInstance();
-                arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCO.TGKHAC_PHUC, c[0]);
-                long ngayKhacPhuc = c[0].getTimeInMillis();
-                long ngayThongBao = ((Calendar) arcGISFeatureSuCoThongTin.getAttributes().
-                        get(Constant.FIELD_SUCO.TGPHAN_ANH)).getTimeInMillis();
-                double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayThongBao) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
+            arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+            if (finalTrangThai.equals(mActivity.getString(R.string.SuCo_TrangThai_HoanThanh))) {
+                arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+//                c[0] = Calendar.getInstance();
+//                arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCO.TGKHAC_PHUC, c[0]);
+//                long ngayKhacPhuc = c[0].getTimeInMillis();
+//                long ngayThongBao = ((Calendar) arcGISFeatureSuCoThongTin.getAttributes().
+//                        get(Constant.FIELD_SUCO.TGPHAN_ANH)).getTimeInMillis();
+//                double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayThongBao) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
 //            arcGISFeature.getAttributes().put((mActivity.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
             }
             arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT, Calendar.getInstance());
-            arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI,Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
 //        arcGISFeature.getAttributes().put(mActivity.getString(R.string.Field_SuCo_NhanVienGiamSat),
 //               mApplication.getUserDangNhap.getUserName());
             mServiceFeatureTableSuCoThongTin.loadAsync();

@@ -125,7 +125,7 @@ public class ListTaskActivity extends AppCompatActivity {
         builder.setView(layout);
         builder.setCancelable(false)
                 .setPositiveButton(R.string.message_btn_ok, (dialog, i) -> {
-                    ((DApplication) ListTaskActivity.this.getApplication()).setSelectedIDSuCo(item.getId());
+                    ((DApplication) ListTaskActivity.this.getApplication()).getDiemSuCo.setIdSuCo(item.getId());
                     goHome();
                 }).setNegativeButton(R.string.message_btn_cancel, (dialog, i) -> {
         });

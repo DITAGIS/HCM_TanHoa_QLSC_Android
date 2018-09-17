@@ -19,11 +19,6 @@ public class DApplication extends Application {
         getConstant = new Constant();
     }
 
-    public DiemSuCo getDiemSuCo;
-
-    {
-        getDiemSuCo = new DiemSuCo();
-    }
 
     private User userDangNhap;
 
@@ -52,14 +47,10 @@ public class DApplication extends Application {
         }
     }
 
-    private String selectedIDSuCo;
+    public DiemSuCo getDiemSuCo;
 
-    public String getSelectedIDSuCo() {
-        return selectedIDSuCo;
-    }
-
-    public void setSelectedIDSuCo(String selectedIDSuCo) {
-        this.selectedIDSuCo = selectedIDSuCo;
+    {
+        getDiemSuCo = new DiemSuCo();
     }
 
     private Geometry geometry;

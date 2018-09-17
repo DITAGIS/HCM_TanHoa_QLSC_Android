@@ -1,6 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.utities;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
@@ -291,6 +292,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final ListView lstViewInfo = layout.findViewById(R.id.lstView_alertdialog_info);
         mBtnLeft = layout.findViewById(R.id.btn_updateinfo_left);
         Button btnRight = layout.findViewById(R.id.btn_update_right);
+        Button btnStart = layout.findViewById(R.id.btn_updateinfo_start);
+        btnStart.setVisibility(View.VISIBLE);
         layout.findViewById(R.id.layout_viewmoreinfo_id_su_co).setVisibility(View.VISIBLE);
 
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setOnClickListener(v -> viewAttachment());
@@ -306,51 +309,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         layout.findViewById(R.id.framelayout_viewmoreinfo_attachment).setVisibility(View.VISIBLE);
         mBtnLeft.setText(mMainActivity.getResources().getString(R.string.btnLeftUpdateFeature));
         btnRight.setText(mMainActivity.getResources().getString(R.string.btnRightUpdateFeature));
-        mBtnLeft.setOnClickListener(view -> {
-            boolean isComplete = false;
-            for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
-                if (item.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI)
-                        && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.SuCo_TrangThai_HoanThanh))) {
-                    isComplete = true;
-                }
-            if (isComplete) {
-                final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeatureSuCoThongTin.fetchAttachmentsAsync();
-                attachmentResults.addDoneListener(() -> {
-                    try {
+        btnStart.setOnClickListener(view -> complete(arcGISFeatureSuCoThongTin, dialog));
+        mBtnLeft.setOnClickListener(view ->
+                update(arcGISFeatureSuCoThongTin, dialog)
+        );
+        btnRight.setOnClickListener(view ->
 
-                        final List<Attachment> attachments = attachmentResults.get();
-                        int size = attachments.size();
-                        if (size == 0) {
-                            MySnackBar.make(mBtnLeft, R.string.message_ChupAnh_HoanThanh, true);
-                        } else if (mServiceFeatureTable != null) {
-                            EditAsync editAsync;
-                            editAsync = new EditAsync(mMainActivity,
-                                    mSelectedArcGISFeature, true, null,
-                                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature1 -> {
-                                mCallout.dismiss();
-                                dialog.dismiss();
-                            });
-                            editAsync.execute(mFeatureViewMoreInfoAdapter);
-                        }
-                    } catch (InterruptedException | ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                });
-
-            } else if (mServiceFeatureTable != null) {
-
-                EditAsync editAsync;
-                editAsync = new EditAsync(mMainActivity,
-                        mSelectedArcGISFeature, true, null,
-                        mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature -> {
-                    mCallout.dismiss();
-                    dialog.dismiss();
-                });
-                editAsync.execute(mFeatureViewMoreInfoAdapter);
-            }
-
-        });
-        btnRight.setOnClickListener(view -> {
+        {
             capture(false);
             mDialog = dialog;
         });
@@ -359,6 +324,65 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //            dialogProgress.dismiss();
     }
 
+    private void complete(ArcGISFeature arcGISFeatureSuCoThongTin, Dialog dialog) {
+        if (arcGISFeatureSuCoThongTin != null) {
+            arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+            mApplication.setArcGISFeature(arcGISFeatureSuCoThongTin);
+            for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                if (item.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI)) {
+                    item.setValue(mMainActivity.getString(R.string.SuCo_TrangThai_HoanThanh));
+                    break;
+                }
+            mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
+            update(arcGISFeatureSuCoThongTin, dialog);
+        }
+
+    }
+
+    private void update(ArcGISFeature arcGISFeatureSuCoThongTin, Dialog dialog) {
+        boolean isComplete = false;
+        for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+            if (item.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI)
+                    && item.getValue().toString().equals(mMainActivity.getResources().getString(R.string.SuCo_TrangThai_HoanThanh))) {
+                isComplete = true;
+            }
+        if (isComplete) {
+            final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeatureSuCoThongTin.fetchAttachmentsAsync();
+            attachmentResults.addDoneListener(() -> {
+                try {
+
+                    final List<Attachment> attachments = attachmentResults.get();
+                    int size = attachments.size();
+                    if (size == 0) {
+                        MySnackBar.make(mBtnLeft, R.string.message_ChupAnh_HoanThanh, true);
+                    } else if (mServiceFeatureTable != null) {
+                        EditAsync editAsync;
+                        editAsync = new EditAsync(mMainActivity,
+                                mSelectedArcGISFeature, true, null,
+                                mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature1 -> {
+                            mCallout.dismiss();
+                            dialog.dismiss();
+                        });
+                        editAsync.execute(mFeatureViewMoreInfoAdapter);
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
+                }
+            });
+
+        } else if (mServiceFeatureTable != null) {
+
+            EditAsync editAsync;
+            editAsync = new EditAsync(mMainActivity,
+                    mSelectedArcGISFeature, true, null,
+                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature -> {
+                mCallout.dismiss();
+                dialog.dismiss();
+            });
+            editAsync.execute(mFeatureViewMoreInfoAdapter);
+        }
+
+    }
 
     private Object getIdFeatureTypes(List<FeatureType> featureTypes, String value) {
         Object code = null;
@@ -1132,14 +1156,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     @SuppressLint("InflateParams")
-    public void showPopup(final ArcGISFeature selectedArcGISFeature,
-                          final boolean isAddFeature) {
-        mApplication.setArcGISFeature(selectedArcGISFeature);
-        mIDSuCo = selectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
-        mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+    public void showPopup() {
+        Object idSuCo = mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO);
+        if (idSuCo != null) {
+            mIDSuCo = idSuCo.toString();
+            mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+        } else if (mApplication.getDiemSuCo != null && mApplication.getDiemSuCo.getIdSuCo() != null) {
+            mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
+        }
         clearSelection();
         dimissCallout();
-        this.mSelectedArcGISFeature = selectedArcGISFeature;
+        this.mSelectedArcGISFeature = mApplication.getArcGISFeature();
         FeatureLayer featureLayer;
         featureLayer = mApplication.getDFeatureLayer.getLayer();
         featureLayer.selectFeature(mSelectedArcGISFeature);

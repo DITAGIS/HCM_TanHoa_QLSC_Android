@@ -679,59 +679,59 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uniqueValueRenderer.setDefaultLabel("Chưa xác định");
 
         List<Object> chuaXuLyValue = new ArrayList<>();
-        chuaXuLyValue.add(0);
+        chuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
 
         //đang xử lý: begin
         List<Object> dangXuLyValue = new ArrayList<>();
-        dangXuLyValue.add(1);
+        dangXuLyValue.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue.add(1);
         List<Object> dangXuLyValue1 = new ArrayList<>();
-        dangXuLyValue1.add(1);
+        dangXuLyValue1.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue1.add(2);
 
         List<Object> dangXuLyValue2 = new ArrayList<>();
-        dangXuLyValue2.add(1);
+        dangXuLyValue2.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue2.add(3);
 
         List<Object> dangXuLyValue3 = new ArrayList<>();
-        dangXuLyValue3.add(1);
+        dangXuLyValue3.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue3.add(4);
 
         List<Object> dangXuLyValue4 = new ArrayList<>();
-        dangXuLyValue4.add(1);
+        dangXuLyValue4.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue4.add(5);
 
         List<Object> dangXuLyValue5 = new ArrayList<>();
-        dangXuLyValue5.add(1);
+        dangXuLyValue5.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
         dangXuLyValue5.add(6);
         //đang xỷ lý: end
 
         List<Object> beNgamChuaXuLyValue = new ArrayList<>();
-        beNgamChuaXuLyValue.add(0);
+        beNgamChuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
         beNgamChuaXuLyValue.add(1);
 
         //hoàn thành: begin
         List<Object> hoanThanhValue = new ArrayList<>();
-        hoanThanhValue.add(3);
+        hoanThanhValue.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue.add(1);
         List<Object> hoanThanhValue1 = new ArrayList<>();
-        hoanThanhValue1.add(3);
+        hoanThanhValue1.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue1.add(2);
 
         List<Object> hoanThanhValue2 = new ArrayList<>();
-        hoanThanhValue2.add(3);
+        hoanThanhValue2.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue2.add(3);
 
         List<Object> hoanThanhValue3 = new ArrayList<>();
-        hoanThanhValue3.add(3);
+        hoanThanhValue3.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue3.add(4);
 
         List<Object> hoanThanhValue4 = new ArrayList<>();
-        hoanThanhValue4.add(3);
+        hoanThanhValue4.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue4.add(5);
 
         List<Object> hoanThanhValue5 = new ArrayList<>();
-        hoanThanhValue5.add(3);
+        hoanThanhValue5.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
         hoanThanhValue5.add(6);
         //hoàn thành: end
 
@@ -1342,7 +1342,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void handlingListTaskActivityResult() {
         //query sự cố theo idsuco, lấy objectid
-        String selectedIDSuCo = mApplication.getSelectedIDSuCo();
+        String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
     }
 
@@ -1352,7 +1352,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 case REQUEST_SEARCH:
                     final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
                     if (resultCode == Activity.RESULT_OK) {
-                        mMapViewHandler.queryByObjectID(objectid);
+                        String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
+                        mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
+//                        mMapViewHandler.queryByObjectID(objectid);
                     }
                     break;
                 case Constants.REQUEST_LOGIN:
@@ -1460,7 +1462,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));
         int objectID = item.getObjectID();
         if (objectID != -1 && mMapViewHandler != null) {
-            mMapViewHandler.queryByObjectID(objectID);
+            mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, item.getId()));
+//            mMapViewHandler.queryByObjectID(objectID);
             mSearchAdapter.clear();
             mSearchAdapter.notifyDataSetChanged();
         } else {

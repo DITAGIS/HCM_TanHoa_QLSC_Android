@@ -5,6 +5,7 @@ public class Constants {
     public static final String CHAT_SERVER_URL = "http://sawagis.vn:3000";
     public static final String EVENT_LOCATION = "vitrinhanvien";
     public static final String EVENT_STAFF_NAME = "tennhanvien";
+    public static final String EVENT_GIAO_VIEC = "giaoviecsuco";
     public static final String APP_ID = "qlsc";
     public static final int REQUEST_LOGIN = 0;
 }

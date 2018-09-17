@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="vn.ditagis.com.tanhoa.qlsc">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -68,9 +69,15 @@
             android:label="Vật tư"
             android:parentActivityName=".MainActivity" />
         <activity
-            android:label="Danh sách công việc"
             android:name=".ListTaskActivity"
+            android:label="Danh sách công việc"
             android:parentActivityName=".MainActivity" />
+
+        <receiver android:name=".utities.NotificationBroadcastReceiver"></receiver>
+
+        <activity android:name=".TestNotification">
+
+        </activity>
     </application>
 
 </manifest>

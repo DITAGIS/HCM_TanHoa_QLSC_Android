@@ -26,6 +26,7 @@ import vn.ditagis.com.tanhoa.qlsc.async.LoginByAPIAsycn;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
+import vn.ditagis.com.tanhoa.qlsc.utities.NotificationBroadcastReceiver;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
@@ -42,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Socket mSocket;
     private boolean isLastLogin;
     private DApplication mApplication;
+    private NotificationBroadcastReceiver mNotification;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -50,6 +52,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         mApplication = (DApplication) getApplication();
         ButterKnife.bind(this);
+        mNotification = new NotificationBroadcastReceiver();
         try {
             mTxtVersion.setText("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
@@ -68,8 +71,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private Emitter.Listener onInfinity = args -> {
-        if (args != null && args.length > 0)
+        if (args != null && args.length > 0) {
             Log.d("Nhận", args[0].toString());
+        }
+    };
+    private Emitter.Listener onNhanViec = args -> {
+        if (args != null && args.length > 0) {
+
+            if (mNotification != null) {
+                mNotification.setOnetimeTimer(LoginActivity.this);
+            }
+            Log.d("Nhận việc", args[0].toString());
+        }
     };
 
     private void create() {
@@ -135,6 +148,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void handleLoginSuccess() {
+
         // GPS
         final DApplication app = (DApplication) getApplication();
         mSocket = app.getSocket();
@@ -157,6 +171,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }, delay);
         mSocket.on(Constants.EVENT_STAFF_NAME, onInfinity);
         mSocket.on(Constants.EVENT_LOCATION, onInfinity);
+        mSocket.on(Constants.EVENT_GIAO_VIEC, onNhanViec);
 
         mSocket.connect();
         mTxtUsername.setText("");
