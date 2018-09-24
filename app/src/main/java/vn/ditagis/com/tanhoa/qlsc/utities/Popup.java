@@ -151,6 +151,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         listView.setAdapter(featureViewInfoAdapter);
         String typeIdField = mSelectedArcGISFeature.getFeatureTable().getTypeIdField();
         String[] outFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getOutFields().split(",");
+        String[] noOutFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getNoOutFields().split(",");
         boolean isFoundField = false;
 //        if (mSelectedArcGISFeature.getFeatureTable().getLayerInfo().getServiceLayerName().equals(mMainActivity.getResources().getString(R.string.ALIAS_DIEM_SU_CO))) {
         mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
@@ -170,6 +171,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     continue;
                 }
+            }
+            for (String noOutField : noOutFields)
+                if (noOutField.equals(field.getName())) {
+                    isFoundField = true;
+                    break;
+                }
+            if (isFoundField) {
+                isFoundField = false;
+                continue;
             }
             Object value = attributes.get(field.getName());
             FeatureViewInfoAdapter.Item item = new FeatureViewInfoAdapter.Item();
@@ -399,9 +409,20 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         Map<String, Object> attr = arcGISFeatureSuCoThongTin.getAttributes();
         mListItemBeNgam.clear();
         String[] updateFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getUpdateFields().split(",");
+        String[] noOutFields = mApplication.getDFeatureLayer.getLayerInfoDTG().getNoOutFields().split(",");
         String[] pgnFields = new String[]{};
+        boolean isFoundField = false;
         String typeIdField = arcGISFeatureSuCoThongTin.getFeatureTable().getTypeIdField();
         for (Field field : arcGISFeatureSuCoThongTin.getFeatureTable().getFields()) {
+            for (String noOutField : noOutFields)
+                if (noOutField.equals(field.getName())) {
+                    isFoundField = true;
+                    break;
+                }
+            if (isFoundField) {
+                isFoundField = false;
+                continue;
+            }
             Object value = attr.get(field.getName());
             if (field.getName().equals(Constant.FIELD_SUCOTHONGTIN.ID_SUCO)) {
                 if (value != null) {
@@ -506,7 +527,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void viewAttachment() {
-        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity, mSelectedArcGISFeature);
+        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity);
         viewAttachmentAsync.execute();
     }
 
@@ -1128,7 +1149,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
 
-        File photo = ImageFile.getFile(mMainActivity);
+        File photo = DFile.getImageFile(mMainActivity);
 //        this.mUri= FileProvider.getUriForFile(this, this.getApplicationContext().getPackageName() + ".my.package.name.provider", photo);
         Uri uri = Uri.fromFile(photo);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
@@ -1178,15 +1199,27 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         linearLayout = (LinearLayout) inflater.inflate(R.layout.layout_thongtinsuco, null);
         refreshPopup(mSelectedArcGISFeature);
         ((TextView) linearLayout.findViewById(R.id.txt_thongtin_ten)).setText(featureLayer.getName());
-        linearLayout.findViewById(R.id.imgBtn_cancel_layout_thongtinsuco).setOnClickListener(view -> mCallout.dismiss());
+        linearLayout.findViewById(R.id.imgBtn_cancel_layout_thongtinsuco).setOnClickListener(view -> {
+            mCallout.dismiss();
+
+        });
         //user admin mới có quyền xóa
-        if (mApplication.getDFeatureLayer.getLayerInfoDTG().isDelete()) {
+        if (mApplication.getDFeatureLayer.getLayerInfoDTG().
+
+                isDelete())
+
+        {
             linearLayout.findViewById(R.id.imgBtn_delete).setOnClickListener(this);
-        } else {
+        } else
+
+        {
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
         }
-        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu).setOnClickListener(this::onClick);
+        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).
+
+                setOnClickListener(this);
+        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);
+        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_thu_hoi).setOnClickListener(this::onClick);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         Envelope envelope = mApplication.getGeometry().getExtent();
@@ -1210,7 +1243,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
             ((TextView) linearLayout.findViewById(R.id.txt_timkiemdiachi)).setText(location);
             linearLayout.findViewById(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(this);
-            linearLayout.findViewById(R.id.imgBtn_cancel_timkiemdiachi).setOnClickListener(view -> mCallout.dismiss());
+            linearLayout.findViewById(R.id.imgBtn_cancel_timkiemdiachi).setOnClickListener(view -> {
+                mCallout.dismiss();
+                mMainActivity.setIsAddFeature(false);
+            });
 
 
             linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -1251,7 +1287,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             setOnClickListener(Popup.this);
                     linearLayout.findViewById(R.id.imgBtn_cancel_timkiemdiachi).
 
-                            setOnClickListener(view -> mCallout.dismiss());
+                            setOnClickListener(view -> {
+                                mMainActivity.setIsAddFeature(false);
+                                mCallout.dismiss();
+                            });
                     linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                     // show CallOut
                     mCallout.setLocation(position);
@@ -1287,10 +1326,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             case R.id.imgBtn_ViewMoreInfo:
                 viewMoreInfo();
                 break;
-            case R.id.imgBtn_cap_nhat_vat_tu:
+            case R.id.imgBtn_cap_nhat_vat_tu_gan_moi:
                 Intent intent = new Intent(mMainActivity, VatTuActivity.class);
+                mApplication.setLoaiVatTu(Constant.CODE_VATTU_CAPMOI);
                 mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
                 mMainActivity.startActivity(intent);
+                break;
+            case R.id.imgBtn_cap_nhat_vat_tu_thu_hoi:
+                Intent intentThuHoi = new Intent(mMainActivity, VatTuActivity.class);
+                mApplication.setLoaiVatTu(Constant.CODE_VATTU_THUHOI);
+                mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+                mMainActivity.startActivity(intentThuHoi);
                 break;
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();

@@ -17,13 +17,14 @@ public class DLayerInfo {
     private boolean isView;
     private String definition;
     private String outFields;
+    private String noOutFields;
     private String addFields;
     private String updateFields;
 
     public DLayerInfo() {
     }
 
-    public DLayerInfo(String id, String titleLayer, String url, boolean isCreate, boolean isDelete, boolean isEdit, boolean isView, String definition, String outFields, String addFields, String updateFields) {
+    public DLayerInfo(String id, String titleLayer, String url, boolean isCreate, boolean isDelete, boolean isEdit, boolean isView, String definition, String outFields, String noOutFields, String addFields, String updateFields) {
         this.id = id;
         this.titleLayer = titleLayer;
         this.url = url;
@@ -33,16 +34,13 @@ public class DLayerInfo {
         this.isView = isView;
         this.definition = definition;
         this.outFields = outFields;
+        this.noOutFields = noOutFields;
         this.addFields = addFields;
         this.updateFields = updateFields;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getTitleLayer() {
-        return titleLayer;
     }
 
     public String getUrl() {
@@ -73,11 +71,19 @@ public class DLayerInfo {
         return outFields;
     }
 
+    public String getNoOutFields() {
+        return noOutFields;
+    }
+
     public String getAddFields() {
         return addFields;
     }
 
     public String getUpdateFields() {
         return updateFields;
+    }
+
+    public String getTitleLayer() {
+        return titleLayer;
     }
 }

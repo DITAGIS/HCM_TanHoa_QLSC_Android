@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
@@ -139,8 +140,10 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
 
             }
             String outFields = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_out_fields_arr));
+            String noOutFields = "";
             String id = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_id));
-
+            if (id.equals(Constant.ID_SU_CO_THONG_TIN_TABLE))
+                noOutFields = noOutFields.concat(",").concat(Constant.NO_OUTFIELD_SUCO.DON_VI);
             layerDTGS.add(new DLayerInfo(id,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_title)),
                     url,
@@ -148,6 +151,7 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
                     jsonRoute.getBoolean(mActivity.getString(R.string.sql_coloumn_sys_isedit)), jsonRoute.getBoolean(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_isview)),
                     definition,
                     outFields,
+                    noOutFields,
                     addFields,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_update_fields_arr))));
 

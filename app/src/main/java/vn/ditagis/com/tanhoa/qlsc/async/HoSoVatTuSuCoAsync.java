@@ -33,6 +33,7 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
     private ServiceFeatureTable mServiceFeatureTable;
     private DApplication mApplication;
     private AsyncResponse mDelegate;
+    private short mLoaiVatTu;
 
     public interface AsyncResponse {
         void processFinish(Object object);
@@ -41,6 +42,7 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
     public HoSoVatTuSuCoAsync(Activity activity, AsyncResponse response) {
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
+        mLoaiVatTu = mApplication.getLoaiVatTu();
         this.mDelegate = response;
         mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableHoSoVatTuSuCo();
     }
@@ -48,8 +50,9 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
     private void find(String idSuCo) {
         QueryParameters queryParameters = new QueryParameters();
         final List<HoSoVatTuSuCo> hoSoVatTuSuCos = new ArrayList<>();
-        String queryClause = String.format("%s like '%s%%'", Constant.FIELD_VATTU.ID_SU_CO, idSuCo);
-//        String queryClause = "1 = 1";
+
+        String queryClause = String.format("%s like '%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
+                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
         queryParameters.setWhereClause(queryClause);
         final ListenableFuture<FeatureQueryResult> queryResultListenableFuture =
                 this.mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
@@ -128,7 +131,8 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
 
     private void delete(String idSuCo) {
         QueryParameters queryParameters = new QueryParameters();
-        String queryClause = String.format("%s like '%s%%'", Constant.FIELD_VATTU.ID_SU_CO, idSuCo);
+        String queryClause = String.format("%s like '%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
+                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
         queryParameters.setWhereClause(queryClause);
         final ListenableFuture<FeatureQueryResult> queryResultListenableFuture = this.mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         queryResultListenableFuture.addDoneListener(() -> {
@@ -164,7 +168,7 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
             feature.getAttributes().put(Constant.FIELD_VATTU.ID_SU_CO, hoSoVatTuSuCo.getIdSuCo());
             feature.getAttributes().put(Constant.FIELD_VATTU.MA_VAT_TU, hoSoVatTuSuCo.getMaVatTu());
             feature.getAttributes().put(Constant.FIELD_VATTU.SO_LUONG, hoSoVatTuSuCo.getSoLuong());
-
+            feature.getAttributes().put(Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
             features.add(feature);
         }
         mServiceFeatureTable.addFeaturesAsync(features).addDoneListener(() -> {

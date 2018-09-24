@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 
 /**
  * Created by ThanLe on 04/10/2017.
@@ -61,12 +62,15 @@ public class FeatureViewMoreInfoAttachmentsAdapter extends ArrayAdapter<FeatureV
 
         TextView txtValue = convertView.findViewById(R.id.txt_viewmoreinfo_attachment_name);
         txtValue.setText(item.getName());
-
         ImageView imageView = convertView.findViewById(R.id.img_viewmoreinfo_attachment);
-        Bitmap bmp = BitmapFactory.decodeByteArray(item.getImg(), 0, item.getImg().length);
+        if (item.getContentType().equals(Constant.FILE_TYPE.PNG) &&
+                item.getImg() != null) {
 
-        imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(),
-                bmp.getHeight(), false));
+            Bitmap bmp = BitmapFactory.decodeByteArray(item.getImg(), 0, item.getImg().length);
+
+            imageView.setImageBitmap(Bitmap.createScaledBitmap(bmp, bmp.getWidth(),
+                    bmp.getHeight(), false));
+        } else imageView.setVisibility(View.GONE);
         return convertView;
     }
 
@@ -74,10 +78,27 @@ public class FeatureViewMoreInfoAttachmentsAdapter extends ArrayAdapter<FeatureV
     public static class Item {
         private String name;
         private byte[] img;
+        private String url;
+        private String contentType;
 
         public Item() {
         }
 
+        public String getContentType() {
+            return contentType;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
 
         public String getName() {
             return name;

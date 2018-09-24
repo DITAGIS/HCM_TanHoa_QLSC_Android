@@ -166,6 +166,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setSelectedArcGISFeature(ArcGISFeature selectedArcGISFeature) {
         this.mSelectedArcGISFeature = selectedArcGISFeature;
+
+    }
+
+    public void setIsAddFeature(boolean isAddFeature) {
+        mIsAddFeature = isAddFeature;
     }
 
     private static final int REQUEST_SEARCH = 1;
@@ -310,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @SuppressLint("SetTextI18n")
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+                mGraphicsOverlay.getGraphics().clear();
                 if (mIsAddFeature && mMapViewHandler != null) {
                     //center is x, y
                     Point center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
@@ -321,7 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
                     SimpleMarkerSymbol symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CROSS, Color.RED, 20);
                     Graphic graphic = new Graphic(center, symbol);
-                    mGraphicsOverlay.getGraphics().clear();
+
                     mGraphicsOverlay.getGraphics().add(graphic);
 
                     mPopUp.getCallout().setLocation(center);
@@ -1369,6 +1375,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             preparingAsycn.execute();
                     }
                 case Constant.REQUEST_CODE_ADD_FEATURE:
+                    mIsAddFeature = false;
                     if (mApplication.getDiemSuCo.getPoint() != null) {
                         mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
                         deleteSearching();

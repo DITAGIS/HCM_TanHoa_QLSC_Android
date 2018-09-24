@@ -34,7 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.utities.ImageFile;
+import vn.ditagis.com.tanhoa.qlsc.utities.DFile;
 
 public class ThemSuCoActivity extends AppCompatActivity {
     @BindView(R.id.eTxtFullName_add_feature)
@@ -122,7 +122,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
 
-        File photo = ImageFile.getFile(this);
+        File photo = DFile.getImageFile(this);
         mUri = Uri.fromFile(photo);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         try {

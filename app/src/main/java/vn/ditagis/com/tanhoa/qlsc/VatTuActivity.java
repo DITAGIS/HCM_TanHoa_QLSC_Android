@@ -15,7 +15,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.esri.arcgisruntime.data.Feature;
 import com.esri.arcgisruntime.data.QueryParameters;
 
 import java.util.ArrayList;
@@ -52,20 +51,21 @@ public class VatTuActivity extends AppCompatActivity {
     private DApplication mApplication;
     private String mIDSuCoTT;
     private VatTuAdapter mAdapter;
-private String mIDSuCo;
+    private String mIDSuCo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vat_tu);
         ButterKnife.bind(this);
         mApplication = (DApplication) getApplication();
-         mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
+        mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                this,mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
-                    init();
-                    loadVatTu();
-                    mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
-                });
+                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+            init();
+            loadVatTu();
+            mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+        });
 
         String queryClause = String.format("%s = '%s' and %s = '%s'",
                 Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
@@ -207,7 +207,7 @@ private String mIDSuCo;
                         mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_fail), Html.FROM_HTML_MODE_LEGACY));
                     }
                 });
-                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOVATTUSUCO_METHOD.INSERT,mIDSuCo);
+                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOVATTUSUCO_METHOD.INSERT, mIDSuCo);
             }
             boolean check;
             do {

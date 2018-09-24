@@ -84,15 +84,26 @@
         tools:ignore="RtlHardcoded">
 
         <ImageButton
-            android:id="@+id/imgBtn_cap_nhat_vat_tu"
+            android:id="@+id/imgBtn_cap_nhat_vat_tu_gan_moi"
             android:layout_width="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
-            android:contentDescription="Cập nhật vật tư"
+            android:contentDescription="Cập nhật vật tư gắn mới"
             android:paddingEnd="@dimen/padding_title_popup"
             android:paddingRight="@dimen/padding_title_popup"
-            android:src="@drawable/bolts"
+            android:src="@drawable/bolts_add"
+            tools:ignore="RtlSymmetry" />
+        <ImageButton
+            android:id="@+id/imgBtn_cap_nhat_vat_tu_thu_hoi"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:contentDescription="Cập nhật vật tư thu hồi"
+            android:paddingEnd="@dimen/padding_title_popup"
+            android:paddingRight="@dimen/padding_title_popup"
+            android:src="@drawable/bolts_remove"
             tools:ignore="RtlSymmetry" />
         <ImageButton
             android:id="@+id/imgBtn_ViewMoreInfo"

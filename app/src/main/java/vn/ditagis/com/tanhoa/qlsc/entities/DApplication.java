@@ -47,6 +47,16 @@ public class DApplication extends Application {
         }
     }
 
+    private short loaiVatTu;
+
+    public short getLoaiVatTu() {
+        return loaiVatTu;
+    }
+
+    public void setLoaiVatTu(short loaiVatTu) {
+        this.loaiVatTu = loaiVatTu;
+    }
+
     public DiemSuCo getDiemSuCo;
 
     {

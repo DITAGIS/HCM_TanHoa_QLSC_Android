@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/activity_margin"
-            android:text="Hình ảnh đính kèm"
+            android:text="Tệp đính kèm"
             android:textColor="#444"
             android:textSize="18dp"
             android:textStyle="bold" />
