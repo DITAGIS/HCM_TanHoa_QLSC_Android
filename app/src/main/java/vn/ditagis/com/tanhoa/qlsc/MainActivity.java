@@ -1050,8 +1050,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                this.startActivityForResult(intent, 1);
 //                break;
             case R.id.nav_find_route:
-                intent = new Intent(this, FindRouteActivity.class);
-                this.startActivity(intent);
+//                intent = new Intent(this, FindRouteActivity.class);
+//                this.startActivity(intent);
                 break;
 //            case R.id.nav_setting:
 //                intent = new Intent(this, SettingsActivity.class);
