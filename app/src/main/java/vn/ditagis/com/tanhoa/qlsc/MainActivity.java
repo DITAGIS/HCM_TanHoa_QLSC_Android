@@ -512,6 +512,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return output;
     }
 
+    @SuppressLint("DefaultLocale")
     private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList) {
         String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
         ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
@@ -526,10 +527,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
-        for (String idSuCo : idSuCoList) {
-            builder.append(String.format("'%s' ,", idSuCo));
+        for (int i = 0; i < idSuCoList.size(); i++) {
+            String idSuCo = idSuCoList.get(i);
+            if (i != idSuCoList.size() - 1)
+                builder.append(String.format("'%s' ,", idSuCo));
+            else
+                builder.append(String.format("'%s' ) and TrangThai <> %d", idSuCo, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
         }
-        builder.append("'')");
+//        builder.append("'')");
         featureLayer.setDefinitionExpression(builder.toString());
         mMapView.getMap().getOperationalLayers().add(featureLayer);
         featureLayer.addDoneLoadingListener(() -> {
@@ -673,9 +678,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dangXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol hoanThanhSymBol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_HOAN_THANH);
-        hoanThanhSymBol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
-        hoanThanhSymBol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+
 
         PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
         beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
@@ -716,30 +719,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         beNgamChuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
         beNgamChuaXuLyValue.add(1);
 
-        //hoàn thành: begin
-        List<Object> hoanThanhValue = new ArrayList<>();
-        hoanThanhValue.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue.add(1);
-        List<Object> hoanThanhValue1 = new ArrayList<>();
-        hoanThanhValue1.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue1.add(2);
 
-        List<Object> hoanThanhValue2 = new ArrayList<>();
-        hoanThanhValue2.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue2.add(3);
-
-        List<Object> hoanThanhValue3 = new ArrayList<>();
-        hoanThanhValue3.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue3.add(4);
-
-        List<Object> hoanThanhValue4 = new ArrayList<>();
-        hoanThanhValue4.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue4.add(5);
-
-        List<Object> hoanThanhValue5 = new ArrayList<>();
-        hoanThanhValue5.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-        hoanThanhValue5.add(6);
-        //hoàn thành: end
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Chưa xử lý", "Chưa xử lý", chuaXuLySymbol, chuaXuLyValue));
@@ -760,19 +740,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Chưa xử lý bể ngầm", "Chưa xử lý bể ngầm", beNgamSymbol, beNgamChuaXuLyValue));
 
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue1));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue2));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue3));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue4));
-        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Hoàn thành", "Hoàn thành", hoanThanhSymBol, hoanThanhValue5));
-
+//
         return uniqueValueRenderer;
     }
 
@@ -1049,10 +1017,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                intent = new Intent(this, TraCuuActivity.class);
 //                this.startActivityForResult(intent, 1);
 //                break;
-            case R.id.nav_find_route:
+//            case R.id.nav_find_route:
 //                intent = new Intent(this, FindRouteActivity.class);
 //                this.startActivity(intent);
-                break;
+//                break;
 //            case R.id.nav_setting:
 //                intent = new Intent(this, SettingsActivity.class);
 //                this.startActivityForResult(intent, 1);
