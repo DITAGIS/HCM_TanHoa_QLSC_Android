@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -79,13 +80,15 @@ public class VatTuActivity extends AppCompatActivity {
         mTxtStatus.setText(Html.fromHtml(getString(R.string.info_vattu_loading), Html.FROM_HTML_MODE_LEGACY));
 
         HoSoVatTuSuCoAsync hoSoVatTuSuCoAsync = new HoSoVatTuSuCoAsync(this, object -> {
-            if (object != null)
-
-            {
-                List<HoSoVatTuSuCo> hoSoVatTuSuCoList = (List<HoSoVatTuSuCo>) object;
-                for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCoList) {
-                    mAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
-                            hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+            if (object != null) {
+                try {
+                    List<HoSoVatTuSuCo> hoSoVatTuSuCoList = (List<HoSoVatTuSuCo>) object;
+                    for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCoList) {
+                        mAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
+                                hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+                    }
+                } catch (Exception e) {
+                    Log.e("Lỗi ép kiểu vật tư", e.toString());
                 }
                 mAdapter.notifyDataSetChanged();
                 mLstView.setAdapter(mAdapter);
