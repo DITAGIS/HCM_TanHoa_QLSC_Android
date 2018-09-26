@@ -60,6 +60,14 @@ public class VatTuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_vat_tu);
         ButterKnife.bind(this);
         mApplication = (DApplication) getApplication();
+        switch (mApplication.getLoaiVatTu()){
+            case Constant.CODE_VATTU_CAPMOI:
+                setTitle("Vật tư cấp mới");
+                break;
+            case Constant.CODE_VATTU_THUHOI:
+                setTitle("Vật tư thu hồi");
+                break;
+        }
         mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
                 this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {

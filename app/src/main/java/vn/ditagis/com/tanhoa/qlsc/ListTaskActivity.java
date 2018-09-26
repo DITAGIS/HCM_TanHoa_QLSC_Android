@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -85,31 +86,35 @@ public class ListTaskActivity extends AppCompatActivity {
     }
 
     private void handlingQuerySuccess(List<Feature> output) {
-        for (Feature feature : output) {
-            Map<String, Object> attributes = feature.getAttributes();
-            TraCuuAdapter.Item item = new TraCuuAdapter.Item(
-                    Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
-                    attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
-                    Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
-                    Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
-                    attributes.get(Constant.FIELD_SUCOTHONGTIN.DIA_CHI).toString());
-            Object value = feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI);
-            if (value == null) {
-                mAdapterChuaXuLy.add(item);
-            } else {
-                short trangThai = Short.parseShort(value.toString());
-                switch (trangThai) {
-                    case Constant.TRANG_THAI_SU_CO.CHUA_XU_LY:
-                        mAdapterChuaXuLy.add(item);
-                        break;
-                    case Constant.TRANG_THAI_SU_CO.DANG_XU_LY:
-                        mAdapterDangXuLy.add(item);
-                        break;
-                    case Constant.TRANG_THAI_SU_CO.HOAN_THANH:
-                        mAdapterHoanThanh.add(item);
-                        break;
+        try {
+            for (Feature feature : output) {
+                Map<String, Object> attributes = feature.getAttributes();
+                TraCuuAdapter.Item item = new TraCuuAdapter.Item(
+                        Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
+                        attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
+                        Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
+                        Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
+                        attributes.get(Constant.FIELD_SUCOTHONGTIN.DIA_CHI).toString());
+                Object value = feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI);
+                if (value == null) {
+                    mAdapterChuaXuLy.add(item);
+                } else {
+                    short trangThai = Short.parseShort(value.toString());
+                    switch (trangThai) {
+                        case Constant.TRANG_THAI_SU_CO.CHUA_XU_LY:
+                            mAdapterChuaXuLy.add(item);
+                            break;
+                        case Constant.TRANG_THAI_SU_CO.DANG_XU_LY:
+                            mAdapterDangXuLy.add(item);
+                            break;
+                        case Constant.TRANG_THAI_SU_CO.HOAN_THANH:
+                            mAdapterHoanThanh.add(item);
+                            break;
+                    }
                 }
             }
+        } catch (Exception e) {
+            Log.e("Lỗi lấy ds công việc", e.toString());
         }
     }
 

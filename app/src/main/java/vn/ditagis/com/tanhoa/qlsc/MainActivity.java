@@ -531,8 +531,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String idSuCo = idSuCoList.get(i);
             if (i != idSuCoList.size() - 1)
                 builder.append(String.format("'%s' ,", idSuCo));
-            else
-                builder.append(String.format("'%s' ) and TrangThai <> %d", idSuCo, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
+            else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
+                builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_THI_CONG, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
+            } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
+                builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
+            } else {
+                builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
+            }
         }
 //        builder.append("'')");
         featureLayer.setDefinitionExpression(builder.toString());
@@ -581,7 +586,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return output;
     }
 
-    private void addCheckBox(final ArcGISMapImageSublayer layer, int[][] states, int[] colors, boolean isAdministrator) {
+    private void addCheckBox(final ArcGISMapImageSublayer layer, int[][] states, int[] colors,
+                             boolean isAdministrator) {
         @SuppressLint("InflateParams") LinearLayout layoutFeature = (LinearLayout) getLayoutInflater()
                 .inflate(R.layout.layout_feature, null);
         final CheckBox checkBox = layoutFeature.findViewById(R.id.ckb_layout_feature);
@@ -679,7 +685,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
 
-
         PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
         beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         beNgamSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
@@ -718,7 +723,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         List<Object> beNgamChuaXuLyValue = new ArrayList<>();
         beNgamChuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
         beNgamChuaXuLyValue.add(1);
-
 
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
