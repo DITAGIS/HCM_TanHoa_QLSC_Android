@@ -247,14 +247,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                                 if (arcGISFeatureSuCoThongTin.canEditAttachments())
                                     addAttachment(arcGISFeatureSuCoThongTin);
                                 else
-                                    applyEdit(arcGISFeatureSuCoThongTin);
+                                    updateSuCo(arcGISFeatureSuCoThongTin);
                             } else {
-                                applyEdit(arcGISFeatureSuCoThongTin);
+                                updateSuCo(arcGISFeatureSuCoThongTin);
 
                             }
                         }));
             });
-            updateSuCo(arcGISFeatureSuCoThongTin);
 
         });
         String queryClause = String.format("%s = '%s' and %s = '%s'",
@@ -275,23 +274,33 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         new QueryServiceFeatureTableAsync(mActivity, (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable(), output -> {
             if (output != null) {
                 ArcGISFeature arcGISFeatureSuCo = (ArcGISFeature) output;
+                Object trangThai = arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI);
+                short trangThaiShort = 0;
+                if (trangThai != null)
+                    trangThaiShort = Short.parseShort((trangThai.toString()));
+
+                Object hinhThucPhatHien = arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN);
+                short hinhThucPhatHienShort = 2;
+                if (hinhThucPhatHien != null)
+                    hinhThucPhatHienShort = Short.parseShort(hinhThucPhatHien.toString());
                 if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG,
-                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
+                            trangThaiShort);
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG,
-                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN).toString()));
+                            hinhThucPhatHienShort);
 
                 } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT,
-                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()));
+                            trangThaiShort);
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT,
-                            Short.parseShort(arcGISFeature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN).toString()));
+                            hinhThucPhatHienShort);
                 }
                 mServiceFeatureTableSuCo.loadAsync();
                 mServiceFeatureTableSuCo.addDoneLoadingListener(() -> {
                     // update feature in the feature table
                     mServiceFeatureTableSuCo.updateFeatureAsync(arcGISFeatureSuCo).addDoneListener(() ->
                             mServiceFeatureTableSuCo.applyEditsAsync().addDoneListener(() -> {
+                                applyEdit(arcGISFeature);
                             }));
                 });
             }
@@ -310,7 +319,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                 Attachment attachment = addResult.get();
                 if (attachment.getSize() > 0) {
                     final ListenableFuture<Void> tableResult = mServiceFeatureTableSuCoThongTin.updateFeatureAsync(arcGISFeature);
-                    tableResult.addDoneListener(() -> applyEdit(arcGISFeature));
+                    tableResult.addDoneListener(() -> updateSuCo(arcGISFeature));
                 }
             } catch (Exception ignored) {
                 publishProgress();
@@ -320,7 +329,6 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 
 
     private void applyEdit(ArcGISFeature arcGISFeature) {
-
         final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTableSuCoThongTin.applyEditsAsync();
         updatedServerResult.addDoneListener(() -> {
             List<FeatureEditResult> edits;

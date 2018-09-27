@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
     private boolean mIsAddFeature;
+
     private ImageView mImageOpenStreetMap, mImageStreetMap, mImageImageWithLabel;
     private TextView mTxtOpenStreetMap, mTxtStreetMap, mTxtImageWithLabel;
     private SearchView mTxtSearchView;
@@ -795,12 +796,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Geometry geometry = GeometryEngine.project(position, SpatialReferences.getWgs84());
             Geometry geometry1 = GeometryEngine.project(geometry, SpatialReferences.getWebMercator());
             Point point = geometry1.getExtent().getCenter();
-
+            mIsAddFeature = true;
             SimpleMarkerSymbol symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CROSS, Color.RED, 20);
             Graphic graphic = new Graphic(point, symbol);
             mGraphicsOverlay.getGraphics().add(graphic);
 
-            mMapView.setViewpointCenterAsync(point, mApplication.getConstant.MAX_SCALE_IMAGE_WITH_LABLES);
+            mMapView.setViewpointCenterAsync(point);
             mPopUp.showPopupFindLocation(point, location);
             this.mPointFindLocation = point;
         }
@@ -960,10 +961,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                mIsAddFeature = true;
                 if (newText.trim().length() > 0 && !mIsSearchingFeature) {
-                    mIsAddFeature = true;
+
                 } else {
-                    mIsAddFeature = false;
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
                     mGraphicsOverlay.getGraphics().clear();
