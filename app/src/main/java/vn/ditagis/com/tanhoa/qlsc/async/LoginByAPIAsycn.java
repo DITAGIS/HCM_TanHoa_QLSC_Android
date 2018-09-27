@@ -76,6 +76,8 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
                     getProfile();
                     mApplication.getUserDangNhap().setUserName(userName);
 
+                }else{
+                    mApplication.setUserDangNhap(null);
                 }
             } catch (Exception e1) {
                 Log.e("Lỗi login", e1.toString());
