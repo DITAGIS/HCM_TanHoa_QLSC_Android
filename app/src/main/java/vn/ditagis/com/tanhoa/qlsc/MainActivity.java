@@ -527,13 +527,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
                 mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
-                mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThonTin((ServiceFeatureTable) featureLayer.getFeatureTable());
+                mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThongTin((ServiceFeatureTable) featureLayer.getFeatureTable());
             } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
                 mApplication.getDFeatureLayer.setServiceFeatureTableHoSoVatTuSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
+
+            } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THIET_BI_TABLE)) {
+                ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                featureLayer.setId(dLayerInfo.getId());
+                featureLayer.setName(dLayerInfo.getTitleLayer());
+                mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
+                mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThietBi((ServiceFeatureTable) featureLayer.getFeatureTable());
+            } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_THIET_BI_SU_CO_TABLE)) {
+                ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
+                FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+                featureLayer.setId(dLayerInfo.getId());
+                featureLayer.setName(dLayerInfo.getTitleLayer());
+                mApplication.getDFeatureLayer.setServiceFeatureTableHoSoThietBiSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
             }
         }
         return dLayerInfoSuCo;

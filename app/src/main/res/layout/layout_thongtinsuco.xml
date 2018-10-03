@@ -6,10 +6,11 @@
     android:background="@color/colorWhite"
     android:orientation="vertical">
 
-    <FrameLayout android:background="@color/colorWhite"
-        android:padding="@dimen/padding_title_popup"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:padding="@dimen/padding_title_popup">
 
         <TextView
             android:id="@+id/txt_thongtin_ten"
@@ -17,12 +18,13 @@
             android:layout_height="wrap_content"
 
             android:textSize="20sp" />
+
         <ImageButton
             android:id="@+id/imgBtn_cancel_layout_thongtinsuco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:layout_gravity="right"
+            android:background="@android:color/white"
             android:contentDescription="Đóng popup"
             android:src="@drawable/ic_cancel"
             tools:ignore="RtlSymmetry" />
@@ -84,35 +86,45 @@
         tools:ignore="RtlHardcoded">
 
         <ImageButton
-            android:id="@+id/imgBtn_cap_nhat_vat_tu_gan_moi"
-            android:layout_width="wrap_content"
+            android:id="@+id/imgBtn_thiet_bi"
+            android:layout_width="@dimen/size_image"
+            android:layout_height="@dimen/size_image"
             android:layout_gravity="center_vertical"
-            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_small"
+            android:background="@android:color/white"
+            android:contentDescription="Cập nhật thiết bị"
+            android:src="@drawable/ic_generator_32dp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageButton
+            android:id="@+id/imgBtn_cap_nhat_vat_tu_gan_moi"
+            android:layout_width="@dimen/size_image"
+            android:layout_height="@dimen/size_image"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/margin_small"
             android:background="@android:color/white"
             android:contentDescription="Cập nhật vật tư gắn mới"
-            android:paddingEnd="@dimen/padding_title_popup"
-            android:paddingRight="@dimen/padding_title_popup"
             android:src="@drawable/bolts_add"
             tools:ignore="RtlSymmetry" />
+
         <ImageButton
             android:id="@+id/imgBtn_cap_nhat_vat_tu_thu_hoi"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/size_image"
+            android:layout_height="@dimen/size_image"
             android:layout_gravity="center_vertical"
-            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_small"
             android:background="@android:color/white"
             android:contentDescription="Cập nhật vật tư thu hồi"
-            android:paddingEnd="@dimen/padding_title_popup"
-            android:paddingRight="@dimen/padding_title_popup"
             android:src="@drawable/bolts_remove"
             tools:ignore="RtlSymmetry" />
+
         <ImageButton
             android:id="@+id/imgBtn_ViewMoreInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/size_image"
+            android:layout_height="@dimen/size_image"
+            android:layout_marginRight="@dimen/margin_small"
             android:background="@android:color/white"
             android:contentDescription="Xem thông tin chi tiết"
-            android:paddingEnd="@dimen/padding_title_popup"
-            android:paddingRight="@dimen/padding_title_popup"
             android:src="@drawable/ic_info"
             tools:ignore="RtlSymmetry" />
 
@@ -123,8 +135,8 @@
             android:background="@android:color/white"
             android:contentDescription="Xóa"
             android:paddingRight="@dimen/padding_title_popup"
-            android:visibility="gone"
             android:src="@drawable/ic_delete"
+            android:visibility="gone"
             tools:ignore="RtlSymmetry" />
     </LinearLayout>
 

@@ -45,7 +45,7 @@ public class QueryServiceFeatureTableGetListAsync extends AsyncTask<Void, List<F
                                                 AsyncResponse delegate) {
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
-        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
         this.mDelegate = delegate;
     }
 

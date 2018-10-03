@@ -73,11 +73,14 @@
             android:label="Danh sách công việc"
             android:parentActivityName=".MainActivity" />
 
-        <receiver android:name=".utities.NotificationBroadcastReceiver"></receiver>
+        <receiver android:name=".utities.NotificationBroadcastReceiver" />
 
-        <activity android:name=".TestNotification">
-
-        </activity>
+        <activity android:name=".TestNotification" />
+        <activity
+            android:name=".ThietBiActivity"
+            android:label="Thiết bị"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

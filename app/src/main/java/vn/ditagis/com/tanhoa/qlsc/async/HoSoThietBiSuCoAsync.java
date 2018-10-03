@@ -23,36 +23,33 @@ import java.util.concurrent.ExecutionException;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
-import vn.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
+import vn.ditagis.com.tanhoa.qlsc.entities.HoSoThietBiSuCo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 
 
-public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
+public class HoSoThietBiSuCoAsync extends AsyncTask<Object, Object, Void> {
     @SuppressLint("StaticFieldLeak")
     private Activity mActivity;
     private ServiceFeatureTable mServiceFeatureTable;
     private DApplication mApplication;
     private AsyncResponse mDelegate;
-    private short mLoaiVatTu;
 
     public interface AsyncResponse {
         void processFinish(Object object);
     }
 
-    public HoSoVatTuSuCoAsync(Activity activity, AsyncResponse response) {
+    public HoSoThietBiSuCoAsync(Activity activity, AsyncResponse response) {
         this.mActivity = activity;
         this.mApplication = (DApplication) activity.getApplication();
-        mLoaiVatTu = mApplication.getLoaiVatTu();
         this.mDelegate = response;
-        mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableHoSoVatTuSuCo();
+        mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableHoSoThietBiSuCo();
     }
 
     private void find(String idSuCo) {
         QueryParameters queryParameters = new QueryParameters();
-        final List<HoSoVatTuSuCo> hoSoVatTuSuCos = new ArrayList<>();
+        final List<HoSoThietBiSuCo> hoSoThietBiSuCos = new ArrayList<>();
 
-        String queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
-                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
+        String queryClause = String.format("%s like '%%%s%%'", Constant.FIELD_THIETBI.ID_SU_CO, idSuCo);
         queryParameters.setWhereClause(queryClause);
         final ListenableFuture<FeatureQueryResult> queryResultListenableFuture =
                 this.mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
@@ -61,55 +58,52 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
                 FeatureQueryResult result = queryResultListenableFuture.get();
                 if (result.iterator().hasNext()) {
                     StringBuilder query = new StringBuilder();
-                    List<HoSoVatTuSuCo> tempHoSoVatTuSuCo = new ArrayList<>();
+                    List<HoSoThietBiSuCo> tempHoSoThietBiSuCos = new ArrayList<>();
                     for (Iterator it = result.iterator(); it.hasNext(); ) {
                         Feature feature = (Feature) it.next();
                         Map<String, Object> attributes = feature.getAttributes();
-                        String maVatTu = attributes.get(Constant.FIELD_VATTU.MA_VAT_TU).toString();
-                        query.append(String.format("%s = '%s' or ", Constant.FIELD_VATTU.MA_VAT_TU, maVatTu));
-                        tempHoSoVatTuSuCo.add(new HoSoVatTuSuCo(attributes.get(Constant.FIELD_VATTU.ID_SU_CO).toString(),
-                                Double.parseDouble(attributes.get(Constant.FIELD_VATTU.SO_LUONG).toString()),
-                                maVatTu,
-                                "",
-                                ""));
+                        String maThietBi = attributes.get(Constant.FIELD_THIETBI.MA_THIET_BI).toString();
+                        query.append(String.format("%s = '%s' or ", Constant.FIELD_THIETBI.MA_THIET_BI, maThietBi));
+                        tempHoSoThietBiSuCos.add(new HoSoThietBiSuCo(attributes.get(Constant.FIELD_THIETBI.ID_SU_CO).toString(),
+                                Double.parseDouble(attributes.get(Constant.FIELD_THIETBI.THOI_GIAN_VAN_HANH).toString()),
+                                maThietBi, ""));
                     }
                     query.append("1 = 0");
                     for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                        if (dLayerInfo.getId().equals(Constant.ID_VAT_TU_TABLE)) {
-                            final QueryParameters queryParametersVatTu = new QueryParameters();
-                            queryParametersVatTu.setWhereClause(query.toString());
+                        if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THIET_BI_TABLE)) {
+                            final QueryParameters queryParametersThietBi = new QueryParameters();
+                            queryParametersThietBi.setWhereClause(query.toString());
                             String url = dLayerInfo.getUrl();
                             if (!url.startsWith("http"))
                                 url = "http:" + dLayerInfo.getUrl();
-                            final ServiceFeatureTable serviceFeatureTableVatTu = new ServiceFeatureTable(url);
+                            final ServiceFeatureTable serviceFeatureTableThietBi = new ServiceFeatureTable(url);
 //
-                            final ListenableFuture<FeatureQueryResult> featuresAsyncVatTu =
-                                    serviceFeatureTableVatTu.queryFeaturesAsync(queryParametersVatTu,
+                            final ListenableFuture<FeatureQueryResult> featuresAsyncThietBi =
+                                    serviceFeatureTableThietBi.queryFeaturesAsync(queryParametersThietBi,
                                             ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
-                            featuresAsyncVatTu.addDoneListener(() -> {
+                            featuresAsyncThietBi.addDoneListener(() -> {
                                 try {
-                                    FeatureQueryResult features = featuresAsyncVatTu.get();
+                                    FeatureQueryResult features = featuresAsyncThietBi.get();
                                     Iterator<Feature> iterator = features.iterator();
                                     Feature item;
                                     while (iterator.hasNext()) {
                                         item = iterator.next();
-                                        for (HoSoVatTuSuCo hoSoVatTuSuCo : tempHoSoVatTuSuCo) {
-                                            if (hoSoVatTuSuCo.getMaVatTu().equals(item.getAttributes()
-                                                    .get(Constant.FIELD_VATTU.MA_VAT_TU).toString())) {
-                                                hoSoVatTuSuCos.add(new HoSoVatTuSuCo(hoSoVatTuSuCo.getIdSuCo(),
-                                                        hoSoVatTuSuCo.getSoLuong(),
-                                                        hoSoVatTuSuCo.getMaVatTu(),
-                                                        item.getAttributes().get(Constant.FIELD_VATTU.TEN_VAT_TU).toString(),
-                                                        item.getAttributes().get(Constant.FIELD_VATTU.DON_VI_TINH).toString()));
+                                        for (HoSoThietBiSuCo hoSoThietBiSuCo : tempHoSoThietBiSuCos) {
+                                            if (hoSoThietBiSuCo.getMaThietBi().equals(item.getAttributes()
+                                                    .get(Constant.FIELD_THIETBI.MA_THIET_BI).toString())) {
+                                                hoSoThietBiSuCos.add(new HoSoThietBiSuCo(hoSoThietBiSuCo.getIdSuCo(),
+                                                        hoSoThietBiSuCo.getThoigianVanHanh(),
+                                                        hoSoThietBiSuCo.getMaThietBi(),
+                                                        item.getAttributes().get(Constant.FIELD_THIETBI.TEN_THIET_BI).toString()));
                                             }
                                         }
 
                                     }
-                                    ListObjectDB.getInstance().setHoSoVatTuSuCos(hoSoVatTuSuCos);
-                                    publishProgress(hoSoVatTuSuCos);
+                                    ListObjectDB.getInstance().setHoSoThietBiSuCos(hoSoThietBiSuCos);
+                                    publishProgress(hoSoThietBiSuCos);
                                 } catch (InterruptedException | ExecutionException e) {
                                     e.printStackTrace();
-                                    publishProgress(hoSoVatTuSuCos);
+                                    publishProgress(hoSoThietBiSuCos);
                                 }
 
                             });
@@ -120,19 +114,18 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
 
                 } else {
 
-                    publishProgress(hoSoVatTuSuCos);
+                    publishProgress(hoSoThietBiSuCos);
                 }
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
-                publishProgress(hoSoVatTuSuCos);
+                publishProgress(hoSoThietBiSuCos);
             }
         });
     }
 
     private void delete(String idSuCo) {
         QueryParameters queryParameters = new QueryParameters();
-        String queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
-                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
+        String queryClause = String.format("%s like '%%%s%%'", Constant.FIELD_THIETBI.ID_SU_CO, idSuCo);
         queryParameters.setWhereClause(queryClause);
         final ListenableFuture<FeatureQueryResult> queryResultListenableFuture = this.mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
         queryResultListenableFuture.addDoneListener(() -> {
@@ -142,10 +135,10 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
                 mServiceFeatureTable.deleteFeaturesAsync(result).addDoneListener(() -> {
                     ListenableFuture<List<FeatureEditResult>> listListenableFuture = mServiceFeatureTable.applyEditsAsync();
                     listListenableFuture.addDoneListener(() -> {
-                        ListObjectDB.getInstance().clearHoSoVatTuSuCos();
+                        ListObjectDB.getInstance().clearHoSoThietBiSuCos();
                         //Không cần kiểm tra xóa thành công,
                         // bởi vì có thể chưa có vật tư trước đó
-                        insert(ListObjectDB.getInstance().getLstHoSoVatTuSuCoInsert());
+                        insert(ListObjectDB.getInstance().getLstHoSoThietBiSuCoInsert());
                     });
                 });
             } catch (InterruptedException | ExecutionException e) {
@@ -156,19 +149,18 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
     }
 
 
-    private void insert(List<HoSoVatTuSuCo> hoSoVatTuSuCos) {
+    private void insert(List<HoSoThietBiSuCo> hoSoThietBiSuCos) {
         List<Feature> features = new ArrayList<>();
-        for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCos) {
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put(Constant.FIELD_VATTU.ID_SU_CO, hoSoVatTuSuCo.getIdSuCo());
-            attributes.put(Constant.FIELD_VATTU.MA_VAT_TU, hoSoVatTuSuCo.getMaVatTu());
-            attributes.put(Constant.FIELD_VATTU.SO_LUONG, hoSoVatTuSuCo.getSoLuong());
+        for (HoSoThietBiSuCo hoSoThietBiSuCo : hoSoThietBiSuCos) {
+//            Map<String, Object> attributes = new HashMap<>();
+//            attributes.put(Constant.FIELD_THIETBI.ID_SU_CO, hoSoThietBiSuCo.getIdSuCo());
+//            attributes.put(Constant.FIELD_THIETBI.MA_THIET_BI, hoSoThietBiSuCo.getMaThietBi());
+//            attributes.put(Constant.FIELD_THIETBI.THOI_GIAN_VAN_HANH,(int) hoSoThietBiSuCo.getThoigianVanHanh());
 
             Feature feature = mServiceFeatureTable.createFeature();
-            feature.getAttributes().put(Constant.FIELD_VATTU.ID_SU_CO, hoSoVatTuSuCo.getIdSuCo());
-            feature.getAttributes().put(Constant.FIELD_VATTU.MA_VAT_TU, hoSoVatTuSuCo.getMaVatTu());
-            feature.getAttributes().put(Constant.FIELD_VATTU.SO_LUONG, hoSoVatTuSuCo.getSoLuong());
-            feature.getAttributes().put(Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu);
+            feature.getAttributes().put(Constant.FIELD_THIETBI.ID_SU_CO, hoSoThietBiSuCo.getIdSuCo());
+            feature.getAttributes().put(Constant.FIELD_THIETBI.MA_THIET_BI, hoSoThietBiSuCo.getMaThietBi());
+            feature.getAttributes().put(Constant.FIELD_THIETBI.THOI_GIAN_VAN_HANH, hoSoThietBiSuCo.getThoigianVanHanh());
             features.add(feature);
         }
         mServiceFeatureTable.addFeaturesAsync(features).addDoneListener(() -> {
@@ -177,7 +169,7 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
                 try {
                     List<FeatureEditResult> featureEditResults = listListenableFuture.get();
                     if (featureEditResults.size() > 0) {
-                        ListObjectDB.getInstance().clearListHoSoVatTuSuCoChange();
+                        ListObjectDB.getInstance().clearListHoSoThietBiSuCoChange();
                         publishProgress(true);
                     } else {
                         publishProgress(false);

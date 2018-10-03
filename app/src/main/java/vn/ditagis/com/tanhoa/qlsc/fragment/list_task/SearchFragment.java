@@ -79,7 +79,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void initSpinTrangThai() {
-        Domain domain = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin().getField(Constant.FIELD_SUCO.TRANG_THAI).getDomain();
+        Domain domain = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin().getField(Constant.FIELD_SUCO.TRANG_THAI).getDomain();
         if (domain != null) {
             mCodeValues = ((CodedValueDomain) domain).getCodedValues();
             if (mCodeValues != null) {

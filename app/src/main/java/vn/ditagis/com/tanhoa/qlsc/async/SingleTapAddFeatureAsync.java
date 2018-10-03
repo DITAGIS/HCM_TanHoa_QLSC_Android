@@ -139,7 +139,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
     }
 
     private void addServiceFeatureTable(ArcGISFeature arcGISFeature, Feature feature) {
-        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
         serviceFeatureTable.loadAsync();
         serviceFeatureTable.addDoneLoadingListener(() -> {
             String idSuCo = feature.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString();

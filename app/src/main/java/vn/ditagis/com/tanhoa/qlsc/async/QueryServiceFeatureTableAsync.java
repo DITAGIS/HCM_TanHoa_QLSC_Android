@@ -64,7 +64,7 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<QueryParameters, Fe
                         } else {
                             publishProgress();
                             //tạo sự cố thông tin nếu chưa có
-//                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+//                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
 //                        serviceFeatureTable.loadAsync();
 //                        serviceFeatureTable.addDoneLoadingListener(() -> {
 //                            new GenerateIDSuCoByAPIAsycn(mActivity, output -> {

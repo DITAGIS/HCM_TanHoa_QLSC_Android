@@ -56,7 +56,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         mApplication = (DApplication) activity.getApplication();
 
         this.mDelegate = delegate;
-        mServiceFeatureTableSuCoThongTin = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        mServiceFeatureTableSuCoThongTin = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
         mServiceFeatureTableSuCo = (ServiceFeatureTable) mApplication.getDFeatureLayer.getLayer().getFeatureTable();
         mSelectedArcGISFeature = selectedArcGISFeature;
         mDialog = new ProgressDialog(activity, android.R.style.Theme_Material_Dialog_Alert);
@@ -77,7 +77,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                mActivity, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                mActivity, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             ArcGISFeature arcGISFeatureSuCoThongTin = (ArcGISFeature) output;
             final FeatureViewMoreInfoAdapter adapter = params[0];
             mDialog.setMax(adapter.getCount());

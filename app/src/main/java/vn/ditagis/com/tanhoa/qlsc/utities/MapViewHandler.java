@@ -1,8 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc.utities;
 
 import android.app.Activity;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -21,12 +19,9 @@ import com.esri.arcgisruntime.mapping.Viewpoint;
 import com.esri.arcgisruntime.mapping.view.Callout;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
@@ -100,7 +95,7 @@ public class MapViewHandler extends Activity {
         final Point clickPoint = mMapView.screenToLocation(new android.graphics.Point(Math.round(e.getX()), Math.round(e.getY())));
         mClickPoint = new android.graphics.Point((int) e.getX(), (int) e.getY());
         if (isClickBtnAdd) {
-            mMapView.setViewpointCenterAsync(clickPoint, 10);
+            mMapView.setViewpointCenterAsync(clickPoint);
         } else {
 
             SingleTapMapViewAsync singleTapMapViewAsync = new SingleTapMapViewAsync(mActivity, mPopUp, mClickPoint, mMapView);
@@ -163,7 +158,7 @@ public class MapViewHandler extends Activity {
                         QueryParameters queryParameters1 = new QueryParameters();
                         queryParameters1.setWhereClause(queryClause);
                         new QueryServiceFeatureTableAsync(mActivity,
-                                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
                             if (output != null) {
                                 mApplication.setArcGISFeature((ArcGISFeature) output);
                                 mPopUp.showPopup();

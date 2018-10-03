@@ -27,66 +27,57 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import vn.ditagis.com.tanhoa.qlsc.adapter.VatTuAdapter;
-import vn.ditagis.com.tanhoa.qlsc.async.HoSoVatTuSuCoAsync;
+import vn.ditagis.com.tanhoa.qlsc.adapter.ThietBiAdapter;
+import vn.ditagis.com.tanhoa.qlsc.async.HoSoThietBiSuCoAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableAsync;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
-import vn.ditagis.com.tanhoa.qlsc.entities.VatTu;
+import vn.ditagis.com.tanhoa.qlsc.entities.HoSoThietBiSuCo;
+import vn.ditagis.com.tanhoa.qlsc.entities.ThietBi;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
-public class VatTuActivity extends AppCompatActivity {
-
-    @BindView(R.id.autoCompleteTV_vattu)
+public class ThietBiActivity extends AppCompatActivity {
+    @BindView(R.id.autoCompleteTV_thietbi)
     AutoCompleteTextView mAutoCompleteTV;
-    @BindView(R.id.lstview_vattu)
+    @BindView(R.id.lstview_thietbi)
     ListView mLstView;
-    @BindView(R.id.etxt_soLuong_vattu)
+    @BindView(R.id.etxt_thietbi_thoigian)
     EditText mEtxtSoLuong;
-    @BindView(R.id.txt_donvitinh_vattu)
-    TextView mTxtDonViTinh;
-    @BindView(R.id.txt_them_vattu)
+    @BindView(R.id.txt_thietbi_add)
     TextView mTxtThem;
-    @BindView(R.id.btn_update_vattu)
+    @BindView(R.id.btn_thietbi_update)
     Button mBtnUpdate;
-    @BindView(R.id.txt_status_vattu)
+    @BindView(R.id.txt_thietbi_status)
     TextView mTxtStatus;
-    @BindView(R.id.llayout_vattu_add)
+    @BindView(R.id.llayout_thietbi_add)
     LinearLayout mLLayoutAdd;
-    @BindView(R.id.llayout_vattu_update)
+    @BindView(R.id.llayout_thietbi_update)
     LinearLayout mLLayoutUpdate;
 
     private DApplication mApplication;
     private String mIDSuCoTT;
-    private VatTuAdapter mAdapter;
     private String mIDSuCo;
+    private ThietBiAdapter mAdapter;
     private boolean mIsComplete = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vat_tu);
+        setContentView(R.layout.activity_thiet_bi);
+
         ButterKnife.bind(this);
         (Objects.requireNonNull(getSupportActionBar())).setDisplayHomeAsUpEnabled(true);
         (Objects.requireNonNull(getSupportActionBar())).setDisplayShowHomeEnabled(true);
         mApplication = (DApplication) getApplication();
         mIsComplete = Short.parseShort(mApplication.getArcGISFeature().getAttributes().
                 get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH;
-        switch (mApplication.getLoaiVatTu()) {
-            case Constant.CODE_VATTU_CAPMOI:
-                setTitle("Vật tư cấp mới");
-                break;
-            case Constant.CODE_VATTU_THUHOI:
-                setTitle("Vật tư thu hồi");
-                break;
-        }
+
         mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
                 this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             init();
-            loadVatTu();
+            loadThietBi();
             mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
         });
 
@@ -103,52 +94,28 @@ public class VatTuActivity extends AppCompatActivity {
         }
     }
 
-    private void loadVatTu() {
-        mTxtStatus.setText(Html.fromHtml(getString(R.string.info_vattu_loading), Html.FROM_HTML_MODE_LEGACY));
-
-        HoSoVatTuSuCoAsync hoSoVatTuSuCoAsync = new HoSoVatTuSuCoAsync(this, object -> {
-            if (object != null) {
-                try {
-                    List<HoSoVatTuSuCo> hoSoVatTuSuCoList = (List<HoSoVatTuSuCo>) object;
-                    for (HoSoVatTuSuCo hoSoVatTuSuCo : hoSoVatTuSuCoList) {
-                        mAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
-                                hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
-                    }
-                } catch (Exception e) {
-                    Log.e("Lỗi ép kiểu vật tư", e.toString());
-                }
-                mAdapter.notifyDataSetChanged();
-                mLstView.setAdapter(mAdapter);
-            }
-            mTxtStatus.setText("");
-        });
-        hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCo);
-
-    }
-
-
     private void init() {
-        List<String> listTenVatTus = new ArrayList<>();
+        List<String> listTenThietBis = new ArrayList<>();
         try {
-            for (VatTu vatTu : ListObjectDB.getInstance().getVatTus())
-                listTenVatTus.add(vatTu.getTenVatTu());
+            for (ThietBi thietBi : ListObjectDB.getInstance().getThietBis())
+                listTenThietBis.add(thietBi.getTenThietBi());
         } catch (Exception ignored) {
 
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listTenVatTus);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listTenThietBis);
         mAutoCompleteTV.setAdapter(adapter);
 
-        mAdapter = new VatTuAdapter(this, new ArrayList<>());
-        final String[] maVatTu = {""};
+        mAdapter = new ThietBiAdapter(this, new ArrayList<>());
+        final String[] maThietBi = {""};
         mLstView.setAdapter(mAdapter);
         if (!mIsComplete) {
             mLstView.setOnItemLongClickListener((adapterView, view, i, l) -> {
-                final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(VatTuActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
-                builder.setTitle("Xóa vật tư");
-                builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
+                final ThietBiAdapter.Item itemThietBi = (ThietBiAdapter.Item) adapterView.getAdapter().getItem(i);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(ThietBiActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
+                builder.setTitle("Xóa thiết bị");
+                builder.setMessage("Bạn có chắc muốn xóa thiết bị " + itemThietBi.getTenThietBi());
                 builder.setCancelable(false).setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
-                    mAdapter.remove(itemVatTu);
+                    mAdapter.remove(itemThietBi);
                     mAdapter.notifyDataSetChanged();
                     dialogInterface.dismiss();
                 });
@@ -168,11 +135,10 @@ public class VatTuActivity extends AppCompatActivity {
 
                 @Override
                 public void afterTextChanged(Editable editable) {
-                    String tenVatTu = editable.toString();
-                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
-                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
-                            mTxtDonViTinh.setText(vatTu.getDonViTinh());
-                            maVatTu[0] = vatTu.getMaVatTu();
+                    String tenThietBi = editable.toString();
+                    for (ThietBi thietBi : ListObjectDB.getInstance().getThietBis()) {
+                        if (thietBi.getTenThietBi().equals(tenThietBi)) {
+                            maThietBi[0] = thietBi.getMaThietBi();
                             break;
                         }
                     }
@@ -181,17 +147,16 @@ public class VatTuActivity extends AppCompatActivity {
             });
             mTxtThem.setOnClickListener(view -> {
                 if (mEtxtSoLuong.getText().toString().trim().length() == 0)
-                    MySnackBar.make(mEtxtSoLuong, VatTuActivity.this.getString(R.string.message_soluong_themhoso), true);
+                    MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_soluong_themhoso), true);
                 else {
                     try {
                         double soLuong = Double.parseDouble(mEtxtSoLuong.getText().toString());
-                        mAdapter.add(new VatTuAdapter.Item(mAutoCompleteTV.getText().toString(),
-                                soLuong, mTxtDonViTinh.getText().toString(), maVatTu[0]));
+                        mAdapter.add(new ThietBiAdapter.Item(mAutoCompleteTV.getText().toString(),
+                                soLuong, maThietBi[0]));
                         mAdapter.notifyDataSetChanged();
 
                         mAutoCompleteTV.setText("");
                         mEtxtSoLuong.setText("");
-                        mTxtDonViTinh.setText("");
 
                         if (mLstView.getHeight() > 500) {
                             ViewGroup.LayoutParams params = mLstView.getLayoutParams();
@@ -199,7 +164,7 @@ public class VatTuActivity extends AppCompatActivity {
                             mLstView.setLayoutParams(params);
                         }
                     } catch (NumberFormatException e) {
-                        MySnackBar.make(mEtxtSoLuong, VatTuActivity.this.getString(R.string.message_number_format_exception), true);
+                        MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_number_format_exception), true);
                     }
 
                     mAdapter.notifyDataSetChanged();
@@ -211,19 +176,42 @@ public class VatTuActivity extends AppCompatActivity {
         }
     }
 
+    private void loadThietBi() {
+        mTxtStatus.setText(Html.fromHtml(getString(R.string.info_thietbi_loading), Html.FROM_HTML_MODE_LEGACY));
+
+        HoSoThietBiSuCoAsync hoSoThietBiSuCoAsync = new HoSoThietBiSuCoAsync(this, object -> {
+            if (object != null) {
+                try {
+                    List<HoSoThietBiSuCo> hoSoThietBiSuCos = (List<HoSoThietBiSuCo>) object;
+                    for (HoSoThietBiSuCo hoSoThietBiSuCo : hoSoThietBiSuCos) {
+                        mAdapter.add(new ThietBiAdapter.Item(hoSoThietBiSuCo.getTenThietBi(), hoSoThietBiSuCo.getThoigianVanHanh(),
+                                hoSoThietBiSuCo.getMaThietBi()));
+                    }
+                } catch (Exception e) {
+                    Log.e("Lỗi ép kiểu thiết bị", e.toString());
+                }
+                mAdapter.notifyDataSetChanged();
+                mLstView.setAdapter(mAdapter);
+            }
+            mTxtStatus.setText("");
+        });
+        hoSoThietBiSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCo);
+
+    }
+
     private void updateEdit() {
         if (mLstView.getAdapter() != null && mLstView.getAdapter().getCount() == 0) {
-            MySnackBar.make(mLstView, getString(R.string.message_CapNhat_VatTu), true);
+            MySnackBar.make(mLstView, getString(R.string.message_CapNhat_ThietBi), true);
         } else {
-            VatTuAdapter vatTuAdapter = (VatTuAdapter) mLstView.getAdapter();
-            List<HoSoVatTuSuCo> hoSoVatTuSuCos = new ArrayList<>();
-            for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-                hoSoVatTuSuCos.add(new HoSoVatTuSuCo(mIDSuCoTT,
-                        itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+            ThietBiAdapter thietBiAdapter = (ThietBiAdapter) mLstView.getAdapter();
+            List<HoSoThietBiSuCo> hoSoThietBiSuCos = new ArrayList<>();
+            for (ThietBiAdapter.Item itemThietBi : thietBiAdapter.getItems()) {
+                hoSoThietBiSuCos.add(new HoSoThietBiSuCo(mIDSuCoTT,
+                        itemThietBi.getSoLuong(), itemThietBi.getMaThietBi(), itemThietBi.getTenThietBi()));
             }
-            ListObjectDB.getInstance().setLstHoSoVatTuSuCoInsert(hoSoVatTuSuCos);
-            if (ListObjectDB.getInstance().getLstHoSoVatTuSuCoInsert().size() > 0) {
-                HoSoVatTuSuCoAsync hoSoVatTuSuCoAsyncInsert = new HoSoVatTuSuCoAsync(this, object -> {
+            ListObjectDB.getInstance().setLstHoSoThietBiSuCoInsert(hoSoThietBiSuCos);
+            if (ListObjectDB.getInstance().getLstHoSoThietBiSuCoInsert().size() > 0) {
+                HoSoThietBiSuCoAsync hoSoThietBiSuCoInsertAsync = new HoSoThietBiSuCoAsync(this, object -> {
                     try {
                         if (object != null) {
                             boolean isDone = (boolean) object;
@@ -231,20 +219,20 @@ public class VatTuActivity extends AppCompatActivity {
 //                            boolean isDone = (boolean) a[0];
                             if (isDone) {
                                 goHome();
-                                mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_complete), Html.FROM_HTML_MODE_LEGACY));
+                                mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_complete), Html.FROM_HTML_MODE_LEGACY));
                             } else
-                                mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_fail), Html.FROM_HTML_MODE_LEGACY));
+                                mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_fail), Html.FROM_HTML_MODE_LEGACY));
                         } else
-                            mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_fail), Html.FROM_HTML_MODE_LEGACY));
+                            mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_fail), Html.FROM_HTML_MODE_LEGACY));
                     } catch (Exception e) {
-                        mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_fail), Html.FROM_HTML_MODE_LEGACY));
+                        mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_fail), Html.FROM_HTML_MODE_LEGACY));
                     }
                 });
-                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCo);
+                hoSoThietBiSuCoInsertAsync.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCo);
             }
             boolean check;
             do {
-                check = ListObjectDB.getInstance().getLstHoSoVatTuSuCoInsert().size() > 0;
+                check = ListObjectDB.getInstance().getLstHoSoThietBiSuCoInsert().size() > 0;
             }
             while (check);
         }
@@ -267,5 +255,3 @@ public class VatTuActivity extends AppCompatActivity {
         finish();
     }
 }
-
-

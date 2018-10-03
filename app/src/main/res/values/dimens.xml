@@ -35,5 +35,6 @@
     <dimen name="tabIndicatorHeight">5dp</dimen>
     <dimen name="size_image_them_su_co">24dp</dimen>
     <dimen name="width_title_tra_cuu_su_co">110dp</dimen>
+    <dimen name="size_image">32dp</dimen>
 
 </resources>

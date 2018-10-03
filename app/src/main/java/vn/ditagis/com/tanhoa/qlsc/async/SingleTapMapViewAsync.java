@@ -86,7 +86,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, Feature, Void> {
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(queryClause);
         new QueryServiceFeatureTableAsync(mActivity,
-                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             if (output != null) {
                 publishProgress(output);
             }
@@ -127,7 +127,7 @@ public class SingleTapMapViewAsync extends AsyncTask<Point, Feature, Void> {
                     mDialog.dismiss();
                 }
             });
-            hoSoVatTuSuCoAsync.execute(Constant.HOSOVATTUSUCO_METHOD.FIND, mSelectedArcGISFeature.getAttributes()
+            hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mSelectedArcGISFeature.getAttributes()
                     .get(Constant.FIELD_SUCO.ID_SUCO));
         } else if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();

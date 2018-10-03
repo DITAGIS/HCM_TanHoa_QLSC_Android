@@ -60,6 +60,7 @@ import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.ThietBiActivity;
 import vn.ditagis.com.tanhoa.qlsc.VatTuActivity;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewInfoAdapter;
 import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
@@ -190,7 +191,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                StringBuilder builder = new StringBuilder();
 //                this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
 //                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-//                    builder.append(hoSoVatTuSuCo.getTenVatTu()).append(" ").append(hoSoVatTuSuCo.getSoLuong()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
+//                    builder.append(hoSoVatTuSuCo.getTenThietBi()).append(" ").append(hoSoVatTuSuCo.getThoigianVanHanh()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
 //                }
 //                if (builder.length() > 0)
 //                    builder.replace(builder.length() - 2, builder.length(), "");
@@ -199,7 +200,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                StringBuilder builder = new StringBuilder();
 //                this.mListHoSoVatTuThuHoiSuCo = new HoSoVatTuThuHoiSuCoDB(mMainActivity).find(mIDSuCo);
 //                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
-//                    builder.append(hoSoVatTuSuCo.getTenVatTu()).append(" ").append(hoSoVatTuSuCo.getSoLuong()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
+//                    builder.append(hoSoVatTuSuCo.getTenThietBi()).append(" ").append(hoSoVatTuSuCo.getThoigianVanHanh()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
 //                }
 //                if (builder.length() > 0)
 //                    builder.replace(builder.length() - 2, builder.length(), "");
@@ -373,8 +374,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             if (output != null) {
                                 mCallout.dismiss();
                                 dialog.dismiss();
-                            }else{
-                                MySnackBar.make(getmBtnLeft(),  mMainActivity.getResources().getString(R.string.message_update_failed), true);
+                            } else {
+                                MySnackBar.make(getmBtnLeft(), mMainActivity.getResources().getString(R.string.message_update_failed), true);
                             }
 
                         });
@@ -394,8 +395,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 if (output != null) {
                     mCallout.dismiss();
                     dialog.dismiss();
-                }else{
-                    MySnackBar.make(getmBtnLeft(),  mMainActivity.getResources().getString(R.string.message_update_failed), true);
+                } else {
+                    MySnackBar.make(getmBtnLeft(), mMainActivity.getResources().getString(R.string.message_update_failed), true);
                 }
             });
             editAsync.execute(mFeatureViewMoreInfoAdapter);
@@ -765,7 +766,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //            final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
 //            final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
 //            builder.setTitle("Xóa vật tư");
-//            builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenVatTu());
+//            builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenThietBi());
 //            builder.setCancelable(false).setNegativeButton("Hủy",
 //                    (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
 //                vatTuThuHoiAdapter.remove(itemVatTu);
@@ -792,17 +793,17 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                String tenVatTu = editable.toString();
 //                if (mLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH) {
 //                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
-//                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+//                        if (vatTu.getTenThietBi().equals(tenVatTu)) {
 //                            txtDonViTinh.setText(vatTu.getDonViTinh());
-//                            maVatTu[0] = vatTu.getMaVatTu();
+//                            maVatTu[0] = vatTu.getMaThietBi();
 //                            break;
 //                        }
 //                    }
 //                } else if (mLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
 //                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
-//                        if (vatTu.getTenVatTu().equals(tenVatTu)) {
+//                        if (vatTu.getTenThietBi().equals(tenVatTu)) {
 //                            txtDonViTinh.setText(vatTu.getDonViTinh());
-//                            maVatTu[0] = vatTu.getMaVatTu();
+//                            maVatTu[0] = vatTu.getMaThietBi();
 //                            break;
 //                        }
 //                    }
@@ -836,8 +837,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //        });
 //
 //        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
-//            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenVatTu(), hoSoVatTuSuCo.getSoLuong(),
-//                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaVatTu()));
+//            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenThietBi(), hoSoVatTuSuCo.getThoigianVanHanh(),
+//                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaThietBi()));
 //        }
 //        vatTuThuHoiAdapter.notifyDataSetChanged();
 //
@@ -981,11 +982,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                } else {
 //                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
 //                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-//                        mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+//                        mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getThoigianVanHanh(), itemVatTu.getMaThietBi(), itemVatTu.getTenThietBi(), itemVatTu.getDonVi()));
 //                    }
 //                    if (mListHoSoVatTuSuCo.size() > 0) {
 //                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
-//                        item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
+//                        item.setValue(itemVatTu.getTenThietBi() + "\n" + itemVatTu.getThoigianVanHanh() + " " + itemVatTu.getDonVi() + "\n...");
 //                    }
 //                }
 //            }
@@ -1000,11 +1001,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                } else {
 //                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
 //                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-//                        mListHoSoVatTuThuHoiSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getSoLuong(), itemVatTu.getMaVatTu(), itemVatTu.getTenVatTu(), itemVatTu.getDonVi()));
+//                        mListHoSoVatTuThuHoiSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getThoigianVanHanh(), itemVatTu.getMaThietBi(), itemVatTu.getTenThietBi(), itemVatTu.getDonVi()));
 //                    }
 //                    if (mListHoSoVatTuThuHoiSuCo.size() > 0) {
 //                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
-//                        item.setValue(itemVatTu.getTenVatTu() + "\n" + itemVatTu.getSoLuong() + " " + itemVatTu.getDonVi() + "\n...");
+//                        item.setValue(itemVatTu.getTenThietBi() + "\n" + itemVatTu.getThoigianVanHanh() + " " + itemVatTu.getDonVi() + "\n...");
 //                    }
 //                }
 //            }
@@ -1229,6 +1230,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
         else
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
+        linearLayout.findViewById(R.id.imgBtn_thiet_bi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_thu_hoi).setOnClickListener(this::onClick);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -1336,6 +1338,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.imgBtn_ViewMoreInfo:
                 viewMoreInfo();
+                break;
+            case R.id.imgBtn_thiet_bi:
+                Intent intentThietBi = new Intent(mMainActivity, ThietBiActivity.class);
+                mMainActivity.startActivity(intentThietBi);
                 break;
             case R.id.imgBtn_cap_nhat_vat_tu_gan_moi:
                 Intent intent = new Intent(mMainActivity, VatTuActivity.class);

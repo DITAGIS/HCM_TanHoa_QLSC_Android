@@ -11,6 +11,8 @@ public class Constant {
     public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
+    public static final String ID_SU_CO_THIET_BI_TABLE = "thietbiTBL";
+    public static final String ID_HO_SO_THIET_BI_SU_CO_TABLE = "hosothietbisucoTBL";
     public static final String ID_VAT_TU_TABLE = "vattuTBL";
     public static final String ID_BASEMAP = "BASEMAP";
     public static final String ROLE_PGN = "pgn";
@@ -155,6 +157,12 @@ public class Constant {
         public static final String LOAI_VAT_TU = "LoaiVatTu";
 
     }
+    public class FIELD_THIETBI {
+        public static final String ID_SU_CO = "IDSuCo";
+        public static final String MA_THIET_BI = "MaThietBi";
+        public static final String THOI_GIAN_VAN_HANH = "ThoiGianVanHanh";
+        public static final String TEN_THIET_BI = "TenThietBi";
+    }
 
     public class NO_OUTFIELD_SUCO {
         public static final String DON_VI = FIELD_SUCOTHONGTIN.DON_VI;
@@ -168,7 +176,7 @@ public class Constant {
     }
 
 
-    public class HOSOVATTUSUCO_METHOD {
+    public class HOSOSUCO_METHOD {
         public static final int FIND = 0;
         public static final int INSERT = 2;
     }

@@ -80,7 +80,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setWhereClause(queryClause);
         new QueryServiceFeatureTableAsync(mMainActivity,
-                ((DApplication) mMainActivity.getApplication()).getDFeatureLayer.getServiceFeatureTableSuCoThonTin(), output -> {
+                ((DApplication) mMainActivity.getApplication()).getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             ArcGISFeature arcGISFeature = (ArcGISFeature) output;
             final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeature.fetchAttachmentsAsync();
             attachmentResults.addDoneListener(() -> {

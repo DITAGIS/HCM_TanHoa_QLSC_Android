@@ -43,7 +43,7 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
     public QueryFeatureAsync(Activity activity, int trangThai, String diaChi, String thoiGianPhanAnh
             , AsyncResponse delegate) {
         this.mApplication = (DApplication) activity.getApplication();
-        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThonTin();
+        this.mServiceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
         this.mDelegate = delegate;
         this.mTrangThai = trangThai;
         this.mDiaChi = diaChi;

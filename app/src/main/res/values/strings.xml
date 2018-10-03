@@ -267,9 +267,10 @@
     <string name="arcgis_query_by_OBJECTID">OBJECTID = %d</string>
     <string name="arcgis_query_by_IDSuCo">IDSuCo = \'%1$s\'</string>
     <string name="message_CapNhat_VatTu">Danh sách vật tư đang trống!!!</string>
+    <string name="message_CapNhat_ThietBi">Danh sách thiết bị đang trống!!!</string>
     <string name="message_ChupAnh_HoanThanh">Cần chụp ảnh để hoàn thành sự cố</string>
     <string name="message_HinhThucPhatHien">Cần chọn hình thức phát hiện để thêm sự cố</string>
-    <string name="message_soluong_themvattu">Số lượng không được để trống</string>
+    <string name="message_soluong_themhoso">Số lượng không được để trống</string>
     <string name="message_number_format_exception">Số liệu nhập vào không đúng định dạng</string>
     <string name="btnRight_editItemViewMoreInfo">Cập nhật</string>
     <string name="btnLeft_editItemViewMoreInfo">Hủy</string>
@@ -318,6 +319,10 @@
     <string name="info_vattu_complete"><![CDATA[<font color=#0082c6>Đã cập nhật xong vật tư</font>]]></string>
     <string name="info_vattu_fail"><![CDATA[<font color=#e21400>Có lỗi xảy ra!!!</font>]]></string>
     <string name="info_vattu_loading"><![CDATA[<font color=#0082c6>Đang tải danh sách vật tư…</font>]]></string>
+
+    <string name="info_thietbi_complete"><![CDATA[<font color=#0082c6>Đã cập nhật xong thiết bị</font>]]></string>
+    <string name="info_thietbi_fail"><![CDATA[<font color=#e21400>Có lỗi xảy ra!!!</font>]]></string>
+    <string name="info_thietbi_loading"><![CDATA[<font color=#0082c6>Đang tải danh sách thiết bị…</font>]]></string>
 
 
     <string name="txt_list_task_chua_xu_ly">Công việc chưa xử lý: %1$d</string>

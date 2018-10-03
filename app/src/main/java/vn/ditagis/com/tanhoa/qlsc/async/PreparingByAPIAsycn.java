@@ -22,6 +22,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import vn.ditagis.com.tanhoa.qlsc.services.GetDMA;
+import vn.ditagis.com.tanhoa.qlsc.services.GetThietBi;
 import vn.ditagis.com.tanhoa.qlsc.services.GetVatTu;
 
 public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
@@ -56,7 +57,10 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
             getLayerInfoAPI();
             new GetVatTu(mActivity.getApplicationContext(), () -> {
                 new GetDMA(mActivity.getApplicationContext(), () -> {
-                    publishProgress(true);
+                    new GetThietBi(mActivity.getApplicationContext(), () -> {
+                        publishProgress(true);
+
+                    }).execute();
                 }).execute();
 
             }).execute();
