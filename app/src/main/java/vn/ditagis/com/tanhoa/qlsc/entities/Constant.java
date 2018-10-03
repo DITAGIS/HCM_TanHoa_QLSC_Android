@@ -78,6 +78,13 @@ public class Constant {
         LAYER_INFO = SERVER_API + "/Account/layerinfo";
     }
 
+    public String API_COMPLETE;
+
+
+    {
+        API_COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id={%s}";
+    }
+
     public String IS_ACCESS;
 
     {

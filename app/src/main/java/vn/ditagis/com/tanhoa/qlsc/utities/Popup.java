@@ -361,7 +361,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeatureSuCoThongTin.fetchAttachmentsAsync();
             attachmentResults.addDoneListener(() -> {
                 try {
-
                     final List<Attachment> attachments = attachmentResults.get();
                     int size = attachments.size();
                     if (size == 0) {
@@ -374,6 +373,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             if (output != null) {
                                 mCallout.dismiss();
                                 dialog.dismiss();
+                                APIComplete.send(mApplication, mIDSuCo);
                             } else {
                                 MySnackBar.make(getmBtnLeft(), mMainActivity.getResources().getString(R.string.message_update_failed), true);
                             }

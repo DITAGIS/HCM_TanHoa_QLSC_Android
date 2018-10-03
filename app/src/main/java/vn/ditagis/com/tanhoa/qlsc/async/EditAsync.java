@@ -303,7 +303,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                                 applyEdit(arcGISFeature);
                             }));
                 });
-            }
+            } else publishProgress();
         }).execute(queryParameters);
         mServiceFeatureTableSuCo.loadAsync();
         mServiceFeatureTableSuCo.addDoneLoadingListener(() -> {
@@ -320,7 +320,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                 if (attachment.getSize() > 0) {
                     final ListenableFuture<Void> tableResult = mServiceFeatureTableSuCoThongTin.updateFeatureAsync(arcGISFeature);
                     tableResult.addDoneListener(() -> updateSuCo(arcGISFeature));
-                }
+                } else publishProgress();
             } catch (Exception ignored) {
                 publishProgress();
             }
@@ -334,16 +334,16 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
             List<FeatureEditResult> edits;
             try {
                 edits = updatedServerResult.get();
-                if (edits.size() > 0) {
-                    if (!edits.get(0).hasCompletedWithErrors()) {
-                        publishProgress(arcGISFeature);
-                        //attachmentList.add(fileName);
+//                if (edits.size() > 0) {
+//                    if (!edits.get(0).hasCompletedWithErrors()) {
+                publishProgress(arcGISFeature);
+                //attachmentList.add(fileName);
 //                                                String s = arcGISFeature.getAttributes().get("objectid").toString();
-                        // update the attachment list view/ on the control panel
-                    }
-                } else {
-                    publishProgress();
-                }
+                // update the attachment list view/ on the control panel
+//                    }
+//                } else {
+//                    publishProgress();
+//                }
             } catch (InterruptedException | ExecutionException e) {
                 publishProgress();
                 e.printStackTrace();

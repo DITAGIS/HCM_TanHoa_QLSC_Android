@@ -540,7 +540,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
-                mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
                 mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThietBi((ServiceFeatureTable) featureLayer.getFeatureTable());
             } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_THIET_BI_SU_CO_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
