@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/llayout_main_tra_cuu_su_co"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thông tin tra cứu" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorWhite"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/MyTextAppearance.Black"
+                android:layout_width="@dimen/width_title_tra_cuu_su_co"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:text="Địa chỉ" />
+
+            <EditText
+                android:id="@+id/etxtAddress_tra_cuu_su_co"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:hint="Nhập địa chỉ"
+                android:inputType="text|textCapWords"
+                android:maxLines="1"
+                android:nextFocusDown="@+id/etxtFullName_add_feature"
+                android:textCursorDrawable="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorWhite"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/MyTextAppearance.Black"
+                android:layout_width="@dimen/width_title_tra_cuu_su_co"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:text="Trạng thái" />
+
+            <Spinner
+                android:id="@+id/spinTrangThai_tra_cuu_su_co"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:nextFocusDown="@+id/txtThoiGian_tra_cuu_su_co"
+                android:textCursorDrawable="@null" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorWhite"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/MyTextAppearance.Black"
+                android:layout_width="@dimen/width_title_tra_cuu_su_co"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_small"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:text="Thời gian" />
+
+            <TextView
+                android:id="@+id/txtThoiGian_tra_cuu_su_co"
+                style="@style/MyTextAppearance.Black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/margin_medium"
+                android:clickable="true"
+                android:nextFocusDown="@+id/etxtPhoneNumber_add_feature"
+                android:text="@string/txt_chon_thoi_gian_tracuusuco"
+                android:textCursorDrawable="@null" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_tra_cuu_tra_cuu_su_co"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/border_black"
+            android:text="Tra cứu" />
+
+        <LinearLayout
+            android:id="@+id/llayout_ket_qua_tra_cuu_su_co"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/MyTextAppearance.Blue.Big.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kết quả tra cứu" />
+
+            <ListView
+                android:id="@+id/lst_tra_cuu_su_co"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></ListView>
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

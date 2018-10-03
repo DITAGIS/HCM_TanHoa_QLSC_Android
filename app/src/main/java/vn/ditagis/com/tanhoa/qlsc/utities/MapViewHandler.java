@@ -160,9 +160,11 @@ public class MapViewHandler extends Activity {
                 FeatureQueryResult result = feature.get();
                 if (result.iterator().hasNext()) {
                     Feature item = result.iterator().next();
-                    Envelope extent = item.getGeometry().getExtent();
-                    mApplication.setGeometry(item.getGeometry());
-                    mMapView.setViewpointGeometryAsync(extent);
+                    if (item.getGeometry() != null) {
+                        Envelope extent = item.getGeometry().getExtent();
+                        mApplication.setGeometry(item.getGeometry());
+                        mMapView.setViewpointGeometryAsync(extent);
+                    }
                     suCoTanHoaLayerThiCong.selectFeature(item);
                     if (mApplication.getDFeatureLayer.getLayer() != null) {
                         String queryClause = String.format("%s = '%s' and %s = '%s'",

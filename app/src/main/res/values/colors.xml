@@ -30,6 +30,7 @@
     <color name="colorTextColor">#444444</color>
     <color name="colorTextColor_1">#000000</color>
     <color name="colorTextLogin_1">#000000</color>
+    <color name="colorBlack">#000000</color>
     <color name="color_chua_sua_chua">#e5b1b0</color>
     <color name="color_da_sua_chua">#b0cae5</color>
     <color name="color_dang_sua_chua">#e5e5b0</color>

@@ -369,9 +369,14 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         EditAsync editAsync;
                         editAsync = new EditAsync(mMainActivity,
                                 mSelectedArcGISFeature, true, null,
-                                mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature1 -> {
-                            mCallout.dismiss();
-                            dialog.dismiss();
+                                mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, output -> {
+                            if (output != null) {
+                                mCallout.dismiss();
+                                dialog.dismiss();
+                            }else{
+                                MySnackBar.make(getmBtnLeft(),  mMainActivity.getResources().getString(R.string.message_update_failed), true);
+                            }
+
                         });
                         editAsync.execute(mFeatureViewMoreInfoAdapter);
                     }
@@ -385,9 +390,13 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             EditAsync editAsync;
             editAsync = new EditAsync(mMainActivity,
                     mSelectedArcGISFeature, true, null,
-                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, arcGISFeature -> {
-                mCallout.dismiss();
-                dialog.dismiss();
+                    mListHoSoVatTuSuCo, mListHoSoVatTuThuHoiSuCo, output -> {
+                if (output != null) {
+                    mCallout.dismiss();
+                    dialog.dismiss();
+                }else{
+                    MySnackBar.make(getmBtnLeft(),  mMainActivity.getResources().getString(R.string.message_update_failed), true);
+                }
             });
             editAsync.execute(mFeatureViewMoreInfoAdapter);
         }
@@ -1215,9 +1224,11 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         {
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
         }
-        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).
-
-                setOnClickListener(this);
+        if (Short.parseShort(mApplication.getArcGISFeature().getAttributes().
+                get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
+        else
+            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_thu_hoi).setOnClickListener(this::onClick);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,

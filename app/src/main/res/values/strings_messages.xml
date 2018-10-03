@@ -4,11 +4,13 @@
     <string name="message_progress_title">Vui lòng đợi!</string>
     <string name="message_viewmore_message">Đang lấy thông tin sự cố</string>
     <string name="message_list_task_message">Đang lấy danh sách công việc…</string>
-    <string name="message_click_feature_complete">Sự cố đã hoàn thành!</string>
+    <string name="message_click_feature_complete">Sự cố đã hoàn thành, không thể cập nhật!</string>
     <string name="message_title_confirm">Xác nhận</string>
     <string name="message_click_list_task">Bạn có muốn xem thông tin sự cố có id là: %1$s?</string>
     <string name="message_btn_ok">OK</string>
     <string name="message_btn_cancel">Hủy</string>
     <string name="message_permission">Cần cho phép ứng dụng truy cập những quyền trên!</string>
     <string name="message_select_loai_su_co">Vui lòng chọn loại sự cố!</string>
+    <string name="message_cannot_edit_attachment">Điểm sự cố này không thể thêm ảnh</string>
+    <string name="message_update_failed">Cập nhật thất bại. Vui lòng thử lại sau...</string>
 </resources>

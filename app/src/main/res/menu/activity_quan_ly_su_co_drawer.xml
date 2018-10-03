@@ -52,6 +52,10 @@
             android:icon="@drawable/ic_refresh_black_24dp"
             android:title="@string/nav_refresh" />
         <item
+            android:id="@+id/nav_show_hide_complete"
+            android:icon="@drawable/ic_complete_gray_32dp"
+            android:title="@string/nav_show_hide_complete" />
+        <item
             android:id="@+id/nav_delete_searching"
             android:icon="@drawable/ic_delete_black_24dp"
             android:title="@string/nav_xoa_tim_kiem" />

@@ -88,10 +88,10 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             txtDiaChi.setText(item.getDiaChi());
 
         TextView txtNgayCapNhat = (TextView) convertView.findViewById(R.id.txt_right);
-        if (item.getNgayCapNhat() == null || item.getNgayCapNhat().isEmpty())
+        if (item.getNgayGiaoViec() == null || item.getNgayGiaoViec().isEmpty())
             txtNgayCapNhat.setVisibility(View.GONE);
         else
-            txtNgayCapNhat.setText(item.getNgayCapNhat());
+            txtNgayCapNhat.setText(item.getNgayGiaoViec());
 
 
         return convertView;
@@ -104,7 +104,7 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
         int objectID;
         String id;
         int trangThai;
-        String ngayCapNhat;
+        String ngayGiaoViec;
         String diaChi;
         double latitude;
         double longtitude;
@@ -115,14 +115,14 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             this.objectID = objectID;
             this.id = id;
             this.trangThai = trangThai;
-            this.ngayCapNhat = ngayCapNhat;
+            this.ngayGiaoViec = ngayCapNhat;
             this.diaChi = diaChi;
         }
 
         public Item(int objectID, String id, String ngayCapNhat, String diaChi) {
             this.objectID = objectID;
             this.id = id;
-            this.ngayCapNhat = ngayCapNhat;
+            this.ngayGiaoViec = ngayCapNhat;
             this.diaChi = diaChi;
         }
 
@@ -166,12 +166,12 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
             this.trangThai = trangThai;
         }
 
-        public String getNgayCapNhat() {
-            return ngayCapNhat;
+        public String getNgayGiaoViec() {
+            return ngayGiaoViec;
         }
 
-        public void setNgayCapNhat(String ngayCapNhat) {
-            this.ngayCapNhat = ngayCapNhat;
+        public void setNgayGiaoViec(String ngayGiaoViec) {
+            this.ngayGiaoViec = ngayGiaoViec;
         }
 
         public String getDiaChi() {
@@ -184,7 +184,7 @@ public class TraCuuAdapter extends ArrayAdapter<TraCuuAdapter.Item> {
 
         @Override
         public String toString() {
-            return "Item{" + "objectID=" + objectID + ", id='" + id + '\'' + ", trangThai=" + trangThai + ", ngayCapNhat='" + ngayCapNhat + '\'' + ", diaChi='" + diaChi + '\'' + '}';
+            return "Item{" + "objectID=" + objectID + ", id='" + id + '\'' + ", trangThai=" + trangThai + ", ngayGiaoViec='" + ngayGiaoViec + '\'' + ", diaChi='" + diaChi + '\'' + '}';
         }
     }
 }

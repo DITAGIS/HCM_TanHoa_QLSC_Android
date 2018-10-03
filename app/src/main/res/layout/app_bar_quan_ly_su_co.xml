@@ -29,7 +29,7 @@
         layout="@layout/content_quan_ly_su_co" />
 
     <LinearLayout
-        android:id="@+id/layout_layer"
+        android:id="@+id/llayout_main_layer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
@@ -73,7 +73,7 @@
 
 
             <LinearLayout
-                android:id="@+id/layout_layer_open_street_map"
+                android:id="@+id/llayout_layer_open_street_map"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -102,7 +102,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_layer_street_map"
+                android:id="@+id/llayout_layer_street_map"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -129,7 +129,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/layout_layer_image"
+                android:id="@+id/llayout_layer_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

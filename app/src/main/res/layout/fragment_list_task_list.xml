@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_medium">
+
+        <TextView
+            android:id="@+id/txt_list_task_chua_xu_ly"
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_small"
+            android:onClick="onClick"
+            android:text="@string/txt_list_task_chua_xu_ly" />
+
+        <ListView
+            android:id="@+id/lst_list_task_chua_xu_ly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txt_list_task_dang_xu_ly"
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_small"
+            android:onClick="onClick"
+            android:text="@string/txt_list_task_dang_xu_ly" />
+
+        <ListView
+            android:id="@+id/lst_list_task_dang_xu_ly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/txt_list_task_hoan_thanh"
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_small"
+            android:onClick="onClick"
+            android:text="@string/txt_list_task_hoan_thanh" />
+
+        <ListView
+            android:id="@+id/lst_list_task_da_hoan_thanh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <!--</ScrollView>-->
+
+</android.support.constraint.ConstraintLayout>

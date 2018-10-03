@@ -36,9 +36,9 @@ public class Constant {
     private final String SERVER = "http://tanhoa.sawagis.vn";
     private String SERVER_API = SERVER + "/apiv1/api";
     public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
-    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = "/images/map/bengam.png";
+    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER+ "/images/map/bengam.png";
     public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/images/map/1.png";
-    public String URL_SYMBOL_HOAN_THANH = SERVER + "/images/map/3.png";
+    public String URL_SYMBOL_HOAN_THANH = SERVER + "/images/map/2.png";
 
     public static final short LOAISUCO_ONGNGANH = 1;
     public static final short LOAISUCO_ONGCHINH = 2;

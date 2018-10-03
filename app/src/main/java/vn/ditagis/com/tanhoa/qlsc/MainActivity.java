@@ -42,6 +42,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -64,6 +65,7 @@ import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.ArcGISMapImageSublayer;
 import com.esri.arcgisruntime.layers.ArcGISSublayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
+import com.esri.arcgisruntime.layers.Layer;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.Basemap;
@@ -117,28 +119,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View.OnClickListener, AdapterView.OnItemClickListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
+    @BindView(R.id.floatBtnLayer)
+    FloatingActionButton mFloatButtonLayer;
+    @BindView(R.id.floatBtnLocation)
+    FloatingActionButton mFloatButtonLocation;
+    @BindView(R.id.llayout_main_layer)
+    LinearLayout mLLayoutLayer;
+    @BindView(R.id.linearDisplayLayerFeature)
+    LinearLayout mLayoutDisplayLayerThematic;
+    @BindView(R.id.linearDisplayLayerAdministration)
+    LinearLayout mLayoutDisplayLayerAdministration;
+    @BindView(R.id.linearDisplayLayerLegend)
+    LinearLayout mLayoutLegend;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+    @BindView(R.id.lstview_search)
+    ListView mListViewSearch;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout mDrawer;
+    @BindView(R.id.nav_view)
+    NavigationView mNavView;
+    @BindView(R.id.mapView)
+    MapView mMapView;
+    @BindView(R.id.skbr_hanhchinh_app_bar_quan_ly_su_co)
+    SeekBar mSeekBarAdministrator;
+    @BindView(R.id.skbr_chuyende_app_bar_quan_ly_su_co)
+    SeekBar mSeekBarThematic;
+    @BindView(R.id.llayout_layer_open_street_map)
+    LinearLayout mLLayoutOSM;
+    @BindView(R.id.llayout_layer_street_map)
+    LinearLayout mLLayoutSM;
+    @BindView(R.id.llayout_layer_image)
+    LinearLayout mLLayoutImage;
+    @BindView(R.id.txt_layer_open_street_map)
+    TextView mTxtOSM;
+    @BindView(R.id.txt_layer_street_map)
+    TextView mTxtSM;
+    @BindView(R.id.txt_layer_image)
+    TextView mTxtImageWithLabel;
+    @BindView(R.id.img_layer_open_street_map)
+    ImageView mImageOpenStreetMap;
+    @BindView(R.id.img_layer_street_map)
+    ImageView mImageStreetMap;
+    @BindView(R.id.img_layer_image)
+    ImageView mImageImageWithLabel;
+    @BindView(R.id.btn_layer_close)
+    Button mBtnLayerClose;
+    @BindView(R.id.layout_tim_su_co)
+    LinearLayout mLayoutTimSuCo;
+    @BindView(R.id.layout_tim_dia_chi)
+    LinearLayout mLayoutTimDiaChi;
+    @BindView(R.id.layout_tim_kiem)
+    LinearLayout mLayoutTimKiem;
+    TextView mTxtHeaderTenNV;
+    TextView mTxtHeaderDisplayName;
+
     private Uri mUri;
     private Popup mPopUp;
-    private MapView mMapView;
     private MapViewHandler mMapViewHandler;
     private TraCuuAdapter mSearchAdapter;
     private LocationDisplay mLocationDisplay;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean mIsSearchingFeature = false;
-    private LinearLayout mLayoutTimSuCo;
-    private LinearLayout mLayoutTimDiaChi;
-    private LinearLayout mLayoutTimKiem;
-    @BindView(R.id.floatBtnLayer)
-    FloatingActionButton mFloatButtonLayer;
-    @BindView(R.id.floatBtnLocation)
-    FloatingActionButton mFloatButtonLocation;
-    private LinearLayout mLayoutDisplayLayerAdministration, mLayoutDisplayLayerThematic, mLayoutLegend;
+
+
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
     private boolean mIsAddFeature;
 
-    private ImageView mImageOpenStreetMap, mImageStreetMap, mImageImageWithLabel;
-    private TextView mTxtOpenStreetMap, mTxtStreetMap, mTxtImageWithLabel;
     private SearchView mTxtSearchView;
     private ArcGISMapImageLayer mArcGISMapImageLayerAdministrator, mArcGISMapImageLayerThematic;
     private List<String> mListLayerID;
@@ -150,12 +198,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView mTxtInfo;
     @BindView(R.id.llayout_info_app_bar)
     LinearLayout mLLayoutInfo;
+    List<String> mIDSuCoList;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
     }
 
-    private SeekBar mSeekBarAdministrator, mSeekBarThematic;
 
     public void setFeatureViewMoreInfoAdapter(FeatureViewMoreInfoAdapter featureViewMoreInfoAdapter) {
         this.mFeatureViewMoreInfoAdapter = featureViewMoreInfoAdapter;
@@ -177,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private static final int REQUEST_SEARCH = 1;
 
     private ArcGISFeature mSelectedArcGISFeature;
-    private boolean mIsFirstLocating = true;
+    private boolean mIsFirstLocating = true, mIsShowComplete = false;
 
     @SuppressLint("ClickableViewAccessibility")
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -187,12 +235,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_quan_ly_su_co);
         mListLayerID = new ArrayList<>();
         ButterKnife.bind(this);
+
+        mTxtHeaderTenNV = mNavView.findViewById(R.id.txt_nav_header_tenNV);
+        mTxtHeaderDisplayName = mNavView.findViewById(R.id.txt_nav_header_displayname);
         states = new int[][]{{android.R.attr.state_checked}, {}};
         colors = new int[]{R.color.colorTextColor_1, R.color.colorTextColor_1};
-        findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
+        mLLayoutLayer.setVisibility(View.INVISIBLE);
         mApplication = (DApplication) getApplication();
         requestPermisson();
-
+        mIDSuCoList = new ArrayList<>();
 
     }
 
@@ -257,9 +308,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY));
         setLicense();
         mArcGISMapImageLayerAdministrator = mArcGISMapImageLayerThematic = null;
-        mLayoutDisplayLayerThematic = findViewById(R.id.linearDisplayLayerFeature);
-        mLayoutDisplayLayerAdministration = findViewById(R.id.linearDisplayLayerAdministration);
-        mLayoutLegend = findViewById(R.id.linearDisplayLayerLegend);
         mLayoutLegend.removeAllViews();
         LoadLegendAsycn loadLegendAsycn = new LoadLegendAsycn(this, mLayoutLegend,
                 MainActivity.this, output -> {
@@ -269,27 +317,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mListLayerID.clear();
         mGeocoder = new Geocoder(this.getApplicationContext(), Locale.getDefault());
         ArcGISMap mMap = new ArcGISMap(Basemap.Type.OPEN_STREET_MAP, 10.8035455, 106.6182534, 13);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
         //for camera begin
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
         //for camera end
-        ListView listViewSearch = findViewById(R.id.lstview_search);
         //đưa listview search ra phía sau
-        listViewSearch.invalidate();
+        mListViewSearch.invalidate();
         List<TraCuuAdapter.Item> items = new ArrayList<>();
         mSearchAdapter = new TraCuuAdapter(MainActivity.this, items);
-        listViewSearch.setAdapter(mSearchAdapter);
-        listViewSearch.setOnItemClickListener(MainActivity.this);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        mListViewSearch.setAdapter(mSearchAdapter);
+        mListViewSearch.setOnItemClickListener(MainActivity.this);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this,
-                drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mDrawer.addDrawerListener(toggle);
         toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(MainActivity.this);
-//        Menu menu = navigationView.getMenu();
+        mNavView.setNavigationItemSelectedListener(MainActivity.this);
+//        Menu menu = mNavView.getMenu();
 //        MenuItem menuItem = menu.findItem(R.id.nav_version);
 //        try {
 //            menuItem.setTitle("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
@@ -297,7 +341,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            e.printStackTrace();
 //        }
 
-        mMapView = findViewById(R.id.mapView);
         mMapView.setMap(mMap);
 
         mMapView.getMap().addDoneLoadingListener(this::handleArcgisMapDoneLoading);
@@ -350,8 +393,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView.getGraphicsOverlays().add(mGraphicsOverlay);
         mGraphicsOverlay.setRenderer(getRendererSuCo());
 
-        mSeekBarAdministrator = findViewById(R.id.skbr_hanhchinh_app_bar_quan_ly_su_co);
-        mSeekBarThematic = findViewById(R.id.skbr_chuyende_app_bar_quan_ly_su_co);
         mSeekBarAdministrator.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -384,30 +425,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             }
         });
-        findViewById(R.id.layout_layer_open_street_map).setOnClickListener(this);
-        findViewById(R.id.layout_layer_street_map).setOnClickListener(this);
-        findViewById(R.id.layout_layer_image).setOnClickListener(this);
+        mLLayoutOSM.setOnClickListener(this);
+        mLLayoutSM.setOnClickListener(this);
+        mLLayoutImage.setOnClickListener(this);
 
-
-        mTxtOpenStreetMap = findViewById(R.id.txt_layer_open_street_map);
-        mTxtStreetMap = findViewById(R.id.txt_layer_street_map);
-        mTxtImageWithLabel = findViewById(R.id.txt_layer_image);
-        mImageOpenStreetMap = findViewById(R.id.img_layer_open_street_map);
-        mImageStreetMap = findViewById(R.id.img_layer_street_map);
-        mImageImageWithLabel = findViewById(R.id.img_layer_image);
 
         mFloatButtonLayer.setOnClickListener(this);
-        findViewById(R.id.btn_layer_close).setOnClickListener(this);
+        mBtnLayerClose.setOnClickListener(this);
         mFloatButtonLocation.setOnClickListener(this);
-        mLayoutTimSuCo = findViewById(R.id.layout_tim_su_co);
         mLayoutTimSuCo.setOnClickListener(this);
-        mLayoutTimDiaChi = findViewById(R.id.layout_tim_dia_chi);
         mLayoutTimDiaChi.setOnClickListener(this);
-        mLayoutTimKiem = findViewById(R.id.layout_tim_kiem);
         if (mApplication.getUserDangNhap() != null && mApplication.getUserDangNhap().getUserName() != null
                 && mApplication.getUserDangNhap().getDisplayName() != null) {
-            ((TextView) findViewById(R.id.txt_nav_header_tenNV)).setText(mApplication.getUserDangNhap().getUserName());
-            ((TextView) findViewById(R.id.txt_nav_header_displayname)).setText(mApplication.getUserDangNhap().getDisplayName());
+            if (mTxtHeaderTenNV != null)
+                mTxtHeaderTenNV.setText(mApplication.getUserDangNhap().getUserName());
+            if (mTxtHeaderDisplayName != null)
+                mTxtHeaderDisplayName.setText(mApplication.getUserDangNhap().getDisplayName());
         }
         optionSearchFeature();
 
@@ -419,7 +452,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             DLayerInfo dLayerInfoSuCo = setService_Table();
             new QueryServiceFeatureTableGetListAsync(MainActivity.this, output -> {
                 setService_ArcGISImageLayer();
-                setService_GraphicsOverLay(dLayerInfoSuCo, getListIDSuCoFromSuCoThongTins(output));
+                mIDSuCoList = getListIDSuCoFromSuCoThongTins(output);
+                setService_GraphicsOverLay(dLayerInfoSuCo, mIDSuCoList);
             }).execute();
         } catch (Exception e) {
             Log.e("Lỗi set service", e.toString());
@@ -526,6 +560,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         featureLayer.setVisible(true);
         featureLayer.setRenderer(getRendererSuCo());
 
+
+//        builder.append("'')");
+        featureLayer.setDefinitionExpression(getDefinitionWithoutComplete(idSuCoList));
+        mMapView.getMap().getOperationalLayers().add(featureLayer);
+        featureLayer.addDoneLoadingListener(() -> {
+            if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
+                new QueryFeatureGetListGeometryAsync(MainActivity.this,
+                        serviceFeatureTable, (List<Geometry> output) -> {
+//                    for (Geometry geometry : output) {
+//                        Graphic graphic = new Graphic(geometry.getExtent().getCenter());
+//                        mGraphicsOverlay.getGraphics().add(graphic);
+//                    }
+                    for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
+                        if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                            Callout callout = mMapView.getCallout();
+                            mApplication.getDFeatureLayer.setLayer(featureLayer);
+                            mPopUp = new Popup(callout, MainActivity.this, mMapView,
+                                    mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+//                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
+//                        featureLayer.setVisible(false);
+//                    Callout callout = mMapView.getCallout();
+                            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
+                            mLoadedOnMap++;
+                            if (mLoadedOnMap == 3)
+                                handleFeatureDoneLoading();
+                        }
+                    }
+                }).execute(idSuCoList);
+            }
+        });
+    }
+
+    private String getDefinitionWithoutComplete(List<String> idSuCoList) {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
         for (int i = 0; i < idSuCoList.size(); i++) {
@@ -540,44 +607,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
             }
         }
-//        builder.append("'')");
-        featureLayer.setDefinitionExpression(builder.toString());
-        mMapView.getMap().getOperationalLayers().add(featureLayer);
-        featureLayer.addDoneLoadingListener(() -> {
-            if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
-                new QueryFeatureGetListGeometryAsync(MainActivity.this,
-                        serviceFeatureTable, (List<Geometry> output) -> {
-//                    for (Geometry geometry : output) {
-//                        Graphic graphic = new Graphic(geometry.getExtent().getCenter());
-//                        mGraphicsOverlay.getGraphics().add(graphic);
-//
-//                    }
-                    for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                        if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
-                            Callout callout = mMapView.getCallout();
+        return builder.toString();
+    }
 
-                            mApplication.getDFeatureLayer.setLayer(featureLayer);
+    private String getDefinitionWithComplete(List<String> idSuCoList) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
+        for (int i = 0; i < idSuCoList.size(); i++) {
+            String idSuCo = idSuCoList.get(i);
+            if (i != idSuCoList.size() - 1)
+                builder.append(String.format("'%s' ,", idSuCo));
+            else
+                builder.append(String.format("'%s' ) ", idSuCo));
 
-//
-                            mPopUp = new Popup(callout, MainActivity.this, mMapView,
-                                    mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
-//                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
-//                        featureLayer.setVisible(false);
-
-
-//                    Callout callout = mMapView.getCallout();
-                            mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
-                            mLoadedOnMap++;
-                            if (mLoadedOnMap == 3)
-                                handleFeatureDoneLoading();
-                        }
-                    }
-                }).execute(idSuCoList);
-                //Tìm servicefeaturetable
-
-
-            }
-        });
+        }
+        return builder.toString();
     }
 
     private String getUrlFromDLayerInfo(String input) {
@@ -686,6 +730,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
 
+        PictureMarkerSymbol hoanThanhSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_HOAN_THANH);
+        hoanThanhSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
+        hoanThanhSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
+
+
         PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
         beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         beNgamSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
@@ -693,41 +742,71 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         uniqueValueRenderer.setDefaultSymbol(chuaXuLySymbol);
         uniqueValueRenderer.setDefaultLabel("Chưa xác định");
 
-        List<Object> chuaXuLyValue = new ArrayList<>();
-        chuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
-
-        //đang xử lý: begin
-        List<Object> dangXuLyValue = new ArrayList<>();
-        dangXuLyValue.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue.add(1);
-        List<Object> dangXuLyValue1 = new ArrayList<>();
-        dangXuLyValue1.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue1.add(2);
-
-        List<Object> dangXuLyValue2 = new ArrayList<>();
-        dangXuLyValue2.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue2.add(3);
-
-        List<Object> dangXuLyValue3 = new ArrayList<>();
-        dangXuLyValue3.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue3.add(4);
-
-        List<Object> dangXuLyValue4 = new ArrayList<>();
-        dangXuLyValue4.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue4.add(5);
-
-        List<Object> dangXuLyValue5 = new ArrayList<>();
-        dangXuLyValue5.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
-        dangXuLyValue5.add(6);
-        //đang xỷ lý: end
-
+//        List<Object> chuaXuLyValue = new ArrayList<>();
+//        chuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
         List<Object> beNgamChuaXuLyValue = new ArrayList<>();
         beNgamChuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
         beNgamChuaXuLyValue.add(1);
+        //đang xử lý: begin
+        List<Object> dangXuLyValue = new ArrayList<>();
+        dangXuLyValue.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        List<Object> dangXuLyValue1 = new ArrayList<>();
+        dangXuLyValue1.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue1.add(1);
+        List<Object> dangXuLyValue2 = new ArrayList<>();
+        dangXuLyValue2.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue2.add(2);
 
+        List<Object> dangXuLyValue3 = new ArrayList<>();
+        dangXuLyValue3.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue3.add(3);
+
+        List<Object> dangXuLyValue4 = new ArrayList<>();
+        dangXuLyValue4.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue4.add(4);
+
+        List<Object> dangXuLyValue5 = new ArrayList<>();
+        dangXuLyValue5.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue5.add(5);
+
+        List<Object> dangXuLyValue6 = new ArrayList<>();
+        dangXuLyValue6.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY);
+        dangXuLyValue6.add(6);
+        //đang xỷ lý: end
+
+
+        //hoàn thành: begin
+        List<Object> hoanThanhValue = new ArrayList<>();
+        hoanThanhValue.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        List<Object> hoanThanhValue1 = new ArrayList<>();
+        hoanThanhValue1.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue1.add(1);
+        List<Object> hoanThanhValue2 = new ArrayList<>();
+        hoanThanhValue2.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue2.add(2);
+
+        List<Object> hoanThanhValue3 = new ArrayList<>();
+        hoanThanhValue3.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue3.add(3);
+
+        List<Object> hoanThanhValue4 = new ArrayList<>();
+        hoanThanhValue4.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue4.add(4);
+
+        List<Object> hoanThanhValue5 = new ArrayList<>();
+        hoanThanhValue5.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue5.add(5);
+
+        List<Object> hoanThanhValue6 = new ArrayList<>();
+        hoanThanhValue6.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+        hoanThanhValue6.add(6);
+
+//
+//        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+//                "Chưa xử lý", "Chưa xử lý", chuaXuLySymbol, chuaXuLyValue));
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý", "Chưa xử lý", chuaXuLySymbol, chuaXuLyValue));
+                "Chưa xử lý bể ngầm", "Chưa xử lý bể ngầm", beNgamSymbol, beNgamChuaXuLyValue));
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue));
@@ -741,10 +820,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue4));
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
                 "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue5));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Đang xử lý", "Đang xử lý", dangXuLySymbol, dangXuLyValue6));
+
 
         uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
-                "Chưa xử lý bể ngầm", "Chưa xử lý bể ngầm", beNgamSymbol, beNgamChuaXuLyValue));
-
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue1));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue2));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue3));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue4));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue5));
+        uniqueValueRenderer.getUniqueValues().add(new UniqueValueRenderer.UniqueValue(
+                "Hoàn thành", "Hoàn thành", hoanThanhSymbol, hoanThanhValue6));
 //
         return uniqueValueRenderer;
     }
@@ -909,9 +1002,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         mApplication.getDiemSuCo.setPoint(null);
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (mDrawer.isDrawerOpen(GravityCompat.START)) {
+            mDrawer.closeDrawer(GravityCompat.START);
         }  //            super.onBackPressed();
 
     }
@@ -1009,6 +1101,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    private void showHideComplete() {
+        for (Layer layer : mMapView.getMap().getOperationalLayers()) {
+            if (layer instanceof FeatureLayer && layer.getName().
+                    equals(mApplication.getDFeatureLayer.getLayer().getName()) && mIDSuCoList != null) {
+                if (mIsShowComplete) {
+                    ((FeatureLayer) layer).setDefinitionExpression(getDefinitionWithoutComplete(mIDSuCoList));
+                    mIsShowComplete = false;
+                } else {
+                    ((FeatureLayer) layer).setDefinitionExpression(getDefinitionWithComplete(mIDSuCoList));
+                    mIsShowComplete = true;
+                }
+                layer.loadAsync();
+            }
+        }
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -1038,6 +1146,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 if (CheckConnectInternet.isOnline(this))
                     prepare();
                 break;
+            case R.id.nav_show_hide_complete:
+                showHideComplete();
+                break;
             case R.id.nav_logOut:
                 startSignIn();
                 break;
@@ -1056,8 +1167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        mDrawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -1180,31 +1290,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.floatBtnLayer:
                 v.setVisibility(View.INVISIBLE);
-                findViewById(R.id.layout_layer).setVisibility(View.VISIBLE);
+                mLLayoutLayer.setVisibility(View.VISIBLE);
 //                mCurrentPoint = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
                 break;
-            case R.id.layout_layer_open_street_map:
+            case R.id.llayout_layer_open_street_map:
                 mMapView.getMap().setMaxScale(1128.497175);
                 mMapView.getMap().setBasemap(Basemap.createOpenStreetMap());
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_open_street_map);
+                handlingColorBackgroundLayerSelected(R.id.llayout_layer_open_street_map);
                 mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE);
 
                 break;
-            case R.id.layout_layer_street_map:
+            case R.id.llayout_layer_street_map:
                 mMapView.getMap().setMaxScale(1128.497176);
                 mMapView.getMap().setBasemap(Basemap.createStreets());
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_street_map);
+                handlingColorBackgroundLayerSelected(R.id.llayout_layer_street_map);
 
                 break;
-            case R.id.layout_layer_image:
+            case R.id.llayout_layer_image:
                 mMapView.getMap().setMaxScale(getResources().getInteger(R.integer.MAX_SCALE_IMAGE_WITH_LABLES));
                 mMapView.getMap().setBasemap(Basemap.createImageryWithLabels());
-                handlingColorBackgroundLayerSelected(R.id.layout_layer_image);
+                handlingColorBackgroundLayerSelected(R.id.llayout_layer_image);
 
                 break;
             case R.id.btn_layer_close:
-                findViewById(R.id.layout_layer).setVisibility(View.INVISIBLE);
-                findViewById(R.id.floatBtnLayer).setVisibility(View.VISIBLE);
+                mLLayoutLayer.setVisibility(View.INVISIBLE);
+                mFloatButtonLayer.setVisibility(View.VISIBLE);
                 break;
 //            case R.id.img_chonvitri_themdiemsuco:
 ////                themDiemSuCo();
@@ -1292,34 +1402,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @SuppressLint("ResourceAsColor")
     private void handlingColorBackgroundLayerSelected(int id) {
         switch (id) {
-            case R.id.layout_layer_open_street_map:
+            case R.id.llayout_layer_open_street_map:
                 mImageOpenStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap);
-                mTxtOpenStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mTxtOSM.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 mImageStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                mTxtStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                mTxtSM.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 mImageImageWithLabel.setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 mTxtImageWithLabel.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
-            case R.id.layout_layer_street_map:
+            case R.id.llayout_layer_street_map:
                 mImageStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap);
-                mTxtStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
+                mTxtSM.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 mImageOpenStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                mTxtOpenStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                mTxtOSM.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 mImageImageWithLabel.setBackgroundResource(R.drawable.layout_shape_basemap_none);
                 mTxtImageWithLabel.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
-            case R.id.layout_layer_image:
+            case R.id.llayout_layer_image:
                 mImageImageWithLabel.setBackgroundResource(R.drawable.layout_shape_basemap);
                 mTxtImageWithLabel.setTextColor(ContextCompat.getColor(this, R.color.colorPrimary));
                 mImageOpenStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                mTxtOpenStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                mTxtOSM.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 mImageStreetMap.setBackgroundResource(R.drawable.layout_shape_basemap_none);
-                mTxtStreetMap.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
+                mTxtSM.setTextColor(ContextCompat.getColor(this, R.color.colorTextColor_1));
                 break;
         }
     }
 
     private void handlingListTaskActivityResult() {
+        if (mApplication.getDiemSuCo.getTrangThai() == Constant.TRANG_THAI_SU_CO.HOAN_THANH && !mIsShowComplete) {
+            showHideComplete();
+        }
         //query sự cố theo idsuco, lấy objectid
         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
@@ -1383,11 +1496,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                             EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    arcGISFeature -> {
-                                        //                                    mPopUp.getDialog().dismiss();
-                                        mPopUp.getCallout().dismiss();
-                                        if (!arcGISFeature.canEditAttachments())
-                                            MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
+                                    output -> {
+                                        //
+                                        if (output != null) {
+                                            mPopUp.getCallout().dismiss();
+                                            if (!output.canEditAttachments())
+                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
+                                        } else
+                                            MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
                                     });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }
@@ -1419,10 +1535,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                            mPopUp.getDialog().dismiss();
                             EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
                                     true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    arcGISFeature -> {
-                                        mPopUp.getCallout().dismiss();
-                                        if (!arcGISFeature.canEditAttachments())
-                                            MySnackBar.make(mPopUp.getmBtnLeft(), "Điểm sự cố này không thể thêm ảnh", true);
+                                    output -> {
+                                        if (output != null) {
+                                            mPopUp.getCallout().dismiss();
+                                            if (!output.canEditAttachments())
+                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
+                                        } else {
+                                            MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
+                                        }
                                     });
                             editAsync.execute(mFeatureViewMoreInfoAdapter);
                         }

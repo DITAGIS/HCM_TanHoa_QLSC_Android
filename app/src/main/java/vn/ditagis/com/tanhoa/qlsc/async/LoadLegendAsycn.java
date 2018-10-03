@@ -90,14 +90,11 @@ public class LoadLegendAsycn extends AsyncTask<Void, Void, Void> {
             txtHoanThanh.setText("Hoàn thành");
 
 
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mLayout.addView(layoutFeatureChuaXuLy);
-                    mLayout.addView(layoutFeatureBeNgam);
-                    mLayout.addView(layoutFeatureDangXuLy);
-                    mLayout.addView(layoutFeatureHoanThanh);
-                }
+            mActivity.runOnUiThread(() -> {
+                mLayout.addView(layoutFeatureChuaXuLy);
+                mLayout.addView(layoutFeatureBeNgam);
+                mLayout.addView(layoutFeatureDangXuLy);
+                mLayout.addView(layoutFeatureHoanThanh);
             });
         } catch (IOException e) {
             e.printStackTrace();

@@ -20,87 +20,98 @@
             android:orientation="vertical">
 
 
-            <TextView
-                style="@style/MyTextAppearance.Black"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:text="Thêm vật tư" />
-
             <LinearLayout
+                android:id="@+id/llayout_vattu_add"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="0dp"
+                    style="@style/MyTextAppearance.Blue.Big.Bold"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Nhập vật tư" />
+                    android:gravity="center_vertical"
+                    android:text="Thêm vật tư" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTV_vattu"
-                    style="@style/MyTextAppearance.Black"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Nhập vật tư" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteTV_vattu"
+                        style="@style/MyTextAppearance.Black"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:background="@drawable/layout_border"
+                        android:gravity="right"
+                        android:maxLines="1"
+                        android:padding="@dimen/padding_small" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="@drawable/layout_border"
-                    android:gravity="right"
-                    android:maxLines="1"
-                    android:padding="@dimen/padding_small" />
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Số lượng" />
+
+                    <EditText
+                        android:id="@+id/etxt_soLuong_vattu"
+                        style="@style/MyTextAppearance.Black"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:background="@drawable/layout_border"
+                        android:gravity="right"
+                        android:inputType="numberDecimal"
+                        android:padding="@dimen/padding_small" />
+
+                    <TextView
+                        android:id="@+id/txt_donvitinh_vattu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_them_vattu"
+                    style="@style/MyTextAppearance.White"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginBottom="@dimen/margin_popup"
+                    android:background="@color/colorPrimary"
+                    android:clickable="true"
+                    android:padding="@dimen/padding_small"
+                    android:text="Thêm" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorPrimary" />
             </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_small"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Số lượng" />
-
-                <EditText
-                    android:id="@+id/etxt_soLuong_vattu"
-                    style="@style/MyTextAppearance.Black"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:background="@drawable/layout_border"
-                    android:gravity="right"
-                    android:inputType="numberDecimal"
-                    android:padding="@dimen/padding_small" />
-
-                <TextView
-                    android:id="@+id/txt_donvitinh_vattu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal" />
-
-            </LinearLayout>
-
             <TextView
-                android:id="@+id/txt_them_vattu"
-                style="@style/MyTextAppearance.White"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginBottom="@dimen/margin_popup"
-                android:background="@color/colorPrimary"
-                android:clickable="true"
-                android:padding="@dimen/padding_small"
-                android:text="Thêm" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/colorPrimary" />
-
-            <TextView
-                style="@style/MyTextAppearance.Black"
+                style="@style/MyTextAppearance.Blue.Big.Bold"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_small"
@@ -115,11 +126,12 @@
 
 
         <LinearLayout
+            android:id="@+id/llayout_vattu_update"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_small"
-            android:layout_marginRight="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 

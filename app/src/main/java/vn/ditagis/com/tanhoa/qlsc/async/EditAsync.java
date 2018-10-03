@@ -341,11 +341,12 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 //                                                String s = arcGISFeature.getAttributes().get("objectid").toString();
                         // update the attachment list view/ on the control panel
                     }
+                } else {
+                    publishProgress();
                 }
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            } finally {
                 publishProgress();
+                e.printStackTrace();
             }
         });
 
@@ -381,6 +382,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         }
         if (values != null && values.length > 0)
             this.mDelegate.processFinish(values[0]);
+        else mDelegate.processFinish(null);
     }
 
     @Override

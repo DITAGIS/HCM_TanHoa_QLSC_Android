@@ -65,6 +65,7 @@
 
     <!--navigation-->
     <string name="nav_refresh">Làm mới dữ liệu</string>
+    <string name="nav_show_hide_complete">Ẩn/hiện sự cố hoàn thành</string>
     <string name="nav_tra_cuu">Tra cứu</string>
     <string name="nav_find_route">Tìm đường đi</string>
     <string name="nav_list_task">Danh sách công việc</string>
@@ -322,6 +323,11 @@
     <string name="txt_list_task_chua_xu_ly">Công việc chưa xử lý: %1$d</string>
     <string name="txt_list_task_dang_xu_ly">Công việc đang xử lý: %1$d</string>
     <string name="txt_list_task_hoan_thanh">Công việc đã hoàn thành: %1$d</string>
+
+    <string name="txt_chon_thoi_gian_tracuusuco">Chọn thời gian</string>
+
+    <string name="tab_basemap_1">Tra cứu</string>
+    <string name="tab_basemap_2">Công việc</string>
 
 
 </resources>
