@@ -108,16 +108,6 @@ public class MapViewHandler extends Activity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private String getDateString() {
-        SimpleDateFormat writeDate = new SimpleDateFormat("dd_MM_yyyy HH:mm:ss");
-        writeDate.setTimeZone(TimeZone.getTimeZone("GMT+07:00"));
-        return writeDate.format(Calendar.getInstance().getTime());
-    }
-
-    private String getTimeID() {
-        return Constant.DATE_FORMAT.format(Calendar.getInstance().getTime());
-    }
 
 //    public void queryByObjectID(int objectID) {
 //        final QueryParameters queryParameters = new QueryParameters();

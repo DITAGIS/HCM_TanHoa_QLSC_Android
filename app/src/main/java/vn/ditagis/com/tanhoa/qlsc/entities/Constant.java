@@ -5,7 +5,9 @@ import android.Manifest;
 import java.text.SimpleDateFormat;
 
 public class Constant {
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd_MM_yyyy");
+    public static final String DATE_FORMAT_STRING = "dd/MM/yyyy";
+    public static final SimpleDateFormat DATE_FORMAT_YEAR_FIRST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
     public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
     public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
     public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
@@ -36,7 +38,7 @@ public class Constant {
     private final String SERVER = "http://tanhoa.sawagis.vn";
     private String SERVER_API = SERVER + "/apiv1/api";
     public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
-    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER+ "/images/map/bengam.png";
+    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER + "/images/map/bengam.png";
     public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/images/map/1.png";
     public String URL_SYMBOL_HOAN_THANH = SERVER + "/images/map/2.png";
 

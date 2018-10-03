@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:padding="@dimen/padding_small"
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/llayout_main_tra_cuu_su_co"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             style="@style/MyTextAppearance.Blue.Big.Bold"
@@ -34,7 +34,7 @@
                 android:text="Địa chỉ" />
 
             <EditText
-                android:id="@+id/etxtAddress_tra_cuu_su_co"
+                android:id="@+id/etxt_list_task_search_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -64,7 +64,7 @@
                 android:text="Trạng thái" />
 
             <Spinner
-                android:id="@+id/spinTrangThai_tra_cuu_su_co"
+                android:id="@+id/spin_list_task_search_trang_thai"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -88,10 +88,10 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginRight="@dimen/margin_medium"
-                android:text="Thời gian" />
+                android:text="Được giao từ" />
 
             <TextView
-                android:id="@+id/txtThoiGian_tra_cuu_su_co"
+                android:id="@+id/txt_list_task_search_thoi_gian"
                 style="@style/MyTextAppearance.Black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/btn_tra_cuu_tra_cuu_su_co"
+            android:id="@+id/btn_list_task_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
@@ -113,7 +113,7 @@
             android:text="Tra cứu" />
 
         <LinearLayout
-            android:id="@+id/llayout_ket_qua_tra_cuu_su_co"
+            android:id="@+id/llayout_list_task_search_ket_qua"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
@@ -127,7 +127,7 @@
                 android:text="Kết quả tra cứu" />
 
             <ListView
-                android:id="@+id/lst_tra_cuu_su_co"
+                android:id="@+id/lst_list_task_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"></ListView>
         </LinearLayout>

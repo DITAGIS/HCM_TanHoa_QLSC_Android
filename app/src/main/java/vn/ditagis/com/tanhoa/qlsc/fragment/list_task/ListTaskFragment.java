@@ -95,6 +95,7 @@ public class ListTaskFragment extends Fragment {
         }).execute();
     }
 
+
     private void handlingQuerySuccess(List<Feature> output) {
         try {
             List<TraCuuAdapter.Item> chuaXuLyList = new ArrayList<>();
