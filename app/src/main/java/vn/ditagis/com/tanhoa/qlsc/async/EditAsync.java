@@ -331,9 +331,9 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
     private void applyEdit(ArcGISFeature arcGISFeature) {
         final ListenableFuture<List<FeatureEditResult>> updatedServerResult = mServiceFeatureTableSuCoThongTin.applyEditsAsync();
         updatedServerResult.addDoneListener(() -> {
-            List<FeatureEditResult> edits;
-            try {
-                edits = updatedServerResult.get();
+//            List<FeatureEditResult> edits;
+//            try {
+//                edits = updatedServerResult.get();
 //                if (edits.size() > 0) {
 //                    if (!edits.get(0).hasCompletedWithErrors()) {
                 publishProgress(arcGISFeature);
@@ -344,10 +344,10 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 //                } else {
 //                    publishProgress();
 //                }
-            } catch (InterruptedException | ExecutionException e) {
-                publishProgress();
-                e.printStackTrace();
-            }
+//            } catch (InterruptedException | ExecutionException e) {
+//                publishProgress();
+//                e.printStackTrace();
+//            }
         });
 
     }

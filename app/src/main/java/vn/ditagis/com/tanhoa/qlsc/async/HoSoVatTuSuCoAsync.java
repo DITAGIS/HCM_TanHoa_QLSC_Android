@@ -103,7 +103,6 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
                                                         item.getAttributes().get(Constant.FIELD_VATTU.DON_VI_TINH).toString()));
                                             }
                                         }
-
                                     }
                                     ListObjectDB.getInstance().setHoSoVatTuSuCos(hoSoVatTuSuCos);
                                     publishProgress(hoSoVatTuSuCos);

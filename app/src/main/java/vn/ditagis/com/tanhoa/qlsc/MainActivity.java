@@ -109,6 +109,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
 import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.socket.LocationHelper;
+import vn.ditagis.com.tanhoa.qlsc.utities.APICompleteAsync;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import vn.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import vn.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable;
@@ -1156,13 +1157,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentChangePassword);
                 break;
             case R.id.nav_reload:
-                if (CheckConnectInternet.isOnline(this))
+                if (CheckConnectInternet.isOnline(this)) {
+                    mIsShowComplete = false;
+                    if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                        mPopUp.getCallout().dismiss();
                     prepare();
+                }
                 break;
             case R.id.nav_show_hide_complete:
                 showHideComplete();
                 break;
             case R.id.nav_logOut:
+                mIsShowComplete = false;
+                if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                    mPopUp.getCallout().dismiss();
                 startSignIn();
                 break;
             case R.id.nav_list_task:
@@ -1513,6 +1521,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         //
                                         if (output != null) {
                                             mPopUp.getCallout().dismiss();
+                                            if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
+                                                    == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+                                                new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                                                        .execute();
                                             if (!output.canEditAttachments())
                                                 MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
                                         } else
@@ -1551,6 +1563,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     output -> {
                                         if (output != null) {
                                             mPopUp.getCallout().dismiss();
+                                            if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
+                                                    == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+                                                new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                                                        .execute();
                                             if (!output.canEditAttachments())
                                                 MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
                                         } else {

@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -35,6 +34,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.HoSoThietBiSuCo;
 import vn.ditagis.com.tanhoa.qlsc.entities.ThietBi;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
+import vn.ditagis.com.tanhoa.qlsc.utities.APICompleteAsync;
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
 public class ThietBiActivity extends AppCompatActivity {
@@ -57,7 +57,6 @@ public class ThietBiActivity extends AppCompatActivity {
 
     private DApplication mApplication;
     private String mIDSuCoTT;
-    private String mIDSuCo;
     private ThietBiAdapter mAdapter;
     private boolean mIsComplete = false;
 
@@ -72,26 +71,25 @@ public class ThietBiActivity extends AppCompatActivity {
         mApplication = (DApplication) getApplication();
         mIsComplete = Short.parseShort(mApplication.getArcGISFeature().getAttributes().
                 get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH;
-
-        mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
-        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
+        mIDSuCoTT = mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+//        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
+//                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             init();
             loadThietBi();
-            mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
-        });
+//            mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+//        });
+//
+//        String queryClause = String.format("%s = '%s' and %s = '%s'",
+//                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
+//                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+//        QueryParameters queryParameters = new QueryParameters();
+//        queryParameters.setWhereClause(queryClause);
+//        queryServiceFeatureTableAsync.execute(queryParameters);
 
-        String queryClause = String.format("%s = '%s' and %s = '%s'",
-                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-        QueryParameters queryParameters = new QueryParameters();
-        queryParameters.setWhereClause(queryClause);
-        queryServiceFeatureTableAsync.execute(queryParameters);
-
-        if (mIsComplete) {
-            mLLayoutAdd.setVisibility(View.GONE);
-            mLLayoutUpdate.setVisibility(View.GONE);
-        }
+//        if (mIsComplete) {
+//            mLLayoutAdd.setVisibility(View.GONE);
+//            mLLayoutUpdate.setVisibility(View.GONE);
+//        }
     }
 
     private void init() {
@@ -108,72 +106,72 @@ public class ThietBiActivity extends AppCompatActivity {
         mAdapter = new ThietBiAdapter(this, new ArrayList<>());
         final String[] maThietBi = {""};
         mLstView.setAdapter(mAdapter);
-        if (!mIsComplete) {
-            mLstView.setOnItemLongClickListener((adapterView, view, i, l) -> {
-                final ThietBiAdapter.Item itemThietBi = (ThietBiAdapter.Item) adapterView.getAdapter().getItem(i);
-                final AlertDialog.Builder builder = new AlertDialog.Builder(ThietBiActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
-                builder.setTitle("Xóa thiết bị");
-                builder.setMessage("Bạn có chắc muốn xóa thiết bị " + itemThietBi.getTenThietBi());
-                builder.setCancelable(false).setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
-                    mAdapter.remove(itemThietBi);
-                    mAdapter.notifyDataSetChanged();
-                    dialogInterface.dismiss();
-                });
-                AlertDialog dialog = builder.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
-                return false;
+//        if (!mIsComplete) {
+        mLstView.setOnItemLongClickListener((adapterView, view, i, l) -> {
+            final ThietBiAdapter.Item itemThietBi = (ThietBiAdapter.Item) adapterView.getAdapter().getItem(i);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(ThietBiActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
+            builder.setTitle("Xóa thiết bị");
+            builder.setMessage("Bạn có chắc muốn xóa thiết bị " + itemThietBi.getTenThietBi());
+            builder.setCancelable(false).setNegativeButton("Hủy", (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
+                mAdapter.remove(itemThietBi);
+                mAdapter.notifyDataSetChanged();
+                dialogInterface.dismiss();
             });
-            mAutoCompleteTV.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+            AlertDialog dialog = builder.create();
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.show();
+            return false;
+        });
+        mAutoCompleteTV.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    String tenThietBi = editable.toString();
-                    for (ThietBi thietBi : ListObjectDB.getInstance().getThietBis()) {
-                        if (thietBi.getTenThietBi().equals(tenThietBi)) {
-                            maThietBi[0] = thietBi.getMaThietBi();
-                            break;
-                        }
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String tenThietBi = editable.toString();
+                for (ThietBi thietBi : ListObjectDB.getInstance().getThietBis()) {
+                    if (thietBi.getTenThietBi().equals(tenThietBi)) {
+                        maThietBi[0] = thietBi.getMaThietBi();
+                        break;
                     }
-
                 }
-            });
-            mTxtThem.setOnClickListener(view -> {
-                if (mEtxtSoLuong.getText().toString().trim().length() == 0)
-                    MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_soluong_themhoso), true);
-                else {
-                    try {
-                        double soLuong = Double.parseDouble(mEtxtSoLuong.getText().toString());
-                        mAdapter.add(new ThietBiAdapter.Item(mAutoCompleteTV.getText().toString(),
-                                soLuong, maThietBi[0]));
-                        mAdapter.notifyDataSetChanged();
 
-                        mAutoCompleteTV.setText("");
-                        mEtxtSoLuong.setText("");
-
-                        if (mLstView.getHeight() > 500) {
-                            ViewGroup.LayoutParams params = mLstView.getLayoutParams();
-                            params.height = 500;
-                            mLstView.setLayoutParams(params);
-                        }
-                    } catch (NumberFormatException e) {
-                        MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_number_format_exception), true);
-                    }
-
+            }
+        });
+        mTxtThem.setOnClickListener(view -> {
+            if (mEtxtSoLuong.getText().toString().trim().length() == 0)
+                MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_soluong_themhoso), true);
+            else {
+                try {
+                    double soLuong = Double.parseDouble(mEtxtSoLuong.getText().toString());
+                    mAdapter.add(new ThietBiAdapter.Item(mAutoCompleteTV.getText().toString(),
+                            soLuong, maThietBi[0]));
                     mAdapter.notifyDataSetChanged();
+
+                    mAutoCompleteTV.setText("");
+                    mEtxtSoLuong.setText("");
+
+                    if (mLstView.getHeight() > 500) {
+                        ViewGroup.LayoutParams params = mLstView.getLayoutParams();
+                        params.height = 500;
+                        mLstView.setLayoutParams(params);
+                    }
+                } catch (NumberFormatException e) {
+                    MySnackBar.make(mEtxtSoLuong, ThietBiActivity.this.getString(R.string.message_number_format_exception), true);
                 }
-            });
-            mBtnUpdate.setOnClickListener(view -> {
-                updateEdit();
-            });
-        }
+
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        mBtnUpdate.setOnClickListener(view -> {
+            updateEdit();
+        });
+//        }
     }
 
     private void loadThietBi() {
@@ -195,7 +193,7 @@ public class ThietBiActivity extends AppCompatActivity {
             }
             mTxtStatus.setText("");
         });
-        hoSoThietBiSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCo);
+        hoSoThietBiSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCoTT);
 
     }
 
@@ -218,6 +216,9 @@ public class ThietBiActivity extends AppCompatActivity {
 //                            Object[] a = (Object[]) object;
 //                            boolean isDone = (boolean) a[0];
                             if (isDone) {
+                                if (mIsComplete)
+                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                                            .execute();
                                 goHome();
                                 mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_complete), Html.FROM_HTML_MODE_LEGACY));
                             } else
@@ -228,7 +229,7 @@ public class ThietBiActivity extends AppCompatActivity {
                         mTxtStatus.setText(Html.fromHtml(ThietBiActivity.this.getString(R.string.info_thietbi_fail), Html.FROM_HTML_MODE_LEGACY));
                     }
                 });
-                hoSoThietBiSuCoInsertAsync.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCo);
+                hoSoThietBiSuCoInsertAsync.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCoTT);
             }
             boolean check;
             do {

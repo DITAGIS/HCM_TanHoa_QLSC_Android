@@ -373,7 +373,8 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             if (output != null) {
                                 mCallout.dismiss();
                                 dialog.dismiss();
-                                APIComplete.send(mApplication, mIDSuCo);
+                                new APICompleteAsync(mApplication, mIDSuCo)
+                                        .execute();
                             } else {
                                 MySnackBar.make(getmBtnLeft(), mMainActivity.getResources().getString(R.string.message_update_failed), true);
                             }
@@ -1225,10 +1226,10 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         {
             linearLayout.findViewById(R.id.imgBtn_delete).setVisibility(View.GONE);
         }
-        if (Short.parseShort(mApplication.getArcGISFeature().getAttributes().
-                get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
-        else
+//        if (Short.parseShort(mApplication.getArcGISFeature().getAttributes().
+//                get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+//            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
+//        else
             linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         linearLayout.findViewById(R.id.imgBtn_thiet_bi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);

@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
@@ -35,6 +34,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo;
 import vn.ditagis.com.tanhoa.qlsc.entities.VatTu;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
+import vn.ditagis.com.tanhoa.qlsc.utities.APICompleteAsync;
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 
 public class VatTuActivity extends AppCompatActivity {
@@ -61,7 +61,6 @@ public class VatTuActivity extends AppCompatActivity {
     private DApplication mApplication;
     private String mIDSuCoTT;
     private VatTuAdapter mAdapter;
-    private String mIDSuCo;
     private boolean mIsComplete = false;
 
     @Override
@@ -82,25 +81,26 @@ public class VatTuActivity extends AppCompatActivity {
                 setTitle("Vật tư thu hồi");
                 break;
         }
-        mIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
-        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
-                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
+
+        mIDSuCoTT = mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+//        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
+//                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
             init();
             loadVatTu();
-            mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
-        });
 
-        String queryClause = String.format("%s = '%s' and %s = '%s'",
-                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-        QueryParameters queryParameters = new QueryParameters();
-        queryParameters.setWhereClause(queryClause);
-        queryServiceFeatureTableAsync.execute(queryParameters);
+//        });
 
-        if (mIsComplete) {
-            mLLayoutAdd.setVisibility(View.GONE);
-            mLLayoutUpdate.setVisibility(View.GONE);
-        }
+//        String queryClause = String.format("%s = '%s' and %s = '%s'",
+//                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
+//                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+//        QueryParameters queryParameters = new QueryParameters();
+//        queryParameters.setWhereClause(queryClause);
+//        queryServiceFeatureTableAsync.execute(queryParameters);
+
+//        if (mIsComplete) {
+//            mLLayoutAdd.setVisibility(View.GONE);
+//            mLLayoutUpdate.setVisibility(View.GONE);
+//        }
     }
 
     private void loadVatTu() {
@@ -122,7 +122,7 @@ public class VatTuActivity extends AppCompatActivity {
             }
             mTxtStatus.setText("");
         });
-        hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCo);
+        hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCoTT);
 
     }
 
@@ -141,7 +141,7 @@ public class VatTuActivity extends AppCompatActivity {
         mAdapter = new VatTuAdapter(this, new ArrayList<>());
         final String[] maVatTu = {""};
         mLstView.setAdapter(mAdapter);
-        if (!mIsComplete) {
+//        if (!mIsComplete) {
             mLstView.setOnItemLongClickListener((adapterView, view, i, l) -> {
                 final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
                 final AlertDialog.Builder builder = new AlertDialog.Builder(VatTuActivity.this, android.R.style.Theme_Material_Light_Dialog_Alert);
@@ -209,7 +209,7 @@ public class VatTuActivity extends AppCompatActivity {
                 updateEdit();
             });
         }
-    }
+//    }
 
     private void updateEdit() {
         if (mLstView.getAdapter() != null && mLstView.getAdapter().getCount() == 0) {
@@ -230,6 +230,9 @@ public class VatTuActivity extends AppCompatActivity {
 //                            Object[] a = (Object[]) object;
 //                            boolean isDone = (boolean) a[0];
                             if (isDone) {
+                                if(mIsComplete)
+                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                                            .execute();
                                 goHome();
                                 mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_complete), Html.FROM_HTML_MODE_LEGACY));
                             } else
@@ -240,7 +243,7 @@ public class VatTuActivity extends AppCompatActivity {
                         mTxtStatus.setText(Html.fromHtml(VatTuActivity.this.getString(R.string.info_vattu_fail), Html.FROM_HTML_MODE_LEGACY));
                     }
                 });
-                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCo);
+                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCoTT);
             }
             boolean check;
             do {

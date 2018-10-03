@@ -77,8 +77,8 @@ public class ListTaskFragment extends Fragment {
             mActivity.itemClick(adapterView, i);
         });
         mLstHoanThanh.setOnItemClickListener((adapterView, view, i, l) -> {
-            Toast.makeText(mActivity.getApplicationContext(), R.string.message_click_feature_complete,
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity.getApplicationContext(), R.string.message_click_feature_complete,
+//                    Toast.LENGTH_SHORT).show();
             mActivity.itemClick(adapterView, i);
         });
         new QueryServiceFeatureTableGetListAsync(mActivity, output -> {

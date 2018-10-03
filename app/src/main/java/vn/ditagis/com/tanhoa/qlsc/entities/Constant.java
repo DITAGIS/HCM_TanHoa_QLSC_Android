@@ -82,7 +82,7 @@ public class Constant {
 
 
     {
-        API_COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id={%s}";
+        API_COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id=%s";
     }
 
     public String IS_ACCESS;

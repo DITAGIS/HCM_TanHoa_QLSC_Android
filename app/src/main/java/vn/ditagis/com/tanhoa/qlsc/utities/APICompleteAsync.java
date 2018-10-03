@@ -1,5 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc.utities;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -9,10 +10,18 @@ import java.net.URL;
 
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
-public class APIComplete {
-    public static void send(DApplication mApplication, String idSuCo){
+public class APICompleteAsync extends AsyncTask<Void, Void, Void> {
+    private DApplication mApplication;
+    private String mIDSuCo;
+
+    public APICompleteAsync(DApplication application, String idSuCo) {
+        mApplication = application;
+        mIDSuCo = idSuCo;
+    }
+
+    private void send() {
         try {
-            String API_URL =String.format( mApplication.getConstant.API_COMPLETE, idSuCo);
+            String API_URL = String.format(mApplication.getConstant.API_COMPLETE, mIDSuCo);
 
             URL url = new URL(API_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -36,5 +45,11 @@ public class APIComplete {
         } catch (Exception e) {
             Log.e("Lỗi lấy LayerInfo", e.toString());
         }
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        send();
+        return null;
     }
 }
