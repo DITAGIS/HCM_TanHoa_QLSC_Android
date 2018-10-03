@@ -21,8 +21,26 @@ public class DiemSuCo {
     public String nguyenNhan;
     public Point point;
     public byte[] image;
+    private String tuNgay;
+    private String denNgay;
 
     public DiemSuCo() {
+    }
+
+    public String getTuNgay() {
+        return tuNgay;
+    }
+
+    public void setTuNgay(String tuNgay) {
+        this.tuNgay = tuNgay;
+    }
+
+    public String getDenNgay() {
+        return denNgay;
+    }
+
+    public void setDenNgay(String denNgay) {
+        this.denNgay = denNgay;
     }
 
     public String getEmailPhanAnh() {

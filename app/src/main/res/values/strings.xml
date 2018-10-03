@@ -256,7 +256,7 @@
     <string name="QuanPhuNhuanName">Phú Nhuận</string>
     <string name="QuanTanBinhName">Tân Bình</string>
     <string name="QuanTanPhuName">Tân Phú</string>
-    <string name="format_date_month_year">%02d_%02d_%d</string>
+    <string name="format_date_month_year">%02d/%02d/%d</string>
 
 
     <string name="btnLeftAddFeature">Lưu</string>

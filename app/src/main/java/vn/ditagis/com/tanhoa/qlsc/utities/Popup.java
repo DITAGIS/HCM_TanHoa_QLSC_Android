@@ -435,6 +435,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 continue;
             }
             Object value = attr.get(field.getName());
+
             if (field.getName().equals(Constant.FIELD_SUCOTHONGTIN.ID_SUCO)) {
                 if (value != null) {
                     mIDSuCo = value.toString();
@@ -447,6 +448,18 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 item.setAlias(field.getAlias());
                 item.setFieldName(field.getName());
                 item.setEdit(false);
+                for (String updateField : updateFields) {
+                    //Nếu là update field
+                    if (item.getFieldName().equals(updateField)) {
+                        item.setEdit(true);
+                        break;
+                    }
+                }
+//                if ((field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_TU) ||
+//                        field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_DEN))
+//                        && value != null) {
+//                    item.setEdit(false);
+//                }
 //                boolean isPGNField = false, isPGNField_NotPGNRole = false;
 //                for (String pgnField : pgnFields) {
 //                    if (item.getFieldName().equals(pgnField)) {
@@ -503,7 +516,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                                    || item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienDenNgay)))
 //                                item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
 //                            else
-                            item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
+                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
                             break;
                         case OID:
                         case TEXT:
@@ -515,13 +528,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                             break;
                     }
                 }
-                for (String updateField : updateFields) {
-                    //Nếu là update field
-                    if (item.getFieldName().equals(updateField)) {
-                        item.setEdit(true);
-                        break;
-                    }
-                }
+
                 item.setFieldType(field.getFieldType());
 //                if (isPGNField) {
 //                    if (!mListItemBeNgam.contains(item))
@@ -744,107 +751,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
 
-//    private void loadDataEdit_VatTuThuHoi(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
-//        final LinearLayout layoutAutoCompleteTV = layout.findViewById(R.id.llayout_AutoCompleteTV_vattu);
-//        final AutoCompleteTextView autoCompleteTextView = layout.findViewById(R.id.autoCompleteTV_vattu);
-//        autoCompleteTextView.setBackgroundResource(R.drawable.layout_border);
-//        final ListView listViewVatTuThuHoi = layout.findViewById(R.id.lstview_vattu);
-//        final EditText etxtSoLuong = layout.findViewById(R.id.etxt_soLuong_vattu);
-//        final TextView txtDonViTinh = layout.findViewById(R.id.txt_donvitinh_vattu);
-//        final TextView txtThemVatTu = layout.findViewById(R.id.txt_them_vattu);
-//
-//        if (mLoaiSuCoShort != Constant.LOAISUCO_CHUAPHANLOAI) {
-//            layoutAutoCompleteTV.setVisibility(View.VISIBLE);
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mListTenVatTus);
-//            autoCompleteTextView.setAdapter(adapter);
-//        }
-//        final VatTuAdapter vatTuThuHoiAdapter = new VatTuAdapter(layout.getContext(), new ArrayList<VatTuAdapter.Item>());
-//        final String[] maVatTu = {""};
-//        listViewVatTuThuHoi.setAdapter(vatTuThuHoiAdapter);
-//
-//        //Nhấn và giữ một item để xóa
-//        listViewVatTuThuHoi.setOnItemLongClickListener((adapterView, view, i, l) -> {
-//            final VatTuAdapter.Item itemVatTu = (VatTuAdapter.Item) adapterView.getAdapter().getItem(i);
-//            final AlertDialog.Builder builder = new AlertDialog.Builder(mMainActivity, android.R.style.Theme_Material_Light_Dialog_Alert);
-//            builder.setTitle("Xóa vật tư");
-//            builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.getTenThietBi());
-//            builder.setCancelable(false).setNegativeButton("Hủy",
-//                    (dialog, which) -> dialog.dismiss()).setPositiveButton("Xóa", (dialogInterface, i12) -> {
-//                vatTuThuHoiAdapter.remove(itemVatTu);
-//                vatTuThuHoiAdapter.notifyDataSetChanged();
-//
-//                dialogInterface.dismiss();
-//            });
-//            AlertDialog dialog = builder.create();
-//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//            dialog.show();
-//            return false;
-//        });
-//        autoCompleteTextView.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                String tenVatTu = editable.toString();
-//                if (mLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH) {
-//                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTuOngNganhs()) {
-//                        if (vatTu.getTenThietBi().equals(tenVatTu)) {
-//                            txtDonViTinh.setText(vatTu.getDonViTinh());
-//                            maVatTu[0] = vatTu.getMaThietBi();
-//                            break;
-//                        }
-//                    }
-//                } else if (mLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
-//                    for (VatTu vatTu : ListObjectDB.getInstance().getVatTus()) {
-//                        if (vatTu.getTenThietBi().equals(tenVatTu)) {
-//                            txtDonViTinh.setText(vatTu.getDonViTinh());
-//                            maVatTu[0] = vatTu.getMaThietBi();
-//                            break;
-//                        }
-//                    }
-//                }
-//            }
-//        });
-//        txtThemVatTu.setOnClickListener(view -> {
-//            if (etxtSoLuong.getText().toString().trim().length() == 0)
-//                MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_soluong_themvattu), true);
-//            else {
-//                try {
-//                    double soLuong = Double.parseDouble(etxtSoLuong.getText().toString());
-//                    vatTuThuHoiAdapter.add(new VatTuAdapter.Item(autoCompleteTextView.getText().toString(),
-//                            soLuong, txtDonViTinh.getText().toString(), maVatTu[0]));
-//                    vatTuThuHoiAdapter.notifyDataSetChanged();
-//
-//                    autoCompleteTextView.setText("");
-//                    etxtSoLuong.setText("");
-//                    txtDonViTinh.setText("");
-//
-//                    if (listViewVatTuThuHoi.getHeight() > 500) {
-//                        ViewGroup.LayoutParams params = listViewVatTuThuHoi.getLayoutParams();
-//                        params.height = 500;
-//                        listViewVatTuThuHoi.setLayoutParams(params);
-//                    }
-//                } catch (NumberFormatException e) {
-//                    MySnackBar.make(etxtSoLuong, mMainActivity.getResources().getString(R.string.message_number_format_exception), true);
-//                }
-//
-//            }
-//        });
-//
-//        for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
-//            vatTuThuHoiAdapter.add(new VatTuAdapter.Item(hoSoVatTuSuCo.getTenThietBi(), hoSoVatTuSuCo.getThoigianVanHanh(),
-//                    hoSoVatTuSuCo.getDonViTinh(), hoSoVatTuSuCo.getMaThietBi()));
-//        }
-//        vatTuThuHoiAdapter.notifyDataSetChanged();
-//
-//    }
-
     private void loadDataEdit_Another(FeatureViewMoreInfoAdapter.Item item, LinearLayout
             layout, ArcGISFeature arcGISFeature) {
         final FrameLayout layoutTextView = layout.findViewById(R.id.layout_edit_viewmoreinfo_TextView);
@@ -964,54 +870,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
 
         final Domain domain = arcGISFeatureSuCoThongTin.getFeatureTable().getField(item.getFieldName()).getDomain();
-//        if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_MADMA))) {
-//            item.setValue(spin.getSelectedItem().toString());
-//        } else
-//            if (mLoaiSuCoShort != null && item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_ViTri))) {
-//            if (mLoaiSuCoShort.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngNganh))) {
-//                item.setValue(spin.getSelectedItem().toString());
-//            } else if (mLoaiSuCoShort.equals(mMainActivity.getResources().getString(R.string.LoaiSuCo_OngChinh))) {
-//                item.setValue(spin.getSelectedItem().toString() + editText.getText().toString());
-//            }
-//        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
-//            mListHoSoVatTuSuCo = new ArrayList<>();
-//
-//            if (listViewVatTu.getAdapter() != null) {
-//                if (listViewVatTu.getAdapter().getCount() == 0) {
-//                    isCanUpdate = false;
-//                    MySnackBar.make(listViewVatTu, mMainActivity.getResources().getString(R.string.message_CapNhat_VatTu), true);
-//                } else {
-//                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
-//                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-//                        mListHoSoVatTuSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getThoigianVanHanh(), itemVatTu.getMaThietBi(), itemVatTu.getTenThietBi(), itemVatTu.getDonVi()));
-//                    }
-//                    if (mListHoSoVatTuSuCo.size() > 0) {
-//                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
-//                        item.setValue(itemVatTu.getTenThietBi() + "\n" + itemVatTu.getThoigianVanHanh() + " " + itemVatTu.getDonVi() + "\n...");
-//                    }
-//                }
-//            }
-//
-//        } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
-//            mListHoSoVatTuThuHoiSuCo = new ArrayList<>();
-//
-//            if (listViewVatTu.getAdapter() != null) {
-//                if (listViewVatTu.getAdapter().getCount() == 0) {
-//                    isCanUpdate = false;
-//                    MySnackBar.make(listViewVatTu, mMainActivity.getResources().getString(R.string.message_CapNhat_VatTu), true);
-//                } else {
-//                    VatTuAdapter vatTuAdapter = (VatTuAdapter) listViewVatTu.getAdapter();
-//                    for (VatTuAdapter.Item itemVatTu : vatTuAdapter.getItems()) {
-//                        mListHoSoVatTuThuHoiSuCo.add(new HoSoVatTuSuCo(mIDSuCo, itemVatTu.getThoigianVanHanh(), itemVatTu.getMaThietBi(), itemVatTu.getTenThietBi(), itemVatTu.getDonVi()));
-//                    }
-//                    if (mListHoSoVatTuThuHoiSuCo.size() > 0) {
-//                        VatTuAdapter.Item itemVatTu = vatTuAdapter.getItem(0);
-//                        item.setValue(itemVatTu.getTenThietBi() + "\n" + itemVatTu.getThoigianVanHanh() + " " + itemVatTu.getDonVi() + "\n...");
-//                    }
-//                }
-//            }
-
-//        } else
         if (item.getFieldName().equals(arcGISFeatureSuCoThongTin.getFeatureTable().getTypeIdField()) || (domain != null)) {
             //Khi đổi subtype
             //Phải set những field liên quan đến subtype = null;
@@ -1230,7 +1088,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
 //            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
 //        else
-            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
+        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
         linearLayout.findViewById(R.id.imgBtn_thiet_bi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);
         linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_thu_hoi).setOnClickListener(this::onClick);

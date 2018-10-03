@@ -1136,10 +1136,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         switch (item.getItemId()) {
-            case R.id.nav_thongke:
-                Intent intent = new Intent(this, ThongKeActivity.class);
-                this.startActivity(intent);
-                break;
+//            case R.id.nav_thongke:
+//                Intent intent = new Intent(this, ThongKeActivity.class);
+//                this.startActivity(intent);
+//                break;
 //            case R.id.nav_tracuu:
 //                intent = new Intent(this, TraCuuActivity.class);
 //                this.startActivityForResult(intent, 1);

@@ -246,6 +246,64 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/llayout_them_su_co_tu_ngay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorWhite"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:src="@drawable/ic_calendar_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/txt_them_su_co_tgtcdk_tu_ngay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:text="@string/txt_thoigianthicongdukien_tungay"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:nextFocusDown="@+id/etxtNote_add_feature"
+                        android:textCursorDrawable="@null" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llayout_them_su_co_den_ngay"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorWhite"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="@dimen/size_image_them_su_co"
+                        android:layout_height="@dimen/size_image_them_su_co"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:src="@drawable/ic_calendar_black_24dp" />
+
+                    <TextView
+                        android:id="@+id/txt_them_su_co_tgtcdk_den_ngay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:text="@string/txt_thoigianthicongdukien_denngay"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:nextFocusDown="@+id/etxtNote_add_feature"
+                        android:textCursorDrawable="@null" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorWhite"
