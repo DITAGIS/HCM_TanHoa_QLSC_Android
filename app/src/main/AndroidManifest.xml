@@ -63,7 +63,10 @@
         <activity
             android:name=".DoiMatKhauActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".ThemSuCoActivity" />
+        <activity
+            android:name=".ThemSuCoActivity"
+            android:label="Báo sự cố"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".VatTuActivity"
             android:label="Vật tư"

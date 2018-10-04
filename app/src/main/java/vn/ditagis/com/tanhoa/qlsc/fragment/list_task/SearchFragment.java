@@ -96,52 +96,6 @@ public class SearchFragment extends Fragment {
     private void initListViewKetQuaTraCuu() {
         mLstKetQua.setOnItemClickListener((adapterView, view, i, l) -> {
             mActivity.itemClick(adapterView, i);
-//            if (mFeaturesResult != null & mFeaturesResult.size() > 0) {
-//                AlertDialog.Builder builder = new AlertDialog.Builder(mRootView.getContext(),
-//                        android.R.style.Theme_Material_Light_Dialog_Alert);
-//                builder.setTitle("Sự cố");
-//
-//                @SuppressLint("InflateParams") final ConstraintLayout layout = (ConstraintLayout) mActivity.getLayoutInflater().
-//                        inflate(R.layout.layout_item_tracuusuco, null);
-//
-//                List<TitleValueTraCuuSuCoAdapter.Item> items = new ArrayList<>();
-//                Feature feature = mFeaturesResult.get(i);
-//                Map<String, Object> attributes = feature.getAttributes();
-//                for (Field field : feature.getFeatureTable().getFields()) {
-//                    Object value = attributes.get(field.getName());
-//                    if (value != null) {
-//                        TitleValueTraCuuSuCoAdapter.Item item = new TitleValueTraCuuSuCoAdapter.Item(field.getAlias(), value.toString());
-//                        if (field.getDomain() != null) {
-//                            List<CodedValue> codedValues = ((CodedValueDomain) field.getDomain()).getCodedValues();
-//                            for (CodedValue codedValue : codedValues)
-//                                if (codedValue.getCode().equals(value))
-//                                    item.setValue(codedValue.getName());
-//                        } else switch (field.getFieldType()) {
-//                            case DATE:
-//                                item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
-//                                break;
-//                            case OID:
-//                            case TEXT:
-//                            case SHORT:
-//                            case DOUBLE:
-//                            case INTEGER:
-//                            case FLOAT:
-//                                item.setValue(value.toString());
-//                                break;
-//                        }
-//                        items.add(item);
-//                    }
-//                }
-//
-//                TitleValueTraCuuSuCoAdapter adapter = new TitleValueTraCuuSuCoAdapter(mRootView.getContext(), items);
-//                ListView listView = layout.findViewById(R.id.lst_item_tracuusuco);
-//                listView.setAdapter(adapter);
-//
-//                builder.setView(layout);
-//                final AlertDialog dialog = builder.create();
-//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//                dialog.show();
-//            }
         });
     }
 
@@ -163,7 +117,7 @@ public class SearchFragment extends Fragment {
     }
 
     private void traCuu() {
-        if (!mTxtThoiGian.getText().toString().equals(mRootView.getContext().getString(R.string.txt_chon_thoi_gian_tracuusuco))) {
+//        if (!mTxtThoiGian.getText().toString().equals(mRootView.getContext().getString(R.string.txt_chon_thoi_gian_tracuusuco))) {
             mLayoutKetQua.setVisibility(View.GONE);
             short trangThai = -1;
             for (CodedValue codedValue : mCodeValues) {
@@ -179,8 +133,8 @@ public class SearchFragment extends Fragment {
                     handlingTraCuuHoanTat();
                 }
             }).execute();
-        } else
-            Toast.makeText(mRootView.getContext(), "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
+//        } else
+//            Toast.makeText(mRootView.getContext(), "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show();
     }
 
     private void handlingTraCuuHoanTat() {

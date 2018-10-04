@@ -131,6 +131,9 @@ public class Constant {
         public static final String TRANG_THAI_GIAM_SAT = "TrangThaiGiamSat";
         public static final String HINH_THUC_PHAT_HIEN_THI_CONG = "HinhThucPhatHienThiCong";
         public static final String HINH_THUC_PHAT_HIEN_GIAM_SAT = "HinhThucPhatHienGiamSat";
+        public static final String PHUI_DAO_1_DAI = "PhuiDao1Dai";
+        public static final String PHUI_DAO_1_RONG = "PhuiDao1Rong";
+        public static final String PHUI_DAO_1_SAU = "PhuiDao1Sau";
 
     }
 

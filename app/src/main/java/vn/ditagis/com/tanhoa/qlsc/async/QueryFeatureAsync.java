@@ -35,6 +35,7 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
     private int mTrangThai;
     private String mDiaChi;
     private String mThoiGian;
+    private boolean mHasTime;
 
     public interface AsyncResponse {
         void processFinish(List<Feature> output);
@@ -51,7 +52,9 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
         try {
             Date date = Constant.DATE_FORMAT.parse(thoiGianPhanAnh);
             this.mThoiGian = formatTimeToGMT(date);
+            this.mHasTime = true;
         } catch (ParseException e) {
+            this.mHasTime = false;
             e.printStackTrace();
         }
     }
@@ -67,25 +70,23 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
         return dateFormatGmt.format(date);
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     protected Void doInBackground(Void... aVoids) {
         try {
 
             QueryParameters queryParameters = new QueryParameters();
-            @SuppressLint("DefaultLocale") String queryClause = String.format("%s = %d and %s > date '%s' and %s like N'%%%s%%'" +
+            @SuppressLint("DefaultLocale") StringBuilder queryClause = new StringBuilder(String.format(" %s like N'%%%s%%'" +
                             " and %s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, mTrangThai,
-                    Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC, mThoiGian,
                     Constant.FIELD_SUCOTHONGTIN.DIA_CHI, mDiaChi,
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-            if (mTrangThai == -1) {
-                queryClause = String.format(" %s > date '%s' and %s like N'%%%s%%'" +
-                                " and %s = '%s'",
-                        Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC, mThoiGian,
-                        Constant.FIELD_SUCOTHONGTIN.DIA_CHI, mDiaChi,
-                        Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName()));
+            if (mHasTime)
+                queryClause.append(String.format(" and %s > date '%s'", Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC, mThoiGian));
+            if (mTrangThai != -1) {
+                queryClause.append(String.format(" and %s = %d",
+                        Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, mTrangThai));
             }
-            queryParameters.setWhereClause(queryClause);
+            queryParameters.setWhereClause(queryClause.toString());
 
             ListenableFuture<FeatureQueryResult> featureQueryResultListenableFuture = mServiceFeatureTable.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL);
             featureQueryResultListenableFuture.addDoneListener(() -> {

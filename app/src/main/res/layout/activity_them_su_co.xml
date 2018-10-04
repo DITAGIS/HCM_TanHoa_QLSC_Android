@@ -78,7 +78,7 @@
                         android:layout_gravity="center"
                         android:layout_marginRight="@dimen/margin_medium"
                         android:hint="Số điện thoại"
-                        android:inputType="number"
+                        android:inputType="phone"
 
                         android:maxLines="1"
                         android:nextFocusDown="@+id/etxtAddress_add_feature"
@@ -245,8 +245,15 @@
                         android:textCursorDrawable="@null" />
                 </LinearLayout>
 
+                <TextView
+                    style="@style/MyTextAppearance.Black"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite"
+                    android:paddingTop="@dimen/padding_small"
+                    android:text="Phui đào 1" />
+
                 <LinearLayout
-                    android:id="@+id/llayout_them_su_co_tu_ngay"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorWhite"
@@ -254,28 +261,35 @@
                     android:focusableInTouchMode="true"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="@dimen/size_image_them_su_co"
-                        android:layout_height="@dimen/size_image_them_su_co"
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_calendar_black_24dp" />
+                        android:text="Dài" />
 
-                    <TextView
-                        android:id="@+id/txt_them_su_co_tgtcdk_tu_ngay"
-                        android:layout_width="match_parent"
+                    <EditText
+                        android:id="@+id/etxt_them_su_co_phuidao_dai"
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco_editext"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:text="@string/txt_thoigianthicongdukien_tungay"
                         android:layout_marginRight="@dimen/margin_medium"
+                        android:inputType="numberDecimal"
                         android:nextFocusDown="@+id/etxtNote_add_feature"
                         android:textCursorDrawable="@null" />
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="m" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/llayout_them_su_co_den_ngay"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/colorWhite"
@@ -283,25 +297,70 @@
                     android:focusableInTouchMode="true"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="@dimen/size_image_them_su_co"
-                        android:layout_height="@dimen/size_image_them_su_co"
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginLeft="@dimen/margin_small"
                         android:layout_marginRight="@dimen/margin_medium"
-                        android:src="@drawable/ic_calendar_black_24dp" />
+                        android:text="Rộng" />
 
-                    <TextView
-                        android:id="@+id/txt_them_su_co_tgtcdk_den_ngay"
-                        android:layout_width="match_parent"
+                    <EditText
+                        android:id="@+id/etxt_them_su_co_phuidao_rong"
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco_editext"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:text="@string/txt_thoigianthicongdukien_denngay"
                         android:layout_marginRight="@dimen/margin_medium"
+                        android:inputType="numberDecimal"
                         android:nextFocusDown="@+id/etxtNote_add_feature"
                         android:textCursorDrawable="@null" />
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="m" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/colorWhite"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/margin_small"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:text="Sâu" />
+
+                    <EditText
+                        android:id="@+id/etxt_them_su_co_phuidao_sau"
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="@dimen/width_title_item_themsuco_editext"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="@dimen/margin_medium"
+                        android:inputType="numberDecimal"
+                        android:nextFocusDown="@+id/etxtNote_add_feature"
+                        android:textCursorDrawable="@null" />
+
+                    <TextView
+                        style="@style/MyTextAppearance.Black.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="m" />
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"

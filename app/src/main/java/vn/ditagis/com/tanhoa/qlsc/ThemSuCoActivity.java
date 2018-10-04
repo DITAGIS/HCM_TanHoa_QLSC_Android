@@ -19,9 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.arcgisruntime.data.CodedValue;
@@ -64,14 +62,12 @@ public class ThemSuCoActivity extends AppCompatActivity {
     Spinner spinHinhThucPhatHien;
     @BindView(R.id.img_add_feature)
     ImageView mImage;
-    @BindView(R.id.llayout_them_su_co_tu_ngay)
-    LinearLayout mLayoutTuNgay;
-    @BindView(R.id.llayout_them_su_co_den_ngay)
-    LinearLayout mLayoutDenNgay;
-    @BindView(R.id.txt_them_su_co_tgtcdk_tu_ngay)
-    TextView mTxtTuNgay;
-    @BindView(R.id.txt_them_su_co_tgtcdk_den_ngay)
-    TextView mTxtDenNgay;
+    @BindView(R.id.etxt_them_su_co_phuidao_dai)
+    EditText mETxtPhuiDaoDai;
+    @BindView(R.id.etxt_them_su_co_phuidao_rong)
+    EditText mETxtPhuiDaoRong;
+    @BindView(R.id.etxt_them_su_co_phuidao_sau)
+    EditText mEtxtPhuiDaoSau;
     private DApplication mApplication;
     private Uri mUri;
     private List<CodedValue> mCodeValues;
@@ -97,8 +93,8 @@ public class ThemSuCoActivity extends AppCompatActivity {
         txtFullName.setText(mApplication.getUserDangNhap().getUserName());
         etxtAddress.setText(mApplication.getDiemSuCo.getVitri());
         etxtSubAdmin.setText(mApplication.getDiemSuCo.getQuan());
-        mTxtTuNgay.setOnClickListener(this::onClickTextView);
-        mTxtDenNgay.setOnClickListener(this::onClickTextView);
+//        mETxtPhuiDaoDai.setOnClickListener(this::onClickTextView);
+//        mETxtPhuiDaoRong.setOnClickListener(this::onClickTextView);
 //        etxtLocality.setText(mApplication.getDiemSuCo.getPhuong());
 
         Domain domain = mApplication.getDFeatureLayer.getLayer().getFeatureTable().
@@ -115,19 +111,9 @@ public class ThemSuCoActivity extends AppCompatActivity {
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                     if (mApplication.getUserDangNhap().getRole().toLowerCase().startsWith(Constant.ROLE_PGN)) {
                         if (Constant.HINH_THUC_PHAT_HIEN_BE_NGAM.toLowerCase().equals(adapter.getItem(i).toLowerCase())) {
-//                            mLayoutTuNgay.setVisibility(View.VISIBLE);
-//                            mLayoutDenNgay.setVisibility(View.VISIBLE);
                         } else {
-                            mTxtTuNgay.setText(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_tungay));
-                            mTxtDenNgay.setText(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_denngay));
-                            mLayoutTuNgay.setVisibility(View.GONE);
-                            mLayoutDenNgay.setVisibility(View.GONE);
                         }
                     } else {
-                        mTxtTuNgay.setText(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_tungay));
-                        mTxtDenNgay.setText(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_denngay));
-                        mLayoutTuNgay.setVisibility(View.GONE);
-                        mLayoutDenNgay.setVisibility(View.GONE);
                         Toast.makeText(ThemSuCoActivity.this, "Bạn không có quyền chọn hình thức phát hiện Bể ngầm!", Toast.LENGTH_LONG).show();
                         if (adapter.getCount() > 1)
                             spinHinhThucPhatHien.setSelection(1);
@@ -177,12 +163,12 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     mApplication.getDiemSuCo.setQuan(etxtSubAdmin.getText().toString().trim());
                     mApplication.getDiemSuCo.setPhuong(etxtLocality.getText().toString().trim());
                     mApplication.getDiemSuCo.setGhiChu(etxtNote.getText().toString().trim());
-                    if (!mTxtTuNgay.getText().equals(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_tungay))) {
-                        mApplication.getDiemSuCo.setTuNgay(mTxtTuNgay.getText().toString());
-                    }
-                    if (!mTxtTuNgay.getText().equals(ThemSuCoActivity.this.getString(R.string.txt_thoigianthicongdukien_denngay))) {
-                        mApplication.getDiemSuCo.setDenNgay(mTxtDenNgay.getText().toString());
-                    }
+                    if (!mETxtPhuiDaoDai.getText().toString().isEmpty())
+                        mApplication.getDiemSuCo.setPhuiDaoDai(Double.parseDouble(mETxtPhuiDaoDai.getText().toString()));
+                    if (!mETxtPhuiDaoRong.getText().toString().isEmpty())
+                        mApplication.getDiemSuCo.setPhuiDaoRong(Double.parseDouble(mETxtPhuiDaoRong.getText().toString()));
+                    if (!mEtxtPhuiDaoSau.getText().toString().isEmpty())
+                        mApplication.getDiemSuCo.setPhuiDaoSau(Double.parseDouble(mEtxtPhuiDaoSau.getText().toString()));
                     for (CodedValue codedValue : mCodeValues) {
                         if (codedValue.getName().equals(spinHinhThucPhatHien.getSelectedItem().toString()))
                             mApplication.getDiemSuCo.setHinhThucPhatHien(Short.parseShort(codedValue.getCode().toString()));
@@ -192,12 +178,8 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     handlingEmpty();
                 }
                 break;
-            case R.id.txt_them_su_co_tgtcdk_tu_ngay:
+            case R.id.etxt_them_su_co_phuidao_dai:
                 mIsTuNgay = true;
-                showDateTimePicker();
-                break;
-            case R.id.txt_them_su_co_tgtcdk_den_ngay:
-                mIsTuNgay = false;
                 showDateTimePicker();
                 break;
         }
@@ -212,9 +194,6 @@ public class ThemSuCoActivity extends AppCompatActivity {
             String displaytime = (String) DateFormat.format((Constant.DATE_FORMAT_STRING), calendar.getTime());
             @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormatGmt = Constant.DATE_FORMAT_YEAR_FIRST;
             dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            if (mIsTuNgay) {
-                mTxtTuNgay.setText(displaytime);
-            } else mTxtDenNgay.setText(displaytime);
             alertDialog.dismiss();
         });
         alertDialog.setView(dialogView);

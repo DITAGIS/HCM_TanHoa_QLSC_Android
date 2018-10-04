@@ -21,27 +21,13 @@ public class DiemSuCo {
     public String nguyenNhan;
     public Point point;
     public byte[] image;
-    private String tuNgay;
-    private String denNgay;
+    private Double phuiDaoDai;
+    private Double phuiDaoRong;
+    private Double phuiDaoSau;
 
     public DiemSuCo() {
     }
 
-    public String getTuNgay() {
-        return tuNgay;
-    }
-
-    public void setTuNgay(String tuNgay) {
-        this.tuNgay = tuNgay;
-    }
-
-    public String getDenNgay() {
-        return denNgay;
-    }
-
-    public void setDenNgay(String denNgay) {
-        this.denNgay = denNgay;
-    }
 
     public String getEmailPhanAnh() {
         return emailPhanAnh;
@@ -169,5 +155,29 @@ public class DiemSuCo {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public Double getPhuiDaoDai() {
+        return phuiDaoDai;
+    }
+
+    public void setPhuiDaoDai(Double phuiDaoDai) {
+        this.phuiDaoDai = phuiDaoDai;
+    }
+
+    public Double getPhuiDaoRong() {
+        return phuiDaoRong;
+    }
+
+    public void setPhuiDaoRong(Double phuiDaoRong) {
+        this.phuiDaoRong = phuiDaoRong;
+    }
+
+    public Double getPhuiDaoSau() {
+        return phuiDaoSau;
+    }
+
+    public void setPhuiDaoSau(Double phuiDaoSau) {
+        this.phuiDaoSau = phuiDaoSau;
     }
 }

@@ -75,6 +75,13 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN, mApplication.getDiemSuCo.getHinhThucPhatHien());
             feature.getAttributes().put(Constant.FIELD_SUCO.DOI_TUONG_PHAT_HIEN, Constant.DOI_TUONG_PHAT_HIEN_CBCNV);
+
+            if(mApplication.getDiemSuCo.getPhuiDaoDai() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_DAI,mApplication.getDiemSuCo.getPhuiDaoDai());
+            if(mApplication.getDiemSuCo.getPhuiDaoRong() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_RONG,mApplication.getDiemSuCo.getPhuiDaoRong());
+            if(mApplication.getDiemSuCo.getPhuiDaoSau() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_SAU,mApplication.getDiemSuCo.getPhuiDaoSau());
             for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG())
                 if (dLayerInfo.getId().equals(Constant.ID_BASEMAP)) {
                     ServiceFeatureTable serviceFeatureTableHanhChinh = new ServiceFeatureTable(
