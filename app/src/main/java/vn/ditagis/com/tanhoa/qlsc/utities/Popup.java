@@ -407,6 +407,15 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         String[] pgnFields = new String[]{};
         boolean isFoundField = false;
         String typeIdField = arcGISFeatureSuCoThongTin.getFeatureTable().getTypeIdField();
+        short hinhThucPhatHien = -1;
+        for (Field field : arcGISFeatureSuCoThongTin.getFeatureTable().getFields()) {
+            if (field.getName().equals(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN)) {
+                Object value = attr.get(field.getName());
+                if (value != null)
+                    hinhThucPhatHien = Short.parseShort(value.toString());
+                break;
+            }
+        }
         for (Field field : arcGISFeatureSuCoThongTin.getFeatureTable().getFields()) {
             for (String noOutField : noOutFields)
                 if (noOutField.equals(field.getName())) {
@@ -438,11 +447,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         break;
                     }
                 }
-//                if ((field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_TU) ||
-//                        field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_DEN))
-//                        && value != null) {
-//                    item.setEdit(false);
-//                }
+                if ((field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_TU) ||
+                        field.getName().equals(Constant.FIELD_SUCOTHONGTIN.TGTC_DU_KIEN_DEN)))
+                    if (hinhThucPhatHien == Constant.HinhThucPhatHien.BE_NGAM
+                            && mApplication.getUserDangNhap().getRole().equals(Constant.ROLE_PGN)) {
+                        item.setEdit(true);
+                    } else item.setEdit(false);
 //                boolean isPGNField = false, isPGNField_NotPGNRole = false;
 //                for (String pgnField : pgnFields) {
 //                    if (item.getFieldName().equals(pgnField)) {

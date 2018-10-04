@@ -168,6 +168,7 @@ public class Constant {
         public static final String LOAI_VAT_TU = "LoaiVatTu";
 
     }
+
     public class FIELD_THIETBI {
         public static final String ID_SU_CO = "IDSuCo";
         public static final String MA_THIET_BI = "MaThietBi";
@@ -197,6 +198,15 @@ public class Constant {
         public static final short DANG_XU_LY = 1;
         public static final short HOAN_THANH = 2;
 
+    }
+
+    public class HinhThucPhatHien {
+        public static final short BE_NGAM = 1;
+        public static final short BE_NOI = 2;
+    }
+
+    public class PhuiDao {
+        public static final short LE_BTXM = 1;
     }
 
     public class FIELD_ACCOUNT {

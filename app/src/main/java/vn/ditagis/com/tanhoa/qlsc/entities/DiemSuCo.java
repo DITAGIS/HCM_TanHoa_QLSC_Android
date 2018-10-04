@@ -29,6 +29,29 @@ public class DiemSuCo {
     public DiemSuCo() {
     }
 
+    public void clear() {
+        idSuCo = null;
+        vitri = null;
+        ngayPhanAnh = null;
+        nguoiPhanAnh = null;
+        sdtPhanAnh = null;
+        emailPhanAnh = null;
+        trangThai = Constant.TRANG_THAI_SU_CO.CHUA_XU_LY;
+        hinhThucPhatHien = Constant.HinhThucPhatHien.BE_NOI;
+        quan = null;
+        phuong = null;
+        ghiChu = null;
+        nguoiCapNhat = null;
+        ngayCapNhat = null;
+        nguyenNhan = null;
+        point = null;
+        image = null;
+        ketCauDuong = Constant.PhuiDao.LE_BTXM;
+        phuiDaoDai = null;
+        phuiDaoRong = null;
+        phuiDaoSau = null;
+    }
+
     public short getKetCauDuong() {
         return ketCauDuong;
     }

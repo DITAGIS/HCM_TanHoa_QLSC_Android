@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content">
+    <item
+        android:id="@+id/item_popup_view_attachment"
+        android:title="Xem tệp đính kèm"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_popup_edit"
+        android:title="Hiệu chỉnh"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_popup_vattu_capmoi"
+        android:title="Vật tư cấp mới"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_popup_vattu_thuhoi"
+        android:title="Vật tư thu hồi"
+        app:showAsAction="withText" />
+    <item
+        android:id="@+id/item_popup_thietbi"
+        android:title="Thiết bị"
+        app:showAsAction="withText" />
+</menu>

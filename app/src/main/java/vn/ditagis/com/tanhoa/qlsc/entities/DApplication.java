@@ -63,6 +63,7 @@ public class DApplication extends Application {
         getDiemSuCo = new DiemSuCo();
     }
 
+
     private Geometry geometry;
 
     public Geometry getGeometry() {

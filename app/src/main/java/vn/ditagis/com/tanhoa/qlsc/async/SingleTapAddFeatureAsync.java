@@ -78,12 +78,12 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1, mApplication.getDiemSuCo.getKetCauDuong());
 
 
-            if(mApplication.getDiemSuCo.getPhuiDaoDai() != null)
-                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_DAI,mApplication.getDiemSuCo.getPhuiDaoDai());
-            if(mApplication.getDiemSuCo.getPhuiDaoRong() != null)
-                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_RONG,mApplication.getDiemSuCo.getPhuiDaoRong());
-            if(mApplication.getDiemSuCo.getPhuiDaoSau() != null)
-                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_SAU,mApplication.getDiemSuCo.getPhuiDaoSau());
+            if (mApplication.getDiemSuCo.getPhuiDaoDai() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_DAI, mApplication.getDiemSuCo.getPhuiDaoDai());
+            if (mApplication.getDiemSuCo.getPhuiDaoRong() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_RONG, mApplication.getDiemSuCo.getPhuiDaoRong());
+            if (mApplication.getDiemSuCo.getPhuiDaoSau() != null)
+                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_SAU, mApplication.getDiemSuCo.getPhuiDaoSau());
             for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG())
                 if (dLayerInfo.getId().equals(Constant.ID_BASEMAP)) {
                     ServiceFeatureTable serviceFeatureTableHanhChinh = new ServiceFeatureTable(
@@ -127,7 +127,18 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
                 Calendar c = Calendar.getInstance();
                 feature.getAttributes().put(Constant.FIELD_SUCO.TGPHAN_ANH, c);
             }
+//            if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
+            feature.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG,
+                    Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
+            feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG,
+                    mApplication.getDiemSuCo.getHinhThucPhatHien());
 
+//            } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
+            feature.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT,
+                    Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
+            feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT,
+                    mApplication.getDiemSuCo.getHinhThucPhatHien());
+//            }
             mServiceFeatureTable.addFeatureAsync(feature).addDoneListener(() -> {
                 final ListenableFuture<List<FeatureEditResult>> listListenableEditAsync = mServiceFeatureTable.applyEditsAsync();
                 listListenableEditAsync.addDoneListener(() -> {
@@ -261,7 +272,10 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
         if (values == null) {
             Toast.makeText(mActivity.getApplicationContext(), "Không phản ánh được sự cố. Vui lòng thử lại sau", Toast.LENGTH_SHORT).show();
             mDelegate.processFinish(null);
-        } else if (values.length > 0) mDelegate.processFinish(values[0]);
+        } else if (values.length > 0) {
+            mDelegate.processFinish(values[0]);
+            mApplication.getDiemSuCo.clear();
+        }
         if (mDialog != null && mDialog.isShowing()) {
             mDialog.dismiss();
         }
