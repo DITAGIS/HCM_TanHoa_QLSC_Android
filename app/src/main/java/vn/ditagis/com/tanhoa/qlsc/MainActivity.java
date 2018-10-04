@@ -967,39 +967,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void themDiemSuCoNoCapture() {
-        if (mMapViewHandler == null)
-            Toast.makeText(this, getString(R.string.load_map_not_complete), Toast.LENGTH_LONG).show();
-        else {
-            FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
-                    mGeocoder, output -> {
-                if (output != null) {
+        try {
+            if (mMapViewHandler == null)
+                Toast.makeText(this, getString(R.string.load_map_not_complete), Toast.LENGTH_LONG).show();
+            else {
+                FindLocationAsycn findLocationAsycn = new FindLocationAsycn(this, false,
+                        mGeocoder, output -> {
+                    if (output != null) {
 
-                    String subAdminArea = output.get(0).getSubAdminArea();
-                    //nếu tài khoản có quyền truy cập vào
-                    if (subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
-                            subAdminArea.equals(getString(R.string.QuanTanBinhName)) ||
-                            subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
-                        mApplication.getDiemSuCo.setPoint(mPointFindLocation);
-                        mApplication.getDiemSuCo.setVitri(output.get(0).getLocation());
-                        mApplication.getDiemSuCo.setQuan(subAdminArea);
-                        mApplication.getDiemSuCo.setPhuong(output.get(0).getLocality());
-                        Intent intent = new Intent(MainActivity.this, ThemSuCoActivity.class);
-                        startActivityForResult(intent, Constant.REQUEST_CODE_ADD_FEATURE);
-                        mTxtSearchView.setQuery("", true);
+                        String subAdminArea = output.get(0).getSubAdminArea();
+                        //nếu tài khoản có quyền truy cập vào
+                        if (subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
+                                subAdminArea.equals(getString(R.string.QuanTanBinhName)) ||
+                                subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
+                            mApplication.getDiemSuCo.setPoint(mPointFindLocation);
+                            mApplication.getDiemSuCo.setVitri(output.get(0).getLocation());
+                            mApplication.getDiemSuCo.setQuan(subAdminArea);
+                            mApplication.getDiemSuCo.setPhuong(output.get(0).getLocality());
+                            Intent intent = new Intent(MainActivity.this, ThemSuCoActivity.class);
+                            startActivityForResult(intent, Constant.REQUEST_CODE_ADD_FEATURE);
+                            mTxtSearchView.setQuery("", true);
 
+                        } else {
+                            Toast.makeText(MainActivity.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
+                        }
                     } else {
                         Toast.makeText(MainActivity.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
                     }
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.message_not_area_management, Toast.LENGTH_LONG).show();
-                }
 
-            });
-            Geometry project = GeometryEngine.project(mPointFindLocation, SpatialReferences.getWgs84());
-            double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
-            findLocationAsycn.setmLongtitude(location[0]);
-            findLocationAsycn.setmLatitude(location[1]);
-            findLocationAsycn.execute();
+                });
+                Geometry project = GeometryEngine.project(mPointFindLocation, SpatialReferences.getWgs84());
+                double[] location = {project.getExtent().getCenter().getX(), project.getExtent().getCenter().getY()};
+                findLocationAsycn.setmLongtitude(location[0]);
+                findLocationAsycn.setmLatitude(location[1]);
+                findLocationAsycn.execute();
+            }
+        } catch (Exception e) {
+            Toast.makeText(MainActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
         }
     }
 
