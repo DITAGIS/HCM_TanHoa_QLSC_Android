@@ -62,6 +62,8 @@ public class ThemSuCoActivity extends AppCompatActivity {
     Spinner spinHinhThucPhatHien;
     @BindView(R.id.img_add_feature)
     ImageView mImage;
+    @BindView(R.id.spin_add_feature_ket_cau_duong)
+    Spinner mSpinKetCauDuong;
     @BindView(R.id.etxt_them_su_co_phuidao_dai)
     EditText mETxtPhuiDaoDai;
     @BindView(R.id.etxt_them_su_co_phuidao_rong)
@@ -70,7 +72,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
     EditText mEtxtPhuiDaoSau;
     private DApplication mApplication;
     private Uri mUri;
-    private List<CodedValue> mCodeValues;
+    private List<CodedValue> mCodeValues, mCodeValuesKetCauDuong;
 
     private boolean mIsTuNgay = false;
 
@@ -126,6 +128,17 @@ public class ThemSuCoActivity extends AppCompatActivity {
                 }
             });
         }
+
+        Domain domainKetCauDuong = mApplication.getDFeatureLayer.getLayer().getFeatureTable().
+                getField(Constant.FIELD_SUCO.PHUI_DAO_1).getDomain();
+        mCodeValuesKetCauDuong = ((CodedValueDomain) domainKetCauDuong).getCodedValues();
+        if (mCodeValuesKetCauDuong != null) {
+            List<String> codesKetCauDuong = new ArrayList<>();
+            for (CodedValue codedValue : mCodeValuesKetCauDuong)
+                codesKetCauDuong.add(codedValue.getName());
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, codesKetCauDuong);
+            mSpinKetCauDuong.setAdapter(adapter);
+        }
     }
 
     private boolean isNotEmpty() {
@@ -172,6 +185,10 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     for (CodedValue codedValue : mCodeValues) {
                         if (codedValue.getName().equals(spinHinhThucPhatHien.getSelectedItem().toString()))
                             mApplication.getDiemSuCo.setHinhThucPhatHien(Short.parseShort(codedValue.getCode().toString()));
+                    }
+                    for (CodedValue codedValueKetCauDuong : mCodeValuesKetCauDuong) {
+                        if (codedValueKetCauDuong.getName().equals(mSpinKetCauDuong.getSelectedItem().toString()))
+                            mApplication.getDiemSuCo.setKetCauDuong(Short.parseShort(codedValueKetCauDuong.getCode().toString()));
                     }
                     finish();
                 } else {

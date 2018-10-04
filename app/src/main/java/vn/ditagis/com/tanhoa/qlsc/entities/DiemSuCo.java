@@ -21,6 +21,7 @@ public class DiemSuCo {
     public String nguyenNhan;
     public Point point;
     public byte[] image;
+    private short ketCauDuong;
     private Double phuiDaoDai;
     private Double phuiDaoRong;
     private Double phuiDaoSau;
@@ -28,6 +29,13 @@ public class DiemSuCo {
     public DiemSuCo() {
     }
 
+    public short getKetCauDuong() {
+        return ketCauDuong;
+    }
+
+    public void setKetCauDuong(short ketCauDuong) {
+        this.ketCauDuong = ketCauDuong;
+    }
 
     public String getEmailPhanAnh() {
         return emailPhanAnh;

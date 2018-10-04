@@ -25,7 +25,7 @@
     <dimen name="margin_popup">20dp</dimen>
     <dimen name="padding_popup">20dp</dimen>
     <dimen name="width_title_item_docso">100dp</dimen>
-    <dimen name="width_title_item_themsuco">50dp</dimen>
+    <dimen name="width_title_item_themsuco">120dp</dimen>
     <dimen name="width_title_item_themsuco_editext">120dp</dimen>
     <dimen name="width_title_item_popup">100dp</dimen>
     <dimen name="padding_small">8dp</dimen>

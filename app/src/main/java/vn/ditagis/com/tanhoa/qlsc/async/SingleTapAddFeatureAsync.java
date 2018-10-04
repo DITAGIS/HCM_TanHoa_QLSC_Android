@@ -75,6 +75,8 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
             feature.getAttributes().put(Constant.FIELD_SUCO.SDT, mApplication.getDiemSuCo.getSdtPhanAnh());
             feature.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN, mApplication.getDiemSuCo.getHinhThucPhatHien());
             feature.getAttributes().put(Constant.FIELD_SUCO.DOI_TUONG_PHAT_HIEN, Constant.DOI_TUONG_PHAT_HIEN_CBCNV);
+            feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1, mApplication.getDiemSuCo.getKetCauDuong());
+
 
             if(mApplication.getDiemSuCo.getPhuiDaoDai() != null)
                 feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_DAI,mApplication.getDiemSuCo.getPhuiDaoDai());
