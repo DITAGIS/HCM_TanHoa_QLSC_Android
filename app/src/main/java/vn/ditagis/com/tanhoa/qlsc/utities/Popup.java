@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -23,6 +25,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -187,26 +190,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
             item.setAlias(field.getAlias());
             item.setFieldName(field.getName());
-//            if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTu))) {
-//                StringBuilder builder = new StringBuilder();
-//                this.mListHoSoVatTuSuCo = new HoSoVatTuSuCoDB(mMainActivity).find(mIDSuCo);
-//                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuSuCo) {
-//                    builder.append(hoSoVatTuSuCo.getTenThietBi()).append(" ").append(hoSoVatTuSuCo.getThoigianVanHanh()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
-//                }
-//                if (builder.length() > 0)
-//                    builder.replace(builder.length() - 2, builder.length(), "");
-//                item.setValue(builder.toString());
-//            } else if (item.getFieldName().equals(mMainActivity.getResources().getString(R.string.Field_SuCo_VatTuThuHoi))) {
-//                StringBuilder builder = new StringBuilder();
-//                this.mListHoSoVatTuThuHoiSuCo = new HoSoVatTuThuHoiSuCoDB(mMainActivity).find(mIDSuCo);
-//                for (HoSoVatTuSuCo hoSoVatTuSuCo : mListHoSoVatTuThuHoiSuCo) {
-//                    builder.append(hoSoVatTuSuCo.getTenThietBi()).append(" ").append(hoSoVatTuSuCo.getThoigianVanHanh()).append(" ").append(hoSoVatTuSuCo.getDonViTinh()).append("\n");
-//                }
-//                if (builder.length() > 0)
-//                    builder.replace(builder.length() - 2, builder.length(), "");
-//                item.setValue(builder.toString());
-//            }
-//            else
             if (value != null) {
 
                 if (item.getFieldName().equals(typeIdField)) {
@@ -834,7 +817,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         @Override
                         public void onClick(View view) {
                             DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
-                            String s = String.format(mMainActivity.getResources().getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth(), datePicker.getYear());
+                            String s = String.format(mMainActivity.getResources().getString(R.string.format_date_month_year), datePicker.getDayOfMonth(), datePicker.getMonth() + 1, datePicker.getYear());
 
                             textView.setText(s);
                             alertDialog.dismiss();
@@ -1088,10 +1071,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
 //            linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setVisibility(View.GONE);
 //        else
-        linearLayout.findViewById(R.id.imgBtn_ViewMoreInfo).setOnClickListener(this);
-        linearLayout.findViewById(R.id.imgBtn_thiet_bi).setOnClickListener(this::onClick);
-        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_gan_moi).setOnClickListener(this::onClick);
-        linearLayout.findViewById(R.id.imgBtn_cap_nhat_vat_tu_thu_hoi).setOnClickListener(this::onClick);
+        linearLayout.findViewById(R.id.imgBtn_thongtinsuco_menu).setOnClickListener(this);
         linearLayout.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         Envelope envelope = mApplication.getGeometry().getExtent();
@@ -1195,24 +1175,41 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgBtn_ViewMoreInfo:
-                viewMoreInfo();
-                break;
-            case R.id.imgBtn_thiet_bi:
-                Intent intentThietBi = new Intent(mMainActivity, ThietBiActivity.class);
-                mMainActivity.startActivity(intentThietBi);
-                break;
-            case R.id.imgBtn_cap_nhat_vat_tu_gan_moi:
-                Intent intent = new Intent(mMainActivity, VatTuActivity.class);
-                mApplication.setLoaiVatTu(Constant.CODE_VATTU_CAPMOI);
-                mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
-                mMainActivity.startActivity(intent);
-                break;
-            case R.id.imgBtn_cap_nhat_vat_tu_thu_hoi:
-                Intent intentThuHoi = new Intent(mMainActivity, VatTuActivity.class);
-                mApplication.setLoaiVatTu(Constant.CODE_VATTU_THUHOI);
-                mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
-                mMainActivity.startActivity(intentThuHoi);
+            case R.id.imgBtn_thongtinsuco_menu:
+                PopupMenu popup = new PopupMenu(mMainActivity, view);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.menu_feature_popup, popup.getMenu());
+                popup.setOnMenuItemClickListener((MenuItem item) -> {
+                    switch (item.getItemId()) {
+                        case R.id.item_popup_view_attachment:
+                            viewAttachment();
+                            return true;
+                        case R.id.item_popup_edit:
+                            viewMoreInfo();
+                            return true;
+                        case R.id.item_popup_vattu_capmoi:
+                            Intent intent = new Intent(mMainActivity, VatTuActivity.class);
+                            mApplication.setLoaiVatTu(Constant.CODE_VATTU_CAPMOI);
+                            mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+                            mMainActivity.startActivity(intent);
+                            return true;
+                        case R.id.item_popup_vattu_thuhoi:
+                            Intent intentThuHoi = new Intent(mMainActivity, VatTuActivity.class);
+                            mApplication.setLoaiVatTu(Constant.CODE_VATTU_THUHOI);
+                            mApplication.getDiemSuCo.setIdSuCo(mIDSuCo);
+                            mMainActivity.startActivity(intentThuHoi);
+                            return true;
+                        case R.id.item_popup_thietbi:
+                            Intent intentThietBi = new Intent(mMainActivity, ThietBiActivity.class);
+                            mMainActivity.startActivity(intentThietBi);
+                            return true;
+
+                        default:
+                            return false;
+                    }
+                });
+                popup.show();
+
                 break;
             case R.id.imgBtn_delete:
                 mSelectedArcGISFeature.getFeatureTable().getFeatureLayer().clearSelection();

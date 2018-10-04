@@ -86,46 +86,13 @@
         tools:ignore="RtlHardcoded">
 
         <ImageButton
-            android:id="@+id/imgBtn_thiet_bi"
-            android:layout_width="@dimen/size_image"
-            android:layout_height="@dimen/size_image"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_small"
-            android:background="@android:color/white"
-            android:contentDescription="Cập nhật thiết bị"
-            android:src="@drawable/ic_generator_32dp"
-            tools:ignore="RtlSymmetry" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_cap_nhat_vat_tu_gan_moi"
-            android:layout_width="@dimen/size_image"
-            android:layout_height="@dimen/size_image"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_small"
-            android:background="@android:color/white"
-            android:contentDescription="Cập nhật vật tư gắn mới"
-            android:src="@drawable/bolts_add"
-            tools:ignore="RtlSymmetry" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_cap_nhat_vat_tu_thu_hoi"
-            android:layout_width="@dimen/size_image"
-            android:layout_height="@dimen/size_image"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/margin_small"
-            android:background="@android:color/white"
-            android:contentDescription="Cập nhật vật tư thu hồi"
-            android:src="@drawable/bolts_remove"
-            tools:ignore="RtlSymmetry" />
-
-        <ImageButton
-            android:id="@+id/imgBtn_ViewMoreInfo"
+            android:id="@+id/imgBtn_thongtinsuco_menu"
             android:layout_width="@dimen/size_image"
             android:layout_height="@dimen/size_image"
             android:layout_marginRight="@dimen/margin_small"
             android:background="@android:color/white"
             android:contentDescription="Xem thông tin chi tiết"
-            android:src="@drawable/ic_info"
+            android:src="@drawable/ic_menu_circle_blue_32dp"
             tools:ignore="RtlSymmetry" />
 
         <ImageButton
