@@ -6,7 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -55,8 +57,12 @@ import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
 import java.io.File;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -147,6 +153,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void refreshPopup(ArcGISFeature arcGISFeature) {
         mSelectedArcGISFeature = arcGISFeature;
         Map<String, Object> attributes = mSelectedArcGISFeature.getAttributes();
@@ -232,7 +239,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                                || item.getFieldName().equals(mMainActivity.getString(R.string.Field_SuCo_ThoiGianThiCongDuKienDenNgay)))
 //                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
 //                        else
-                        item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
+                            item.setValue(Constant.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                         break;
                     case OID:
                     case TEXT:

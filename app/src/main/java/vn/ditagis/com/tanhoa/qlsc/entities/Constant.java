@@ -1,9 +1,16 @@
 package vn.ditagis.com.tanhoa.qlsc.entities;
 
 import android.Manifest;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.TimeZone;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class Constant {
     public static final String DATE_FORMAT_STRING = "dd/MM/yyyy";
     public static final SimpleDateFormat DATE_FORMAT_YEAR_FIRST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -222,5 +229,6 @@ public class Constant {
     }
 
     public Constant() {
+        DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 }
