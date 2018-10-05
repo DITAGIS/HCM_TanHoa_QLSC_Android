@@ -1,6 +1,5 @@
 package vn.ditagis.com.tanhoa.qlsc;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,12 +10,10 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -30,13 +27,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,17 +58,16 @@ public class ThemSuCoActivity extends AppCompatActivity {
     ImageView mImage;
     @BindView(R.id.spin_add_feature_ket_cau_duong)
     Spinner mSpinKetCauDuong;
-    @BindView(R.id.etxt_them_su_co_phuidao_dai)
-    EditText mETxtPhuiDaoDai;
-    @BindView(R.id.etxt_them_su_co_phuidao_rong)
-    EditText mETxtPhuiDaoRong;
-    @BindView(R.id.etxt_them_su_co_phuidao_sau)
-    EditText mEtxtPhuiDaoSau;
+//    @BindView(R.id.etxt_them_su_co_phuidao_dai)
+//    EditText mETxtPhuiDaoDai;
+//    @BindView(R.id.etxt_them_su_co_phuidao_rong)
+//    EditText mETxtPhuiDaoRong;
+//    @BindView(R.id.etxt_them_su_co_phuidao_sau)
+//    EditText mEtxtPhuiDaoSau;
     private DApplication mApplication;
     private Uri mUri;
     private List<CodedValue> mCodeValues, mCodeValuesKetCauDuong;
 
-    private boolean mIsTuNgay = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +124,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
         }
 
         Domain domainKetCauDuong = mApplication.getDFeatureLayer.getLayer().getFeatureTable().
-                getField(Constant.FIELD_SUCO.PHUI_DAO_1).getDomain();
+                getField(Constant.FIELD_SUCO.KET_CAU_DUONG).getDomain();
         mCodeValuesKetCauDuong = ((CodedValueDomain) domainKetCauDuong).getCodedValues();
         if (mCodeValuesKetCauDuong != null) {
             List<String> codesKetCauDuong = new ArrayList<>();
@@ -178,12 +170,12 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     mApplication.getDiemSuCo.setQuan(etxtSubAdmin.getText().toString().trim());
                     mApplication.getDiemSuCo.setPhuong(etxtLocality.getText().toString().trim());
                     mApplication.getDiemSuCo.setGhiChu(etxtNote.getText().toString().trim());
-                    if (!mETxtPhuiDaoDai.getText().toString().isEmpty())
-                        mApplication.getDiemSuCo.setPhuiDaoDai(Double.parseDouble(mETxtPhuiDaoDai.getText().toString()));
-                    if (!mETxtPhuiDaoRong.getText().toString().isEmpty())
-                        mApplication.getDiemSuCo.setPhuiDaoRong(Double.parseDouble(mETxtPhuiDaoRong.getText().toString()));
-                    if (!mEtxtPhuiDaoSau.getText().toString().isEmpty())
-                        mApplication.getDiemSuCo.setPhuiDaoSau(Double.parseDouble(mEtxtPhuiDaoSau.getText().toString()));
+//                    if (!mETxtPhuiDaoDai.getText().toString().isEmpty())
+//                        mApplication.getDiemSuCo.setPhuiDaoDai(Double.parseDouble(mETxtPhuiDaoDai.getText().toString()));
+//                    if (!mETxtPhuiDaoRong.getText().toString().isEmpty())
+//                        mApplication.getDiemSuCo.setPhuiDaoRong(Double.parseDouble(mETxtPhuiDaoRong.getText().toString()));
+//                    if (!mEtxtPhuiDaoSau.getText().toString().isEmpty())
+//                        mApplication.getDiemSuCo.setPhuiDaoSau(Double.parseDouble(mEtxtPhuiDaoSau.getText().toString()));
                     for (CodedValue codedValue : mCodeValues) {
                         if (codedValue.getName().equals(spinHinhThucPhatHien.getSelectedItem().toString()))
                             mApplication.getDiemSuCo.setHinhThucPhatHien(Short.parseShort(codedValue.getCode().toString()));
@@ -197,27 +189,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
                     handlingEmpty();
                 }
                 break;
-            case R.id.etxt_them_su_co_phuidao_dai:
-                mIsTuNgay = true;
-                showDateTimePicker();
-                break;
         }
-    }
-
-    private void showDateTimePicker() {
-        final View dialogView = View.inflate(ThemSuCoActivity.this, R.layout.date_time_picker, null);
-        final android.app.AlertDialog alertDialog = new android.app.AlertDialog.Builder(ThemSuCoActivity.this).create();
-        dialogView.findViewById(R.id.date_time_set).setOnClickListener(view -> {
-            DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
-            Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-            String displaytime = (String) DateFormat.format((Constant.DATE_FORMAT_STRING), calendar.getTime());
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormatGmt = Constant.DATE_FORMAT_YEAR_FIRST;
-            dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
-            alertDialog.dismiss();
-        });
-        alertDialog.setView(dialogView);
-        alertDialog.show();
-
     }
 
     public void onClickButton(View view) {

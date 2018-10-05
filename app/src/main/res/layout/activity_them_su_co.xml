@@ -245,13 +245,13 @@
                         android:textCursorDrawable="@null" />
                 </LinearLayout>
 
-                <TextView
-                    style="@style/MyTextAppearance.Black"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/colorWhite"
-                    android:paddingTop="@dimen/padding_small"
-                    android:text="Phui đào 1" />
+                <!--<TextView-->
+                    <!--style="@style/MyTextAppearance.Black"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:paddingTop="@dimen/padding_small"-->
+                    <!--android:text="Phui đào 1" />-->
 
                 <LinearLayout
 
@@ -280,113 +280,113 @@
                         android:textCursorDrawable="@null" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/colorWhite"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:focusable="true"-->
+                    <!--android:focusableInTouchMode="true"-->
+                    <!--android:orientation="horizontal">-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:text="Dài" />
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginLeft="@dimen/margin_small"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:text="Dài" />-->
 
-                    <EditText
-                        android:id="@+id/etxt_them_su_co_phuidao_dai"
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco_editext"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:inputType="numberDecimal"
-                        android:nextFocusDown="@+id/etxt_them_su_co_phuidao_rong"
-                        android:textCursorDrawable="@null" />
+                    <!--<EditText-->
+                        <!--android:id="@+id/etxt_them_su_co_phuidao_dai"-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco_editext"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:inputType="numberDecimal"-->
+                        <!--android:nextFocusDown="@+id/etxt_them_su_co_phuidao_rong"-->
+                        <!--android:textCursorDrawable="@null" />-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="m" />
-                </LinearLayout>
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:text="m" />-->
+                <!--</LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/colorWhite"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:focusable="true"-->
+                    <!--android:focusableInTouchMode="true"-->
+                    <!--android:orientation="horizontal">-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:text="Rộng" />
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginLeft="@dimen/margin_small"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:text="Rộng" />-->
 
-                    <EditText
-                        android:id="@+id/etxt_them_su_co_phuidao_rong"
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco_editext"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:inputType="numberDecimal"
-                        android:nextFocusDown="@+id/etxt_them_su_co_phuidao_sau"
-                        android:textCursorDrawable="@null" />
+                    <!--<EditText-->
+                        <!--android:id="@+id/etxt_them_su_co_phuidao_rong"-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco_editext"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:inputType="numberDecimal"-->
+                        <!--android:nextFocusDown="@+id/etxt_them_su_co_phuidao_sau"-->
+                        <!--android:textCursorDrawable="@null" />-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="m" />
-                </LinearLayout>
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:text="m" />-->
+                <!--</LinearLayout>-->
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@color/colorWhite"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="horizontal">
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:background="@color/colorWhite"-->
+                    <!--android:focusable="true"-->
+                    <!--android:focusableInTouchMode="true"-->
+                    <!--android:orientation="horizontal">-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/margin_small"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:text="Sâu" />
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginLeft="@dimen/margin_small"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:text="Sâu" />-->
 
-                    <EditText
-                        android:id="@+id/etxt_them_su_co_phuidao_sau"
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="@dimen/width_title_item_themsuco_editext"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/margin_medium"
-                        android:inputType="numberDecimal"
-                        android:nextFocusDown="@+id/etxtNote_add_feature"
-                        android:textCursorDrawable="@null" />
+                    <!--<EditText-->
+                        <!--android:id="@+id/etxt_them_su_co_phuidao_sau"-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="@dimen/width_title_item_themsuco_editext"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_marginRight="@dimen/margin_medium"-->
+                        <!--android:inputType="numberDecimal"-->
+                        <!--android:nextFocusDown="@+id/etxtNote_add_feature"-->
+                        <!--android:textCursorDrawable="@null" />-->
 
-                    <TextView
-                        style="@style/MyTextAppearance.Black.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="m" />
-                </LinearLayout>
+                    <!--<TextView-->
+                        <!--style="@style/MyTextAppearance.Black.Small"-->
+                        <!--android:layout_width="wrap_content"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:text="m" />-->
+                <!--</LinearLayout>-->
 
 
                 <LinearLayout
