@@ -14,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,6 +28,7 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import vn.ditagis.com.tanhoa.qlsc.utities.NotificationBroadcastReceiver;
+import vn.ditagis.com.tanhoa.qlsc.utities.NotifyService;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
@@ -51,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mApplication = (DApplication) getApplication();
+        mApplication.setChannelID(0);
         ButterKnife.bind(this);
         mNotification = new NotificationBroadcastReceiver();
         try {
@@ -77,10 +80,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     };
     private Emitter.Listener onNhanViec = args -> {
         if (args != null && args.length > 0) {
-
-            if (mNotification != null) {
-                mNotification.setOnetimeTimer(LoginActivity.this);
+            try {
+                Intent intent = new Intent(LoginActivity.this, NotifyService.class);
+                startService(intent);
+            } catch (Exception e) {
+                Toast.makeText(LoginActivity.this, "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
             }
+//            if (mNotification != null) {
+//                mNotification.setOnetimeTimer(LoginActivity.this);
+//            }
             Log.d("Nhận việc", args[0].toString());
         }
     };

@@ -1,6 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.entities;
 
 import android.app.Application;
+import android.content.Context;
 import android.location.Location;
 
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -35,7 +36,15 @@ public class DApplication extends Application {
     {
         getDFeatureLayer = new DFeatureLayer();
     }
+    private int channelID;
 
+    public int getChannelID() {
+        return channelID;
+    }
+
+    public void setChannelID(int channelID) {
+        this.channelID = channelID;
+    }
 
     private Socket mSocket;
 

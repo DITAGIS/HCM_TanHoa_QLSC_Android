@@ -1456,7 +1456,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void handlingListTaskActivityResult() {
         if (mApplication.getDiemSuCo.getTrangThai() == Constant.TRANG_THAI_SU_CO.HOAN_THANH && !mIsShowComplete) {
-            showHideComplete();
         }
         //query sự cố theo idsuco, lấy objectid
         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
