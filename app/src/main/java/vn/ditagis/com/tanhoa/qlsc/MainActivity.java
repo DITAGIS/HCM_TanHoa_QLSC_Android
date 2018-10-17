@@ -1455,6 +1455,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void handlingListTaskActivityResult() {
+        mIsAddFeature = false;
         if (mApplication.getDiemSuCo.getTrangThai() == Constant.TRANG_THAI_SU_CO.HOAN_THANH && !mIsShowComplete) {
         }
         //query sự cố theo idsuco, lấy objectid
