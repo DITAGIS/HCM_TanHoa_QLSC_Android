@@ -5,9 +5,6 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.TimeZone;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
@@ -28,6 +25,7 @@ public class Constant {
     public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
     public static final int NOTIFICATION_ID = 12345;
 
+    public static final int REQUEST_CODE_LOGIN = 0;
     public static final int REQUEST_CODE_PERMISSION = 2;
     public static final int REQUEST_CODE_BASEMAP = 5;
     public static final int REQUEST_CODE_LAYER = 6;
@@ -44,9 +42,9 @@ public class Constant {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-//    private final String SERVER = "http://tanhoa.sawagis.vn";
-    private final String SERVER = "http://113.161.88.180:798";
-    private String SERVER_API = SERVER + "/apiv1/api";
+    //    private final String SERVER = "http://tanhoa.sawagis.vn";
+    private static final String SERVER = "http://113.161.88.180:798";
+    private static final String SERVER_API = SERVER + "/apiv1/api";
     public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
     public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER + "/images/map/bengam.png";
     public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/images/map/1.png";
@@ -54,49 +52,27 @@ public class Constant {
 
     public static final short LOAISUCO_ONGNGANH = 1;
     public static final short LOAISUCO_ONGCHINH = 2;
-    public String API_LOGIN;
 
-
-    {
-        API_LOGIN = SERVER_API + "/Login";
+    public class Socket {
+        //        public static final String CHAT_SERVER_URL = SERVER + "/socket/";
+        public static final String CHAT_SERVER_URL = "http://sawagis.vn:3000";
+        public static final String EVENT_LOCATION = "vitrinhanvien";
+        public static final String EVENT_STAFF_NAME = "tennhanvien";
+        public static final String EVENT_GIAO_VIEC = "giaoviecsuco";
+        public static final String APP_ID = "qlsc";
+        public static final int REQUEST_LOGIN = 0;
     }
 
-    public String DISPLAY_NAME;
+    public class URL_API {
+        public static final String LOGIN = SERVER_API + "/Login";
+        public static final String PROFILE = SERVER_API + "/Account/Profile";
+        public static final String GENERATE_ID_SUCO = SERVER_API + "/QuanLySuCo/GenerateIDSuCo";
+        public static final String LAYER_INFO = SERVER_API + "/Account/layerinfo";
+        public static final String COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id=%s";
+        public static final String IS_ACCESS = SERVER_API + "/Account/IsAccess/m_qlsc";
+        public static final String GENERATE_ID_SUCOTHONGTIN = SERVER_API + "/QuanLySuCo/GenerateIDSuCoThongTin/";
 
 
-    {
-        DISPLAY_NAME = SERVER_API + "/Account/Profile";
-    }
-
-    public String GENERATE_ID_SUCO;
-
-
-    {
-        GENERATE_ID_SUCO = SERVER_API + "/QuanLySuCo/GenerateIDSuCo";
-    }
-
-    public String getGENERATE_ID_SUCOTHONGTIN(String idSuCo) {
-        return SERVER_API + "/QuanLySuCo/GenerateIDSuCoThongTin/" + idSuCo;
-    }
-
-    public String LAYER_INFO;
-
-
-    {
-        LAYER_INFO = SERVER_API + "/Account/layerinfo";
-    }
-
-    public String API_COMPLETE;
-
-
-    {
-        API_COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id=%s";
-    }
-
-    public String IS_ACCESS;
-
-    {
-        IS_ACCESS = SERVER_API + "/Account/IsAccess/m_qlsc";
     }
 
     public String ADMIN_AREA_TPHCM;

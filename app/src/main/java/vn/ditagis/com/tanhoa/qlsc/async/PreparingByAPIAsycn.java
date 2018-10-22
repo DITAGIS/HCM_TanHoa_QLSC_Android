@@ -90,7 +90,7 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
 
     private void getLayerInfoAPI() {
         try {
-            String API_URL = mApplication.getConstant.LAYER_INFO;
+            String API_URL = Constant.URL_API.LAYER_INFO;
 
             URL url = new URL(API_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

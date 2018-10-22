@@ -22,8 +22,8 @@ import android.widget.Toast;
 import io.socket.emitter.Emitter;
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 
 // A Service is an application component that can perform long-running operations
 // in the background and does not provide a user interface.
@@ -75,34 +75,34 @@ public class NotifyService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        new Thread(() -> {
-            final DApplication app = (DApplication) getApplication();
-            io.socket.client.Socket socket = app.getSocket();
-//            final Handler handler = new Handler();
-//            final int delay = 5000; //milliseconds
-//            handler.postDelayed(new Runnable() {
-//                public void run() {
-//                    //do something
-//                    if (app.getmLocation() != null) {
-//                        Log.d("gửi", "hhi");
-//                        if (mApplication.getUserDangNhap() != null &&
-//                                mApplication.getUserDangNhap().getUserName() != null)
-//                            socket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID + "," + mApplication.getUserDangNhap().getUserName());
-//                        Emitter emit1 = socket.emit(Constants.EVENT_LOCATION,
-//                                app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
-//                        app.setmLocation(null);
-//                        Log.d("Kết quả vị trí", emit1.hasListeners(Constants.EVENT_LOCATION) + "");
-//                    }
-//                    handler.postDelayed(this, delay);
-//                }
-//            }, delay);
-//            socket.on(Constants.EVENT_STAFF_NAME, onInfinity);
-//            socket.on(Constants.EVENT_LOCATION, onInfinity);
-            socket.on(Constants.EVENT_GIAO_VIEC, onNhanViec);
+//        new Thread(() -> {
+        final DApplication app = (DApplication) getApplication();
+        io.socket.client.Socket socket = app.getSocket();
+        final Handler handler = new Handler();
+        final int delay = 5000; //milliseconds
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                //do something
+                if (app.getmLocation() != null) {
+                    Log.d("gửi", "hhi");
+                    if (mApplication.getUserDangNhap() != null &&
+                            mApplication.getUserDangNhap().getUserName() != null)
+                        socket.emit(Constant.Socket.EVENT_STAFF_NAME, Constant.Socket.APP_ID + "," + mApplication.getUserDangNhap().getUserName());
+                    Emitter emit1 = socket.emit(Constant.Socket.EVENT_LOCATION,
+                            app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
+                    app.setmLocation(null);
+                    Log.d("Kết quả vị trí", emit1.hasListeners(Constant.Socket.EVENT_LOCATION) + "");
+                }
+                handler.postDelayed(this, delay);
+            }
+        }, delay);
+        socket.on(Constant.Socket.EVENT_STAFF_NAME, onInfinity);
+        socket.on(Constant.Socket.EVENT_LOCATION, onInfinity);
+        socket.on(Constant.Socket.EVENT_GIAO_VIEC, onNhanViec);
 
-            socket.connect();
+        socket.connect();
 
-        }).start();
+//        }).start();
 
         return START_REDELIVER_INTENT;
 

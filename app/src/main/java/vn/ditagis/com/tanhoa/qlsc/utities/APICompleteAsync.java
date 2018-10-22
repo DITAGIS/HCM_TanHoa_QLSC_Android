@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
 public class APICompleteAsync extends AsyncTask<Void, Void, Void> {
@@ -21,7 +22,7 @@ public class APICompleteAsync extends AsyncTask<Void, Void, Void> {
 
     private void send() {
         try {
-            String API_URL = String.format(mApplication.getConstant.API_COMPLETE, mIDSuCo);
+            String API_URL = String.format(Constant.URL_API.COMPLETE, mIDSuCo);
 
             URL url = new URL(API_URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

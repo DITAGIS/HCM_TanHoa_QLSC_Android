@@ -53,7 +53,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
 //        String passEncoded = (new EncodeMD5()).encode(pin + "_DITAGIS");
         // Do some validation here
         String urlParameters = String.format("Username=%s&Password=%s", userName, pin);
-        String urlWithParam = String.format("%s?%s", mApplication.getConstant.API_LOGIN, urlParameters);
+        String urlWithParam = String.format("%s?%s",Constant.URL_API.LOGIN, urlParameters);
         try {
 //            + "&apiKey=" + API_KEY
             URL url = new URL(urlWithParam);
@@ -107,7 +107,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
     private Boolean checkAccess(String token) {
         boolean isAccess = false;
         try {
-            URL url = new URL(mApplication.getConstant.IS_ACCESS);
+            URL url = new URL(Constant.URL_API.IS_ACCESS);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             try {
                 conn.setDoOutput(false);
@@ -136,7 +136,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
 
 //        String API_URL = "http://sawagis.vn/tanhoa1/api/Account/Profile";
         try {
-            URL url = new URL(mApplication.getConstant.DISPLAY_NAME);
+            URL url = new URL(Constant.URL_API.PROFILE);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             try {
                 conn.setDoOutput(false);

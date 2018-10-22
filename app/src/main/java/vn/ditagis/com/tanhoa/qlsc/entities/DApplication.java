@@ -11,7 +11,6 @@ import java.net.URISyntaxException;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 
 public class DApplication extends Application {
     public Constant getConstant;
@@ -50,7 +49,7 @@ public class DApplication extends Application {
 
     {
         try {
-            mSocket = IO.socket(Constants.CHAT_SERVER_URL);
+            mSocket = IO.socket(Constant.Socket.CHAT_SERVER_URL);
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

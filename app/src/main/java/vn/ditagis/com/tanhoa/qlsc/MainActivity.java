@@ -107,7 +107,6 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DAddress;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo;
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.socket.LocationHelper;
 import vn.ditagis.com.tanhoa.qlsc.utities.APICompleteAsync;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
@@ -301,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void startSignIn() {
         Intent intent = new Intent(this, LoginActivity.class);
-        startActivityForResult(intent, Constants.REQUEST_LOGIN);
+        startActivityForResult(intent, Constant.REQUEST_CODE_LOGIN);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -1474,7 +1473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                        mMapViewHandler.queryByObjectID(objectid);
                     }
                     break;
-                case Constants.REQUEST_LOGIN:
+                case Constant.REQUEST_CODE_LOGIN:
                     if (Activity.RESULT_OK != resultCode) {
                         finish();
                         return;

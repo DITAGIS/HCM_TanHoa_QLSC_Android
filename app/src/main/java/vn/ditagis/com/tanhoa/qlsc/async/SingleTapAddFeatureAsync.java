@@ -154,7 +154,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
 
                 });
             });
-        }).execute(mApplication.getConstant.GENERATE_ID_SUCO);
+        }).execute(Constant.URL_API.GENERATE_ID_SUCO);
     }
 
     private void addServiceFeatureTable(ArcGISFeature arcGISFeature, Feature feature) {
@@ -224,7 +224,7 @@ public class SingleTapAddFeatureAsync extends AsyncTask<Void, Feature, Void> {
 //                    addAttachment(arcGISFeature, feature);
 //                    publishProgress(feature);
                 }
-            }).execute(mApplication.getConstant.getGENERATE_ID_SUCOTHONGTIN(idSuCo));
+            }).execute(Constant.URL_API.GENERATE_ID_SUCOTHONGTIN.concat(idSuCo));
         });
     }
 
