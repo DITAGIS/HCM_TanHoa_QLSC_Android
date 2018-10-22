@@ -44,7 +44,8 @@ public class Constant {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private final String SERVER = "http://tanhoa.sawagis.vn";
+//    private final String SERVER = "http://tanhoa.sawagis.vn";
+    private final String SERVER = "http://113.161.88.180:798";
     private String SERVER_API = SERVER + "/apiv1/api";
     public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
     public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER + "/images/map/bengam.png";

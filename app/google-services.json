@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "373114617613",
+    "firebase_url": "https://tchat-7752d.firebaseio.com",
+    "project_id": "tchat-7752d",
+    "storage_bucket": "tchat-7752d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373114617613:android:5a924eca75319f31",
+        "android_client_info": {
+          "package_name": "com.ditagis.tchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373114617613-0f0neopk553uanmebk2ujr9e5561eber.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ditagis.tchat",
+            "certificate_hash": "325ee99f9e7b66c35fd04fa5b8a42744eb032816"
+          }
+        },
+        {
+          "client_id": "373114617613-9mjohjokmrof15ug04ovgu6ud4ilbrpg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6PdjvgIJ3p_DpFnxWiHlkN9LbGBMDISA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "373114617613-9mjohjokmrof15ug04ovgu6ud4ilbrpg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:373114617613:android:2a6123125efcd4d2",
+        "android_client_info": {
+          "package_name": "ditagis.com.vn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "373114617613-9mjohjokmrof15ug04ovgu6ud4ilbrpg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6PdjvgIJ3p_DpFnxWiHlkN9LbGBMDISA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

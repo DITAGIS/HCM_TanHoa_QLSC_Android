@@ -1,20 +1,20 @@
 package vn.ditagis.com.tanhoa.qlsc;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -22,14 +22,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.socket.client.Socket;
-import io.socket.emitter.Emitter;
 import vn.ditagis.com.tanhoa.qlsc.async.LoginByAPIAsycn;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
-import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
 import vn.ditagis.com.tanhoa.qlsc.utities.NotificationBroadcastReceiver;
 import vn.ditagis.com.tanhoa.qlsc.utities.NotifyService;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
+import vn.ditagis.com.tanhoa.qlsc.utities.SocketServiceProvider;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -70,28 +69,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTxtValidation = findViewById(R.id.txt_login_validation);
         create();
 
+        Intent intent = new Intent(LoginActivity.this, NotifyService.class);
+        startService(intent);
+//        startService(new Intent(getBaseContext(), SocketServiceProvider.class));
 
     }
 
-    private Emitter.Listener onInfinity = args -> {
-        if (args != null && args.length > 0) {
-            Log.d("Nhận", args[0].toString());
-        }
-    };
-    private Emitter.Listener onNhanViec = args -> {
-        if (args != null && args.length > 0) {
-            try {
-                Intent intent = new Intent(LoginActivity.this, NotifyService.class);
-                startService(intent);
-            } catch (Exception e) {
-                Toast.makeText(LoginActivity.this, "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
-            }
-//            if (mNotification != null) {
-//                mNotification.setOnetimeTimer(LoginActivity.this);
-//            }
-            Log.d("Nhận việc", args[0].toString());
-        }
-    };
+
 
     private void create() {
         Preference.getInstance().setContext(this);
@@ -158,31 +142,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void handleLoginSuccess() {
 
         // GPS
-        final DApplication app = (DApplication) getApplication();
-        mSocket = app.getSocket();
-        final Handler handler = new Handler();
-        final int delay = 5000; //milliseconds
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                //do something
-                if (app.getmLocation() != null) {
-                    Log.d("gửi", "hhi");
-                    if (mApplication.getUserDangNhap() != null &&
-                            mApplication.getUserDangNhap().getUserName() != null)
-                        mSocket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID + "," + mApplication.getUserDangNhap().getUserName());
-                    Emitter emit1 = mSocket.emit(Constants.EVENT_LOCATION,
-                            app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
-                    app.setmLocation(null);
-                    Log.d("Kết quả vị trí", emit1.hasListeners(Constants.EVENT_LOCATION) + "");
-                }
-                handler.postDelayed(this, delay);
-            }
-        }, delay);
-        mSocket.on(Constants.EVENT_STAFF_NAME, onInfinity);
-        mSocket.on(Constants.EVENT_LOCATION, onInfinity);
-        mSocket.on(Constants.EVENT_GIAO_VIEC, onNhanViec);
 
-        mSocket.connect();
         mTxtUsername.setText("");
         mTxtPassword.setText("");
 

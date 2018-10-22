@@ -28,6 +28,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name=".utities.NotifyService" />
+        <service android:name=".utities.SocketServiceProvider" />
 
         <activity
             android:name=".MainActivity"

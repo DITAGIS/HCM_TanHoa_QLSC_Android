@@ -3,7 +3,6 @@ package vn.ditagis.com.tanhoa.qlsc.utities;
 
 import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -13,14 +12,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import io.socket.emitter.Emitter;
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
+import vn.ditagis.com.tanhoa.qlsc.libs.Constants;
 
 // A Service is an application component that can perform long-running operations
 // in the background and does not provide a user interface.
@@ -31,9 +34,9 @@ public class NotifyService extends Service {
     final static String STOP_SERVICE_BROADCAST_KEY = "StopServiceBroadcastKey";
     final static int RQS_STOP_SERVICE = 1;
     private static final String TAG = "NotifyService";
-    String myBlog = "http://www.cs.dartmouth.edu/~campbell/cs65/cs65.html";
     private NotifyServiceReceiver notifyServiceReceiver;
     private DApplication mApplication;
+    private Context mContext;
 
     @Override
     public void onCreate() {
@@ -41,6 +44,7 @@ public class NotifyService extends Service {
         Log.d(TAG, "NotifyService:onCreate");
         notifyServiceReceiver = new NotifyServiceReceiver();
         mApplication = (DApplication) getApplication();
+        mContext = getBaseContext();
     }
 
     // onStartCommand() is called upon calling the startService(Intent) in NotifyActivity
@@ -49,17 +53,63 @@ public class NotifyService extends Service {
     // onStartCommand() then create a thread or AsyncTask or loader to do it. Else, you will block
     // the UI.
 
+    private Emitter.Listener onInfinity = args -> {
+        if (args != null && args.length > 0) {
+            Log.d("Nhận", args[0].toString());
+        }
+    };
+    Emitter.Listener onNhanViec = args -> new Handler(Looper.getMainLooper()).post(() -> {
+        if (args != null && args.length > 0) {
+            try {
+                Toast.makeText(mContext, "Thông báo", Toast.LENGTH_SHORT).show();
+                showNotify();
+            } catch (Exception e) {
+//                    Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
+            }
+            Log.d("Nhận việc", args[0].toString());
+        }
+
+    });
+
     @TargetApi(Build.VERSION_CODES.O)
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Context context = getApplicationContext();
-        try {
-            Log.d(TAG, "NotifyService:onStartCommand Thread Name " + Thread.currentThread().getName()
-                    + " ID " + Thread.currentThread().getId()
-                    + " State " + Thread.currentThread().getState());
 
-            Log.d(TAG, "Received start id " + startId + ": " + intent + "\n");
-            //do something
+        new Thread(() -> {
+            final DApplication app = (DApplication) getApplication();
+            io.socket.client.Socket socket = app.getSocket();
+//            final Handler handler = new Handler();
+//            final int delay = 5000; //milliseconds
+//            handler.postDelayed(new Runnable() {
+//                public void run() {
+//                    //do something
+//                    if (app.getmLocation() != null) {
+//                        Log.d("gửi", "hhi");
+//                        if (mApplication.getUserDangNhap() != null &&
+//                                mApplication.getUserDangNhap().getUserName() != null)
+//                            socket.emit(Constants.EVENT_STAFF_NAME, Constants.APP_ID + "," + mApplication.getUserDangNhap().getUserName());
+//                        Emitter emit1 = socket.emit(Constants.EVENT_LOCATION,
+//                                app.getmLocation().getLatitude() + "," + app.getmLocation().getLongitude());
+//                        app.setmLocation(null);
+//                        Log.d("Kết quả vị trí", emit1.hasListeners(Constants.EVENT_LOCATION) + "");
+//                    }
+//                    handler.postDelayed(this, delay);
+//                }
+//            }, delay);
+//            socket.on(Constants.EVENT_STAFF_NAME, onInfinity);
+//            socket.on(Constants.EVENT_LOCATION, onInfinity);
+            socket.on(Constants.EVENT_GIAO_VIEC, onNhanViec);
+
+            socket.connect();
+
+        }).start();
+
+        return START_REDELIVER_INTENT;
+
+    }
+
+    private void showNotify() {
+        try {
             // register the receiver
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(ACTION);
@@ -70,7 +120,7 @@ public class NotifyService extends Service {
 
             String notificationTitle = "Bạn vừa nhận một công việc mới";
             String notificationText = "Vui lòng tải lại bản đồ và xem danh sách công việc!";
-            Intent myIntent = new Intent(context, MainActivity.class);
+            Intent myIntent = new Intent(mContext, MainActivity.class);
 
             // PendingIntent is a token that you give to a application (e.g. NotificationManager), which
             // allows the application to use your application's permissions to execute a
@@ -78,7 +128,7 @@ public class NotifyService extends Service {
             // Here we create PendingIntent to run myIntent instead of normal way of startService(myIntent)
             // so that clicking the notification icon will run this Intent (myIntent) to open a web browser
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, myIntent,
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, myIntent,
                     PendingIntent.FLAG_ONE_SHOT);
             mApplication.setChannelID(mApplication.getChannelID() + 1);
             // set up a notification with the pending intent
@@ -86,7 +136,7 @@ public class NotifyService extends Service {
 //                    "channel name", NotificationManager.IMPORTANCE_HIGH);
 
             NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(NotifyService.this, mApplication.getChannelID() + "")
+                    new NotificationCompat.Builder(mContext, mApplication.getChannelID() + "")
                             .setContentTitle(notificationTitle)
                             .setContentText(notificationText)
                             .setSmallIcon(R.drawable.logo)
@@ -114,10 +164,8 @@ public class NotifyService extends Service {
             // START_NOT_STICKY used for services that should only remain running while
             // processing any commands sent to them.
         } catch (Exception e) {
-            Toast.makeText(context, "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
         }
-        return START_NOT_STICKY;
-
     }
 
     // onDestroy corresponds to onCreate. It performs any final cleanup before an activity is destroyed

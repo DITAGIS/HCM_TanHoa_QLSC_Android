@@ -1071,9 +1071,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                mIsAddFeature = true;
-                if (newText.trim().length() > 0 && !mIsSearchingFeature) {
 
+                if (newText.trim().length() > 0 && !mIsSearchingFeature) {
+                    mIsAddFeature = true;
                 } else {
                     mSearchAdapter.clear();
                     mSearchAdapter.notifyDataSetChanged();
