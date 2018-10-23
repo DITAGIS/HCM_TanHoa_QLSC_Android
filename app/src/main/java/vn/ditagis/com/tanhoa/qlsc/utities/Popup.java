@@ -237,7 +237,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 //                            item.setValue(Constant.DATE_FORMAT.format(((Calendar) value).getTime()));
 //                        else
                         Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
-                            item.setValue(Constant.DateFormat.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
+                        item.setValue(Constant.DateFormat.DATE_FORMAT_VIEW.format(((Calendar) value).getTime()));
                         break;
                     case OID:
                     case TEXT:
@@ -325,15 +325,41 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void complete(ArcGISFeature arcGISFeatureSuCoThongTin, Dialog dialog) {
         if (arcGISFeatureSuCoThongTin != null) {
-            arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH);
-            mApplication.setArcGISFeature(arcGISFeatureSuCoThongTin);
-            for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
-                if (item.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI)) {
-                    item.setValue(mMainActivity.getString(R.string.SuCo_TrangThai_HoanThanh));
-                    break;
+            final ListenableFuture<List<Attachment>> attachmentResults = arcGISFeatureSuCoThongTin.fetchAttachmentsAsync();
+            attachmentResults.addDoneListener(() -> {
+
+                final List<Attachment> attachments;
+                try {
+                    attachments = attachmentResults.get();
+                    boolean isFound = false;
+                    if (!attachments.isEmpty()) {
+                        for (final Attachment attachment : attachments) {
+                            if (!attachment.getName().contains(mMainActivity.getString(R.string.attachment_add))) {
+                                isFound = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (isFound) {
+                        arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH);
+                        mApplication.setArcGISFeature(arcGISFeatureSuCoThongTin);
+                        for (FeatureViewMoreInfoAdapter.Item item : mFeatureViewMoreInfoAdapter.getItems())
+                            if (item.getFieldName().equals(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI)) {
+                                item.setValue(mMainActivity.getString(R.string.SuCo_TrangThai_HoanThanh));
+                                break;
+                            }
+                        mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
+                        update(arcGISFeatureSuCoThongTin, dialog);
+                    } else {
+                        Toast.makeText(dialog.getContext(), "Cần chụp ảnh để hoàn thành sự cố", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (InterruptedException | ExecutionException e) {
+                    e.printStackTrace();
                 }
-            mFeatureViewMoreInfoAdapter.notifyDataSetChanged();
-            update(arcGISFeatureSuCoThongTin, dialog);
+                // if selected feature has attachments, display them in a list fashion
+            });
+
+
         }
 
     }

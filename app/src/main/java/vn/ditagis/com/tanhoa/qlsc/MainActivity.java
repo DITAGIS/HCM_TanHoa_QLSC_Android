@@ -235,9 +235,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_quan_ly_su_co);
         mListLayerID = new ArrayList<>();
         ButterKnife.bind(this);
-
-        mTxtHeaderTenNV = findViewById(R.id.txt_nav_header_tenNV);
-        mTxtHeaderDisplayName = findViewById(R.id.txt_nav_header_displayname);
+        if (mNavView != null && mNavView.getHeaderCount() > 0) {
+            View header = mNavView.getHeaderView(0);
+            mTxtHeaderTenNV = header.findViewById(R.id.txt_nav_header_tenNV);
+            mTxtHeaderDisplayName = header.findViewById(R.id.txt_nav_header_displayname);
+        }
         states = new int[][]{{android.R.attr.state_checked}, {}};
         colors = new int[]{R.color.colorTextColor_1, R.color.colorTextColor_1};
         mLLayoutLayer.setVisibility(View.INVISIBLE);

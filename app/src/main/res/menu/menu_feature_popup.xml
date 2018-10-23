@@ -8,7 +8,7 @@
         app:showAsAction="withText" />
     <item
         android:id="@+id/item_popup_edit"
-        android:title="Hiệu chỉnh"
+        android:title="Cập nhật thông tin"
         app:showAsAction="withText" />
     <item
         android:id="@+id/item_popup_vattu_capmoi"
