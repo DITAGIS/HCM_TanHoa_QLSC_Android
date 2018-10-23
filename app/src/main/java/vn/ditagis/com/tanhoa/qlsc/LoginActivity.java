@@ -1,12 +1,9 @@
 package vn.ditagis.com.tanhoa.qlsc;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -25,10 +22,8 @@ import io.socket.client.Socket;
 import vn.ditagis.com.tanhoa.qlsc.async.LoginByAPIAsycn;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet;
-import vn.ditagis.com.tanhoa.qlsc.utities.NotificationBroadcastReceiver;
 import vn.ditagis.com.tanhoa.qlsc.utities.NotifyService;
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
-import vn.ditagis.com.tanhoa.qlsc.utities.SocketServiceProvider;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks,
@@ -44,7 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Socket mSocket;
     private boolean isLastLogin;
     private DApplication mApplication;
-    private NotificationBroadcastReceiver mNotification;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -54,7 +48,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mApplication = (DApplication) getApplication();
         mApplication.setChannelID(0);
         ButterKnife.bind(this);
-        mNotification = new NotificationBroadcastReceiver();
         try {
             mTxtVersion.setText("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {

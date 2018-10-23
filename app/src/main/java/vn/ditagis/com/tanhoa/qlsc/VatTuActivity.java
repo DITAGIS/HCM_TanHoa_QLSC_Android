@@ -74,10 +74,10 @@ public class VatTuActivity extends AppCompatActivity {
         mIsComplete = Short.parseShort(mApplication.getArcGISFeature().getAttributes().
                 get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH;
         switch (mApplication.getLoaiVatTu()) {
-            case Constant.CODE_VATTU_CAPMOI:
+            case Constant.CodeVatTu.CAPMOI:
                 setTitle("Vật tư cấp mới");
                 break;
-            case Constant.CODE_VATTU_THUHOI:
+            case Constant.CodeVatTu.THUHOI:
                 setTitle("Vật tư thu hồi");
                 break;
         }

@@ -50,7 +50,7 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
         this.mDiaChi = diaChi;
         this.mThoiGian = thoiGianPhanAnh;
         try {
-            Date date = Constant.DATE_FORMAT.parse(thoiGianPhanAnh);
+            Date date = Constant.DateFormat.DATE_FORMAT.parse(thoiGianPhanAnh);
             this.mThoiGian = formatTimeToGMT(date);
             this.mHasTime = true;
         } catch (ParseException e) {
@@ -65,7 +65,7 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
     }
 
     private String formatTimeToGMT(Date date) {
-        SimpleDateFormat dateFormatGmt = Constant.DATE_FORMAT_YEAR_FIRST;
+        SimpleDateFormat dateFormatGmt = Constant.DateFormat.DATE_FORMAT_YEAR_FIRST;
         dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
         return dateFormatGmt.format(date);
     }

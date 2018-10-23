@@ -70,7 +70,7 @@ public class HoSoThietBiSuCoAsync extends AsyncTask<Object, Object, Void> {
                     }
                     query.append("1 = 0");
                     for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                        if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THIET_BI_TABLE)) {
+                        if (dLayerInfo.getId().equals(Constant.IDLayer.ID_SU_CO_THIET_BI_TABLE)) {
                             final QueryParameters queryParametersThietBi = new QueryParameters();
                             queryParametersThietBi.setWhereClause(query.toString());
                             String url = dLayerInfo.getUrl();

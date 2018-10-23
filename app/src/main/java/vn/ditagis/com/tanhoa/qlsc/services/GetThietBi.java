@@ -38,7 +38,7 @@ public class GetThietBi extends AsyncTask<Void, Boolean, Void> {
 
     private void getVatTuFromService() {
 
-        String layerInfoThietBi = Constant.ID_SU_CO_THIET_BI_TABLE;
+        String layerInfoThietBi = Constant.IDLayer.ID_SU_CO_THIET_BI_TABLE;
 
         for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
             if (dLayerInfo.getId().equals(layerInfoThietBi)) {

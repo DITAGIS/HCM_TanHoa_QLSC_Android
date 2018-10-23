@@ -37,7 +37,7 @@ public class GetVatTu extends AsyncTask<Void, Boolean, Void> {
 
     private void getVatTuFromService() {
 
-        String layerInfoVatTu = Constant.ID_VAT_TU_TABLE;
+        String layerInfoVatTu = Constant.IDLayer.ID_VAT_TU_TABLE;
 
         for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
             if (dLayerInfo.getId().equals(layerInfoVatTu)) {

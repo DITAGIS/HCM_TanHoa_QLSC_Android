@@ -300,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void startSignIn() {
         Intent intent = new Intent(this, LoginActivity.class);
-        startActivityForResult(intent, Constant.REQUEST_CODE_LOGIN);
+        startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_LOGIN);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -521,27 +521,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (dLayerInfo.getId().equals(getString(R.string.IDLayer_DiemSuCo))) {
                 dLayerInfoSuCo = dLayerInfo;
 
-            } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+            } else if (dLayerInfo.getId().equals(Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
                 mApplication.getDFeatureLayer.setLayerInfoDTG(dLayerInfo);
                 mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThongTin((ServiceFeatureTable) featureLayer.getFeatureTable());
-            } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
+            } else if (dLayerInfo.getId().equals(Constant.IDLayer.ID_HO_SO_VAT_TU_SU_CO_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
                 mApplication.getDFeatureLayer.setServiceFeatureTableHoSoVatTuSuCo((ServiceFeatureTable) featureLayer.getFeatureTable());
 
-            } else if (dLayerInfo.getId().equals(Constant.ID_SU_CO_THIET_BI_TABLE)) {
+            } else if (dLayerInfo.getId().equals(Constant.IDLayer.ID_SU_CO_THIET_BI_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
                 featureLayer.setName(dLayerInfo.getTitleLayer());
                 mApplication.getDFeatureLayer.setServiceFeatureTableSuCoThietBi((ServiceFeatureTable) featureLayer.getFeatureTable());
-            } else if (dLayerInfo.getId().equals(Constant.ID_HO_SO_THIET_BI_SU_CO_TABLE)) {
+            } else if (dLayerInfo.getId().equals(Constant.IDLayer.ID_HO_SO_THIET_BI_SU_CO_TABLE)) {
                 ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
                 FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
                 featureLayer.setId(dLayerInfo.getId());
@@ -586,7 +586,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                        mGraphicsOverlay.getGraphics().add(graphic);
 //                    }
                     for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                        if (item.getId().equals(Constant.ID_SU_CO_THONG_TIN_TABLE)) {
+                        if (item.getId().equals(Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE)) {
                             Callout callout = mMapView.getCallout();
                             mApplication.getDFeatureLayer.setLayer(featureLayer);
                             mPopUp = new Popup(callout, MainActivity.this, mMapView,
@@ -612,9 +612,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String idSuCo = idSuCoList.get(i);
             if (i != idSuCoList.size() - 1)
                 builder.append(String.format("'%s' ,", idSuCo));
-            else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
+            else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_TC)) {
                 builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_THI_CONG, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
-            } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
+            } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_GS)) {
                 builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
             } else {
                 builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH));
@@ -724,31 +724,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private UniqueValueRenderer getRendererSuCo() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
-        if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
+        if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_TC)) {
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG);
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG);
-        } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
+        } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_GS)) {
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT);
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT);
         } else {
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
             uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
         }
-        PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA);
+        PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_CHUA_SUA_CHUA);
         chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         chuaXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
-        PictureMarkerSymbol dangXuLySymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_DANG_SUA_CHUA);
+        PictureMarkerSymbol dangXuLySymbol = new PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_DANG_SUA_CHUA);
         dangXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         dangXuLySymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
 
-        PictureMarkerSymbol hoanThanhSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_HOAN_THANH);
+        PictureMarkerSymbol hoanThanhSymbol = new PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_HOAN_THANH);
         hoanThanhSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         hoanThanhSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
 
-        PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(mApplication.getConstant.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
+        PictureMarkerSymbol beNgamSymbol = new PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM);
         beNgamSymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
         beNgamSymbol.setWidth(getResources().getInteger(R.integer.size_feature_renderer));
 
@@ -857,17 +857,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void requestPermisson() {
         boolean permissionCheck1 = ContextCompat.checkSelfPermission(this,
-                Constant.REQUEST_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED;
+                Constant.RequestPermission.REQUEST_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCheck2 = ContextCompat.checkSelfPermission(this,
-                Constant.REQUEST_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
+                Constant.RequestPermission.REQUEST_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCheck3 = ContextCompat.checkSelfPermission(this,
-                Constant.REQUEST_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
+                Constant.RequestPermission.REQUEST_PERMISSIONS[2]) == PackageManager.PERMISSION_GRANTED;
         boolean permissionCheck4 = ContextCompat.checkSelfPermission(this,
-                Constant.REQUEST_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
+                Constant.RequestPermission.REQUEST_PERMISSIONS[3]) == PackageManager.PERMISSION_GRANTED;
 
         if (!(permissionCheck1 && permissionCheck2 && permissionCheck3 && permissionCheck4)) {
             // If permissions are not already granted, request permission from the user.
-            ActivityCompat.requestPermissions(this, Constant.REQUEST_PERMISSIONS, Constant.REQUEST_CODE_PERMISSION);
+            ActivityCompat.requestPermissions(this, Constant.RequestPermission.REQUEST_PERMISSIONS, Constant.RequestCode.REQUEST_CODE_PERMISSION);
         }  // Report other unknown failure types to the user - for example, location services may not // be enabled on the device. //                    String message = String.format("Error in DataSourceStatusChangedListener: %s", dataSourceStatusChangedEvent //                            .getSource().getLocationDataSource().getError().getMessage()); //                    Toast.makeText(QuanLySuCo.this, message, Toast.LENGTH_LONG).show();
         else {
             init();
@@ -984,7 +984,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             mApplication.getDiemSuCo.setQuan(subAdminArea);
                             mApplication.getDiemSuCo.setPhuong(output.get(0).getLocality());
                             Intent intent = new Intent(MainActivity.this, ThemSuCoActivity.class);
-                            startActivityForResult(intent, Constant.REQUEST_CODE_ADD_FEATURE);
+                            startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_ADD_FEATURE);
                             mTxtSearchView.setQuery("", true);
 
                         } else {
@@ -1178,7 +1178,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.nav_list_task:
                 Intent intentListTask = new Intent(MainActivity.this, ListTaskActivity.class);
-                startActivityForResult(intentListTask, Constant.REQUEST_CODE_LIST_TASK);
+                startActivityForResult(intentListTask, Constant.RequestCode.REQUEST_CODE_LIST_TASK);
                 break;
             case R.id.nav_delete_searching:
                 deleteSearching();
@@ -1473,7 +1473,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                        mMapViewHandler.queryByObjectID(objectid);
                     }
                     break;
-                case Constant.REQUEST_CODE_LOGIN:
+                case Constant.RequestCode.REQUEST_CODE_LOGIN:
                     if (Activity.RESULT_OK != resultCode) {
                         finish();
                         return;
@@ -1484,7 +1484,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (CheckConnectInternet.isOnline(this))
                             preparingAsycn.execute();
                     }
-                case Constant.REQUEST_CODE_ADD_FEATURE:
+                case Constant.RequestCode.REQUEST_CODE_ADD_FEATURE:
                     mIsAddFeature = false;
                     if (mApplication.getDiemSuCo.getPoint() != null) {
                         mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
@@ -1492,7 +1492,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         handlingLocation();
                     }
                     break;
-                case Constant.REQUEST_CODE_LIST_TASK:
+                case Constant.RequestCode.REQUEST_CODE_LIST_TASK:
                     if (resultCode == Activity.RESULT_OK)
                         handlingListTaskActivityResult();
                     break;

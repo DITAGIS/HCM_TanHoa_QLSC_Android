@@ -79,18 +79,6 @@
             android:label="Danh sách công việc"
             android:parentActivityName=".MainActivity" />
 
-        <receiver
-            android:name=".utities.NotificationBroadcastReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <category android:name="${applicationId}" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name=".TestNotification" />
         <activity
             android:name=".ThietBiActivity"
             android:label="Thiết bị"

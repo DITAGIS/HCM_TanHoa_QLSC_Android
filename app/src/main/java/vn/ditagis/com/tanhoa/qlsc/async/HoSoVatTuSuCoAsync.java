@@ -75,7 +75,7 @@ public class HoSoVatTuSuCoAsync extends AsyncTask<Object, Object, Void> {
                     }
                     query.append("1 = 0");
                     for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
-                        if (dLayerInfo.getId().equals(Constant.ID_VAT_TU_TABLE)) {
+                        if (dLayerInfo.getId().equals(Constant.IDLayer.ID_VAT_TU_TABLE)) {
                             final QueryParameters queryParametersVatTu = new QueryParameters();
                             queryParametersVatTu.setWhereClause(query.toString());
                             String url = dLayerInfo.getUrl();

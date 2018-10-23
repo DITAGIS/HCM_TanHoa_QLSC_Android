@@ -20,6 +20,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import vn.ditagis.com.tanhoa.qlsc.ListTaskActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
@@ -103,11 +104,13 @@ public class ListTaskFragment extends Fragment {
             List<TraCuuAdapter.Item> hoanThanhList = new ArrayList<>();
             for (Feature feature : output) {
                 Map<String, Object> attributes = feature.getAttributes();
+                Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
                 TraCuuAdapter.Item item = new TraCuuAdapter.Item(
                         Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
                         attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                         Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
-                        Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
+
+                        Constant.DateFormat.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
                         attributes.get(Constant.FIELD_SUCOTHONGTIN.DIA_CHI).toString());
                 Object value = feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI);
                 if (value == null) {
@@ -129,8 +132,9 @@ public class ListTaskFragment extends Fragment {
             }
             Comparator<TraCuuAdapter.Item> comparator = (TraCuuAdapter.Item o1, TraCuuAdapter.Item o2) -> {
                 try {
-                    long i = Constant.DATE_FORMAT_VIEW.parse(o2.getNgayGiaoViec()).getTime() -
-                            Constant.DATE_FORMAT_VIEW.parse(o1.getNgayGiaoViec()).getTime();
+                    Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    long i = Constant.DateFormat.DATE_FORMAT_VIEW.parse(o2.getNgayGiaoViec()).getTime() -
+                            Constant.DateFormat.DATE_FORMAT_VIEW.parse(o1.getNgayGiaoViec()).getTime();
                     if (i > 0)
                         return 1;
                     else if (i == 0)

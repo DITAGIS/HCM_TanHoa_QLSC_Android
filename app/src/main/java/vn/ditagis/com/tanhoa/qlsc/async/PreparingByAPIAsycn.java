@@ -146,7 +146,7 @@ public class PreparingByAPIAsycn extends AsyncTask<Void, Boolean, Void> {
             String outFields = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_column_sys_out_fields_arr));
             String noOutFields = "";
             String id = jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_id));
-            if (id.equals(Constant.ID_SU_CO_THONG_TIN_TABLE))
+            if (id.equals(Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE))
                 noOutFields = noOutFields.concat(",").concat(Constant.NO_OUTFIELD_SUCO.DON_VI);
             layerDTGS.add(new DLayerInfo(id,
                     jsonRoute.getString(mActivity.getApplicationContext().getString(R.string.sql_coloumn_sys_title)),

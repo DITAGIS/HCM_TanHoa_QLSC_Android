@@ -105,8 +105,8 @@ public class ThemSuCoActivity extends AppCompatActivity {
             spinHinhThucPhatHien.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    if (mApplication.getUserDangNhap().getRole().toLowerCase().startsWith(Constant.ROLE_PGN)) {
-                        if (Constant.HINH_THUC_PHAT_HIEN_BE_NGAM.toLowerCase().equals(adapter.getItem(i).toLowerCase())) {
+                    if (mApplication.getUserDangNhap().getRole().toLowerCase().startsWith(Constant.Role.ROLE_PGN)) {
+                        if (Constant.Another.HINH_THUC_PHAT_HIEN_BE_NGAM.toLowerCase().equals(adapter.getItem(i).toLowerCase())) {
                         } else {
                         }
                     } else {
@@ -153,7 +153,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
         mUri = Uri.fromFile(photo);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mUri);
         try {
-            this.startActivityForResult(cameraIntent, Constant.REQUEST_CODE_ADD_FEATURE_ATTACHMENT);
+            this.startActivityForResult(cameraIntent, Constant.RequestCode.REQUEST_CODE_ADD_FEATURE_ATTACHMENT);
         } catch (Exception e) {
             Log.e("Lỗi chụp ảnh", e.toString());
         }
@@ -262,7 +262,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Constant.REQUEST_CODE_ADD_FEATURE_ATTACHMENT:
+            case Constant.RequestCode.REQUEST_CODE_ADD_FEATURE_ATTACHMENT:
                 if (resultCode == RESULT_OK) {
                     if (this.mUri != null) {
                         Bitmap bitmap = getBitmap(mUri.getPath());

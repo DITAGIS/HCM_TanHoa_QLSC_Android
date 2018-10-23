@@ -5,53 +5,84 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import java.text.SimpleDateFormat;
-import java.util.TimeZone;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class Constant {
-    public static final String DATE_FORMAT_STRING = "dd/MM/yyyy";
-    public static final SimpleDateFormat DATE_FORMAT_YEAR_FIRST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
-    public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
-    public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
-    public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
-    public static final String ID_SU_CO_THIET_BI_TABLE = "thietbiTBL";
-    public static final String ID_HO_SO_THIET_BI_SU_CO_TABLE = "hosothietbisucoTBL";
-    public static final String ID_VAT_TU_TABLE = "vattuTBL";
-    public static final String ID_BASEMAP = "BASEMAP";
-    public static final String ROLE_PGN = "pgn";
-    public static final String GROUPROLE_TC = "tc";
-    public static final String GROUPROLE_GS = "gs";
-    public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
-    public static final int NOTIFICATION_ID = 12345;
+    public static class DateFormat {
+        public static final String DATE_FORMAT_STRING = "dd/MM/yyyy";
+        public static final SimpleDateFormat DATE_FORMAT_YEAR_FIRST = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(DATE_FORMAT_STRING);
+        public static final SimpleDateFormat DATE_FORMAT_VIEW = new SimpleDateFormat("HH:mm:ss dd/MM/yyyy");
 
-    public static final int REQUEST_CODE_LOGIN = 0;
-    public static final int REQUEST_CODE_PERMISSION = 2;
-    public static final int REQUEST_CODE_BASEMAP = 5;
-    public static final int REQUEST_CODE_LAYER = 6;
-    public static final int REQUEST_CODE_ADD_FEATURE = 7;
-    public static final int REQUEST_CODE_ADD_FEATURE_ATTACHMENT = 8;
-    public static final int REQUEST_CODE_LIST_TASK = 9;
-    public static final int REQUEST_CODE_NOTIFICATION = 100;
-    public static final short CODE_VATTU_CAPMOI = 0;
-    public static final short CODE_VATTU_THUHOI = 1;
-    public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
-    public static final String URL_BASEMAP = "/3";
-    public static final String[] REQUEST_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    }
+
+    public static class IDLayer {
+        public static final String ID_SU_CO_THONG_TIN_TABLE = "sucothongtinTBL";
+        public static final String ID_HO_SO_VAT_TU_SU_CO_TABLE = "hosovattusucoTBL";
+        public static final String ID_SU_CO_THIET_BI_TABLE = "thietbiTBL";
+        public static final String ID_HO_SO_THIET_BI_SU_CO_TABLE = "hosothietbisucoTBL";
+        public static final String ID_VAT_TU_TABLE = "vattuTBL";
+        public static final String ID_BASEMAP = "BASEMAP";
+    }
+
+    public static class Role {
+        public static final String GROUPROLE_TC = "tc";
+        public static final String GROUPROLE_GS = "gs";
+        public static final String ROLE_PGN = "pgn";
+    }
+
+
+    public static class RequestCode {
+        public static final int REQUEST_CODE_LOGIN = 0;
+        public static final int REQUEST_CODE_PERMISSION = 2;
+        public static final int REQUEST_CODE_BASEMAP = 5;
+        public static final int REQUEST_CODE_LAYER = 6;
+        public static final int REQUEST_CODE_ADD_FEATURE = 7;
+        public static final int REQUEST_CODE_ADD_FEATURE_ATTACHMENT = 8;
+        public static final int REQUEST_CODE_LIST_TASK = 9;
+        public static final int REQUEST_CODE_NOTIFICATION = 100;
+
+    }
+
+    public static class CodeVatTu {
+        public static final short CAPMOI = 0;
+        public static final short THUHOI = 1;
+
+    }
+
+    public static class LoaiSuCo {
+        public static final short LOAISUCO_ONGNGANH = 1;
+        public static final short LOAISUCO_ONGCHINH = 2;
+
+    }
+
+    public static class Another {
+
+        public static final String HINH_THUC_PHAT_HIEN_BE_NGAM = "Bể ngầm";
+        public static final short DOI_TUONG_PHAT_HIEN_CBCNV = 1;
+        public static final String URL_BASEMAP = "/3";
+    }
+
+    public static class RequestPermission {
+        public static final String[] REQUEST_PERMISSIONS = new String[]{
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    }
+
     //    private final String SERVER = "http://tanhoa.sawagis.vn";
     private static final String SERVER = "http://113.161.88.180:798";
     private static final String SERVER_API = SERVER + "/apiv1/api";
-    public String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
-    public String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER + "/images/map/bengam.png";
-    public String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/images/map/1.png";
-    public String URL_SYMBOL_HOAN_THANH = SERVER + "/images/map/2.png";
 
-    public static final short LOAISUCO_ONGNGANH = 1;
-    public static final short LOAISUCO_ONGCHINH = 2;
+    public static class URLSymbol {
+
+        public static final String URL_SYMBOL_CHUA_SUA_CHUA = SERVER + "/images/map/0.png";
+        public static final String URL_SYMBOL_CHUA_SUA_CHUA_BE_NGAM = SERVER + "/images/map/bengam.png";
+        public static final String URL_SYMBOL_DANG_SUA_CHUA = SERVER + "/images/map/1.png";
+        public static final String URL_SYMBOL_HOAN_THANH = SERVER + "/images/map/2.png";
+    }
+
 
     public class Socket {
         //        public static final String CHAT_SERVER_URL = SERVER + "/socket/";
@@ -206,6 +237,6 @@ public class Constant {
     }
 
     public Constant() {
-        DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
+
     }
 }

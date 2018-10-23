@@ -105,8 +105,8 @@ public class SearchFragment extends Fragment {
         dialogView.findViewById(R.id.date_time_set).setOnClickListener(view -> {
             DatePicker datePicker = dialogView.findViewById(R.id.date_picker);
             Calendar calendar = new GregorianCalendar(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
-            String displaytime = (String) DateFormat.format((Constant.DATE_FORMAT_STRING), calendar.getTime());
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormatGmt = Constant.DATE_FORMAT_YEAR_FIRST;
+            String displaytime = (String) DateFormat.format((Constant.DateFormat.DATE_FORMAT_STRING), calendar.getTime());
+            @SuppressLint("SimpleDateFormat") SimpleDateFormat dateFormatGmt = Constant.DateFormat.DATE_FORMAT_YEAR_FIRST;
             dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
             mTxtThoiGian.setText(displaytime);
             alertDialog.dismiss();
@@ -144,10 +144,11 @@ public class SearchFragment extends Fragment {
             for (CodedValue codedValue : mCodeValues) {
                 if (Short.parseShort(codedValue.getCode().toString()) ==
                         Short.parseShort(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())) {
+                    Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
                     items.add(new TraCuuAdapter.Item(   Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.OBJECT_ID).toString()),
                             attributes.get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
                             Integer.parseInt(attributes.get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString()),
-                            Constant.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
+                            Constant.DateFormat.DATE_FORMAT_VIEW.format(((Calendar) attributes.get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC)).getTime()),
                             attributes.get(Constant.FIELD_SUCOTHONGTIN.DIA_CHI).toString()));
                 }
             }
@@ -155,8 +156,9 @@ public class SearchFragment extends Fragment {
         }
         Comparator<TraCuuAdapter.Item> comparator = (TraCuuAdapter.Item o1, TraCuuAdapter.Item o2) -> {
             try {
-                long i = Constant.DATE_FORMAT_VIEW.parse(o2.getNgayGiaoViec()).getTime() -
-                        Constant.DATE_FORMAT_VIEW.parse(o1.getNgayGiaoViec()).getTime();
+                Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
+                long i = Constant.DateFormat.DATE_FORMAT_VIEW.parse(o2.getNgayGiaoViec()).getTime() -
+                        Constant.DateFormat.DATE_FORMAT_VIEW.parse(o1.getNgayGiaoViec()).getTime();
                 if (i > 0)
                     return 1;
                 else if (i == 0)

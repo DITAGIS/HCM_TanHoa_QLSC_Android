@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import vn.ditagis.com.tanhoa.qlsc.R;
@@ -115,7 +116,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                     hasDomain = true;
                     //Trường hợp nguyên nhân, không tự động lấy được domain
                     if (item.getFieldName().equals(Constant.FIELD_SUCO.NGUYEN_NHAN)) {
-                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
+                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.NGUYEN_NHAN)).getCodedValues();
                             if (codedValues != null) {
@@ -130,7 +131,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                     }
                     //Trường hợp vật liệu, không tự động lấy được domain
                     else if (item.getFieldName().equals(Constant.FIELD_SUCO.VAT_LIEU)) {
-                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
+                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.VAT_LIEU)).getCodedValues();
                             if (codedValues != null) {
@@ -143,7 +144,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                             }
                         }
                     } else if (item.getFieldName().equals(Constant.FIELD_SUCO.DUONG_KINH_ONG)) {
-                        if (finalLoaiSuCoShort == Constant.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LOAISUCO_ONGCHINH) {
+                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
                             List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
                                     .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.DUONG_KINH_ONG)).getCodedValues();
                             if (codedValues != null) {
@@ -166,13 +167,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                     case DATE:
                         Date date;
                         try {
-
-                            date = Constant.DATE_FORMAT_VIEW.parse(item.getValue());
+                            Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
+                            date = Constant.DateFormat.DATE_FORMAT_VIEW.parse(item.getValue());
                             c[0].setTime(date);
                             arcGISFeatureSuCoThongTin.getAttributes().put(item.getFieldName(), c[0]);
                         } catch (ParseException e) {
                             try {
-                                date = Constant.DATE_FORMAT.parse(item.getValue());
+                                date = Constant.DateFormat.DATE_FORMAT.parse(item.getValue());
                                 c[0].setTime(date);
                                 arcGISFeatureSuCoThongTin.getAttributes().put(item.getFieldName(), c[0]);
                             } catch (ParseException ignored) {
@@ -283,13 +284,13 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                 short hinhThucPhatHienShort = 2;
                 if (hinhThucPhatHien != null)
                     hinhThucPhatHienShort = Short.parseShort(hinhThucPhatHien.toString());
-                if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
+                if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_TC)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG,
                             trangThaiShort);
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG,
                             hinhThucPhatHienShort);
 
-                } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
+                } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_GS)) {
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT,
                             trangThaiShort);
                     arcGISFeatureSuCo.getAttributes().put(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT,

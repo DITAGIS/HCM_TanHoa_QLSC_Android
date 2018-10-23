@@ -197,7 +197,7 @@ public class MapViewHandler extends Activity {
                     String format_date = "";
                     String[] split = attributes.get(Constant.FIELD_SUCO.ID_SUCO).toString().split("_");
                     try {
-                        format_date = Constant.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
+                        format_date = Constant.DateFormat.DATE_FORMAT.format((new GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).getTime()));
                     } catch (Exception ignored) {
 
                     }
