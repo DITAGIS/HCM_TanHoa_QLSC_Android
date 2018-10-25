@@ -590,8 +590,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void viewAttachment() {
-        ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity);
-        viewAttachmentAsync.execute();
+        try {
+            ViewAttachmentAsync viewAttachmentAsync = new ViewAttachmentAsync(mMainActivity);
+            viewAttachmentAsync.execute();
+        } catch (Exception e) {
+            Toast.makeText(mMainActivity.getApplicationContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private Object getValueDomain(List<CodedValue> codedValues, String code) {
@@ -1254,7 +1258,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
-
 
 
     @Override

@@ -95,7 +95,7 @@ public class ViewAttachmentAsync extends AsyncTask<Void, Integer, Void> {
                             item.setName(attachment.getName());
                             item.setContentType(attachment.getContentType());
                             String contentType = attachment.getContentType().trim().toLowerCase();
-                            if (contentType.contains("png")) {
+                            if (contentType.equals(Constant.FILE_TYPE.PNG)) {
 
                                 final ListenableFuture<InputStream> inputStreamListenableFuture = attachment.fetchDataAsync();
                                 inputStreamListenableFuture.addDoneListener(() -> {
