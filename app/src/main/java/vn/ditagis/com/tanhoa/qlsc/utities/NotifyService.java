@@ -21,7 +21,6 @@ import android.widget.Toast;
 
 import io.socket.emitter.Emitter;
 import vn.ditagis.com.tanhoa.qlsc.ClickNotificationHandlingActivity;
-import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
@@ -60,12 +59,12 @@ public class NotifyService extends Service {
         }
     };
     Emitter.Listener onNhanViec = args -> new Handler(Looper.getMainLooper()).post(() -> {
-        if (args != null && args.length > 0) {
+        if (args != null && args.length > 0 && args[0].toString().contains(mApplication.getUserDangNhap().getUserName())) {
             try {
-                Toast.makeText(mContext, "Thông báo", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "Thông báo", Toast.LENGTH_SHORT).show();
                 showNotify();
             } catch (Exception e) {
-//                    Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
             }
             Log.d("Nhận việc", args[0].toString());
         }
