@@ -1521,6 +1521,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onResume();
     }
+    public void findRoute() {
+        Point center = mApplication.getGeometry().getExtent().getCenter();
+        Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
+        Point point = project.getExtent().getCenter();
+        String uri = String.format("google.navigation:q=%s", Uri.encode(mApplication.getArcGISFeature().getAttributes().get(
+                Constant.FIELD_SUCO.DIA_CHI
+        ).toString()));
+//        Uri gmmIntentUri = Uri.parse(String.format("geo:%s,%s",(point.getY()+"").replaceAll(",","."),(point.getX()+"").replaceAll(",",".")));
+        Uri gmmIntentUri = Uri.parse(uri);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+//        setupSymbols();
+//        FindRouteAsync async = new FindRouteAsync(MainActivity.this, MainActivity.this, () -> {
+//
+//        });
+//        async.execute(mSourcePoint, mDestinationPoint);
+    }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {

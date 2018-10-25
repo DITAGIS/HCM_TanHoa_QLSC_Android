@@ -1256,6 +1256,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
     }
 
 
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -1265,6 +1266,9 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                 inflater.inflate(R.menu.menu_feature_popup, popup.getMenu());
                 popup.setOnMenuItemClickListener((MenuItem item) -> {
                     switch (item.getItemId()) {
+                        case R.id.item_popup_find_route:
+                            mMainActivity.findRoute();
+                            return true;
                         case R.id.item_popup_view_attachment:
                             viewAttachment();
                             return true;

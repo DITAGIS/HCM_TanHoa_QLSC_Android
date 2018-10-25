@@ -71,8 +71,8 @@ public class Constant {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
-    //    private final String SERVER = "http://tanhoa.sawagis.vn";
-    private static final String SERVER = "http://113.161.88.180:798";
+    private static final String SERVER = "http://tanhoa.sawagis.vn";
+    //    private static final String SERVER = "http://113.161.88.180:798";
     private static final String SERVER_API = SERVER + "/apiv1/api";
 
     public static class URLSymbol {
