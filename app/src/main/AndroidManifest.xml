@@ -78,12 +78,14 @@
             android:name=".ListTaskActivity"
             android:label="Danh sách công việc"
             android:parentActivityName=".MainActivity" />
-
         <activity
             android:name=".ThietBiActivity"
             android:label="Thiết bị"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ClickNotificationHandlingActivity"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

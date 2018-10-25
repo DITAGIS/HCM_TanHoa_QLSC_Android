@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import io.socket.emitter.Emitter;
+import vn.ditagis.com.tanhoa.qlsc.ClickNotificationHandlingActivity;
 import vn.ditagis.com.tanhoa.qlsc.MainActivity;
 import vn.ditagis.com.tanhoa.qlsc.R;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
@@ -120,7 +121,7 @@ public class NotifyService extends Service {
 
             String notificationTitle = "Bạn vừa nhận một công việc mới";
             String notificationText = "Vui lòng tải lại bản đồ và xem danh sách công việc!";
-            Intent myIntent = new Intent(mContext, MainActivity.class);
+            Intent myIntent = new Intent(mContext, ClickNotificationHandlingActivity.class);
 
             // PendingIntent is a token that you give to a application (e.g. NotificationManager), which
             // allows the application to use your application's permissions to execute a

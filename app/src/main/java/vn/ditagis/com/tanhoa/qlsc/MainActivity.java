@@ -87,9 +87,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
@@ -199,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.llayout_info_app_bar)
     LinearLayout mLLayoutInfo;
     List<String> mIDSuCoList;
+    List<Feature> mSuCoList;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -454,6 +458,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             DLayerInfo dLayerInfoSuCo = setService_Table();
             new QueryServiceFeatureTableGetListAsync(MainActivity.this, output -> {
                 setService_ArcGISImageLayer();
+                mSuCoList = output;
                 mIDSuCoList = getListIDSuCoFromSuCoThongTins(output);
                 setService_GraphicsOverLay(dLayerInfoSuCo, mIDSuCoList);
             }).execute();
@@ -560,6 +565,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             output.add(feature.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString());
         }
         return output;
+    }
+
+    private String getLastestIDSuCoFromSuCoThongTins(List<Feature> features) throws Exception {
+        Comparator<Feature> comparator = (Feature o1, Feature o2) -> {
+            try {
+                Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
+                long i = Constant.DateFormat.DATE_FORMAT_VIEW.parse(o2.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC).toString()).getTime() -
+                        Constant.DateFormat.DATE_FORMAT_VIEW.parse(o1.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC).toString()).getTime();
+                if (i > 0)
+                    return 1;
+                else if (i == 0)
+                    return 0;
+                else return -1;
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return 0;
+        };
+        List<Feature> temp = features;
+        temp.sort(comparator);
+        return temp.get(temp.size() - 1).getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
     }
 
     @SuppressLint("DefaultLocale")
@@ -689,6 +715,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.VISIBLE);
         mFloatButtonLayer.setVisibility(View.VISIBLE);
+        if (mApplication.isFromNotification()) {
+            mApplication.setFromNotification(false);
+            try {
+                mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO,
+                        getLastestIDSuCoFromSuCoThongTins(mSuCoList)));
+            } catch (Exception e) {
+//                e.printStackTrace();
+                Toast.makeText(MainActivity.this, "Vui lòng xem danh sách công việc để biết thêm thông tin!", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     private void handleArcgisMapDoneLoading() {
@@ -726,15 +762,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private UniqueValueRenderer getRendererSuCo() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
-        if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_TC)) {
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG);
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG);
-        } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.Role.GROUPROLE_GS)) {
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT);
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT);
-        } else {
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
-            uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
+        switch (mApplication.getUserDangNhap().getGroupRole()) {
+            case Constant.Role.GROUPROLE_TC:
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG);
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG);
+                break;
+            case Constant.Role.GROUPROLE_GS:
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT);
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT);
+                break;
+            default:
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.TRANG_THAI);
+                uniqueValueRenderer.getFieldNames().add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN);
+                break;
         }
         PictureMarkerSymbol chuaXuLySymbol = new PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_CHUA_SUA_CHUA);
         chuaXuLySymbol.setHeight(getResources().getInteger(R.integer.size_feature_renderer));
@@ -1136,6 +1176,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void reload() {
+        if (CheckConnectInternet.isOnline(this)) {
+            mIsShowComplete = false;
+            if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                mPopUp.getCallout().dismiss();
+            prepare();
+
+        }
+    }
+
+    private void showListTask() {
+        Intent intentListTask = new Intent(MainActivity.this, ListTaskActivity.class);
+        startActivityForResult(intentListTask, Constant.RequestCode.REQUEST_CODE_LIST_TASK);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -1162,12 +1217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentChangePassword);
                 break;
             case R.id.nav_reload:
-                if (CheckConnectInternet.isOnline(this)) {
-                    mIsShowComplete = false;
-                    if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
-                        mPopUp.getCallout().dismiss();
-                    prepare();
-                }
+                reload();
                 break;
             case R.id.nav_show_hide_complete:
                 showHideComplete();
@@ -1179,8 +1229,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startSignIn();
                 break;
             case R.id.nav_list_task:
-                Intent intentListTask = new Intent(MainActivity.this, ListTaskActivity.class);
-                startActivityForResult(intentListTask, Constant.RequestCode.REQUEST_CODE_LIST_TASK);
+                showListTask();
                 break;
             case R.id.nav_delete_searching:
                 deleteSearching();
@@ -1462,6 +1511,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //query sự cố theo idsuco, lấy objectid
         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
         mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
+    }
+
+    @Override
+    protected void onResume() {
+        if (mApplication.isFromNotification()) {
+            reload();
+
+        }
+        super.onResume();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

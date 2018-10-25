@@ -71,6 +71,15 @@ public class DApplication extends Application {
         getDiemSuCo = new DiemSuCo();
     }
 
+private boolean isFromNotification;
+
+    public boolean isFromNotification() {
+        return isFromNotification;
+    }
+
+    public void setFromNotification(boolean fromNotification) {
+        isFromNotification = fromNotification;
+    }
 
     private Geometry geometry;
 
