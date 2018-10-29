@@ -241,6 +241,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ButterKnife.bind(this);
         if (mNavView != null && mNavView.getHeaderCount() > 0) {
             View header = mNavView.getHeaderView(0);
+            try {
+                mNavView.getMenu().add(1, 1, 1, getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+            } catch (PackageManager.NameNotFoundException e) {
+
+            }
             mTxtHeaderTenNV = header.findViewById(R.id.txt_nav_header_tenNV);
             mTxtHeaderDisplayName = header.findViewById(R.id.txt_nav_header_displayname);
         }
@@ -452,6 +457,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setServices() {
         try {
             handleFeatureLoading();
@@ -468,6 +474,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setService_ArcGISImageLayer() {
         for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
             if (!dLayerInfo.isView() ||
@@ -568,6 +575,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private String getLastestIDSuCoFromSuCoThongTins(List<Feature> features) throws Exception {
+        List<Feature> temp = new ArrayList<>();
+        for (Feature feature : features) {
+            if (Short.parseShort(feature.getAttributes().get(Constant.FIELD_SUCO.TRANG_THAI).toString())
+                    == (Constant.TRANG_THAI_SU_CO.DANG_XU_LY)) {
+                temp.add(feature);
+            }
+        }
         Comparator<Feature> comparator = (Feature o1, Feature o2) -> {
             try {
                 Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -583,11 +597,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             return 0;
         };
-        List<Feature> temp = features;
         temp.sort(comparator);
         return temp.get(temp.size() - 1).getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("DefaultLocale")
     private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList) {
         String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
@@ -710,6 +724,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFloatButtonLayer.setVisibility(View.GONE);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleFeatureDoneLoading() {
         mLLayoutInfo.setVisibility(View.INVISIBLE);
 //        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
@@ -727,6 +742,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handleArcgisMapDoneLoading() {
 
         mLocationDisplay = mMapView.getLocationDisplay();
@@ -1504,9 +1520,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handlingListTaskActivityResult() {
         mIsAddFeature = false;
         if (mApplication.getDiemSuCo.getTrangThai() == Constant.TRANG_THAI_SU_CO.HOAN_THANH && !mIsShowComplete) {
+            showHideComplete();
         }
         //query sự cố theo idsuco, lấy objectid
         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
@@ -1521,6 +1539,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         super.onResume();
     }
+
     public void findRoute() {
         Point center = mApplication.getGeometry().getExtent().getCenter();
         Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
@@ -1540,6 +1559,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        async.execute(mSourcePoint, mDestinationPoint);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             switch (requestCode) {
@@ -1667,6 +1687,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         TraCuuAdapter.Item item = ((TraCuuAdapter.Item) parent.getItemAtPosition(position));

@@ -49,13 +49,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mApplication.setChannelID(0);
         ButterKnife.bind(this);
         try {
-            mTxtVersion.setText("Phiên bản: " + getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+            mTxtVersion.setText(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
         Button btnLogin = (findViewById(R.id.btnLogin));
         btnLogin.setOnClickListener(this);
-        findViewById(R.id.txt_login_changeAccount).setOnClickListener(this);
 
 //        mTxtUsername.setText("ditagis");
 //        mTxtPassword.setText("ditagis@123");
@@ -69,7 +68,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-
     private void create() {
         Preference.getInstance().setContext(this);
         String preference_userName = Preference.getInstance().loadPreference(getString(R.string.preference_username));
@@ -77,16 +75,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //nếu chưa từng đăng nhập thành công trước đó
         //nhập username và password bình thường
         if (preference_userName == null || preference_userName.isEmpty()) {
-            findViewById(R.id.layout_login_tool).setVisibility(View.GONE);
-            findViewById(R.id.layout_login_username).setVisibility(View.VISIBLE);
             isLastLogin = false;
-        }
-        //ngược lại
-        //chỉ nhập pasword
-        else {
+        } else {
             isLastLogin = true;
-            findViewById(R.id.layout_login_tool).setVisibility(View.VISIBLE);
-            findViewById(R.id.layout_login_username).setVisibility(View.GONE);
+            mTxtUsername.setText(Preference.getInstance().loadPreference(getString(R.string.preference_username)));
         }
 
     }
@@ -99,11 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         mTxtValidation.setVisibility(View.GONE);
 
-        String userName;
-        if (isLastLogin)
-            userName = Preference.getInstance().loadPreference(getString(R.string.preference_username));
-        else
-            userName = mTxtUsername.getText().toString().trim();
+        String userName = mTxtUsername.getText().toString().trim();
         final String passWord = mTxtPassword.getText().toString().trim();
         if (userName.length() == 0 || passWord.length() == 0) {
             handleInfoLoginEmpty();
@@ -167,9 +155,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (view.getId()) {
             case R.id.btnLogin:
                 login();
-                break;
-            case R.id.txt_login_changeAccount:
-                changeAccount();
                 break;
         }
 

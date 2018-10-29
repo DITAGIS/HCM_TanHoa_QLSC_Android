@@ -1,6 +1,8 @@
 package vn.ditagis.com.tanhoa.qlsc.utities;
 
 import android.app.Activity;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.view.MotionEvent;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
@@ -134,6 +136,7 @@ public class MapViewHandler extends Activity {
 //        });
 //    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void query(String query) {
 
         final QueryParameters queryParameters = new QueryParameters();

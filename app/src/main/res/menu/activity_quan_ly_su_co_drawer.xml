@@ -3,41 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <!--<group android:checkableBehavior="single">-->
-    <!--<item-->
-    <!--android:id="@+id/nav_camera"-->
-    <!--android:icon="@drawable/ic_menu_camera"-->
-    <!--andraliasitle="Import" />-->
-    <!--<item-->
-    <!--android:id="@+id/nav_gallery"-->
-    <!--android:icon="@drawable/ic_menu_gallery"-->
-    <!--andraliasitle="Gallery" />-->
-    <!--<item-->
-    <!--android:id="@+id/nav_slideshow"-->
-    <!--android:icon="@drawable/ic_menu_slideshow"-->
-    <!--andraliasitle="Slideshow" />-->
-    <!--<item-->
-    <!--android:id="@+id/nav_manage"-->
-    <!--android:icon="@drawable/ic_menu_manage"-->
-    <!--andraliasitle="Tools" />-->
-    <!--</group>-->
 
     <item android:title="Chức năng">
         <menu>
             <group android:checkableBehavior="single">
                 <!--<item-->
 
-                    <!--android:id="@+id/nav_thongke"-->
-                    <!--android:icon="@drawable/ic_statistic_black_24dp"-->
-                    <!--android:title="@string/nav_thong_ke" />-->
+                <!--android:id="@+id/nav_thongke"-->
+                <!--android:icon="@drawable/ic_statistic_black_24dp"-->
+                <!--android:title="@string/nav_thong_ke" />-->
                 <!--<item-->
                 <!--android:id="@+id/nav_tracuu"-->
                 <!--android:icon="@drawable/ic_search"-->
                 <!--android:title="@string/nav_tra_cuu" />-->
                 <!--<item-->
-                    <!--android:id="@+id/nav_find_route"-->
-                    <!--android:icon="@drawable/ic_navigation_black_24dp"-->
-                    <!--android:title="@string/nav_find_route" />-->
+                <!--android:id="@+id/nav_find_route"-->
+                <!--android:icon="@drawable/ic_navigation_black_24dp"-->
+                <!--android:title="@string/nav_find_route" />-->
                 <item
                     android:id="@+id/nav_list_task"
                     android:icon="@drawable/ic_list_task_black_24dp"
@@ -63,10 +45,6 @@
             android:id="@+id/nav_visible_float_button"
             android:icon="@drawable/ic_visible_black_24dp"
             android:title="@string/nav_an_hien_nut_chuc_nang" />
-        <!--<item-->
-        <!--android:id="@+id/nav_setting"-->
-        <!--android:icon="@drawable/ic_settings"-->
-        <!--android:title="@string/nav_cai_dat" />-->
         <item
             android:id="@+id/nav_change_password"
             android:icon="@drawable/ic_lock_black_24dp"
@@ -76,9 +54,10 @@
             android:icon="@drawable/ic_logout_black_24dp"
             android:title="@string/nav_log_out" />
     </group>
-    <item
-        android:id="@+id/nav_version"
-        android:title=""></item>
-
+    <!--<group android:menuCategory="system">-->
+        <!--<item-->
+            <!--android:enabled="false"-->
+            <!--android:title="" />-->
+    <!--</group>-->
 
 </menu>
