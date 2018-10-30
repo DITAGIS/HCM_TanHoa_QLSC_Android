@@ -18,6 +18,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -174,6 +175,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     LinearLayout mLayoutTimDiaChi;
     @BindView(R.id.layout_tim_kiem)
     LinearLayout mLayoutTimKiem;
+    @BindView(R.id.txt_appbar_info)
+    TextView mTxtInfo;
+    @BindView(R.id.llayout_info_app_bar)
+    LinearLayout mLLayoutInfo;
     TextView mTxtHeaderTenNV;
     TextView mTxtHeaderDisplayName;
 
@@ -184,12 +189,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private LocationDisplay mLocationDisplay;
     private GraphicsOverlay mGraphicsOverlay;
     private boolean mIsSearchingFeature = false;
-
+    private FeatureLayer mFeatureLayer;
 
     private Point mPointFindLocation;
     private Geocoder mGeocoder;
     private boolean mIsAddFeature;
-
+    private DLayerInfo mDLayerInfo;
     private SearchView mTxtSearchView;
     private ArcGISMapImageLayer mArcGISMapImageLayerAdministrator, mArcGISMapImageLayerThematic;
     private List<String> mListLayerID;
@@ -197,12 +202,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private int colors[];
     private DApplication mApplication;
     private int mLoadedOnMap;
-    @BindView(R.id.txt_appbar_info)
-    TextView mTxtInfo;
-    @BindView(R.id.llayout_info_app_bar)
-    LinearLayout mLLayoutInfo;
     List<String> mIDSuCoList;
     List<Feature> mSuCoList;
+    boolean doubleBackToExitPressedOnce = false;
 
     public void setUri(Uri uri) {
         this.mUri = uri;
@@ -461,12 +463,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setServices() {
         try {
             handleFeatureLoading();
-            DLayerInfo dLayerInfoSuCo = setService_Table();
+            mDLayerInfo = setService_Table();
             new QueryServiceFeatureTableGetListAsync(MainActivity.this, output -> {
                 setService_ArcGISImageLayer();
                 mSuCoList = output;
                 mIDSuCoList = getListIDSuCoFromSuCoThongTins(output);
-                setService_GraphicsOverLay(dLayerInfoSuCo, mIDSuCoList);
+                setService_GraphicsOverLay(mDLayerInfo, mIDSuCoList, 3);
             }).execute();
         } catch (Exception e) {
             Log.e("Lỗi set service", e.toString());
@@ -598,29 +600,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             return 0;
         };
         temp.sort(comparator);
-        return temp.get(temp.size() - 1).getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
+        if (temp.size() > 0)
+            return temp.get(temp.size() - 1).getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
+        return "";
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("DefaultLocale")
-    private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList) {
+    private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList, int group) {
         String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
         ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
-        FeatureLayer featureLayer = new FeatureLayer(serviceFeatureTable);
+        mFeatureLayer = new FeatureLayer(serviceFeatureTable);
 
-        featureLayer.setName(dLayerInfo.getTitleLayer());
-        featureLayer.setId(dLayerInfo.getId());
-        featureLayer.setId(dLayerInfo.getId());
-        featureLayer.setPopupEnabled(true);
-        featureLayer.setVisible(true);
-        featureLayer.setRenderer(getRendererSuCo());
+        mFeatureLayer.setName(dLayerInfo.getTitleLayer());
+        mFeatureLayer.setId(dLayerInfo.getId());
+        mFeatureLayer.setId(dLayerInfo.getId());
+        mFeatureLayer.setPopupEnabled(true);
+        mFeatureLayer.setVisible(true);
+        mFeatureLayer.setRenderer(getRendererSuCo());
 
 
 //        builder.append("'')");
-        featureLayer.setDefinitionExpression(getDefinitionWithoutComplete(idSuCoList));
-        mMapView.getMap().getOperationalLayers().add(featureLayer);
-        featureLayer.addDoneLoadingListener(() -> {
-            if (featureLayer.getLoadStatus() == LoadStatus.LOADED) {
+        mFeatureLayer.setDefinitionExpression(getDefinitionWithoutComplete(idSuCoList));
+        mMapView.getMap().getOperationalLayers().add(mFeatureLayer);
+        mFeatureLayer.addDoneLoadingListener(() -> {
+            if (mFeatureLayer.getLoadStatus() == LoadStatus.LOADED) {
                 new QueryFeatureGetListGeometryAsync(MainActivity.this,
                         serviceFeatureTable, (List<Geometry> output) -> {
 //                    for (Geometry geometry : output) {
@@ -630,7 +634,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     for (DLayerInfo item : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
                         if (item.getId().equals(Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE)) {
                             Callout callout = mMapView.getCallout();
-                            mApplication.getDFeatureLayer.setLayer(featureLayer);
+                            mApplication.getDFeatureLayer.setLayer(mFeatureLayer);
                             mPopUp = new Popup(callout, MainActivity.this, mMapView,
                                     mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
 //                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
@@ -638,7 +642,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                    Callout callout = mMapView.getCallout();
                             mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
                             mLoadedOnMap++;
-                            if (mLoadedOnMap == 3)
+                            if (mLoadedOnMap == group)
                                 handleFeatureDoneLoading();
                         }
                     }
@@ -730,16 +734,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_complete), Html.FROM_HTML_MODE_LEGACY));
         mFloatButtonLocation.setVisibility(View.VISIBLE);
         mFloatButtonLayer.setVisibility(View.VISIBLE);
-        if (mApplication.isFromNotification()) {
-            mApplication.setFromNotification(false);
-            try {
-                mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO,
-                        getLastestIDSuCoFromSuCoThongTins(mSuCoList)));
-            } catch (Exception e) {
-//                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Vui lòng xem danh sách công việc để biết thêm thông tin!", Toast.LENGTH_LONG).show();
-            }
-        }
+
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -1041,6 +1037,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             mApplication.getDiemSuCo.setVitri(output.get(0).getLocation());
                             mApplication.getDiemSuCo.setQuan(subAdminArea);
                             mApplication.getDiemSuCo.setPhuong(output.get(0).getLocality());
+                            if (mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                                mPopUp.getCallout().dismiss();
+
                             Intent intent = new Intent(MainActivity.this, ThemSuCoActivity.class);
                             startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_ADD_FEATURE);
                             mTxtSearchView.setQuery("", true);
@@ -1079,8 +1078,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mApplication.getDiemSuCo.setPoint(null);
         if (mDrawer.isDrawerOpen(GravityCompat.START)) {
             mDrawer.closeDrawer(GravityCompat.START);
-        }  //            super.onBackPressed();
+        }
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
 
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Nhấn \"Trở về\" một lần nữa để thoát", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
     }
 
     @Override
@@ -1192,21 +1199,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    private void reload() {
-        if (CheckConnectInternet.isOnline(this)) {
-            mIsShowComplete = false;
-            if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
-                mPopUp.getCallout().dismiss();
-            prepare();
-
-        }
-    }
-
     private void showListTask() {
         Intent intentListTask = new Intent(MainActivity.this, ListTaskActivity.class);
         startActivityForResult(intentListTask, Constant.RequestCode.REQUEST_CODE_LIST_TASK);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -1233,7 +1231,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(intentChangePassword);
                 break;
             case R.id.nav_reload:
-                reload();
+                refresh();
                 break;
             case R.id.nav_show_hide_complete:
                 showHideComplete();
@@ -1531,13 +1529,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onResume() {
         if (mApplication.isFromNotification()) {
-            reload();
+            refresh();
 
         }
         super.onResume();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void refresh() {
+        if (CheckConnectInternet.isOnline(this)) {
+            mIsShowComplete = false;
+            if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
+                mPopUp.getCallout().dismiss();
+            new QueryServiceFeatureTableGetListAsync(MainActivity.this, output -> {
+                mSuCoList = output;
+                mIDSuCoList = getListIDSuCoFromSuCoThongTins(output);
+                mFeatureLayer.loadAsync();
+                mFeatureLayer.setDefinitionExpression(getDefinitionWithoutComplete(mIDSuCoList));
+                if (mApplication.isFromNotification()) {
+                    mApplication.setFromNotification(false);
+                    try {
+                        mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO,
+                                mApplication.getDiemSuCo.getIdSuCo()));
+                    } catch (Exception e) {
+                        Toast.makeText(MainActivity.this, "Vui lòng xem danh sách công việc để biết thêm thông tin!", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }).execute();
+        }
+
     }
 
     public void findRoute() {
@@ -1584,10 +1608,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 case Constant.RequestCode.REQUEST_CODE_ADD_FEATURE:
                     mIsAddFeature = false;
+
                     if (mApplication.getDiemSuCo.getPoint() != null) {
                         mMapViewHandler.addFeature(mApplication.getDiemSuCo.getPoint());
                         deleteSearching();
-                        handlingLocation();
+//                        handlingLocation();
                     }
                     break;
                 case Constant.RequestCode.REQUEST_CODE_LIST_TASK:

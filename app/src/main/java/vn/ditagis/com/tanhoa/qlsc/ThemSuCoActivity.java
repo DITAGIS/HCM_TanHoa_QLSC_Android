@@ -146,6 +146,7 @@ public class ThemSuCoActivity extends AppCompatActivity {
     }
 
     public void capture() {
+
         Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, MediaStore.Images.Media.EXTERNAL_CONTENT_URI.getPath());
 

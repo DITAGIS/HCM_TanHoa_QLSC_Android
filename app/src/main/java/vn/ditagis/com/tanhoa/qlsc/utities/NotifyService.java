@@ -11,8 +11,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -21,6 +19,10 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import io.socket.emitter.Emitter;
 import vn.ditagis.com.tanhoa.qlsc.ClickNotificationHandlingActivity;
@@ -62,14 +64,28 @@ public class NotifyService extends Service {
         }
     };
     Emitter.Listener onNhanViec = args -> new Handler(Looper.getMainLooper()).post(() -> {
-        if (args != null && args.length > 0 && args[0].toString().contains(mApplication.getUserDangNhap().getUserName())) {
+        if (args != null && args.length > 0 && mApplication.getUserDangNhap() != null
+                && mApplication.getUserDangNhap().getUserName() != null) {
+            String title = "NhanViec";
+            String myData = "{ \"".concat(title).concat("\": [").concat(args[0].toString()).concat("]}");
             try {
-//                Toast.makeText(mContext, "Thông báo", Toast.LENGTH_SHORT).show();
-                showNotify();
-            } catch (Exception e) {
+                JSONObject jsonData = new JSONObject(myData);
+                JSONArray jsonRoutes = jsonData.getJSONArray(title);
+                String suCo = "", nhanVien = "";
+                for (int i = 0; i < jsonRoutes.length(); i++) {
+                    JSONObject jsonRoute = jsonRoutes.getJSONObject(i);
+                    suCo = jsonRoute.getString("suCo");
+                    nhanVien = jsonRoute.getString("nhanVien");
+                }
+                if (nhanVien.equals(mApplication.getUserDangNhap().getUserName())) {
+                    mApplication.getDiemSuCo.setIdSuCo(suCo);
+                    showNotify();
+                    Log.d("Nhận việc", args[0].toString());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
             }
-            Log.d("Nhận việc", args[0].toString());
         }
 
     });

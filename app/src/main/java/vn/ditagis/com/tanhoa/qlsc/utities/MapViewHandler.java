@@ -148,26 +148,28 @@ public class MapViewHandler extends Activity {
                 FeatureQueryResult result = feature.get();
                 if (result.iterator().hasNext()) {
                     Feature item = result.iterator().next();
-                    if (item.getGeometry() != null) {
-                        Envelope extent = item.getGeometry().getExtent();
-                        mApplication.setGeometry(item.getGeometry());
-                        mMapView.setViewpointGeometryAsync(extent);
-                    }
-                    suCoTanHoaLayerThiCong.selectFeature(item);
-                    if (mApplication.getDFeatureLayer.getLayer() != null) {
-                        String queryClause = String.format("%s = '%s' and %s = '%s'",
-                                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, item.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
-                                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
-                        QueryParameters queryParameters1 = new QueryParameters();
-                        queryParameters1.setWhereClause(queryClause);
-                        new QueryServiceFeatureTableAsync(mActivity,
-                                mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
-                            if (output != null) {
-                                mApplication.setArcGISFeature((ArcGISFeature) output);
-                                mPopUp.showPopup();
-                            }
-                        }).execute(queryParameters1);
+                    if (item != null) {
+                        if (item.getGeometry() != null) {
+                            Envelope extent = item.getGeometry().getExtent();
+                            mApplication.setGeometry(item.getGeometry());
+                            mMapView.setViewpointGeometryAsync(extent);
+                        }
+                        suCoTanHoaLayerThiCong.selectFeature(item);
+                        if (mApplication.getDFeatureLayer.getLayer() != null) {
+                            String queryClause = String.format("%s = '%s' and %s = '%s'",
+                                    Constant.FIELD_SUCOTHONGTIN.ID_SUCO, item.getAttributes().get(Constant.FIELD_SUCO.ID_SUCO).toString(),
+                                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+                            QueryParameters queryParameters1 = new QueryParameters();
+                            queryParameters1.setWhereClause(queryClause);
+                            new QueryServiceFeatureTableAsync(mActivity,
+                                    mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
+                                if (output != null) {
+                                    mApplication.setArcGISFeature((ArcGISFeature) output);
+                                    mPopUp.showPopup();
+                                }
+                            }).execute(queryParameters1);
 
+                        }
                     }
                 }
 
