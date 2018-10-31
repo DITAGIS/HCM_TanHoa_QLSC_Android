@@ -1,9 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,12 +16,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import vn.ditagis.com.tanhoa.qlsc.async.CameraAsync;
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 
@@ -70,6 +67,7 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
 //        mParameters.setPreviewSize(bestSize.width, bestSize.height);
     }
 
+    @SuppressLint("StaticFieldLeak")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -81,10 +79,16 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
             mCamera.startPreview();
             mPictureCallback = (bytes, camera) -> {
                 try {
-                    mApplication.capture = handlingCapture(bytes);
+                    new CameraAsync(CameraActivity.this, output -> {
+                        if (output != null) {
+                            mApplication.capture = output;
+                            Intent intent = new Intent(CameraActivity.this, ShowCaptureActivity.class);
+                            CameraActivity.this.startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_SHOW_CAPTURE);
+                        } else {
+                            Toast.makeText(CameraActivity.this, "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                        }
+                    }).execute(bytes);
 
-                    Intent intent = new Intent(CameraActivity.this, ShowCaptureActivity.class);
-                    CameraActivity.this.startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_SHOW_CAPTURE);
                 } catch (Exception e) {
                     Toast.makeText(CameraActivity.this, "Có lỗi khi chụp ảnh", Toast.LENGTH_SHORT).show();
                 }
@@ -94,36 +98,11 @@ public class CameraActivity extends AppCompatActivity implements SurfaceHolder.C
         }
     }
 
-    private byte[] handlingCapture(byte[] bytes) {
-        Bitmap decodeBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-
-        final int IMAGE_MAX_SIZE = 1000000; // 1.0MP
-        int height = decodeBitmap.getHeight();
-        int width = decodeBitmap.getWidth();
-        double y = Math.sqrt(IMAGE_MAX_SIZE / (((double) width) / height));
-        double x = (y / height) * width;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(decodeBitmap, (int) x, (int) y, true);
-
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] byteArray = stream.toByteArray();
-
-        //rotate
-        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
-        Matrix matrix = new Matrix();
-        matrix.postRotate(90);
-        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-        bitmap.recycle();
-        scaledBitmap.recycle();
-        return outputStream.toByteArray();
-    }
 
     private void captureImage() {
         mCamera.takePicture(null, null, mPictureCallback);
     }
+
     private void turnOnOffFlashCamera() throws IOException {
         //auto
         if (mCamera.getParameters().getFlashMode().equals(Camera.Parameters.FLASH_MODE_OFF)) {

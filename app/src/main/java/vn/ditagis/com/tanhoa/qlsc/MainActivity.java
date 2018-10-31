@@ -88,17 +88,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter;
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter;
 import vn.ditagis.com.tanhoa.qlsc.async.EditAsync;
 import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn;
@@ -211,13 +207,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void setFeatureViewMoreInfoAdapter(FeatureViewMoreInfoAdapter featureViewMoreInfoAdapter) {
-        this.mFeatureViewMoreInfoAdapter = featureViewMoreInfoAdapter;
-    }
 
     private LocationHelper mLocationHelper;
     private Location mLocation;
-    private FeatureViewMoreInfoAdapter mFeatureViewMoreInfoAdapter;
 
     public void setSelectedArcGISFeature(ArcGISFeature selectedArcGISFeature) {
         this.mSelectedArcGISFeature = selectedArcGISFeature;
@@ -228,7 +220,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mIsAddFeature = isAddFeature;
     }
 
-    private static final int REQUEST_SEARCH = 1;
 
     private ArcGISFeature mSelectedArcGISFeature;
     private boolean mIsFirstLocating = true, mIsShowComplete = false;
@@ -380,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Point center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
 
                     //project is long, lat
-                    Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
+//                    Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
 
                     //geometry is x,y
 //                    Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
@@ -470,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 setService_ArcGISImageLayer();
                 mSuCoList = output;
                 mIDSuCoList = getListIDSuCoFromSuCoThongTins(output);
-                setService_GraphicsOverLay(mDLayerInfo, mIDSuCoList, 3);
+                setService_GraphicsOverLay(mDLayerInfo, mIDSuCoList);
             }).execute();
         } catch (Exception e) {
             Log.e("Lỗi set service", e.toString());
@@ -579,38 +570,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return output;
     }
 
-    private String getLastestIDSuCoFromSuCoThongTins(List<Feature> features) throws Exception {
-        List<Feature> temp = new ArrayList<>();
-        for (Feature feature : features) {
-            if (Short.parseShort(feature.getAttributes().get(Constant.FIELD_SUCO.TRANG_THAI).toString())
-                    == (Constant.TRANG_THAI_SU_CO.DANG_XU_LY)) {
-                temp.add(feature);
-            }
-        }
-        Comparator<Feature> comparator = (Feature o1, Feature o2) -> {
-            try {
-                Constant.DateFormat.DATE_FORMAT_VIEW.setTimeZone(TimeZone.getTimeZone("UTC"));
-                long i = Constant.DateFormat.DATE_FORMAT_VIEW.parse(o2.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC).toString()).getTime() -
-                        Constant.DateFormat.DATE_FORMAT_VIEW.parse(o1.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC).toString()).getTime();
-                if (i > 0)
-                    return 1;
-                else if (i == 0)
-                    return 0;
-                else return -1;
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return 0;
-        };
-        temp.sort(comparator);
-        if (temp.size() > 0)
-            return temp.get(temp.size() - 1).getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString();
-        return "";
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("DefaultLocale")
-    private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList, int group) {
+    private void setService_GraphicsOverLay(DLayerInfo dLayerInfo, List<String> idSuCoList) {
         String url = getUrlFromDLayerInfo(dLayerInfo.getUrl());
         ServiceFeatureTable serviceFeatureTable = new ServiceFeatureTable(url);
         mFeatureLayer = new FeatureLayer(serviceFeatureTable);
@@ -628,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView.getMap().getOperationalLayers().add(mFeatureLayer);
         mFeatureLayer.addDoneLoadingListener(() -> {
             if (mFeatureLayer.getLoadStatus() == LoadStatus.LOADED) {
-                 new QueryFeatureGetListGeometryAsync(MainActivity.this,
+                new QueryFeatureGetListGeometryAsync(MainActivity.this,
                         serviceFeatureTable, (List<Geometry> output) -> {
 //                    for (Geometry geometry : output) {
 //                        Graphic graphic = new Graphic(geometry.getExtent().getCenter());
@@ -638,14 +600,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (item.getId().equals(Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE)) {
                             Callout callout = mMapView.getCallout();
                             mApplication.getDFeatureLayer.setLayer(mFeatureLayer);
-                            mPopUp = new Popup(callout, MainActivity.this, mMapView,
-                                    mLocationDisplay, mGeocoder, mArcGISMapImageLayerAdministrator);
+                            mPopUp = new Popup(callout, MainActivity.this, mMapView, mGeocoder);
 //                    if (KhachHangDangNhap.getInstance().getKhachHang().getGroupRole().equals(getString(R.string.group_role_giamsat)))
 //                        featureLayer.setVisible(false);
 //                    Callout callout = mMapView.getCallout();
                             mMapViewHandler = new MapViewHandler(callout, mMapView, mPopUp, MainActivity.this);
                             mLoadedOnMap++;
-                            if (mLoadedOnMap == group)
+                            if (mLoadedOnMap == 3)
                                 handleFeatureDoneLoading();
                         }
                     }
@@ -934,6 +895,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setViewPointCenter(final Point position) {
         if (mPopUp == null) {
             MySnackBar.make(mMapView, getString(R.string.load_map_not_complete), true);
@@ -955,6 +917,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void setViewPointCenterLongLat(Point position, String location) {
         if (mPopUp == null) {
             MySnackBar.make(mMapView, getString(R.string.load_map_not_complete), true);
@@ -1037,9 +1000,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         String subAdminArea = output.get(0).getSubAdminArea();
                         //nếu tài khoản có quyền truy cập vào
-                        if (subAdminArea!= null && subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
-                                subAdminArea.equals(getString(R.string.QuanTanBinhName)) ||
-                                subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
+                        assert subAdminArea != null;
+                        if (subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) || subAdminArea.equals(getString(R.string.QuanTanBinhName)) || subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
                             mApplication.getDiemSuCo.setPoint(mPointFindLocation);
                             mApplication.getDiemSuCo.setVitri(output.get(0).getLocation());
                             mApplication.getDiemSuCo.setQuan(subAdminArea);
@@ -1300,6 +1262,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void handlingLocation() {
         if (mIsFirstLocating) {
             mIsFirstLocating = false;
@@ -1598,7 +1561,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
             switch (requestCode) {
-                case REQUEST_SEARCH:
+                case Constant.RequestCode.REQUEST_CODE_SEARCH:
 //                    final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
                     if (resultCode == Activity.RESULT_OK) {
                         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
@@ -1630,96 +1593,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     if (resultCode == Activity.RESULT_OK)
                         handlingListTaskActivityResult();
                     break;
+                case Constant.RequestCode.REQUEST_CODE_CAPTURE:
+                    if (resultCode == RESULT_OK) {
+                        try {
+                            if (mApplication.capture != null) {
+
+//                            mMapViewHandler.addFeature(image);
+
+                                EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
+                                        true, mApplication.capture, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
+                                        output -> {
+                                            //
+                                            if (output != null) {
+                                                Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
+                                                mPopUp.getCallout().dismiss();
+                                                if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
+                                                        == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+                                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                                                            .execute();
+                                                if (!output.canEditAttachments())
+                                                    MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
+                                            } else
+                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
+                                        });
+                                editAsync.execute(mPopUp.getFeatureViewMoreInfoAdapter());
+                            }
+                        } catch (Exception ignored) {
+                        }
+                    } else if (resultCode == RESULT_CANCELED) {
+                        MySnackBar.make(mMapView, "Hủy chụp ảnh", false);
+                    } else {
+                        MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
+                    }
+                    break;
             }
         } catch (Exception ignored) {
-        }
-
-        if (requestCode == getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_ADD_FEATURE)) {
-            if (resultCode == RESULT_OK) {
-//                this.mUri= data.getData();
-                if (this.mUri != null) {
-//                    Uri selectedImage = this.mUri;
-//                    getContentResolver().notifyChange(selectedImage, null);
-                    Bitmap bitmap = getBitmap(mUri.getPath());
-                    try {
-                        if (bitmap != null) {
-                            Matrix matrix = new Matrix();
-                            matrix.postRotate(90);
-                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                            byte[] image = outputStream.toByteArray();
-                            Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-//                            mMapViewHandler.addFeature(image);
-
-                            EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    output -> {
-                                        //
-                                        if (output != null) {
-                                            mPopUp.getCallout().dismiss();
-                                            if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
-                                                    == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
-                                                new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
-                                                        .execute();
-                                            if (!output.canEditAttachments())
-                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
-                                        } else
-                                            MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
-                                    });
-                            editAsync.execute(mFeatureViewMoreInfoAdapter);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                MySnackBar.make(mMapView, "Hủy chụp ảnh", false);
-            } else {
-                MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
-            }
-        } else if (requestCode == getResources().getInteger(R.integer.REQUEST_ID_IMAGE_CAPTURE_POPUP)) {
-            if (resultCode == RESULT_OK) {
-//                this.mUri= data.getData();
-                if (this.mUri != null) {
-//                    Uri selectedImage = this.mUri;
-//                    getContentResolver().notifyChange(selectedImage, null);
-                    Bitmap bitmap = getBitmap(mUri.getPath());
-                    try {
-                        if (bitmap != null) {
-                            Matrix matrix = new Matrix();
-                            matrix.postRotate(90);
-                            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                            rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                            byte[] image = outputStream.toByteArray();
-                            Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-//                            mMapViewHandler.addFeature(image);
-//                            mPopUp.getDialog().dismiss();
-                            EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
-                                    true, image, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                                    output -> {
-                                        if (output != null) {
-                                            mPopUp.getCallout().dismiss();
-                                            if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
-                                                    == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
-                                                new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
-                                                        .execute();
-                                            if (!output.canEditAttachments())
-                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
-                                        } else {
-                                            MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
-                                        }
-                                    });
-                            editAsync.execute(mFeatureViewMoreInfoAdapter);
-                        }
-                    } catch (Exception ignored) {
-                    }
-                }
-            } else if (resultCode == RESULT_CANCELED) {
-                MySnackBar.make(mMapView, "Hủy chụp ảnh", false);
-            } else {
-                MySnackBar.make(mMapView, "Lỗi khi chụp ảnh", false);
-            }
         }
     }
 

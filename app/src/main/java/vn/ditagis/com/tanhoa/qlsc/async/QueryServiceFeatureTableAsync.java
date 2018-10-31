@@ -63,52 +63,6 @@ public class QueryServiceFeatureTableAsync extends AsyncTask<QueryParameters, Fe
                             publishProgress(feature);
                         } else {
                             publishProgress();
-                            //tạo sự cố thông tin nếu chưa có
-//                        ServiceFeatureTable serviceFeatureTable = mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin();
-//                        serviceFeatureTable.loadAsync();
-//                        serviceFeatureTable.addDoneLoadingListener(() -> {
-//                            new GenerateIDSuCoByAPIAsycn(mActivity, output -> {
-//                                if (output != null) {
-//
-//                                    Feature suCoThongTinFeature = serviceFeatureTable.createFeature();
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.ID_SUCO,
-//                                            idSuCo);
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT,
-//                                            output);
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI,
-//                                            (short) 0);
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN,
-//                                            mApplication.getUserDangNhap.getUserName());
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN,
-//                                            Short.parseShort(mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN).toString()));
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DIA_CHI,
-//                                            mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.DIA_CHI).toString());
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.GHI_CHU,
-//                                            mSelectedArcGISFeature.getAttributes().get(Constant.FIELD_SUCO.GHI_CHU).toString());
-//                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-//                                        Calendar c = Calendar.getInstance();
-//                                        suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT,
-//                                                c);
-//                                    }
-//                                    suCoThongTinFeature.getAttributes().put(Constant.FIELD_SUCOTHONGTIN.DON_VI,
-//                                            mApplication.getUserDangNhap.getRole());
-//                                    serviceFeatureTable.addFeatureAsync(suCoThongTinFeature).addDoneListener(() -> {
-//                                        ListenableFuture<List<FeatureEditResult>> listListenableFuture = serviceFeatureTable.applyEditsAsync();
-//                                        listListenableFuture.addDoneListener(() -> {
-//                                            try {
-//                                                List<FeatureEditResult> featureEditResults = listListenableFuture.get();
-//                                                if (featureEditResults.size() > 0) {
-//                                                    publishProgress(suCoThongTinFeature);
-//                                                }
-//                                            } catch (InterruptedException | ExecutionException e) {
-//                                                e.printStackTrace();
-//                                                publishProgress();
-//                                            }
-//                                        });
-//                                    });
-//                                }
-//                            }).execute(mApplication.getConstant.getGENERATE_ID_SUCOTHONGTIN(idSuCo));
-//                        });
                         }
 
                     } catch (InterruptedException | ExecutionException e) {

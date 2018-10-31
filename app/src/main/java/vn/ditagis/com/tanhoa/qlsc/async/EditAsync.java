@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.ArcGISFeature;
@@ -50,6 +52,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         void processFinish(ArcGISFeature feature);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public EditAsync(Activity activity,
                      ArcGISFeature selectedArcGISFeature, boolean isUpdateAttachment, byte[] image,
                      List<HoSoVatTuSuCo> hoSoVatTu_suCos, List<HoSoVatTuSuCo> hoSoVatTuThuHoi_suCos, AsyncResponse delegate) {
@@ -75,6 +78,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected Void doInBackground(FeatureViewMoreInfoAdapter... params) {
         QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
@@ -115,50 +119,54 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
                 if (domain != null) {
                     hasDomain = true;
                     //Trường hợp nguyên nhân, không tự động lấy được domain
-                    if (item.getFieldName().equals(Constant.FIELD_SUCO.NGUYEN_NHAN)) {
-                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                            List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
-                                    .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.NGUYEN_NHAN)).getCodedValues();
-                            if (codedValues != null) {
-                                for (CodedValue codedValue : codedValues) {
-                                    if (codedValue.getName().equals(item.getValue())) {
-                                        codeDomain = codedValue.getCode();
-                                        break;
+                    switch (item.getFieldName()) {
+                        case Constant.FIELD_SUCO.NGUYEN_NHAN:
+                            if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
+                                        .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.NGUYEN_NHAN)).getCodedValues();
+                                if (codedValues != null) {
+                                    for (CodedValue codedValue : codedValues) {
+                                        if (codedValue.getName().equals(item.getValue())) {
+                                            codeDomain = codedValue.getCode();
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-                    //Trường hợp vật liệu, không tự động lấy được domain
-                    else if (item.getFieldName().equals(Constant.FIELD_SUCO.VAT_LIEU)) {
-                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                            List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
-                                    .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.VAT_LIEU)).getCodedValues();
-                            if (codedValues != null) {
-                                for (CodedValue codedValue : codedValues) {
-                                    if (codedValue.getName().equals(item.getValue())) {
-                                        codeDomain = codedValue.getCode();
-                                        break;
+                            break;
+                        //Trường hợp vật liệu, không tự động lấy được domain
+                        case Constant.FIELD_SUCO.VAT_LIEU:
+                            if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
+                                        .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.VAT_LIEU)).getCodedValues();
+                                if (codedValues != null) {
+                                    for (CodedValue codedValue : codedValues) {
+                                        if (codedValue.getName().equals(item.getValue())) {
+                                            codeDomain = codedValue.getCode();
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    } else if (item.getFieldName().equals(Constant.FIELD_SUCO.DUONG_KINH_ONG)) {
-                        if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                            List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
-                                    .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.DUONG_KINH_ONG)).getCodedValues();
-                            if (codedValues != null) {
-                                for (CodedValue codedValue : codedValues) {
-                                    if (codedValue.getName().equals(item.getValue())) {
-                                        codeDomain = codedValue.getCode();
-                                        break;
+                            break;
+                        case Constant.FIELD_SUCO.DUONG_KINH_ONG:
+                            if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()
+                                        .get(finalLoaiSuCoShort - 1).getDomains().get(Constant.FIELD_SUCO.DUONG_KINH_ONG)).getCodedValues();
+                                if (codedValues != null) {
+                                    for (CodedValue codedValue : codedValues) {
+                                        if (codedValue.getName().equals(item.getValue())) {
+                                            codeDomain = codedValue.getCode();
+                                            break;
+                                        }
                                     }
                                 }
                             }
-                        }
-                    } else {
-                        List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
-                        codeDomain = getCodeDomain(codedValues, item.getValue());
+                            break;
+                        default:
+                            List<CodedValue> codedValues = ((CodedValueDomain) arcGISFeatureSuCoThongTin.getFeatureTable().getField(item.getFieldName()).getDomain()).getCodedValues();
+                            codeDomain = getCodeDomain(codedValues, item.getValue());
+                            break;
                     }
                 }
                 if (item.getFieldName().equals(arcGISFeatureSuCoThongTin.getFeatureTable().getTypeIdField())) {
@@ -267,6 +275,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         return null;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateSuCo(ArcGISFeature arcGISFeature) {
         String queryClause = String.format("%s = '%s'",
                 Constant.FIELD_SUCO.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString());
@@ -311,6 +320,7 @@ public class EditAsync extends AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeatu
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void addAttachment(ArcGISFeature arcGISFeature) {
 
         final String attachmentName = mActivity.getString(R.string.attachment) + "_" + System.currentTimeMillis() + ".png";
