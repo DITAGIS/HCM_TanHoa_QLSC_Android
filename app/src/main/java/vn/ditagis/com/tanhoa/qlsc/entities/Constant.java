@@ -34,7 +34,9 @@ public class Constant {
 
     public static class RequestCode {
         public static final int REQUEST_CODE_LOGIN = 0;
-        public static final int REQUEST_CODE_PERMISSION = 2;
+        public static final int REQUEST_CODE_CAPTURE = 1;
+        public static final int REQUEST_CODE_SHOW_CAPTURE = 2;
+        public static final int REQUEST_CODE_PERMISSION = 3;
         public static final int REQUEST_CODE_BASEMAP = 5;
         public static final int REQUEST_CODE_LAYER = 6;
         public static final int REQUEST_CODE_ADD_FEATURE = 7;

@@ -334,5 +334,8 @@
     <string name="tab_basemap_1">Tra cứu</string>
     <string name="tab_basemap_2">Công việc</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

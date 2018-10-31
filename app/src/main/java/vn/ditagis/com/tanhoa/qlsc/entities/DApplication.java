@@ -1,8 +1,9 @@
 package vn.ditagis.com.tanhoa.qlsc.entities;
 
 import android.app.Application;
-import android.content.Context;
 import android.location.Location;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.esri.arcgisruntime.data.ArcGISFeature;
 import com.esri.arcgisruntime.geometry.Geometry;
@@ -12,13 +13,20 @@ import java.net.URISyntaxException;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class DApplication extends Application {
+
     public Constant getConstant;
 
     {
         getConstant = new Constant();
     }
 
+    public byte[] capture;
+
+    {
+        capture = null;
+    }
 
     private User userDangNhap;
 
@@ -35,6 +43,7 @@ public class DApplication extends Application {
     {
         getDFeatureLayer = new DFeatureLayer();
     }
+
     private int channelID;
 
     public int getChannelID() {
@@ -71,7 +80,7 @@ public class DApplication extends Application {
         getDiemSuCo = new DiemSuCo();
     }
 
-private boolean isFromNotification;
+    private boolean isFromNotification;
 
     public boolean isFromNotification() {
         return isFromNotification;

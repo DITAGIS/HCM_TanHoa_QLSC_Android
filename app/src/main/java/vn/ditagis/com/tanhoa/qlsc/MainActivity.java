@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             View header = mNavView.getHeaderView(0);
             try {
                 mNavView.getMenu().add(1, 1, 1, getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
-            } catch (PackageManager.NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException ignored) {
 
             }
             mTxtHeaderTenNV = header.findViewById(R.id.txt_nav_header_tenNV);
@@ -274,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         mLocationHelper.checkpermission();
         LocationListener listener = new LocationListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onLocationChanged(Location location) {
                 mLocation = location;
@@ -316,6 +317,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         startActivityForResult(intent, Constant.RequestCode.REQUEST_CODE_LOGIN);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     private void prepare() {
         mTxtInfo.setText(Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY));
@@ -381,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
 
                     //geometry is x,y
-                    Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
+//                    Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
                     SimpleMarkerSymbol symbol = new SimpleMarkerSymbol(SimpleMarkerSymbol.Style.CROSS, Color.RED, 20);
                     Graphic graphic = new Graphic(center, symbol);
 
@@ -526,6 +528,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private DLayerInfo setService_Table() {
         DLayerInfo dLayerInfoSuCo = new DLayerInfo();
         for (DLayerInfo dLayerInfo : ListObjectDB.getInstance().getLstFeatureLayerDTG()) {
@@ -625,7 +628,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mMapView.getMap().getOperationalLayers().add(mFeatureLayer);
         mFeatureLayer.addDoneLoadingListener(() -> {
             if (mFeatureLayer.getLoadStatus() == LoadStatus.LOADED) {
-                new QueryFeatureGetListGeometryAsync(MainActivity.this,
+                 new QueryFeatureGetListGeometryAsync(MainActivity.this,
                         serviceFeatureTable, (List<Geometry> output) -> {
 //                    for (Geometry geometry : output) {
 //                        Graphic graphic = new Graphic(geometry.getExtent().getCenter());
@@ -651,6 +654,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
     }
 
+    @SuppressLint("DefaultLocale")
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private String getDefinitionWithoutComplete(List<String> idSuCoList) {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO));
@@ -772,6 +777,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private UniqueValueRenderer getRendererSuCo() {
         UniqueValueRenderer uniqueValueRenderer = new UniqueValueRenderer();
         switch (mApplication.getUserDangNhap().getGroupRole()) {
@@ -1019,6 +1025,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void themDiemSuCoNoCapture() {
         try {
             if (mMapViewHandler == null)
@@ -1030,7 +1037,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                         String subAdminArea = output.get(0).getSubAdminArea();
                         //nếu tài khoản có quyền truy cập vào
-                        if (subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
+                        if (subAdminArea!= null && subAdminArea.equals(getString(R.string.QuanPhuNhuanName)) ||
                                 subAdminArea.equals(getString(R.string.QuanTanBinhName)) ||
                                 subAdminArea.equals(getString(R.string.QuanTanPhuName))) {
                             mApplication.getDiemSuCo.setPoint(mPointFindLocation);
@@ -1073,6 +1080,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBackPressed() {
         mApplication.getDiemSuCo.setPoint(null);
@@ -1183,6 +1191,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void showHideComplete() {
         for (Layer layer : mMapView.getMap().getOperationalLayers()) {
             if (layer instanceof FeatureLayer && layer.getName().
@@ -1368,6 +1377,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -1564,10 +1574,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void findRoute() {
-        Point center = mApplication.getGeometry().getExtent().getCenter();
-        Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
-        Point point = project.getExtent().getCenter();
+//        Point center = mApplication.getGeometry().getExtent().getCenter();
+//        Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
+//        Point point = project.getExtent().getCenter();
         String uri = String.format("google.navigation:q=%s", Uri.encode(mApplication.getArcGISFeature().getAttributes().get(
                 Constant.FIELD_SUCO.DIA_CHI
         ).toString()));
@@ -1588,7 +1599,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         try {
             switch (requestCode) {
                 case REQUEST_SEARCH:
-                    final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
+//                    final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
                     if (resultCode == Activity.RESULT_OK) {
                         String selectedIDSuCo = mApplication.getDiemSuCo.getIdSuCo();
                         mMapViewHandler.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo));
