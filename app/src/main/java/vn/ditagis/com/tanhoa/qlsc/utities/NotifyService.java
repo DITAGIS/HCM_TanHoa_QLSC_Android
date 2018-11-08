@@ -64,11 +64,12 @@ public class NotifyService extends Service {
         }
     };
     Emitter.Listener onNhanViec = args -> new Handler(Looper.getMainLooper()).post(() -> {
-        if (args != null && args.length > 0 && mApplication.getUserDangNhap() != null
-                && mApplication.getUserDangNhap().getUserName() != null) {
-            String title = "NhanViec";
-            String myData = "{ \"".concat(title).concat("\": [").concat(args[0].toString()).concat("]}");
-            try {
+        try {
+            if (args != null && args.length > 0 && mApplication.getUserDangNhap() != null
+                    && mApplication.getUserDangNhap().getUserName() != null) {
+                String title = "NhanViec";
+                String myData = "{ \"".concat(title).concat("\": [").concat(args[0].toString()).concat("]}");
+
                 JSONObject jsonData = new JSONObject(myData);
                 JSONArray jsonRoutes = jsonData.getJSONArray(title);
                 String suCo = "", nhanVien = "";
@@ -82,12 +83,12 @@ public class NotifyService extends Service {
                     showNotify();
                     Log.d("Nhận việc", args[0].toString());
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show();
-            }
-        }
 
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Có lỗi khi nhận thông báo " + e.toString(), Toast.LENGTH_SHORT).show();
+        }
     });
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -136,7 +137,7 @@ public class NotifyService extends Service {
             registerReceiver(notifyServiceReceiver, intentFilter);
 
             Context context = getApplicationContext();
-            String notificationTitle = "Bạn vừa nhận một công việc mới";
+            String notificationTitle = "Bạn vừa nhận sự cố ".concat(mApplication.getDiemSuCo.getIdSuCo());
             String notificationText = "Click vào đây để biết thêm chi tiết";
             Intent myIntent = new Intent(mContext, ClickNotificationHandlingActivity.class);
 

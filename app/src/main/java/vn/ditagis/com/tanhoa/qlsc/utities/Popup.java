@@ -5,9 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Geocoder;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -46,13 +44,10 @@ import com.esri.arcgisruntime.geometry.Geometry;
 import com.esri.arcgisruntime.geometry.GeometryEngine;
 import com.esri.arcgisruntime.geometry.Point;
 import com.esri.arcgisruntime.geometry.SpatialReferences;
-import com.esri.arcgisruntime.layers.ArcGISMapImageLayer;
 import com.esri.arcgisruntime.layers.FeatureLayer;
 import com.esri.arcgisruntime.mapping.view.Callout;
-import com.esri.arcgisruntime.mapping.view.LocationDisplay;
 import com.esri.arcgisruntime.mapping.view.MapView;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -108,7 +103,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Popup(Callout callout, MainActivity mainActivity, MapView mapView
-                 , Geocoder geocoder) {
+            , Geocoder geocoder) {
         this.mMainActivity = mainActivity;
         mApplication = (DApplication) mainActivity.getApplication();
         if (mApplication.getDFeatureLayer.getLayer() != null)
@@ -208,28 +203,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                     try {
                         switch (field.getName()) {
                             case Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN:
-                                for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                                    if (featureType.getId().equals(mLoaiSuCoID)) {
-                                        codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                .get(Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN)).getCodedValues();
-                                        break;
-                                    }
-                                }
-                                break;
                             case Constant.FIELD_SUCOTHONGTIN.VAT_LIEU:
-                                for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                                    if (featureType.getId().equals(mLoaiSuCoID)) {
-                                        codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                .get(Constant.FIELD_SUCOTHONGTIN.VAT_LIEU)).getCodedValues();
-                                        break;
-                                    }
-                                }
-                                break;
                             case Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG:
                                 for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
                                     if (featureType.getId().equals(mLoaiSuCoID)) {
                                         codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                .get(Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG)).getCodedValues();
+                                                .get(field.getName())).getCodedValues();
                                         break;
                                     }
                                 }
@@ -510,28 +489,12 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
                         try {
                             switch (field.getName()) {
                                 case Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN:
-                                    for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                                        if (featureType.getId().equals(mLoaiSuCoID)) {
-                                            codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                    .get(Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN)).getCodedValues();
-                                            break;
-                                        }
-                                    }
-                                    break;
                                 case Constant.FIELD_SUCOTHONGTIN.VAT_LIEU:
-                                    for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                                        if (featureType.getId().equals(mLoaiSuCoID)) {
-                                            codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                    .get(Constant.FIELD_SUCOTHONGTIN.VAT_LIEU)).getCodedValues();
-                                            break;
-                                        }
-                                    }
-                                    break;
                                 case Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG:
                                     for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
                                         if (featureType.getId().equals(mLoaiSuCoID)) {
                                             codedValues = ((CodedValueDomain) featureType.getDomains()
-                                                    .get(Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG)).getCodedValues();
+                                                    .get(field.getName())).getCodedValues();
                                             break;
                                         }
                                     }
@@ -649,51 +612,16 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             layout, ArcGISFeature arcGISFeature) {
         switch (item.getFieldName()) {
             case Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN:
-                loadDataEdit_NguyenNhan(item, layout, arcGISFeature);
-                break;
-            //Trường hợp vật liệu, không tự động lấy được domain
             case Constant.FIELD_SUCOTHONGTIN.VAT_LIEU:
-                loadDataEdit_VatLieu(item, layout, arcGISFeature);
-
-                break;
             case Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG:
-                loadDataEdit_DuongKinhOng(item, layout, arcGISFeature);
+                loadDataEdit_Domain(item, layout, arcGISFeature);
                 break;
             default:
                 loadDataEdit_Another(item, layout, arcGISFeature);
                 break;
         }
     }
-
-//    private void loadDataEdit_DMA(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
-//        final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
-//        final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-//        layoutSpin.setVisibility(View.VISIBLE);
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(),
-//                android.R.layout.simple_list_item_1, ListObjectDB.getInstance().getDmas());
-//        spin.setAdapter(adapter);
-//        if (item.getValue() != null)
-//            spin.setSelection(ListObjectDB.getInstance().getDmas().indexOf(item.getValue()));
-//    }
-
-//    private void loadDataEdit_ViTri(FeatureViewMoreInfoAdapter.Item item, LinearLayout layout) {
-//        final LinearLayout layoutEditText = layout.findViewById(R.id.layout_edit_viewmoreinfo_Editext);
-//        final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
-//        final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-//        layoutSpin.setVisibility(View.VISIBLE);
-//        if (mLoaiSuCoID == Constant.LoaiSuCo.LOAISUCO_ONGNGANH) {
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongnganh_arrays));
-//            spin.setAdapter(adapter);
-//        } else if (mLoaiSuCoID == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-//            layoutEditText.setVisibility(View.VISIBLE);
-//            ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, mMainActivity.getResources().getStringArray(R.array.vitri_ongchinh1_arrays));
-//            spin.setAdapter(adapter);
-//        }
-////        if (item.getValue() != null)
-////            spin.setSelection(mListObjectDB.indexOf(item.getValue()));
-//    }
-
-    private void loadDataEdit_NguyenNhan(FeatureViewMoreInfoAdapter.Item item, LinearLayout
+    private void loadDataEdit_Domain(FeatureViewMoreInfoAdapter.Item item, LinearLayout
             layout, ArcGISFeature arcGISFeatureSuCoThongTin) {
         final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
         final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
@@ -705,36 +633,7 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
             for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
                 if (featureType.getId().equals(mLoaiSuCoID)) {
                     codedValues = ((CodedValueDomain) featureType.getDomains()
-                            .get(Constant.FIELD_SUCOTHONGTIN.NGUYEN_NHAN)).getCodedValues();
-                    break;
-                }
-            }
-            if (codedValues != null) {
-                for (CodedValue codedValue : codedValues)
-                    codes.add(codedValue.getName());
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
-                spin.setAdapter(adapter);
-            }
-        } catch (Exception e) {
-            message_select_loaiSuCo();
-        }
-        if (item.getValue() != null)
-            spin.setSelection(codes.indexOf(item.getValue()));
-    }
-
-    private void loadDataEdit_VatLieu(FeatureViewMoreInfoAdapter.Item item, LinearLayout
-            layout, ArcGISFeature arcGISFeatureSuCoThongTin) {
-        final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
-        final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-
-        layoutSpin.setVisibility(View.VISIBLE);
-        List<String> codes = new ArrayList<>();
-        try {
-            List<CodedValue> codedValues = null;
-            for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                if (featureType.getId().equals(mLoaiSuCoID)) {
-                    codedValues = ((CodedValueDomain) featureType.getDomains()
-                            .get(Constant.FIELD_SUCOTHONGTIN.VAT_LIEU)).getCodedValues();
+                            .get(item.getFieldName())).getCodedValues();
                     break;
                 }
             }
@@ -753,36 +652,6 @@ public class Popup extends AppCompatActivity implements View.OnClickListener {
 
     private void message_select_loaiSuCo() {
         Toast.makeText(mMainActivity.getApplicationContext(), R.string.message_select_loai_su_co, Toast.LENGTH_LONG).show();
-    }
-
-    private void loadDataEdit_DuongKinhOng(FeatureViewMoreInfoAdapter.Item item, LinearLayout
-            layout, ArcGISFeature arcGISFeatureSuCoThongTin) {
-        final LinearLayout layoutSpin = layout.findViewById(R.id.layout_edit_viewmoreinfo_Spinner);
-        final Spinner spin = layout.findViewById(R.id.spin_edit_viewmoreinfo);
-
-        layoutSpin.setVisibility(View.VISIBLE);
-        List<String> codes = new ArrayList<>();
-        try {
-            List<CodedValue> codedValues = null;
-            for (FeatureType featureType : arcGISFeatureSuCoThongTin.getFeatureTable().getFeatureTypes()) {
-                if (featureType.getId().equals(mLoaiSuCoID)) {
-                    codedValues = ((CodedValueDomain) featureType.getDomains()
-                            .get(Constant.FIELD_SUCOTHONGTIN.DUONG_KINH_ONG)).getCodedValues();
-                    break;
-                }
-            }
-
-            if (codedValues != null) {
-                for (CodedValue codedValue : codedValues)
-                    codes.add(codedValue.getName());
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(layout.getContext(), android.R.layout.simple_list_item_1, codes);
-                spin.setAdapter(adapter);
-            }
-        } catch (Exception e) {
-            message_select_loaiSuCo();
-        }
-        if (item.getValue() != null)
-            spin.setSelection(codes.indexOf(item.getValue()));
     }
 
 

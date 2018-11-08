@@ -74,8 +74,8 @@ public class Constant {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
     }
 
-//    private static final String SERVER = "http://tanhoa.sawagis.vn";
-        private static final String SERVER = "http://113.161.88.180:798";
+    //    private static final String SERVER = "http://tanhoa.sawagis.vn";
+    private static final String SERVER = "http://113.161.88.180:798";
     private static final String SERVER_API = SERVER + "/apiv1/api";
 
     public static class URLSymbol {
@@ -102,6 +102,7 @@ public class Constant {
         public static final String PROFILE = SERVER_API + "/Account/Profile";
         public static final String GENERATE_ID_SUCO = SERVER_API + "/QuanLySuCo/GenerateIDSuCo";
         public static final String LAYER_INFO = SERVER_API + "/Account/layerinfo";
+        public static final String CHANGE_PASSWORD = SERVER_API + "/Account/changepass";
         public static final String COMPLETE = SERVER_API + "/quanlysuco/xacnhanhoanthanhnhanvien?id=%s";
         public static final String IS_ACCESS = SERVER_API + "/Account/IsAccess/m_qlsc";
         public static final String GENERATE_ID_SUCOTHONGTIN = SERVER_API + "/QuanLySuCo/GenerateIDSuCoThongTin/";
@@ -125,6 +126,12 @@ public class Constant {
 
     {
         MAX_SCALE_IMAGE_WITH_LABLES = 4;
+    }
+
+    public class HTTPRequest {
+        public static final String GET_METHOD = "GET";
+        public static final String POST_METHOD = "POST";
+        public static final String AUTHORIZATION = "Authorization";
     }
 
     public class FIELD_SUCO {

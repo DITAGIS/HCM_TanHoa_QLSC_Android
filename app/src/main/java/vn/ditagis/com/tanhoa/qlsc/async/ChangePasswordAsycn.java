@@ -1,75 +1,110 @@
 package vn.ditagis.com.tanhoa.qlsc.async;
 
-import android.app.ProgressDialog;
-import android.content.Context;
+import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import org.json.JSONObject;
 
-import vn.ditagis.com.tanhoa.qlsc.R;
-import vn.ditagis.com.tanhoa.qlsc.connectDB.ChangePasswordDB;
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.KhachHang;
-import vn.ditagis.com.tanhoa.qlsc.utities.Utils;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ChangePasswordAsycn extends AsyncTask<String, Void, Integer> {
-    private ProgressDialog mDialog;
-    private Context mContext;
-    private final int SAI_MAT_KHAU_CU = 1;
+import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
+import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
+
+public class ChangePasswordAsycn extends AsyncTask<String, Void, Boolean> {
+    //    private Dialog mDialog;
     private AsyncResponse mDelegate;
+    private DApplication mApplication;
+    private Activity mActivity;
 
     public interface AsyncResponse {
-        void processFinish(Integer output);
+        void processFinish(Boolean output);
     }
 
-    public ChangePasswordAsycn(Context context, AsyncResponse delegate) {
-        this.mContext = context;
+    public ChangePasswordAsycn(Activity activity, AsyncResponse delegate) {
+        this.mActivity = activity;
         this.mDelegate = delegate;
+        this.mApplication = (DApplication) activity.getApplication();
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        this.mDialog = new ProgressDialog(this.mContext, android.R.style.Theme_Material_Dialog_Alert);
-        this.mDialog.setMessage(mContext.getString(R.string.change_password_check_old_password_message));
-        this.mDialog.setCancelable(false);
-        this.mDialog.show();
+//        LinearLayout layout = (LinearLayout) mActivity.getLayoutInflater().inflate(R.layout.layout_dialog, null);
+//        TextView txtTitle = layout.findViewById(R.id.txt_progress_dialog_title);
+//        TextView txtMessage = layout.findViewById(R.id.txt_progress_dialog_message);
+//        txtTitle.setText("Vui lòng đợi");
+//        txtMessage.setText(mActivity.getApplicationContext().getString(R.string.change_password_message));
+//        this.mDialog = new Dialog(mActivity);
+//        this.mDialog.setContentView(layout);
+//        this.mDialog.setCancelable(false);
+//        this.mDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
-    protected Integer doInBackground(String... params) {
-        String danhBo = params[0];
-        String pin = params[1];
-        String newPin = params[2];
+    protected Boolean doInBackground(String... params) {
+        String pin = params[0];
+        String newPin = params[1];
         try {
-            ChangePasswordDB changePasswordDB = new ChangePasswordDB(mContext);
-            KhachHang khachHang = changePasswordDB.find(danhBo, pin);
-            if (khachHang != null) {
-                publishProgress();
-                KhachHang khachHang1 = changePasswordDB.change(danhBo, newPin);
-                if (khachHang1 != null) {
-                    return Utils.getInstance().CHANGE_PASSWORD_SUCCESS;
-                } else return Utils.getInstance().CHANGE_PASSWORD_FAILURE;
-            } else {
-                return null;
+            String API_URL = Constant.URL_API.CHANGE_PASSWORD;
+            URL url = new URL(API_URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            try {
+                conn.setDoOutput(true);
+                conn.setInstanceFollowRedirects(false);
+                conn.setRequestMethod(Constant.HTTPRequest.POST_METHOD);
+
+                JSONObject cred = new JSONObject();
+                cred.put("OldPassword", pin);
+                cred.put("NewPassword", newPin);
+
+
+                conn.setRequestProperty(Constant.HTTPRequest.AUTHORIZATION, mApplication.getUserDangNhap().getToken());
+                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+                conn.setRequestProperty("Accept", "application/json");
+                conn.setUseCaches(false);
+                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+                wr.write(cred.toString());
+                wr.flush();
+
+                conn.connect();
+
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuilder builder = new StringBuilder();
+                String line;
+                while ((line = bufferedReader.readLine()) != null) {
+                    builder.append(line);
+                }
+                if (builder.toString().contains("true"))
+                    return true;
+                return false;
+            } catch (Exception e) {
+                Log.e("error", e.toString());
+            } finally {
+                conn.disconnect();
             }
         } catch (Exception e) {
             Log.e("Lỗi đổi mật khẩu", e.toString());
         }
-        return Utils.getInstance().CHANGE_PASSWORD_FAILURE;
+        return false;
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-        this.mDialog.setMessage(mContext.getString(R.string.change_password_message));
-
-
-    }
-
-    @Override
-    protected void onPostExecute(Integer value) {
+    protected void onPostExecute(Boolean value) {
 //        if (khachHang != null) {
-        mDialog.dismiss();
+//        mDialog.dismiss();
         this.mDelegate.processFinish(value);
 //        }
     }

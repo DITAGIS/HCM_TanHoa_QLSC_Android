@@ -7,10 +7,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import vn.ditagis.com.tanhoa.qlsc.async.ChangePasswordAsycn;
-import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
-import vn.ditagis.com.tanhoa.qlsc.utities.Utils;
 
 
 public class DoiMatKhauActivity extends AppCompatActivity implements View.OnClickListener {
@@ -64,30 +63,18 @@ public class DoiMatKhauActivity extends AppCompatActivity implements View.OnClic
 
     private void changPassword() {
         if (validate()) {
-            ChangePasswordAsycn asycn = new ChangePasswordAsycn(this, new ChangePasswordAsycn.AsyncResponse() {
-                @Override
-                public void processFinish(Integer output) {
-                    if (output != null) {
-                        int value = output.intValue();
-                        switch (value) {
-                            case Utils.CHANGE_PASSWORD_OLD_PASSWORD_WRONG:
-                                mTxtValidation.setVisibility(View.VISIBLE);
-                                mTxtValidation.setText(getString(R.string.validate_password_old));
-                                break;
-                            case Utils.CHANGE_PASSWORD_FAILURE:
-                                mTxtValidation.setVisibility(View.VISIBLE);
-                                mTxtValidation.setText(getString(R.string.validate_change_password_fail));
-                                break;
-                            case Utils.CHANGE_PASSWORD_SUCCESS:
-                                mTxtChangePassword.setVisibility(View.VISIBLE);
-                                mLayoutChangePassword.setVisibility(View.GONE);
-                                break;
-                        }
+            ChangePasswordAsycn asycn = new ChangePasswordAsycn(this, output -> {
+                if (output) {
+                    mTxtValidation.setVisibility(View.GONE);
+                    Toast.makeText(DoiMatKhauActivity.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
+                    DoiMatKhauActivity.this.finish();
 
-                    }
+                } else {
+                    mTxtValidation.setVisibility(View.VISIBLE);
+                    mTxtValidation.setText(getString(R.string.validate_change_password_fail));
                 }
             });
-            asycn.execute(Preference.getInstance().loadPreference(getString(R.string.preference_username)), mEtxtOldPassord.getText().toString().trim(),
+            asycn.execute(mEtxtOldPassord.getText().toString().trim(),
                     mEtxtNewPasswordConfirm.getText().toString().trim());
         }
     }

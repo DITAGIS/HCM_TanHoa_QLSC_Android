@@ -3,6 +3,8 @@ package vn.ditagis.com.tanhoa.qlsc.async;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture;
 import com.esri.arcgisruntime.data.Feature;
@@ -41,6 +43,7 @@ public class QueryFeatureAsync extends AsyncTask<Void, List<Feature>, Void> {
         void processFinish(List<Feature> output);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public QueryFeatureAsync(Activity activity, int trangThai, String diaChi, String thoiGianPhanAnh
             , AsyncResponse delegate) {
         this.mApplication = (DApplication) activity.getApplication();
