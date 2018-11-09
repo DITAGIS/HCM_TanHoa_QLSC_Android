@@ -98,6 +98,7 @@ public class Constant {
     }
 
     public class URL_API {
+        public static final String CHECK_VERSION = "http://tanhoa.sawagis.vn/apiv1" + "/versioning/QLSC?version=%s";
         public static final String LOGIN = SERVER_API + "/Login";
         public static final String PROFILE = SERVER_API + "/Account/Profile";
         public static final String GENERATE_ID_SUCO = SERVER_API + "/QuanLySuCo/GenerateIDSuCo";
