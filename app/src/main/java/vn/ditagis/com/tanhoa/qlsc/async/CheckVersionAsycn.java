@@ -18,7 +18,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant;
-import vn.ditagis.com.tanhoa.qlsc.entities.DApplication;
 import vn.ditagis.com.tanhoa.qlsc.entities.VersionInfo;
 
 
@@ -48,33 +47,34 @@ public class CheckVersionAsycn extends AsyncTask<String, Void, VersionInfo> {
     @Override
     protected VersionInfo doInBackground(String... params) {
         VersionInfo versionInfo = null;
-        try {
-            URL url = new URL(String.format(Constant.URL_API.CHECK_VERSION, "1.1.0"));
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        if (params != null && params.length > 0)
             try {
-                conn.setRequestMethod("GET");
-                conn.connect();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuilder stringBuilder = new StringBuilder();
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    stringBuilder.append(line);
-                    break;
+                URL url = new URL(String.format(Constant.URL_API.CHECK_VERSION, params[0]));
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                try {
+                    conn.setRequestMethod("GET");
+                    conn.connect();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder stringBuilder = new StringBuilder();
+                    String line;
+                    while ((line = bufferedReader.readLine()) != null) {
+                        stringBuilder.append(line);
+                        break;
+                    }
+                    bufferedReader.close();
+                    versionInfo = parse(stringBuilder.toString());
+                } catch (Exception e1) {
+                    Log.e("Lỗi check version", e1.toString());
+                } finally {
+                    conn.disconnect();
                 }
-                bufferedReader.close();
-                versionInfo = parse(stringBuilder.toString());
-            } catch (Exception e1) {
-                Log.e("Lỗi check version", e1.toString());
+            } catch (Exception e) {
+                Log.e("ERROR", e.getMessage(), e);
+
             } finally {
-                conn.disconnect();
+                return versionInfo;
             }
-        } catch (Exception e) {
-            Log.e("ERROR", e.getMessage(), e);
-
-        } finally {
-            return versionInfo;
-        }
-
+        return versionInfo;
     }
 
     private VersionInfo parse(String data) throws JSONException {
