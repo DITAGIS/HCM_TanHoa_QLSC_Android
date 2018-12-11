@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -41,11 +43,12 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
     protected void onPreExecute() {
         super.onPreExecute();
         this.mDialog = new ProgressDialog(this.mContext, android.R.style.Theme_Material_Dialog_Alert);
-        this.mDialog.setMessage(mContext.getString(R.string.connect_message));
+        this.mDialog.setMessage("Đang kết nối...");
         this.mDialog.setCancelable(false);
         this.mDialog.show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected Void doInBackground(String... params) {
         String userName = params[0];
@@ -74,6 +77,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
                     mApplication.setUserDangNhap(new User());
                     mApplication.getUserDangNhap().setToken(token);
                     getProfile();
+                    mApplication.getUserDangNhap().setPassWord(pin);
                     mApplication.getUserDangNhap().setUserName(userName);
 
                 } else {
@@ -132,6 +136,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void getProfile() {
 
 //        String API_URL = "http://sawagis.vn/tanhoa1/api/Account/Profile";
@@ -163,6 +168,7 @@ public class LoginByAPIAsycn extends AsyncTask<String, Void, Void> {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private String pajsonRouteeJSon(String data) throws JSONException {
         if (data == null)
             return "";

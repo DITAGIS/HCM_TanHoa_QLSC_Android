@@ -135,9 +135,6 @@
     <string name="preparing">Đang khởi tạo bản đồ…</string>
     <string name="loadingLegend">Đang khởi tạo chú thích…</string>
     <!--preference begin-->
-    <string name="preference_username">username</string>
-    <string name="preference_password">pasword</string>
-    <string name="preference_displayname">displayname</string>
     <!--preference end-->
 
     <!--sql begin-->

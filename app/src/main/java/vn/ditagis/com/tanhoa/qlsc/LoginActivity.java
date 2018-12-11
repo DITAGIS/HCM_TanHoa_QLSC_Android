@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +43,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView mTxtValidation;
     @BindView(R.id.txt_version_login)
     TextView mTxtVersion;
+    @BindView(R.id.chk_login_save_password)
+    CheckBox mChkSavePassword;
     private DApplication mApplication;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -73,39 +76,57 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void create() {
         Preference.getInstance().setContext(this);
         String preference_userName = Preference.getInstance().loadPreference(getString(R.string.preference_username));
+        String preference_password = Preference.getInstance().loadPreference(getString(R.string.preference_password));
         if (preference_userName != null && !preference_userName.isEmpty()) {
-            mTxtUsername.setText(Preference.getInstance().loadPreference(getString(R.string.preference_username)));
+            mTxtUsername.setText(preference_userName);
         }
+
+        if (preference_password != null && !preference_password.isEmpty()) {
+            mTxtPassword.setText(preference_password);
+            mChkSavePassword.setChecked(true);
+        }
+
         try {
-            new CheckVersionAsycn(this, output -> {
-                if (output != null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
-                    builder.setCancelable(true)
-                            .setPositiveButton("CẬP NHẬT", (dialogInterface, i) -> {
-                                goURLBrowser(output.getLink());
-                            }).setTitle("Có phiên bản mới");
-                    boolean isDeveloper = false;
-                    if (!output.getType().equals("RELEASE")) {
-                        int anInt = Settings.Secure.getInt(this.getContentResolver(),
-                                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
-                        if (anInt != 0)
-                            isDeveloper = true;
+            if (!mApplication.isCheckedVersion()) {
+                mApplication.setCheckedVersion(true);
+                new CheckVersionAsycn(this, output -> {
+                    if (output != null) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this, R.style.Theme_AppCompat_DayNight_Dialog_Alert);
+                        builder.setCancelable(false)
+                                .setPositiveButton("CẬP NHẬT", (dialogInterface, i) -> {
+                                    goURLBrowser(output.getLink());
+                                }).setTitle("Có phiên bản mới")
+                                .setNegativeButton("HỦY", ((dialogInterface, i) -> {
+                                    if (mChkSavePassword.isChecked())
+                                        login();
+                                }));
+                        boolean isDeveloper = false;
+                        if (!output.getType().equals("RELEASE")) {
+                            int anInt = Settings.Secure.getInt(this.getContentResolver(),
+                                    Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0);
+                            if (anInt != 0)
+                                isDeveloper = true;
 
+                        }
+                        if (isDeveloper)
+                            builder.setMessage("Bạn là người phát triển ứng dụng! Bạn có muốn cập nhật lên phiên bản ".concat(output.getVersionCode()).concat("?"));
+                        else
+                            builder.setMessage("Bạn có muốn cập nhật lên phiên bản ".concat(output.getVersionCode().concat("?")));
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Phiên bản hiện tại là mới nhất", Toast.LENGTH_LONG).show();
+                        if (mChkSavePassword.isChecked()) {
+                            login();
+                        }
                     }
-                    if (isDeveloper)
-                        builder.setMessage("Bạn là người phát triển ứng dụng! Bạn có muốn cập nhật lên phiên bản ".concat(output.getVersionCode()).concat("?"));
-                    else
-                        builder.setMessage("Bạn có muốn cập nhật lên phiên bản ".concat(output.getVersionCode().concat("?")));
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                } else {
-                    Toast.makeText(LoginActivity.this, "Phiên bản hiện tại là mới nhất", Toast.LENGTH_LONG).show();
-                }
-            }).execute(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+                }).execute(getPackageManager().getPackageInfo(getPackageName(), 0).versionName);
+            }
         } catch (PackageManager.NameNotFoundException e) {
             Toast.makeText(this, "Có lỗi xảy ra khi kiểm tra phiên bản", Toast.LENGTH_LONG).show();
         }
@@ -169,7 +190,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         mTxtPassword.setText("");
 
         Preference.getInstance().savePreferences(getString(R.string.preference_username), mApplication.getUserDangNhap().getUserName());
-        Preference.getInstance().savePreferences(getString(R.string.preference_password), mApplication.getUserDangNhap().getPassWord());
+        if (mChkSavePassword.isChecked())
+            Preference.getInstance().savePreferences(getString(R.string.preference_password), mApplication.getUserDangNhap().getPassWord());
+        else Preference.getInstance().deletePreferences(getString(R.string.preference_password));
         Preference.getInstance().savePreferences(getString(R.string.preference_displayname), mApplication.getUserDangNhap().getDisplayName());
 
         Intent intent = new Intent();

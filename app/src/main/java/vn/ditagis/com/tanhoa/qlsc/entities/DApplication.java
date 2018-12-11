@@ -123,4 +123,13 @@ public class DApplication extends Application {
     public void setmLocation(Location mLocation) {
         this.mLocation = mLocation;
     }
+    private boolean checkedVersion;
+
+    public boolean isCheckedVersion() {
+        return checkedVersion;
+    }
+
+    public void setCheckedVersion(boolean checkedVersion) {
+        this.checkedVersion = checkedVersion;
+    }
 }

@@ -114,6 +114,7 @@ import vn.ditagis.com.tanhoa.qlsc.utities.MapViewHandler;
 import vn.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable;
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar;
 import vn.ditagis.com.tanhoa.qlsc.utities.Popup;
+import vn.ditagis.com.tanhoa.qlsc.utities.Preference;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
         View.OnClickListener, AdapterView.OnItemClickListener,
@@ -1211,6 +1212,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 mIsShowComplete = false;
                 if (mPopUp != null && mPopUp.getCallout() != null && mPopUp.getCallout().isShowing())
                     mPopUp.getCallout().dismiss();
+                Preference.getInstance().deletePreferences(getString(R.string.preference_password));
                 startSignIn();
                 break;
             case R.id.nav_list_task:
