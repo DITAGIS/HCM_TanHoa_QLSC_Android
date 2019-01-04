@@ -156,15 +156,6 @@
     <string name="sql_coloumn_docso_phibvmt">bvmt</string>
     <string name="sql_coloumn_docso_tongtien">tongtien</string>
     <!--sql column docso end-->
-    <string name="sql_coloumn_sys_id">LayerID</string>
-    <string name="sql_coloumn_sys_title">LayerTitle</string>
-    <string name="sql_coloumn_sys_url">Url</string>
-    <string name="sql_coloumn_sys_iscreate">IsCreate</string>
-    <string name="sql_coloumn_sys_isdelete">IsDelete</string>
-    <string name="sql_coloumn_sys_isedit">IsEdit</string>
-    <string name="sql_coloumn_sys_isview">IsView</string>
-    <string name="sql_coloumn_sys_outfield">OutFields</string>
-    <string name="sql_coloumn_sys_definition">Definition</string>
     <!--sql column lichsuds begin-->
     <string name="sql_coloumn_lichsuds_nam">nam</string>
     <string name="sql_coloumn_lichsuds_ky">ky</string>
@@ -305,7 +296,6 @@
     <string name="sql_column_sys_out_fields_arr">OutFields</string>
     <string name="sql_column_sys_add_fields_arr">AddFields</string>
     <string name="sql_column_sys_update_fields_arr">UpdateFields</string>
-    <string name="LayerInfo_DMA">dmaLYR</string>
     <string name="field_DMA_maDMA">MADMA</string>
 
 
