@@ -1,11 +1,14 @@
 package vn.ditagis.com.tanhoa.qlsc.async
 
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.os.AsyncTask
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.widget.LinearLayout
+import android.widget.TextView
 
 import com.esri.arcgisruntime.data.ArcGISFeature
 import com.esri.arcgisruntime.data.ArcGISFeatureTable
@@ -14,6 +17,7 @@ import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult
 import com.esri.arcgisruntime.mapping.view.MapView
+import vn.ditagis.com.tanhoa.qlsc.R
 import java.util.concurrent.ExecutionException
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
@@ -26,14 +30,25 @@ import vn.ditagis.com.tanhoa.qlsc.utities.Popup
 
 class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp: Popup, private val mClickPoint: android.graphics.Point, private val mMapView: MapView)
     : AsyncTask<Point, Feature?, Void?>() {
-    private val mDialog: ProgressDialog?
+    private var mDialog: Dialog? = null
     private var mSelectedArcGISFeature: ArcGISFeature? = null
     private var isFound = false
     private val mApplication: DApplication
 
     init {
         this.mApplication = mActivity.application as DApplication
-        this.mDialog = ProgressDialog(mActivity, android.R.style.Theme_Material_Dialog_Alert)
+    }
+
+    override fun onPreExecute() {
+        super.onPreExecute()
+
+        val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
+        val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
+        txtTitle.text = "Đang lấy thông tin..."
+        mDialog = Dialog(mActivity)
+        mDialog!!.setCancelable(false)
+        mDialog!!.setContentView(layout)
+        mDialog!!.show()
     }
 
     override fun doInBackground(vararg points: Point): Void? {
@@ -85,13 +100,6 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
                 }).execute(queryParameters)
     }
 
-    override fun onPreExecute() {
-        super.onPreExecute()
-        mDialog!!.setMessage("Đang xử lý...")
-        mDialog.setCancelable(false)
-        mDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Hủy") { dialogInterface, i -> publishProgress() }
-        mDialog.show()
-    }
 
     override fun onProgressUpdate(vararg values: Feature?) {
         super.onProgressUpdate(*values)
@@ -110,12 +118,12 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
                     //Không kiểm tra object khác null, vì có thể sự cố đó chưa có vật tư
                     mApplication.arcGISFeature = values[0] as ArcGISFeature
                     mPopUp.showPopup()
-                    if (mDialog != null && mDialog.isShowing) mDialog.dismiss()
+                    if (mDialog != null && mDialog!!.isShowing) mDialog!!.dismiss()
                 }
             })
             hoSoVatTuSuCoAsync.execute(Constant.HoSoSuCoMethod.FIND, mSelectedArcGISFeature!!.attributes[Constant.FieldSuCo.ID_SUCO])
-        } else if (mDialog != null && mDialog.isShowing) {
-            mDialog.dismiss()
+        } else if (mDialog != null && mDialog!!.isShowing) {
+            mDialog!!.dismiss()
         }
     }
 

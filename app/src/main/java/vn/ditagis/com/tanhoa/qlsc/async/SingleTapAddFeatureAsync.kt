@@ -2,10 +2,13 @@ package vn.ditagis.com.tanhoa.qlsc.async
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Build
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 
 import com.esri.arcgisruntime.data.ArcGISFeature
@@ -29,7 +32,7 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                                private val mActivity: Activity,
                                private val mServiceFeatureTable: ServiceFeatureTable, @field:SuppressLint("StaticFieldLeak")
                                private val mDelegate: AsyncResponse) : AsyncTask<Void, Feature?, Void?>() {
-    private val mDialog: ProgressDialog?
+    private val mDialog: Dialog?
     private val mApplication: DApplication
 
     interface AsyncResponse {
@@ -38,13 +41,17 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
 
     init {
         this.mApplication = mActivity.application as DApplication
-        this.mDialog = ProgressDialog(mActivity, android.R.style.Theme_Material_Dialog_Alert)
+        mDialog = Dialog(mActivity)
     }
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mDialog!!.setMessage("Đang xử lý...")
-        mDialog.setCancelable(false)
+        val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
+        val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
+        txtTitle.text = "Đang lưu thông tin..."
+
+        mDialog!!.setCancelable(false)
+        mDialog.setContentView(layout)
         mDialog.show()
     }
 

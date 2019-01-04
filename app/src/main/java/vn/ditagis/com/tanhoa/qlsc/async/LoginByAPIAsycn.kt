@@ -43,8 +43,9 @@ class LoginByAPIAsycn(@field:SuppressLint("StaticFieldLeak")
         super.onPreExecute()
         val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
         val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
-        txtTitle.text = "Đang kết nối"
+        txtTitle.text = "Đang kết nối máy chủ..."
         mDialog = Dialog(mActivity)
+        mDialog!!.setCancelable(false)
         mDialog!!.setContentView(layout)
         mDialog!!.show()
     }

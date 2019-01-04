@@ -31,14 +31,13 @@ constructor(@field:SuppressLint("StaticFieldLeak")
     private val mServiceFeatureTableSuCoThongTin: ServiceFeatureTable?
     private val mServiceFeatureTableSuCo: ServiceFeatureTable
     private var mSelectedArcGISFeature: ArcGISFeature? = null
-    private val mApplication: DApplication
+    private val mApplication: DApplication = mActivity.application as DApplication
 
     interface AsyncResponse {
         fun processFinish(feature: ArcGISFeature?)
     }
 
     init {
-        mApplication = mActivity.application as DApplication
         mServiceFeatureTableSuCoThongTin = mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin
         mServiceFeatureTableSuCo = mApplication.getDFeatureLayer.layer!!.featureTable as ServiceFeatureTable
         mSelectedArcGISFeature = selectedArcGISFeature

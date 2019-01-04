@@ -57,8 +57,7 @@ private val mDelegate: AsyncResponse) : AsyncTask<Void, List<Feature>?, Void?>()
 
     private fun formatTimeToGMT(date: Date): String {
         val dateFormatGmt = Constant.DateFormat.DATE_FORMAT_YEAR_FIRST
-        dateFormatGmt.timeZone = TimeZone.getTimeZone("GMT")
-        return dateFormatGmt.format(date)
+        return dateFormatGmt.format(date) + " 00:00:00"
     }
 
     @SuppressLint("DefaultLocale")

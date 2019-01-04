@@ -17,7 +17,7 @@ class Constant {
 
     @SuppressLint("SimpleDateFormat")
     object DateFormat {
-        //        const val DATE_FORMAT_YEAR_FIRST = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val DATE_FORMAT_YEAR_FIRST = SimpleDateFormat("yyyy-MM-dd")
         const val DATE_FORMAT_STRING = "dd/MM/yyyy"
         val DATE_FORMAT = SimpleDateFormat(DATE_FORMAT_STRING)
         val DATE_FORMAT_VIEW = SimpleDateFormat("HH:mm:ss dd/MM/yyyy")

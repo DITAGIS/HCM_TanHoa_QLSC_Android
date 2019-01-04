@@ -1,9 +1,11 @@
 package vn.ditagis.com.tanhoa.qlsc.async
 
 import android.app.Activity
-import android.app.ProgressDialog
+import android.app.Dialog
 import android.os.AsyncTask
 import android.util.Log
+import android.widget.LinearLayout
+import android.widget.TextView
 
 import org.json.JSONException
 import org.json.JSONObject
@@ -24,7 +26,7 @@ import vn.ditagis.com.tanhoa.qlsc.services.GetVatTu
 import java.io.Reader
 
 class PreparingByAPIAsycn(private val mActivity: Activity, private val mDelegate: AsyncResponse) : AsyncTask<Void, Boolean, Boolean?>() {
-    private var mDialog: ProgressDialog? = null
+    private var mDialog: Dialog? = null
     private val mApplication: DApplication
 
     interface AsyncResponse {
@@ -38,30 +40,43 @@ class PreparingByAPIAsycn(private val mActivity: Activity, private val mDelegate
 
     override fun onPreExecute() {
         super.onPreExecute()
-        this.mDialog = ProgressDialog(this.mActivity, android.R.style.Theme_Material_Dialog_Alert)
-        this.mDialog!!.setMessage(mActivity.applicationContext.getString(R.string.preparing))
-        this.mDialog!!.setCancelable(false)
-        this.mDialog!!.show()
+        val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
+        val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
+        txtTitle.text = "Đang khởi tạo bản đồ..."
+        mDialog = Dialog(mActivity)
+        mDialog!!.setCancelable(false)
+        mDialog!!.setContentView(layout)
+        mDialog!!.show()
     }
 
     override fun doInBackground(vararg params: Void): Boolean? {
         try {
             getLayerInfoAPI()
+            var current = 0
+            val sum = 3
             GetVatTu(mApplication, object : GetVatTu.AsyncResponse {
                 override fun processFinish() {
-                    GetDMA(mApplication, object : GetDMA.AsyncResponse {
-                        override fun processFinish() {
-                            GetThietBi(mApplication, object : GetThietBi.AsyncResponse {
-                                override fun processFinish() {
-                                    publishProgress(true)
-                                }
-                            }).execute()
-                        }
-
-                    }).execute()
-
+                    current++
+                    if (current == sum)
+                        publishProgress(true)
                 }
             }).execute()
+            GetDMA(mApplication, object : GetDMA.AsyncResponse {
+                override fun processFinish() {
+                    current++
+                    if (current == sum)
+                        publishProgress(true)
+                }
+
+            }).execute()
+            GetThietBi(mApplication, object : GetThietBi.AsyncResponse {
+                override fun processFinish() {
+                    current++
+                    if (current == sum)
+                        publishProgress(true)
+                }
+            }).execute()
+
         } catch (e: Exception) {
             Log.e("Lỗi lấy danh sách DMA", e.toString())
             publishProgress()

@@ -49,7 +49,7 @@ class QueryFeatureGetListGeometryAsync(@field:SuppressLint("StaticFieldLeak")
         builder.setView(layout)
 
         mDialog = builder.create()
-        mDialog!!.show()
+//        mDialog!!.show()
         val window = mDialog!!.window
         if (window != null) {
             val layoutParams = WindowManager.LayoutParams()
