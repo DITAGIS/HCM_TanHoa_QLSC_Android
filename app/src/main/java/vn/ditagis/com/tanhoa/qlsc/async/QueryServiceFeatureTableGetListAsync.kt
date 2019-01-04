@@ -4,14 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.AsyncTask
-import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.Feature
-import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 
@@ -73,7 +70,7 @@ class QueryServiceFeatureTableGetListAsync(@field:SuppressLint("StaticFieldLeak"
         try {
             val queryParameters = QueryParameters()
             val queryClause = String.format("%s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName)
+                    Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName)
             queryParameters.whereClause = queryClause
 
             val featureQueryResultListenableFuture = mServiceFeatureTable!!.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL)

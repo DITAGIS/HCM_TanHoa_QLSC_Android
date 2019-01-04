@@ -1,5 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc.async
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.ActivityNotFoundException
 import android.content.Intent
@@ -12,9 +13,7 @@ import android.view.View
 import android.view.Window
 import android.widget.ListView
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.ArcGISFeature
-import com.esri.arcgisruntime.data.Attachment
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.QueryParameters
 
@@ -23,8 +22,6 @@ import org.apache.commons.io.IOUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
 import java.util.ArrayList
 import java.util.concurrent.ExecutionException
 
@@ -38,10 +35,11 @@ import vn.ditagis.com.tanhoa.qlsc.utities.DFile
 /**
  * Created by ThanLe on 4/16/2018.
  */
-
+@SuppressLint("StaticFieldLeak")
 class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<Void, Int?, Void?>() {
     private val mDialog: ProgressDialog?
     private var builder: AlertDialog.Builder? = null
+
     private var layout: View? = null
     private var lstViewAttachment: ListView? = null
 
@@ -71,8 +69,8 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
 
         val mApplication = mMainActivity.application as DApplication
         val queryClause = String.format("%s = '%s' and %s = '%s'",
-                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName)
+                Constant.FieldSuCoThongTin.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString(),
+                Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName)
         val queryParameters = QueryParameters()
         queryParameters.whereClause = queryClause
         QueryServiceFeatureTableAsync(mMainActivity,
@@ -93,7 +91,7 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
                                         item.name = attachment.name
                                         item.contentType = attachment.contentType
                                         val contentType = attachment.contentType.trim { it <= ' ' }.toLowerCase()
-                                        if (contentType == Constant.FILE_TYPE.PNG) {
+                                        if (contentType == Constant.FileType.PNG) {
 
                                             val inputStreamListenableFuture = attachment.fetchDataAsync()
                                             inputStreamListenableFuture.addDoneListener {
@@ -125,9 +123,9 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
                                                 try {
                                                     val inputStream = inputStreamListenableFuture.get()
                                                     var f: File? = null
-                                                    if (contentType == Constant.FILE_TYPE.PDF) {
+                                                    if (contentType == Constant.FileType.PDF) {
                                                         f = DFile.getPDFFile(mMainActivity, attachment.name)
-                                                    } else if (contentType == Constant.FILE_TYPE.DOC) {
+                                                    } else if (contentType == Constant.FileType.DOC) {
                                                         f = DFile.getDocFile(mMainActivity, attachment.name)
                                                     }
                                                     if (f != null) {
@@ -136,7 +134,7 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
                                                         val buf = ByteArray(8192)
 
 
-                                                        var c = 0
+                                                        var c: Int
 
                                                         while (true) {
                                                             c = inputStream.read(buf, 0, buf.size)
@@ -196,20 +194,20 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
             //        } else if (values[0] == -1) {
             if (mDialog != null && mDialog.isShowing) {
                 mDialog.dismiss()
-                lstViewAttachment!!.setOnItemClickListener { adapterView, view, i, l ->
+                lstViewAttachment!!.setOnItemClickListener { adapterView, _, i, _ ->
                     val item = adapterView.getItemAtPosition(i) as FeatureViewMoreInfoAttachmentsAdapter.Item
                     if (item.url != null) {
 
                         val pdfOpenintent = Intent(Intent.ACTION_VIEW)
                         pdfOpenintent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        if (item.contentType == Constant.FILE_TYPE.PDF) {
+                        if (item.contentType == Constant.FileType.PDF) {
                             val file = DFile.getPDFFile(mMainActivity, item.name!!)
                             val path = Uri.fromFile(file)
-                            pdfOpenintent.setDataAndType(path, Constant.FILE_TYPE.PDF)
-                        } else if (item.contentType == Constant.FILE_TYPE.DOC) {
+                            pdfOpenintent.setDataAndType(path, Constant.FileType.PDF)
+                        } else if (item.contentType == Constant.FileType.DOC) {
                             val file = DFile.getDocFile(mMainActivity, item.name!!)
                             val path = Uri.fromFile(file)
-                            pdfOpenintent.setDataAndType(path, Constant.FILE_TYPE.DOC)
+                            pdfOpenintent.setDataAndType(path, Constant.FileType.DOC)
                         }
                         try {
                             mMainActivity.startActivity(pdfOpenintent)
@@ -221,7 +219,7 @@ class ViewAttachmentAsync(private val mMainActivity: MainActivity) : AsyncTask<V
                 }
                 builder!!.setView(layout)
                 builder!!.setCancelable(false)
-                builder!!.setPositiveButton("Thoát") { dialog, which -> dialog.dismiss() }
+                builder!!.setPositiveButton("Thoát") { dialog, _ -> dialog.dismiss() }
                 val dialog = builder!!.create()
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 

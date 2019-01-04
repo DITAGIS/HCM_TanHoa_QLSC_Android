@@ -1,5 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc.utities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -11,11 +12,8 @@ import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
-import com.esri.arcgisruntime.geometry.GeometryEngine
 import com.esri.arcgisruntime.geometry.Point
-import com.esri.arcgisruntime.geometry.SpatialReferences
 import com.esri.arcgisruntime.layers.FeatureLayer
-import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.Callout
 import com.esri.arcgisruntime.mapping.view.MapView
 
@@ -34,16 +32,16 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
  * Created by ThanLe on 2/2/2018.
  */
 
-class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapView,
+@SuppressLint("Registered")
+class MapViewHandler(private val mDCallout: Callout?, private val mMapView: MapView,
                      private val mPopUp: Popup, private val mActivity: Activity) : Activity() {
     private var suCoTanHoaLayerThiCong: FeatureLayer? = null
     private var mClickPoint: android.graphics.Point? = null
     private var isClickBtnAdd = false
     private var mServiceFeatureTable: ServiceFeatureTable? = null
-    private val mApplication: DApplication
+    private val mApplication: DApplication = mActivity.application as DApplication
 
     init {
-        mApplication = mActivity.application as DApplication
         if (mApplication.getDFeatureLayer.layer != null) {
             this.mServiceFeatureTable = mApplication.getDFeatureLayer.layer!!.featureTable as ServiceFeatureTable
             this.suCoTanHoaLayerThiCong = mApplication.getDFeatureLayer.layer
@@ -52,9 +50,9 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
     }
 
 
-    fun setClickBtnAdd(clickBtnAdd: Boolean) {
-        isClickBtnAdd = clickBtnAdd
-    }
+//    fun setClickBtnAdd(clickBtnAdd: Boolean) {
+//        isClickBtnAdd = clickBtnAdd
+//    }
 
     fun addFeature(pointFindLocation: Point) {
         mClickPoint = mMapView.locationToScreen(pointFindLocation)
@@ -63,8 +61,8 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
                 mServiceFeatureTable!!, object:SingleTapAddFeatureAsync.AsyncResponse{
             override fun processFinish(output: Feature?) {
                 if (output != null) {
-                    if (mCallout != null && mCallout.isShowing)
-                        mCallout.dismiss()
+                    if (mDCallout != null && mDCallout.isShowing)
+                        mDCallout.dismiss()
                     //                mPopUp.showPopup((ArcGISFeature) output, true);
                 }
             }
@@ -72,15 +70,15 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
         })
         singleTapAdddFeatureAsync.execute()
     }
-
-    fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): DoubleArray {
-        val center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry.extent.center
-        val project = GeometryEngine.project(center, SpatialReferences.getWgs84())
-        val location = doubleArrayOf(project.extent.center.x, project.extent.center.y)
-        mClickPoint = android.graphics.Point(e2.x.toInt(), e2.y.toInt())
-        //        Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
-        return location
-    }
+//
+//    fun onScroll(e1: MotionEvent, e2: MotionEvent, distanceX: Float, distanceY: Float): DoubleArray {
+//        val center = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry.extent.center
+//        val project = GeometryEngine.project(center, SpatialReferences.getWgs84())
+//        val location = doubleArrayOf(project.extent.center.x, project.extent.center.y)
+//        mClickPoint = android.graphics.Point(e2.x.toInt(), e2.y.toInt())
+//        //        Geometry geometry = GeometryEngine.project(project, SpatialReferences.getWebMercator());
+//        return location
+//    }
 
     fun onSingleTapMapView(e: MotionEvent) {
         val clickPoint = mMapView.screenToLocation(android.graphics.Point(Math.round(e.x), Math.round(e.y)))
@@ -146,8 +144,8 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
                         suCoTanHoaLayerThiCong!!.selectFeature(item)
                         if (mApplication.getDFeatureLayer.layer != null) {
                             val queryClause = String.format("%s = '%s' and %s = '%s'",
-                                    Constant.FIELD_SUCOTHONGTIN.ID_SUCO, item.attributes[Constant.FIELD_SUCO.ID_SUCO].toString(),
-                                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName)
+                                    Constant.FieldSuCoThongTin.ID_SUCO, item.attributes[Constant.FieldSuCo.ID_SUCO].toString(),
+                                    Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName)
                             val queryParameters1 = QueryParameters()
                             queryParameters1.whereClause = queryClause
                             QueryServiceFeatureTableAsync(mActivity,
@@ -178,7 +176,7 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
     fun querySearch(searchStr: String, adapter: TraCuuAdapter) {
         adapter.clear()
         adapter.notifyDataSetChanged()
-        mCallout!!.dismiss()
+        mDCallout!!.dismiss()
 
         suCoTanHoaLayerThiCong!!.clearSelection()
         val queryParameters = QueryParameters()
@@ -194,17 +192,17 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
                 while (iterator.hasNext()) {
                     val item = iterator.next() as Feature
                     val attributes = item.attributes
-                    var format_date = ""
-                    val split = attributes[Constant.FIELD_SUCO.ID_SUCO].toString().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    var formatDate = ""
+                    val split = attributes[Constant.FieldSuCo.ID_SUCO].toString().split("_".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     try {
-                        format_date = Constant.DateFormat.DATE_FORMAT.format(GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).time)
+                        formatDate = Constant.DateFormat.DATE_FORMAT.format(GregorianCalendar(Integer.parseInt(split[3]), Integer.parseInt(split[2]), Integer.parseInt(split[1])).time)
                     } catch (ignored: Exception) {
 
                     }
 
                     var viTri = ""
                     try {
-                        viTri = attributes[Constant.FIELD_SUCO.DIA_CHI].toString()
+                        viTri = attributes[Constant.FieldSuCo.DIA_CHI].toString()
                     } catch (ignored: Exception) {
 
                     }
@@ -219,8 +217,8 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
                     }
                     if (!isFound)
                         adapter.add(TraCuuAdapter.Item(objectID,
-                                attributes[Constant.FIELD_SUCO.ID_SUCO].toString(),
-                                Integer.parseInt(attributes[Constant.FIELD_SUCO.TRANG_THAI].toString()), format_date, viTri))
+                                attributes[Constant.FieldSuCo.ID_SUCO].toString(),
+                                Integer.parseInt(attributes[Constant.FieldSuCo.TRANG_THAI].toString()), formatDate, viTri))
                     adapter.notifyDataSetChanged()
 
                     //                        queryByObjectID(Integer.parseInt(attributes.get(Constant.OBJECTID).toString()));
@@ -234,9 +232,5 @@ class MapViewHandler(private val mCallout: Callout?, private val mMapView: MapVi
 
     }
 
-    companion object {
-        private val REQUEST_ID_IMAGE_CAPTURE = 1
-        private val DELTA_MOVE_Y = 0.0//7000;
-    }
 }
 

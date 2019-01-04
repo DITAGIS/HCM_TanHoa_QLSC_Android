@@ -41,7 +41,7 @@ class CheckVersionAsycn(@field:SuppressLint("StaticFieldLeak")
         var versionInfo: VersionInfo? = null
         if (params.isNotEmpty())
             try {
-                val url = URL(String.format(Constant.URL_API.CHECK_VERSION, params[0]))
+                val url = URL(String.format(Constant.UrlApi.CHECK_VERSION, params[0]))
                 val conn = url.openConnection() as HttpURLConnection
                 try {
                     conn.requestMethod = "GET"

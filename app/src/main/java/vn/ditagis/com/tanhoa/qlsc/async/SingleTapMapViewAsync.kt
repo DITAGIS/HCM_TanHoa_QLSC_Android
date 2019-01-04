@@ -7,13 +7,11 @@ import android.os.AsyncTask
 import android.os.Build
 import android.support.annotation.RequiresApi
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.ArcGISFeature
 import com.esri.arcgisruntime.data.ArcGISFeatureTable
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.geometry.Point
-import com.esri.arcgisruntime.mapping.GeoElement
 import com.esri.arcgisruntime.mapping.view.IdentifyLayerResult
 import com.esri.arcgisruntime.mapping.view.MapView
 import java.util.concurrent.ExecutionException
@@ -75,8 +73,8 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
     private fun querySuCoThongTin() {
         mApplication.geometry = mSelectedArcGISFeature!!.geometry
         val queryClause = String.format("%s = '%s' and %s = '%s'",
-                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mSelectedArcGISFeature!!.attributes[Constant.FIELD_SUCO.ID_SUCO].toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName)
+                Constant.FieldSuCoThongTin.ID_SUCO, mSelectedArcGISFeature!!.attributes[Constant.FieldSuCo.ID_SUCO].toString(),
+                Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName)
         val queryParameters = QueryParameters()
         queryParameters.whereClause = queryClause
         QueryServiceFeatureTableAsync(mActivity, mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin!!,
@@ -115,7 +113,7 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
                     if (mDialog != null && mDialog.isShowing) mDialog.dismiss()
                 }
             })
-            hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mSelectedArcGISFeature!!.attributes[Constant.FIELD_SUCO.ID_SUCO])
+            hoSoVatTuSuCoAsync.execute(Constant.HoSoSuCoMethod.FIND, mSelectedArcGISFeature!!.attributes[Constant.FieldSuCo.ID_SUCO])
         } else if (mDialog != null && mDialog.isShowing) {
             mDialog.dismiss()
         }

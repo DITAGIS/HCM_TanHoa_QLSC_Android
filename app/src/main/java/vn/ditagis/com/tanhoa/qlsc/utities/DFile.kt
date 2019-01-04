@@ -14,15 +14,14 @@ import vn.ditagis.com.tanhoa.qlsc.R
  */
 
 object DFile {
-    var formatter: DateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
 
-    fun getImageFile(context: Context): File {
-        val path = Environment.getExternalStorageDirectory().path
-        val outFile = File(path, context.resources.getString(R.string.path_saveImage))
-        if (!outFile.exists())
-            outFile.mkdir()
-        return File(outFile, "xxx.png")
-    }
+//    fun getImageFile(context: Context): File {
+//        val path = Environment.getExternalStorageDirectory().path
+//        val outFile = File(path, context.resources.getString(R.string.path_saveImage))
+//        if (!outFile.exists())
+//            outFile.mkdir()
+//        return File(outFile, "xxx.png")
+//    }
 
     fun getPDFFile(context: Context, name: String): File {
         val path = Environment.getExternalStorageDirectory().path

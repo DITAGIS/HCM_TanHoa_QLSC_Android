@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/clayout__list_task__root_view"
     tools:context=".ListTaskActivity">
 
     <android.support.design.widget.AppBarLayout

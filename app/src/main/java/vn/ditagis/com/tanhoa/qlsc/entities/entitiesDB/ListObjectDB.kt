@@ -1,6 +1,5 @@
 package vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB
 
-import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
 import vn.ditagis.com.tanhoa.qlsc.entities.HoSoThietBiSuCo
 import vn.ditagis.com.tanhoa.qlsc.entities.HoSoVatTuSuCo
 import vn.ditagis.com.tanhoa.qlsc.entities.ThietBi
@@ -8,7 +7,6 @@ import vn.ditagis.com.tanhoa.qlsc.entities.VatTu
 
 
 class ListObjectDB private constructor() {
-    var vatTuOngNganhs: List<VatTu>? = null
     var vatTus: List<VatTu>? = null
     var thietBis: List<ThietBi>? = null
     var dmas: List<String>? = null
@@ -25,9 +23,6 @@ class ListObjectDB private constructor() {
         this.lstHoSoThietBiSuCoInsert = lstHoSoThietBiSuCoInsert
     }
 
-    fun getHoSoThietBiSuCos(): List<HoSoThietBiSuCo>? {
-        return hoSoThietBiSuCos
-    }
 
     fun setHoSoThietBiSuCos(hoSoThietBiSuCos: MutableList<HoSoThietBiSuCo>) {
         this.hoSoThietBiSuCos = hoSoThietBiSuCos
@@ -49,9 +44,6 @@ class ListObjectDB private constructor() {
         this.lstHoSoVatTuSuCoInsert = lstHoSoVatTuSuCoInsert
     }
 
-    fun getHoSoVatTuSuCos(): List<HoSoVatTuSuCo>? {
-        return hoSoVatTuSuCos
-    }
 
     fun clearHoSoVatTuSuCos() {
         if (hoSoVatTuSuCos != null)

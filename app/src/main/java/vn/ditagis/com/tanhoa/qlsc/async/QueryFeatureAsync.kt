@@ -6,14 +6,11 @@ import android.os.AsyncTask
 import android.os.Build
 import android.support.annotation.RequiresApi
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.Feature
-import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 
 import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
 import java.util.TimeZone
@@ -70,13 +67,13 @@ private val mDelegate: AsyncResponse) : AsyncTask<Void, List<Feature>?, Void?>()
 
             val queryParameters = QueryParameters()
             @SuppressLint("DefaultLocale") val queryClause = StringBuilder(String.format(" %s like N'%%%s%%'" + " and %s = '%s'",
-                    Constant.FIELD_SUCOTHONGTIN.DIA_CHI, mDiaChi,
-                    Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName))
+                    Constant.FieldSuCoThongTin.DIA_CHI, mDiaChi,
+                    Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName))
             if (mHasTime)
-                queryClause.append(String.format(" and %s > date '%s'", Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC, mThoiGian))
+                queryClause.append(String.format(" and %s > date '%s'", Constant.FieldSuCoThongTin.TG_GIAO_VIEC, mThoiGian))
             if (mTrangThai != -1) {
                 queryClause.append(String.format(" and %s = %d",
-                        Constant.FIELD_SUCOTHONGTIN.TRANG_THAI, mTrangThai))
+                        Constant.FieldSuCoThongTin.TRANG_THAI, mTrangThai))
             }
             queryParameters.whereClause = queryClause.toString()
 

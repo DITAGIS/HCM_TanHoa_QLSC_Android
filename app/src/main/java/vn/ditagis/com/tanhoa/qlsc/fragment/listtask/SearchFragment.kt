@@ -1,9 +1,10 @@
-package vn.ditagis.com.tanhoa.qlsc.fragment.list_task
+package vn.ditagis.com.tanhoa.qlsc.fragment.listtask
 
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
 import android.support.annotation.RequiresApi
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.Fragment
 import android.text.format.DateFormat
 import android.view.LayoutInflater
@@ -17,15 +18,13 @@ import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 
 import com.esri.arcgisruntime.data.CodedValue
 import com.esri.arcgisruntime.data.CodedValueDomain
-import com.esri.arcgisruntime.data.Domain
 import com.esri.arcgisruntime.data.Feature
+import kotlinx.android.synthetic.main.activity_list_task.*
 
 import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Calendar
 import java.util.Comparator
@@ -45,7 +44,8 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 @SuppressLint("ValidFragment")
 class SearchFragment @SuppressLint("ValidFragment")
 constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) : Fragment(), View.OnClickListener {
-    private val mRootView: View
+    private val mRootView: View = inflater.inflate(R.layout.fragment_list_task_search,
+            mActivity.clayout__list_task__root_view as CoordinatorLayout, false)
     private var mEtxtAddress: EditText? = null
     private var mSpinTrangThai: Spinner? = null
     private var mTxtThoiGian: TextView? = null
@@ -53,13 +53,11 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
     private var mLstKetQua: ListView? = null
     private var mLayoutKetQua: LinearLayout? = null
 
-    private val mApplication: DApplication
+    private val mApplication: DApplication = mActivity.application as DApplication
     private var mCodeValues: List<CodedValue>? = null
     private var mFeaturesResult: List<Feature>? = null
 
     init {
-        mRootView = inflater.inflate(R.layout.fragment_list_task_search, null)
-        mApplication = mActivity.application as DApplication
         init()
     }
 
@@ -78,7 +76,7 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
     }
 
     private fun initSpinTrangThai() {
-        val domain = mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin!!.getField(Constant.FIELD_SUCO.TRANG_THAI).domain
+        val domain = mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin!!.getField(Constant.FieldSuCo.TRANG_THAI).domain
         if (domain != null) {
             mCodeValues = (domain as CodedValueDomain).codedValues
             if (mCodeValues != null) {
@@ -93,13 +91,13 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
     }
 
     private fun initListViewKetQuaTraCuu() {
-        mLstKetQua!!.setOnItemClickListener { adapterView, view, i, l -> mActivity.itemClick(adapterView, i) }
+        mLstKetQua!!.setOnItemClickListener { adapterView, _, i, _ -> mActivity.itemClick(adapterView, i) }
     }
 
     private fun showDateTimePicker() {
         val dialogView = View.inflate(mRootView.context, R.layout.date_time_picker, null)
         val alertDialog = android.app.AlertDialog.Builder(mRootView.context).create()
-        dialogView.findViewById<View>(R.id.date_time_set).setOnClickListener { view ->
+        dialogView.findViewById<View>(R.id.date_time_set).setOnClickListener {
             val datePicker = dialogView.findViewById<DatePicker>(R.id.date_picker)
             val calendar = GregorianCalendar(datePicker.year, datePicker.month, datePicker.dayOfMonth)
             val displaytime = DateFormat.format(Constant.DateFormat.DATE_FORMAT_STRING, calendar.time) as String
@@ -127,7 +125,7 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
                 mEtxtAddress!!.text.toString(),
                 mTxtThoiGian!!.text.toString(), object : QueryFeatureAsync.AsyncResponse {
             override fun processFinish(output: List<Feature>?) {
-                if (output != null && output.size > 0) {
+                if (output != null && output.isNotEmpty()) {
                     mFeaturesResult = output
                     handlingTraCuuHoanTat()
                 }
@@ -142,13 +140,13 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
         for (feature in mFeaturesResult!!) {
             val attributes = feature.attributes
             for (codedValue in mCodeValues!!) {
-                if (java.lang.Short.parseShort(codedValue.code.toString()) == java.lang.Short.parseShort(attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI].toString())) {
+                if (java.lang.Short.parseShort(codedValue.code.toString()) == java.lang.Short.parseShort(attributes[Constant.FieldSuCoThongTin.TRANG_THAI].toString())) {
                     Constant.DateFormat.DATE_FORMAT_VIEW.timeZone = TimeZone.getTimeZone("UTC")
-                    items.add(TraCuuAdapter.Item(Integer.parseInt(attributes[Constant.FIELD_SUCOTHONGTIN.OBJECT_ID].toString()),
-                            attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString(),
-                            Integer.parseInt(attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI].toString()),
-                            Constant.DateFormat.DATE_FORMAT_VIEW.format((attributes[Constant.FIELD_SUCOTHONGTIN.TG_GIAO_VIEC] as Calendar).time),
-                            attributes[Constant.FIELD_SUCOTHONGTIN.DIA_CHI].toString()))
+                    items.add(TraCuuAdapter.Item(Integer.parseInt(attributes[Constant.FieldSuCoThongTin.OBJECT_ID].toString()),
+                            attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString(),
+                            Integer.parseInt(attributes[Constant.FieldSuCoThongTin.TRANG_THAI].toString()),
+                            Constant.DateFormat.DATE_FORMAT_VIEW.format((attributes[Constant.FieldSuCoThongTin.TG_GIAO_VIEC] as Calendar).time),
+                            attributes[Constant.FieldSuCoThongTin.DIA_CHI].toString()))
                 }
             }
 
@@ -157,17 +155,17 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
             try {
                 Constant.DateFormat.DATE_FORMAT_VIEW.timeZone = TimeZone.getTimeZone("UTC")
                 val i = Constant.DateFormat.DATE_FORMAT_VIEW.parse(o2.ngayGiaoViec).time - Constant.DateFormat.DATE_FORMAT_VIEW.parse(o1.ngayGiaoViec).time
-                if (i > 0)
-                    1
-                else if (i == 0L)
-                    0
-                else
-                    -1
+                when {
+                    i > 0 -> 1
+                    i == 0L -> 0
+                    else -> -1
+                }
             } catch (e: ParseException) {
                 e.printStackTrace()
+                0
             }
 
-            0
+
         }
         items.sortWith(Comparator(comparator))
         val adapter = TraCuuAdapter(mRootView.context, items)

@@ -1,6 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.socket
 
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
@@ -20,37 +21,19 @@ import java.util.HashMap
  * Created by Jaison on 02/05/17.
  */
 
-class PermissionUtils {
+class PermissionUtils(internal var context: Context, callback: PermissionResultCallback) {
 
-    internal var context: Context
-    internal var current_activity: Activity
+    private var currentActivity: Activity = context as Activity
 
-    internal var permissionResultCallback: PermissionResultCallback
-
-
-    internal var permission_list = ArrayList<String>()
-    internal var listPermissionsNeeded = ArrayList<String>()
-
-    internal var dialog_content = ""
-    internal var req_code: Int = 0
-
-    constructor(context: Context) {
-        this.context = context
-        this.current_activity = context as Activity
-
-        permissionResultCallback = context as PermissionResultCallback
+    private var permissionResultCallback: PermissionResultCallback = callback
 
 
-    }
-
-    constructor(context: Context, callback: PermissionResultCallback) {
-        this.context = context
-        this.current_activity = context as Activity
-
-        permissionResultCallback = callback
+    private var permissionList = ArrayList<String>()
+    private var listPermissionsNeeded = ArrayList<String>()
 
 
-    }
+    private var dialogContent = ""
+    private var reqCode: Int = 0
 
 
     /**
@@ -61,19 +44,20 @@ class PermissionUtils {
      * @param request_code
      */
 
-    fun check_permission(permissions: ArrayList<String>, dialog_content: String, request_code: Int) {
-        this.permission_list = permissions
-        this.dialog_content = dialog_content
-        this.req_code = request_code
+    @SuppressLint("ObsoleteSdkInt")
+    fun checkPermission(permissions: ArrayList<String>, dialog_content: String, request_code: Int) {
+        this.permissionList = permissions
+        this.dialogContent = dialog_content
+        this.reqCode = request_code
 
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkAndRequestPermissions(permissions, request_code)) {
-                permissionResultCallback.PermissionGranted(request_code)
+                permissionResultCallback.permissionGranted(request_code)
                 Log.i("all permissions", "granted")
                 Log.i("proceed", "to callback")
             }
         } else {
-            permissionResultCallback.PermissionGranted(request_code)
+            permissionResultCallback.permissionGranted(request_code)
 
             Log.i("all permissions", "granted")
             Log.i("proceed", "to callback")
@@ -96,7 +80,7 @@ class PermissionUtils {
             listPermissionsNeeded = ArrayList()
 
             for (i in permissions.indices) {
-                val hasPermission = ContextCompat.checkSelfPermission(current_activity, permissions[i])
+                val hasPermission = ContextCompat.checkSelfPermission(currentActivity, permissions[i])
 
                 if (hasPermission != PackageManager.PERMISSION_GRANTED) {
                     listPermissionsNeeded.add(permissions[i])
@@ -105,7 +89,7 @@ class PermissionUtils {
             }
 
             if (!listPermissionsNeeded.isEmpty()) {
-                ActivityCompat.requestPermissions(current_activity, listPermissionsNeeded.toTypedArray(), request_code)
+                ActivityCompat.requestPermissions(currentActivity, listPermissionsNeeded.toTypedArray(), request_code)
                 return false
             }
         }
@@ -122,40 +106,40 @@ class PermissionUtils {
      */
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         when (requestCode) {
-            1 -> if (grantResults.size > 0) {
+            1 -> if (grantResults.isNotEmpty()) {
                 val perms = HashMap<String, Int>()
 
                 for (i in permissions.indices) {
                     perms[permissions[i]] = grantResults[i]
                 }
 
-                val pending_permissions = ArrayList<String>()
+                val pendingPermissions = ArrayList<String>()
 
                 for (i in listPermissionsNeeded.indices) {
                     if (perms[listPermissionsNeeded[i]] != PackageManager.PERMISSION_GRANTED) {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(current_activity, listPermissionsNeeded[i]))
-                            pending_permissions.add(listPermissionsNeeded[i])
+                        if (ActivityCompat.shouldShowRequestPermissionRationale(currentActivity, listPermissionsNeeded[i]))
+                            pendingPermissions.add(listPermissionsNeeded[i])
                         else {
                             Log.i("Go to settings", "and enable permissions")
-                            permissionResultCallback.NeverAskAgain(req_code)
-                            Toast.makeText(current_activity, "Go to settings and enable permissions", Toast.LENGTH_LONG).show()
+                            permissionResultCallback.neverAskAgain(reqCode)
+                            Toast.makeText(currentActivity, "Go to settings and enable permissions", Toast.LENGTH_LONG).show()
                             return
                         }
                     }
 
                 }
 
-                if (pending_permissions.size > 0) {
-                    showMessageOKCancel(dialog_content,
-                            DialogInterface.OnClickListener { dialog, which ->
+                if (pendingPermissions.size > 0) {
+                    showMessageOKCancel(dialogContent,
+                            DialogInterface.OnClickListener { _, which ->
                                 when (which) {
-                                    DialogInterface.BUTTON_POSITIVE -> check_permission(permission_list, dialog_content, req_code)
+                                    DialogInterface.BUTTON_POSITIVE -> checkPermission(permissionList, dialogContent, reqCode)
                                     DialogInterface.BUTTON_NEGATIVE -> {
                                         Log.i("permisson", "not fully given")
-                                        if (permission_list.size == pending_permissions.size)
-                                            permissionResultCallback.PermissionDenied(req_code)
+                                        if (permissionList.size == pendingPermissions.size)
+                                            permissionResultCallback.permissionDenied(reqCode)
                                         else
-                                            permissionResultCallback.PartialPermissionGranted(req_code, pending_permissions)
+                                            permissionResultCallback.partialPermissionGranted(reqCode, pendingPermissions)
                                     }
                                 }
                             })
@@ -163,7 +147,7 @@ class PermissionUtils {
                 } else {
                     Log.i("all", "permissions granted")
                     Log.i("proceed", "to next step")
-                    permissionResultCallback.PermissionGranted(req_code)
+                    permissionResultCallback.permissionGranted(reqCode)
 
                 }
 
@@ -180,7 +164,7 @@ class PermissionUtils {
      * @param okListener
      */
     private fun showMessageOKCancel(message: String, okListener: DialogInterface.OnClickListener) {
-        AlertDialog.Builder(current_activity)
+        AlertDialog.Builder(currentActivity)
                 .setMessage(message)
                 .setPositiveButton("Ok", okListener)
                 .setNegativeButton("Cancel", okListener)
@@ -189,10 +173,10 @@ class PermissionUtils {
     }
 
     interface PermissionResultCallback {
-        fun PermissionGranted(request_code: Int)
-        fun PartialPermissionGranted(request_code: Int, granted_permissions: ArrayList<String>)
-        fun PermissionDenied(request_code: Int)
-        fun NeverAskAgain(request_code: Int)
+        fun permissionGranted(request_code: Int)
+        fun partialPermissionGranted(request_code: Int, granted_permissions: ArrayList<String>)
+        fun permissionDenied(request_code: Int)
+        fun neverAskAgain(request_code: Int)
     }
 }
 

@@ -13,14 +13,10 @@ import android.view.SurfaceView
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.Toast
 
 import java.io.IOException
 
-import butterknife.BindView
-import butterknife.ButterKnife
-import com.google.android.gms.vision.CameraSource
 import kotlinx.android.synthetic.main.activity_camera.*
 import vn.ditagis.com.tanhoa.qlsc.async.CameraAsync
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
@@ -41,7 +37,6 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_camera)
-        ButterKnife.bind(this)
         mSurfaceHolder = surfaceView_fragment_camera!!.holder
         mSurfaceHolder!!.addCallback(this)
         mApplication = application as DApplication
@@ -153,13 +148,13 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
 
-    fun goHome() {
+    private fun goHome() {
         val intent = Intent()
         setResult(RESULT_OK, intent)
         finish()
     }
 
-    fun goHomeCancel() {
+    private fun goHomeCancel() {
         val intent = Intent()
         setResult(RESULT_CANCELED, intent)
         finish()

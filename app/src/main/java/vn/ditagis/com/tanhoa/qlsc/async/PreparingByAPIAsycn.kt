@@ -5,7 +5,6 @@ import android.app.ProgressDialog
 import android.os.AsyncTask
 import android.util.Log
 
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -19,7 +18,6 @@ import vn.ditagis.com.tanhoa.qlsc.R
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB
 import vn.ditagis.com.tanhoa.qlsc.services.GetDMA
 import vn.ditagis.com.tanhoa.qlsc.services.GetThietBi
 import vn.ditagis.com.tanhoa.qlsc.services.GetVatTu
@@ -83,7 +81,7 @@ class PreparingByAPIAsycn(private val mActivity: Activity, private val mDelegate
 
     private fun getLayerInfoAPI() {
         try {
-            val url = URL(Constant.URL_API.LAYER_INFO)
+            val url = URL(Constant.UrlApi.LAYER_INFO)
             val conn = url.openConnection() as HttpURLConnection
             try {
                 conn.doOutput = false
@@ -143,7 +141,7 @@ class PreparingByAPIAsycn(private val mActivity: Activity, private val mDelegate
             var noOutFields = ""
             val id = jsonRoute.getString(Constant.FieldSys.LAYER_ID)
             if (id == Constant.IDLayer.ID_SU_CO_THONG_TIN_TABLE)
-                noOutFields = noOutFields + "," + Constant.NO_OUTFIELD_SUCO.DON_VI
+                noOutFields = noOutFields + "," + Constant.NoOutFieldSuCo.DON_VI
             layerDTGS.add(DLayerInfo(
                     id,
                     jsonRoute.getString(Constant.FieldSys.LAYER_TITLE),

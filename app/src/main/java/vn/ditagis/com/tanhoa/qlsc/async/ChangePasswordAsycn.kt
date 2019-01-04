@@ -44,7 +44,7 @@ class ChangePasswordAsycn(@SuppressLint("StaticFieldLeak") private val mActivity
         val pin = params[0]
         val newPin = params[1]
         try {
-            val apiURL = Constant.URL_API.CHANGE_PASSWORD
+            val apiURL = Constant.UrlApi.CHANGE_PASSWORD
             val url = URL(apiURL)
             val conn = url.openConnection() as HttpURLConnection
             try {

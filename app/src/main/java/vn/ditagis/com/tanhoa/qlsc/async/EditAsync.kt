@@ -70,10 +70,10 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                         var trangThai = ""
                         var hasDomain = false
                         for (item in adapter.dItems!!) {
-                            if (item.fieldName == Constant.FIELD_SUCO.LOAI_SU_CO) {
+                            if (item.fieldName == Constant.FieldSuCo.LOAI_SU_CO) {
                                 loaiSuCo = item.value!!
 
-                            } else if (item.fieldName == Constant.FIELD_SUCO.TRANG_THAI)
+                            } else if (item.fieldName == Constant.FieldSuCo.TRANG_THAI)
                                 trangThai = item.value!!
                         }
                         val featureTypes = arcGISFeatureSuCoThongTin.featureTable.featureTypes
@@ -97,8 +97,8 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                                 hasDomain = true
                                 //Trường hợp nguyên nhân, không tự động lấy được domain
                                 when (item.fieldName) {
-                                    Constant.FIELD_SUCO.NGUYEN_NHAN -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FIELD_SUCO.NGUYEN_NHAN] as CodedValueDomain).codedValues
+                                    Constant.FieldSuCo.NGUYEN_NHAN -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FieldSuCo.NGUYEN_NHAN] as CodedValueDomain).codedValues
                                         if (codedValues != null) {
                                             for (codedValue in codedValues) {
                                                 if (codedValue.name == item.value) {
@@ -109,8 +109,8 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                                         }
                                     }
                                     //Trường hợp vật liệu, không tự động lấy được domain
-                                    Constant.FIELD_SUCO.VAT_LIEU -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FIELD_SUCO.VAT_LIEU] as CodedValueDomain).codedValues
+                                    Constant.FieldSuCo.VAT_LIEU -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FieldSuCo.VAT_LIEU] as CodedValueDomain).codedValues
                                         if (codedValues != null) {
                                             for (codedValue in codedValues) {
                                                 if (codedValue.name == item.value) {
@@ -120,8 +120,8 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                                             }
                                         }
                                     }
-                                    Constant.FIELD_SUCO.DUONG_KINH_ONG -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
-                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FIELD_SUCO.DUONG_KINH_ONG] as CodedValueDomain).codedValues
+                                    Constant.FieldSuCo.DUONG_KINH_ONG -> if (finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGNGANH || finalLoaiSuCoShort == Constant.LoaiSuCo.LOAISUCO_ONGCHINH) {
+                                        val codedValues = (arcGISFeatureSuCoThongTin.featureTable.featureTypes[finalLoaiSuCoShort - 1].domains[Constant.FieldSuCo.DUONG_KINH_ONG] as CodedValueDomain).codedValues
                                         if (codedValues != null) {
                                             for (codedValue in codedValues) {
                                                 if (codedValue.name == item.value) {
@@ -200,18 +200,18 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                                 }
                             hasDomain = false
                         }
-                        arcGISFeatureSuCoThongTin.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI] = Constant.TRANG_THAI_SU_CO.DANG_XU_LY
+                        arcGISFeatureSuCoThongTin.attributes[Constant.FieldSuCoThongTin.TRANG_THAI] = Constant.TrangThaiSuCo.DANG_XU_LY
                         if (finalTrangThai == mActivity.getString(R.string.SuCo_TrangThai_HoanThanh)) {
-                            arcGISFeatureSuCoThongTin.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI] = Constant.TRANG_THAI_SU_CO.HOAN_THANH
+                            arcGISFeatureSuCoThongTin.attributes[Constant.FieldSuCoThongTin.TRANG_THAI] = Constant.TrangThaiSuCo.HOAN_THANH
                             //                c[0] = Calendar.getInstance();
-                            //                arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FIELD_SUCO.TGKHAC_PHUC, c[0]);
+                            //                arcGISFeatureSuCoThongTin.getAttributes().put(Constant.FieldSuCo.TGKHAC_PHUC, c[0]);
                             //                long ngayKhacPhuc = c[0].getTimeInMillis();
                             //                long ngayThongBao = ((Calendar) arcGISFeatureSuCoThongTin.getAttributes().
-                            //                        get(Constant.FIELD_SUCO.TGPHAN_ANH)).getTimeInMillis();
+                            //                        get(Constant.FieldSuCo.TGPHAN_ANH)).getTimeInMillis();
                             //                double thoiGianThucHien = new BigDecimal((double) (ngayKhacPhuc - ngayThongBao) / (60 * 60 * 1000)).setScale(2, RoundingMode.HALF_UP).doubleValue();
                             //            arcGISFeature.getAttributes().put((mActivity.getString(R.string.Field_SuCo_ThoiGianThucHien)), thoiGianThucHien);
                         }
-                        arcGISFeatureSuCoThongTin.attributes[Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT] = Calendar.getInstance()
+                        arcGISFeatureSuCoThongTin.attributes[Constant.FieldSuCoThongTin.TG_CAP_NHAT] = Calendar.getInstance()
                         //        arcGISFeature.getAttributes().put(mActivity.getString(R.string.Field_SuCo_NhanVienGiamSat),
                         //               mApplication.getUserDangNhap.getUserName());
                         mServiceFeatureTableSuCoThongTin!!.loadAsync()
@@ -236,8 +236,8 @@ constructor(@field:SuppressLint("StaticFieldLeak")
 
                 })
         val queryClause = String.format("%s = '%s' and %s = '%s'",
-                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString(),
-                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.userDangNhap!!.userName)
+                Constant.FieldSuCoThongTin.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString(),
+                Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.userDangNhap!!.userName)
         val queryParameters = QueryParameters()
         queryParameters.whereClause = queryClause
         queryServiceFeatureTableAsync.execute(queryParameters)
@@ -248,7 +248,7 @@ constructor(@field:SuppressLint("StaticFieldLeak")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun updateSuCo(arcGISFeature: ArcGISFeature) {
         val queryClause = String.format("%s = '%s'",
-                Constant.FIELD_SUCO.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString())
+                Constant.FieldSuCo.ID_SUCO, mApplication.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString())
         val queryParameters = QueryParameters()
         queryParameters.whereClause = queryClause
         QueryServiceFeatureTableAsync(mActivity, mApplication.getDFeatureLayer.layer!!.featureTable as ServiceFeatureTable,
@@ -256,22 +256,22 @@ constructor(@field:SuppressLint("StaticFieldLeak")
                     override fun processFinish(output: Feature?) {
                         if (output != null) {
                             val arcGISFeatureSuCo = output as ArcGISFeature
-                            val trangThai = arcGISFeature.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI]
+                            val trangThai = arcGISFeature.attributes[Constant.FieldSuCoThongTin.TRANG_THAI]
                             var trangThaiShort: Short = 0
                             if (trangThai != null)
                                 trangThaiShort = java.lang.Short.parseShort(trangThai.toString())
 
-                            val hinhThucPhatHien = arcGISFeature.attributes[Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN]
+                            val hinhThucPhatHien = arcGISFeature.attributes[Constant.FieldSuCoThongTin.HINH_THUC_PHAT_HIEN]
                             var hinhThucPhatHienShort: Short = 2
                             if (hinhThucPhatHien != null)
                                 hinhThucPhatHienShort = java.lang.Short.parseShort(hinhThucPhatHien.toString())
                             if (mApplication.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_TC) {
-                                arcGISFeatureSuCo.attributes[Constant.FIELD_SUCO.TRANG_THAI_THI_CONG] = trangThaiShort
-                                arcGISFeatureSuCo.attributes[Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG] = hinhThucPhatHienShort
+                                arcGISFeatureSuCo.attributes[Constant.FieldSuCo.TRANG_THAI_THI_CONG] = trangThaiShort
+                                arcGISFeatureSuCo.attributes[Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_THI_CONG] = hinhThucPhatHienShort
 
                             } else if (mApplication.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_GS) {
-                                arcGISFeatureSuCo.attributes[Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT] = trangThaiShort
-                                arcGISFeatureSuCo.attributes[Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT] = hinhThucPhatHienShort
+                                arcGISFeatureSuCo.attributes[Constant.FieldSuCo.TRANG_THAI_GIAM_SAT] = trangThaiShort
+                                arcGISFeatureSuCo.attributes[Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_GIAM_SAT] = hinhThucPhatHienShort
                             }
                             mServiceFeatureTableSuCo.loadAsync()
                             mServiceFeatureTableSuCo.addDoneLoadingListener {

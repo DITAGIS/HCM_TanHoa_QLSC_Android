@@ -38,8 +38,8 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
         val queryParameters = QueryParameters()
         val hoSoVatTuSuCos = ArrayList<HoSoVatTuSuCo>()
 
-        val queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
-                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu)
+        val queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FieldVatTu.ID_SU_CO, idSuCo,
+                Constant.FieldVatTu.LOAI_VAT_TU, mLoaiVatTu)
         queryParameters.whereClause = queryClause
         val queryResultListenableFuture = this.mServiceFeatureTable!!.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL)
         queryResultListenableFuture.addDoneListener {
@@ -52,10 +52,10 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
                     while (it.hasNext()) {
                         val feature = it.next() as Feature
                         val attributes = feature.attributes
-                        val maVatTu = attributes[Constant.FIELD_VATTU.MA_VAT_TU].toString()
-                        query.append(String.format("%s = '%s' or ", Constant.FIELD_VATTU.MA_VAT_TU, maVatTu))
-                        tempHoSoVatTuSuCo.add(HoSoVatTuSuCo(attributes[Constant.FIELD_VATTU.ID_SU_CO].toString(),
-                                java.lang.Double.parseDouble(attributes[Constant.FIELD_VATTU.SO_LUONG].toString()),
+                        val maVatTu = attributes[Constant.FieldVatTu.MA_VAT_TU].toString()
+                        query.append(String.format("%s = '%s' or ", Constant.FieldVatTu.MA_VAT_TU, maVatTu))
+                        tempHoSoVatTuSuCo.add(HoSoVatTuSuCo(attributes[Constant.FieldVatTu.ID_SU_CO].toString(),
+                                java.lang.Double.parseDouble(attributes[Constant.FieldVatTu.SO_LUONG].toString()),
                                 maVatTu,
                                 "",
                                 ""))
@@ -80,12 +80,12 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
                                     while (iterator.hasNext()) {
                                         item = iterator.next()
                                         for (hoSoVatTuSuCo in tempHoSoVatTuSuCo) {
-                                            if (hoSoVatTuSuCo.maVatTu == item.attributes[Constant.FIELD_VATTU.MA_VAT_TU].toString()) {
+                                            if (hoSoVatTuSuCo.maVatTu == item.attributes[Constant.FieldVatTu.MA_VAT_TU].toString()) {
                                                 hoSoVatTuSuCos.add(HoSoVatTuSuCo(hoSoVatTuSuCo.idSuCo,
                                                         hoSoVatTuSuCo.soLuong,
                                                         hoSoVatTuSuCo.maVatTu,
-                                                        item.attributes[Constant.FIELD_VATTU.TEN_VAT_TU].toString(),
-                                                        item.attributes[Constant.FIELD_VATTU.DON_VI_TINH].toString()))
+                                                        item.attributes[Constant.FieldVatTu.TEN_VAT_TU].toString(),
+                                                        item.attributes[Constant.FieldVatTu.DON_VI_TINH].toString()))
                                             }
                                         }
                                     }
@@ -122,8 +122,8 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
 
     private fun delete(idSuCo: String) {
         val queryParameters = QueryParameters()
-        val queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FIELD_VATTU.ID_SU_CO, idSuCo,
-                Constant.FIELD_VATTU.LOAI_VAT_TU, mLoaiVatTu)
+        val queryClause = String.format("%s like '%%%s%%' and %s = %d", Constant.FieldVatTu.ID_SU_CO, idSuCo,
+                Constant.FieldVatTu.LOAI_VAT_TU, mLoaiVatTu)
         queryParameters.whereClause = queryClause
         val queryResultListenableFuture = this.mServiceFeatureTable!!.queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.LOAD_ALL)
         queryResultListenableFuture.addDoneListener {
@@ -154,15 +154,15 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
         val features = ArrayList<Feature>()
         for (hoSoVatTuSuCo in hoSoVatTuSuCos) {
             val attributes = HashMap<String, Any>()
-            attributes[Constant.FIELD_VATTU.ID_SU_CO] = hoSoVatTuSuCo.idSuCo
-            attributes[Constant.FIELD_VATTU.MA_VAT_TU] = hoSoVatTuSuCo.maVatTu
-            attributes[Constant.FIELD_VATTU.SO_LUONG] = hoSoVatTuSuCo.soLuong
+            attributes[Constant.FieldVatTu.ID_SU_CO] = hoSoVatTuSuCo.idSuCo
+            attributes[Constant.FieldVatTu.MA_VAT_TU] = hoSoVatTuSuCo.maVatTu
+            attributes[Constant.FieldVatTu.SO_LUONG] = hoSoVatTuSuCo.soLuong
 
             val feature = mServiceFeatureTable!!.createFeature()
-            feature.attributes[Constant.FIELD_VATTU.ID_SU_CO] = hoSoVatTuSuCo.idSuCo
-            feature.attributes[Constant.FIELD_VATTU.MA_VAT_TU] = hoSoVatTuSuCo.maVatTu
-            feature.attributes[Constant.FIELD_VATTU.SO_LUONG] = hoSoVatTuSuCo.soLuong
-            feature.attributes[Constant.FIELD_VATTU.LOAI_VAT_TU] = mLoaiVatTu
+            feature.attributes[Constant.FieldVatTu.ID_SU_CO] = hoSoVatTuSuCo.idSuCo
+            feature.attributes[Constant.FieldVatTu.MA_VAT_TU] = hoSoVatTuSuCo.maVatTu
+            feature.attributes[Constant.FieldVatTu.SO_LUONG] = hoSoVatTuSuCo.soLuong
+            feature.attributes[Constant.FieldVatTu.LOAI_VAT_TU] = mLoaiVatTu
             features.add(feature)
         }
         mServiceFeatureTable!!.addFeaturesAsync(features).addDoneListener {
@@ -196,10 +196,10 @@ class HoSoVatTuSuCoAsync(@field:SuppressLint("StaticFieldLeak")
             if (mServiceFeatureTable.loadStatus == LoadStatus.LOADED) {
                 if (objects.isNotEmpty()) {
                     when (Integer.parseInt(objects[0].toString())) {
-                        Constant.HOSOSUCO_METHOD.FIND -> if (objects.size > 1 && objects[1] is String) {
+                        Constant.HoSoSuCoMethod.FIND -> if (objects.size > 1 && objects[1] is String) {
                             find(objects[1].toString())
                         }
-                        Constant.HOSOSUCO_METHOD.INSERT -> if (objects.size > 1 && objects[1] is String) {
+                        Constant.HoSoSuCoMethod.INSERT -> if (objects.size > 1 && objects[1] is String) {
                             delete(objects[1].toString())
                         }
                     }

@@ -15,9 +15,9 @@ class APICompleteAsync(private val mApplication: DApplication, private val mIDSu
 
     private fun send() {
         try {
-            val API_URL = String.format(Constant.URL_API.COMPLETE, mIDSuCo)
+            val apiURL = String.format(Constant.UrlApi.COMPLETE, mIDSuCo)
 
-            val url = URL(API_URL)
+            val url = URL(apiURL)
             val conn = url.openConnection() as HttpURLConnection
             try {
                 conn.doOutput = false

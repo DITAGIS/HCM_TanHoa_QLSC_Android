@@ -7,7 +7,7 @@ import java.util.Date
 class DiemSuCo {
     var idSuCo: String? = null
     var vitri: String? = null
-    var ngayPhanAnh: Date? = null
+    private var ngayPhanAnh: Date? = null
     var nguoiPhanAnh: String? = null
     var sdtPhanAnh: String? = null
     var emailPhanAnh: String? = null
@@ -16,15 +16,15 @@ class DiemSuCo {
     var quan: String? = null
     var phuong: String? = null
     var ghiChu: String? = null
-    var nguoiCapNhat: String? = null
-    var ngayCapNhat: Date? = null
-    var nguyenNhan: String? = null
+    private var nguoiCapNhat: String? = null
+    private var ngayCapNhat: Date? = null
+    private var nguyenNhan: String? = null
     var point: Point? = null
     var image: ByteArray? = null
     var ketCauDuong: Short = 0
-    var phuiDaoDai: Double? = null
-    var phuiDaoRong: Double? = null
-    var phuiDaoSau: Double? = null
+    private var phuiDaoDai: Double? = null
+    private var phuiDaoRong: Double? = null
+    private var phuiDaoSau: Double? = null
 
     fun clear() {
         idSuCo = null
@@ -33,7 +33,7 @@ class DiemSuCo {
         nguoiPhanAnh = null
         sdtPhanAnh = null
         emailPhanAnh = null
-        trangThai = Constant.TRANG_THAI_SU_CO.CHUA_XU_LY
+        trangThai = Constant.TrangThaiSuCo.CHUA_XU_LY
         hinhThucPhatHien = Constant.HinhThucPhatHien.BE_NOI
         quan = null
         phuong = null

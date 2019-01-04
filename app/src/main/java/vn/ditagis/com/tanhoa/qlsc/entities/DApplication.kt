@@ -13,13 +13,12 @@ import io.socket.client.Socket
 @RequiresApi(api = Build.VERSION_CODES.O)
 class DApplication : Application() {
     var lstFeatureLayerDTG: List<DLayerInfo>? = null
-    var getConstant: Constant
 
     var capture: ByteArray? = null
 
     var userDangNhap: User? = null
 
-    var getDFeatureLayer: DFeatureLayer
+    var getDFeatureLayer: DFeatureLayer = DFeatureLayer()
 
     var channelID: Int = 0
 
@@ -28,7 +27,7 @@ class DApplication : Application() {
 
     var loaiVatTu: Short = 0
 
-    var getDiemSuCo: DiemSuCo
+    var getDiemSuCo: DiemSuCo? = null
 
     var isFromNotification: Boolean = false
 
@@ -40,15 +39,7 @@ class DApplication : Application() {
     var isCheckedVersion: Boolean = false
 
     init {
-        getConstant = Constant()
-    }
-
-    init {
         capture = null
-    }
-
-    init {
-        getDFeatureLayer = DFeatureLayer()
     }
 
     init {

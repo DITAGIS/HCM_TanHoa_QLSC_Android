@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.AdapterView
+import android.widget.LinearLayout
 import com.esri.arcgisruntime.data.Field
 
 import com.esri.arcgisruntime.data.ServiceFeatureTable
+import kotlinx.android.synthetic.main.activity_tra_cuu.*
 import kotlinx.android.synthetic.main.date_time_picker.view.*
 import kotlinx.android.synthetic.main.layout_dialog_update_feature_listview.*
 import kotlinx.android.synthetic.main.layout_dialog_update_feature_listview.view.*
@@ -32,10 +34,10 @@ class TraCuuActivity : AppCompatActivity() {
         for (i in 0 until mServiceFeatureTable!!.featureTypes.size) {
             mLstFeatureType!!.add(mServiceFeatureTable.featureTypes[i].name)
         }
-        lstView_alertdialog_info.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id -> edit(parent, view, position) }
+        lstView_alertdialog_info.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ -> edit(parent, position) }
     }
 
-    private fun edit(parent: AdapterView<*>, view: View, position: Int) {
+    private fun edit(parent: AdapterView<*>, position: Int) {
         if (parent.getItemAtPosition(position) is vn.ditagis.com.tanhoa.qlsc.adapter.FeatureViewMoreInfoAdapter.Item) {
             val item = parent.getItemAtPosition(position) as FeatureViewMoreInfoAdapter.Item
             if (item.isEdit) {
@@ -43,8 +45,9 @@ class TraCuuActivity : AppCompatActivity() {
                         android.R.style.Theme_Material_Light_Dialog_Alert)
                 builder.setTitle("Cập nhật thuộc tính")
                 builder.setMessage(item.alias)
-                builder.setCancelable(false).setNegativeButton("Hủy") { dialog, which -> dialog.dismiss() }
-                val layout = this.layoutInflater.inflate(R.layout.layout_dialog_update_feature_listview, null) as android.widget.LinearLayout
+                builder.setCancelable(false).setNegativeButton("Hủy") { dialog, _ -> dialog.dismiss() }
+                val layout = this.layoutInflater.inflate(R.layout.layout_dialog_update_feature_listview,
+                        layout_tracuu_include as LinearLayout,false) as android.widget.LinearLayout
                 builder.setView(layout)
 
                 val domain = mServiceFeatureTable!!.getField(item.fieldName!!).domain
@@ -104,14 +107,14 @@ class TraCuuActivity : AppCompatActivity() {
                         else -> {
                         }
                     }
-                builder.setPositiveButton("Cập nhật") { dialog, which ->
+                builder.setPositiveButton("Cập nhật") { dialog, _ ->
                     if (item.fieldName == mServiceFeatureTable.typeIdField || domain != null) {
                         item.value = layout.spin_edit_viewmoreinfo.selectedItem.toString()
                     } else {
                         when (item.fieldType) {
                             Field.Type.DATE -> item.value = txt_edit_viewmoreinfo.text.toString()
                             Field.Type.DOUBLE -> try {
-                                val x = java.lang.Double.parseDouble(layout.etxt_edit_viewmoreinfo.text.toString())
+                                java.lang.Double.parseDouble(layout.etxt_edit_viewmoreinfo.text.toString())
                                 item.value = layout.etxt_edit_viewmoreinfo.text.toString()
                             } catch (e: Exception) {
                                 android.widget.Toast.makeText(this@TraCuuActivity, "Số liệu nhập vào không đúng định dạng!!!", android.widget.Toast.LENGTH_LONG).show()
@@ -119,12 +122,14 @@ class TraCuuActivity : AppCompatActivity() {
 
                             Field.Type.TEXT -> item.value = layout.etxt_edit_viewmoreinfo.text.toString()
                             Field.Type.SHORT -> try {
-                                val x = java.lang.Short.parseShort(layout.etxt_edit_viewmoreinfo.text.toString())
+                                java.lang.Short.parseShort(layout.etxt_edit_viewmoreinfo.text.toString())
                                 item.value = layout.etxt_edit_viewmoreinfo.text.toString()
                             } catch (e: Exception) {
                                 android.widget.Toast.makeText(this@TraCuuActivity, "Số liệu nhập vào không đúng định dạng!!!", android.widget.Toast.LENGTH_LONG).show()
                             }
 
+                            else -> {
+                            }
                         }
                     }
 

@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutionException
 import vn.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB
 import vn.ditagis.com.tanhoa.qlsc.utities.TimePeriodReport
 
 class ThongKeActivity : AppCompatActivity() {
@@ -209,8 +208,8 @@ class ThongKeActivity : AppCompatActivity() {
         } else {
 
             whereClause = String.format("(%s >= date '%s' and %s <= date '%s') and (",
-                    Constant.FIELD_SUCO.TGPHAN_ANH, item.thoigianbatdau,
-                    Constant.FIELD_SUCO.TGKHAC_PHUC, item.thoigianketthuc)
+                    Constant.FieldSuCo.TGPHAN_ANH, item.thoigianbatdau,
+                    Constant.FieldSuCo.TGKHAC_PHUC, item.thoigianketthuc)
 
             //            whereClause += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
             //
@@ -234,8 +233,8 @@ class ThongKeActivity : AppCompatActivity() {
         } else {
             whereClauseBeNgam += " HinhThucPhatHien = 1 and "
             whereClauseBeNgam = String.format("(%s >= date '%s' and %s <= date '%s') and (",
-                    Constant.FIELD_SUCO.TGPHAN_ANH, item.thoigianbatdau,
-                    Constant.FIELD_SUCO.TGKHAC_PHUC, item.thoigianketthuc)
+                    Constant.FieldSuCo.TGPHAN_ANH, item.thoigianbatdau,
+                    Constant.FieldSuCo.TGKHAC_PHUC, item.thoigianketthuc)
 
             //            whereClauseBeNgam += String.format("%s = '%s' or ", getString(R.string.Field_SuCo_MaQuan), getString(R.string.QuanPhuNhuanCode));
             //

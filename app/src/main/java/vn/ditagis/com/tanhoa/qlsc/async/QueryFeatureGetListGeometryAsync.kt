@@ -4,15 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.os.AsyncTask
-import android.view.Window
 import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.TextView
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.Feature
-import com.esri.arcgisruntime.data.FeatureQueryResult
-import com.esri.arcgisruntime.data.Geodatabase
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 import com.esri.arcgisruntime.geometry.Geometry
@@ -74,7 +70,7 @@ class QueryFeatureGetListGeometryAsync(@field:SuppressLint("StaticFieldLeak")
         try {
             if (lists != null && lists.size > 0) {
                 val builder = StringBuilder()
-                builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO))
+                builder.append(String.format("%s in (", Constant.FieldSuCo.ID_SUCO))
                 for (idSuCo in lists[0]) {
                     builder.append(String.format("'%s' ,", idSuCo))
                 }

@@ -9,7 +9,6 @@ import com.esri.arcgisruntime.data.ServiceFeatureTable
 import java.util.ArrayList
 import java.util.concurrent.ExecutionException
 
-import vn.ditagis.com.tanhoa.qlsc.R
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB

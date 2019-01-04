@@ -56,13 +56,13 @@ class LoginByAPIAsycn(@field:SuppressLint("StaticFieldLeak")
         //        String passEncoded = (new EncodeMD5()).encode(pin + "_DITAGIS");
         // Do some validation here
         val urlParameters = String.format("Username=%s&Password=%s", userName, pin)
-        val urlWithParam = String.format("%s?%s", Constant.URL_API.LOGIN, urlParameters)
+        val urlWithParam = String.format("%s?%s", Constant.UrlApi.LOGIN, urlParameters)
         try {
             //            + "&apiKey=" + API_KEY
             val url = URL(urlWithParam)
             val conn = url.openConnection() as HttpURLConnection
             try {
-                conn.requestMethod = "GET"
+                conn.requestMethod = Constant.HTTPRequest.GET_METHOD
                 conn.connect()
                 val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream) as Reader?)
                 val stringBuilder = StringBuilder()
@@ -106,7 +106,7 @@ class LoginByAPIAsycn(@field:SuppressLint("StaticFieldLeak")
     private fun checkAccess(token: String): Boolean? {
         var isAccess = false
         try {
-            val url = URL(Constant.URL_API.IS_ACCESS)
+            val url = URL(Constant.UrlApi.IS_ACCESS)
             val conn = url.openConnection() as HttpURLConnection
             try {
                 conn.doOutput = false
@@ -138,7 +138,7 @@ class LoginByAPIAsycn(@field:SuppressLint("StaticFieldLeak")
 
         //        String API_URL = "http://sawagis.vn/tanhoa1/api/Account/Profile";
         try {
-            val url = URL(Constant.URL_API.PROFILE)
+            val url = URL(Constant.UrlApi.PROFILE)
             val conn = url.openConnection() as HttpURLConnection
             try {
                 conn.doOutput = false
@@ -172,9 +172,9 @@ class LoginByAPIAsycn(@field:SuppressLint("StaticFieldLeak")
         val jsonRoutes = jsonData.getJSONArray("account")
         for (i in 0 until jsonRoutes.length()) {
             val jsonRoute = jsonRoutes.getJSONObject(i)
-            mApplication.userDangNhap!!.displayName = jsonRoute.getString(Constant.FIELD_ACCOUNT.DISPLAY_NAME)
-            mApplication.userDangNhap!!.role = jsonRoute.getString(Constant.FIELD_ACCOUNT.ROLE)
-            mApplication.userDangNhap!!.groupRole = jsonRoute.getString(Constant.FIELD_ACCOUNT.GROUP_ROLE)
+            mApplication.userDangNhap!!.displayName = jsonRoute.getString(Constant.FieldAccount.DISPLAY_NAME)
+            mApplication.userDangNhap!!.role = jsonRoute.getString(Constant.FieldAccount.ROLE)
+            mApplication.userDangNhap!!.groupRole = jsonRoute.getString(Constant.FieldAccount.GROUP_ROLE)
         }
         return displayName
 

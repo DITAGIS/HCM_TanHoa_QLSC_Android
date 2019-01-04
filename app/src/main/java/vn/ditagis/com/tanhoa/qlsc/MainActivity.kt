@@ -38,7 +38,6 @@ import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.SeekBar
-import android.widget.TextView
 import android.widget.Toast
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
@@ -85,11 +84,9 @@ import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DAddress
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB
 import vn.ditagis.com.tanhoa.qlsc.socket.LocationHelper
 import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet
 import vn.ditagis.com.tanhoa.qlsc.utities.MapViewHandler
-import vn.ditagis.com.tanhoa.qlsc.utities.MyServiceFeatureTable
 import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar
 import vn.ditagis.com.tanhoa.qlsc.utities.Popup
 import vn.ditagis.com.tanhoa.qlsc.utities.Preference
@@ -129,7 +126,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
 
     private//        List<Object> chuaXuLyValue = new ArrayList<>();
-    //        chuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY);
+    //        chuaXuLyValue.add(Constant.TrangThaiSuCo.CHUA_XU_LY);
     //đang xử lý: begin
     //đang xỷ lý: end
     //hoàn thành: begin
@@ -143,16 +140,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val uniqueValueRenderer = UniqueValueRenderer()
             when (mApplication!!.userDangNhap!!.groupRole) {
                 Constant.Role.GROUPROLE_TC -> {
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.TRANG_THAI_THI_CONG)
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.TRANG_THAI_THI_CONG)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_THI_CONG)
                 }
                 Constant.Role.GROUPROLE_GS -> {
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT)
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.TRANG_THAI_GIAM_SAT)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_GIAM_SAT)
                 }
                 else -> {
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.TRANG_THAI)
-                    uniqueValueRenderer.fieldNames.add(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.TRANG_THAI)
+                    uniqueValueRenderer.fieldNames.add(Constant.FieldSuCo.HINH_THUC_PHAT_HIEN)
                 }
             }
             val chuaXuLySymbol = PictureMarkerSymbol(Constant.URLSymbol.URL_SYMBOL_CHUA_SUA_CHUA)
@@ -176,55 +173,55 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             uniqueValueRenderer.defaultSymbol = chuaXuLySymbol
             uniqueValueRenderer.defaultLabel = "Chưa xác định"
             val beNgamChuaXuLyValue = ArrayList<Any>()
-            beNgamChuaXuLyValue.add(Constant.TRANG_THAI_SU_CO.CHUA_XU_LY)
+            beNgamChuaXuLyValue.add(Constant.TrangThaiSuCo.CHUA_XU_LY)
             beNgamChuaXuLyValue.add(1)
             val dangXuLyValue = ArrayList<Any>()
-            dangXuLyValue.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             val dangXuLyValue1 = ArrayList<Any>()
-            dangXuLyValue1.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue1.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue1.add(1)
             val dangXuLyValue2 = ArrayList<Any>()
-            dangXuLyValue2.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue2.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue2.add(2)
 
             val dangXuLyValue3 = ArrayList<Any>()
-            dangXuLyValue3.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue3.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue3.add(3)
 
             val dangXuLyValue4 = ArrayList<Any>()
-            dangXuLyValue4.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue4.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue4.add(4)
 
             val dangXuLyValue5 = ArrayList<Any>()
-            dangXuLyValue5.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue5.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue5.add(5)
 
             val dangXuLyValue6 = ArrayList<Any>()
-            dangXuLyValue6.add(Constant.TRANG_THAI_SU_CO.DANG_XU_LY)
+            dangXuLyValue6.add(Constant.TrangThaiSuCo.DANG_XU_LY)
             dangXuLyValue6.add(6)
             val hoanThanhValue = ArrayList<Any>()
-            hoanThanhValue.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue.add(Constant.TrangThaiSuCo.HOAN_THANH)
             val hoanThanhValue1 = ArrayList<Any>()
-            hoanThanhValue1.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue1.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue1.add(1)
             val hoanThanhValue2 = ArrayList<Any>()
-            hoanThanhValue2.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue2.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue2.add(2)
 
             val hoanThanhValue3 = ArrayList<Any>()
-            hoanThanhValue3.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue3.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue3.add(3)
 
             val hoanThanhValue4 = ArrayList<Any>()
-            hoanThanhValue4.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue4.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue4.add(4)
 
             val hoanThanhValue5 = ArrayList<Any>()
-            hoanThanhValue5.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue5.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue5.add(5)
 
             val hoanThanhValue6 = ArrayList<Any>()
-            hoanThanhValue6.add(Constant.TRANG_THAI_SU_CO.HOAN_THANH)
+            hoanThanhValue6.add(Constant.TrangThaiSuCo.HOAN_THANH)
             hoanThanhValue6.add(6)
 
             uniqueValueRenderer.uniqueValues.add(UniqueValueRenderer.UniqueValue(
@@ -297,7 +294,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun processFinish(longtitude: Double, latitude: Double) {
             }
         })
-        mLocationHelper!!.checkpermission()
+        mLocationHelper!!.checkPermission()
         val listener = object : LocationListener {
             @RequiresApi(api = Build.VERSION_CODES.O)
             override fun onLocationChanged(location: Location) {
@@ -320,7 +317,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     override fun processFinish(longtitude: Double, latitude: Double) {
                     }
                 })
-                mLocationHelper!!.checkpermission()
+                mLocationHelper!!.checkPermission()
             }
         }
         if (ActivityCompat.checkSelfPermission(this,
@@ -515,7 +512,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 mapView!!.map.operationalLayers.add(mArcGISMapImageLayerAdministrator)
                 mArcGISMapImageLayerAdministrator!!.addDoneLoadingListener {
                     if (mArcGISMapImageLayerAdministrator!!.loadStatus == LoadStatus.LOADED) {
-                        MyServiceFeatureTable.getInstance(mArcGISMapImageLayerAdministrator!!)
                         val sublayerList = mArcGISMapImageLayerAdministrator!!.sublayers
                         for (sublayer in sublayerList) {
                             addCheckBox(sublayer as ArcGISMapImageSublayer, states, colors, true)
@@ -599,7 +595,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun getListIDSuCoFromSuCoThongTins(features: List<Feature>): List<String> {
         val output = ArrayList<String>()
         for (feature in features) {
-            output.add(feature.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString())
+            output.add(feature.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString())
         }
         return output
     }
@@ -656,14 +652,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun getDefinitionWithoutComplete(idSuCoList: List<String>): String {
         val builder = StringBuilder()
-        builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO))
+        builder.append(String.format("%s in (", Constant.FieldSuCo.ID_SUCO))
         for (i in idSuCoList.indices) {
             val idSuCo = idSuCoList[i]
             when {
                 i != idSuCoList.size - 1 -> builder.append(String.format("'%s' ,", idSuCo))
-                mApplication!!.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_TC -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_THI_CONG, Constant.TRANG_THAI_SU_CO.HOAN_THANH))
-                mApplication!!.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_GS -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT, Constant.TRANG_THAI_SU_CO.HOAN_THANH))
-                else -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FIELD_SUCO.TRANG_THAI, Constant.TRANG_THAI_SU_CO.HOAN_THANH))
+                mApplication!!.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_TC -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FieldSuCo.TRANG_THAI_THI_CONG, Constant.TrangThaiSuCo.HOAN_THANH))
+                mApplication!!.userDangNhap!!.groupRole == Constant.Role.GROUPROLE_GS -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FieldSuCo.TRANG_THAI_GIAM_SAT, Constant.TrangThaiSuCo.HOAN_THANH))
+                else -> builder.append(String.format("'%s' ) and %s <> %d", idSuCo, Constant.FieldSuCo.TRANG_THAI, Constant.TrangThaiSuCo.HOAN_THANH))
             }
         }
         return builder.toString()
@@ -671,7 +667,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun getDefinitionWithComplete(idSuCoList: List<String>): String {
         val builder = StringBuilder()
-        builder.append(String.format("%s in (", Constant.FIELD_SUCO.ID_SUCO))
+        builder.append(String.format("%s in (", Constant.FieldSuCo.ID_SUCO))
         for (i in idSuCoList.indices) {
             val idSuCo = idSuCoList[i]
             if (i != idSuCoList.size - 1)
@@ -898,10 +894,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val subAdminArea = output[0].subAdminArea
                             //nếu tài khoản có quyền truy cập vào
                             if (subAdminArea == getString(R.string.QuanPhuNhuanName) || subAdminArea == getString(R.string.QuanTanBinhName) || subAdminArea == getString(R.string.QuanTanPhuName)) {
-                                mApplication!!.getDiemSuCo.point = mPointFindLocation
-                                mApplication!!.getDiemSuCo.vitri = output[0].location
-                                mApplication!!.getDiemSuCo.quan = subAdminArea
-                                mApplication!!.getDiemSuCo.phuong = output[0].locality
+                                mApplication!!.getDiemSuCo!!.point = mPointFindLocation
+                                mApplication!!.getDiemSuCo!!.vitri = output[0].location
+                                mApplication!!.getDiemSuCo!!.quan = subAdminArea
+                                mApplication!!.getDiemSuCo!!.phuong = output[0].locality
                                 if (mPopUp!!.callout != null && mPopUp!!.callout!!.isShowing)
                                     mPopUp!!.callout!!.dismiss()
 
@@ -941,7 +937,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onBackPressed() {
-        mApplication!!.getDiemSuCo.point = null
+        mApplication!!.getDiemSuCo!!.point = null
         if (drawer_layout!!.isDrawerOpen(GravityCompat.START)) {
             drawer_layout!!.closeDrawer(GravityCompat.START)
         }
@@ -1281,12 +1277,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun handlingListTaskActivityResult() {
         mIsAddFeature = false
-        if (mApplication!!.getDiemSuCo.trangThai == Constant.TRANG_THAI_SU_CO.HOAN_THANH && !mIsShowComplete) {
+        if (mApplication!!.getDiemSuCo!!.trangThai == Constant.TrangThaiSuCo.HOAN_THANH && !mIsShowComplete) {
             showHideComplete()
         }
         //query sự cố theo idsuco, lấy objectid
-        val selectedIDSuCo = mApplication!!.getDiemSuCo.idSuCo
-        mapViewHandler!!.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo))
+        val selectedIDSuCo = mApplication!!.getDiemSuCo!!.idSuCo
+        mapViewHandler!!.query(String.format("%s = '%s'", Constant.FieldSuCo.ID_SUCO, selectedIDSuCo))
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -1314,8 +1310,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             if (mApplication!!.isFromNotification) {
                                 mApplication!!.isFromNotification = false
                                 try {
-                                    mapViewHandler!!.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO,
-                                            mApplication!!.getDiemSuCo.idSuCo))
+                                    mapViewHandler!!.query(String.format("%s = '%s'", Constant.FieldSuCo.ID_SUCO,
+                                            mApplication!!.getDiemSuCo!!.idSuCo))
                                 } catch (e: Exception) {
                                     Toast.makeText(this@MainActivity, "Vui lòng xem danh sách công việc để biết thêm thông tin!", Toast.LENGTH_LONG).show()
                                 }
@@ -1333,7 +1329,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //        Point center = mApplication.getGeometry().getExtent().getCenter();
         //        Geometry project = GeometryEngine.project(center, SpatialReferences.getWgs84());
         //        Point point = project.getExtent().getCenter();
-        val uri = String.format("google.navigation:q=%s", Uri.encode(mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCO.DIA_CHI].toString()))
+        val uri = String.format("google.navigation:q=%s", Uri.encode(mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCo.DIA_CHI].toString()))
         //        Uri gmmIntentUri = Uri.parse(String.format("geo:%s,%s",(point.getY()+"").replaceAll(",","."),(point.getX()+"").replaceAll(",",".")));
         val gmmIntentUri = Uri.parse(uri)
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
@@ -1353,8 +1349,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Constant.RequestCode.REQUEST_CODE_SEARCH ->
                     //                    final int objectid = data.getIntExtra(getString(R.string.ket_qua_objectid), 1);
                     if (resultCode == Activity.RESULT_OK) {
-                        val selectedIDSuCo = mApplication!!.getDiemSuCo.idSuCo
-                        mapViewHandler!!.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, selectedIDSuCo))
+                        val selectedIDSuCo = mApplication!!.getDiemSuCo!!.idSuCo
+                        mapViewHandler!!.query(String.format("%s = '%s'", Constant.FieldSuCo.ID_SUCO, selectedIDSuCo))
                         //                        mapViewHandler.queryByObjectID(objectid);
                     }
                 Constant.RequestCode.REQUEST_CODE_LOGIN -> {
@@ -1374,16 +1370,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }
                     mIsAddFeature = false
 
-                    if (mApplication!!.getDiemSuCo.point != null) {
-                        mapViewHandler!!.addFeature(mApplication!!.getDiemSuCo.point!!)
+                    if (mApplication!!.getDiemSuCo!!.point != null) {
+                        mapViewHandler!!.addFeature(mApplication!!.getDiemSuCo!!.point!!)
                         deleteSearching()
                         //                        handlingLocation();
                     }
                 }
                 Constant.RequestCode.REQUEST_CODE_ADD_FEATURE -> {
                     mIsAddFeature = false
-                    if (mApplication!!.getDiemSuCo.point != null) {
-                        mapViewHandler!!.addFeature(mApplication!!.getDiemSuCo.point!!)
+                    if (mApplication!!.getDiemSuCo!!.point != null) {
+                        mapViewHandler!!.addFeature(mApplication!!.getDiemSuCo!!.point!!)
                         deleteSearching()
                     }
                 }
@@ -1403,9 +1399,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             //                                            if (output != null) {
                             //                                                Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
                             //                                                mPopUp.getCallout().dismiss();
-                            //                                                if (Short.parseShort(output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.TRANG_THAI).toString())
-                            //                                                        == Constant.TRANG_THAI_SU_CO.HOAN_THANH)
-                            //                                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString())
+                            //                                                if (Short.parseShort(output.getAttributes().get(Constant.FieldSuCoThongTin.TRANG_THAI).toString())
+                            //                                                        == Constant.TrangThaiSuCo.HOAN_THANH)
+                            //                                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString())
                             //                                                            .execute();
                             //                                                if (!output.canEditAttachments())
                             //                                                    MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
@@ -1430,7 +1426,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val item = parent.getItemAtPosition(position) as TraCuuAdapter.Item
         val objectID = item.objectID
         if (objectID != -1 && mapViewHandler != null) {
-            mapViewHandler!!.query(String.format("%s = '%s'", Constant.FIELD_SUCO.ID_SUCO, item.id))
+            mapViewHandler!!.query(String.format("%s = '%s'", Constant.FieldSuCo.ID_SUCO, item.id))
             //            mapViewHandler.queryByObjectID(objectID);
             mSearchAdapter!!.clear()
             mSearchAdapter!!.notifyDataSetChanged()

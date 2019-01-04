@@ -48,7 +48,7 @@ class FeatureViewMoreInfoAttachmentsAdapter(private val mContext: Context, priva
         val txtValue = view!!.findViewById<TextView>(R.id.txt_viewmoreinfo_attachment_name)
         txtValue.text = item.name
         val imageView = view.findViewById<ImageView>(R.id.img_viewmoreinfo_attachment)
-        if (item.contentType == Constant.FILE_TYPE.PNG && item.img != null) {
+        if (item.contentType == Constant.FileType.PNG && item.img != null) {
 
             val bmp = BitmapFactory.decodeByteArray(item.img, 0, item.img!!.size)
 

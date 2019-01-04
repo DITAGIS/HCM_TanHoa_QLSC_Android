@@ -51,13 +51,13 @@ class ThemSuCoActivity : AppCompatActivity() {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun initView() {
         eTxtFullName_add_feature!!.setText(mApplication!!.userDangNhap!!.userName)
-        etxtAddress_add_feature!!.setText(mApplication!!.getDiemSuCo.vitri)
-        etxtSubAdmin_add_feature!!.setText(mApplication!!.getDiemSuCo.quan)
+        etxtAddress_add_feature!!.setText(mApplication!!.getDiemSuCo!!.vitri)
+        etxtSubAdmin_add_feature!!.setText(mApplication!!.getDiemSuCo!!.quan)
         //        mETxtPhuiDaoDai.setOnClickListener(this::onClickTextView);
         //        mETxtPhuiDaoRong.setOnClickListener(this::onClickTextView);
         //        etxtLocality_add_feature.setText(mApplication.getDiemSuCo.getPhuong());
 
-        val domain = mApplication!!.getDFeatureLayer.layer!!.featureTable.getField(Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN).domain
+        val domain = mApplication!!.getDFeatureLayer.layer!!.featureTable.getField(Constant.FieldSuCo.HINH_THUC_PHAT_HIEN).domain
         mCodeValues = (domain as CodedValueDomain).codedValues
         if (mCodeValues != null) {
             val codes = ArrayList<String>()
@@ -84,7 +84,7 @@ class ThemSuCoActivity : AppCompatActivity() {
             }
         }
 
-        val domainKetCauDuong = mApplication!!.getDFeatureLayer.layer!!.featureTable.getField(Constant.FIELD_SUCO.KET_CAU_DUONG).domain
+        val domainKetCauDuong = mApplication!!.getDFeatureLayer.layer!!.featureTable.getField(Constant.FieldSuCo.KET_CAU_DUONG).domain
         mCodeValuesKetCauDuong = (domainKetCauDuong as CodedValueDomain).codedValues
         if (mCodeValuesKetCauDuong != null) {
             val codesKetCauDuong = ArrayList<String>()
@@ -99,7 +99,7 @@ class ThemSuCoActivity : AppCompatActivity() {
         Toast.makeText(this, "Thiếu thông tin!!!", Toast.LENGTH_SHORT).show()
     }
 
-    fun capture() {
+    private fun capture() {
         val cameraIntent = Intent(this, CameraActivity::class.java)
         startActivityForResult(cameraIntent, Constant.RequestCode.REQUEST_CODE_CAPTURE)
     }
@@ -108,13 +108,13 @@ class ThemSuCoActivity : AppCompatActivity() {
     fun onClickTextView(view: View) {
         when (view.id) {
             R.id.txt_add_feature_add_feature -> if (isNotEmpty) {
-                mApplication!!.getDiemSuCo.nguoiPhanAnh = eTxtFullName_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.sdtPhanAnh = etxtPhoneNumber_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.emailPhanAnh = etxtEmail_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.vitri = etxtAddress_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.quan = etxtSubAdmin_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.phuong = etxtLocality_add_feature!!.text.toString().trim { it <= ' ' }
-                mApplication!!.getDiemSuCo.ghiChu = etxtNote_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.nguoiPhanAnh = eTxtFullName_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.sdtPhanAnh = etxtPhoneNumber_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.emailPhanAnh = etxtEmail_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.vitri = etxtAddress_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.quan = etxtSubAdmin_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.phuong = etxtLocality_add_feature!!.text.toString().trim { it <= ' ' }
+                mApplication!!.getDiemSuCo!!.ghiChu = etxtNote_add_feature!!.text.toString().trim { it <= ' ' }
                 //                    if (!mETxtPhuiDaoDai.getText().toString().isEmpty())
                 //                        mApplication.getDiemSuCo.setPhuiDaoDai(Double.parseDouble(mETxtPhuiDaoDai.getText().toString()));
                 //                    if (!mETxtPhuiDaoRong.getText().toString().isEmpty())
@@ -123,11 +123,11 @@ class ThemSuCoActivity : AppCompatActivity() {
                 //                        mApplication.getDiemSuCo.setPhuiDaoSau(Double.parseDouble(mEtxtPhuiDaoSau.getText().toString()));
                 for (codedValue in mCodeValues!!) {
                     if (codedValue.name == spin_hinh_thuc_phat_hien_add_feature!!.selectedItem.toString())
-                        mApplication!!.getDiemSuCo.hinhThucPhatHien = java.lang.Short.parseShort(codedValue.code.toString())
+                        mApplication!!.getDiemSuCo!!.hinhThucPhatHien = java.lang.Short.parseShort(codedValue.code.toString())
                 }
                 for (codedValueKetCauDuong in mCodeValuesKetCauDuong!!) {
                     if (codedValueKetCauDuong.name == spin_add_feature_ket_cau_duong!!.selectedItem.toString())
-                        mApplication!!.getDiemSuCo.ketCauDuong = java.lang.Short.parseShort(codedValueKetCauDuong.code.toString())
+                        mApplication!!.getDiemSuCo!!.ketCauDuong = java.lang.Short.parseShort(codedValueKetCauDuong.code.toString())
                 }
                 finish()
             } else {
@@ -151,7 +151,7 @@ class ThemSuCoActivity : AppCompatActivity() {
                     try {
                         if (bitmap != null) {
                             img_add_feature!!.setImageBitmap(bitmap)
-                            mApplication!!.getDiemSuCo.image = mApplication!!.capture
+                            mApplication!!.getDiemSuCo!!.image = mApplication!!.capture
                         }
                     } catch (ignored: Exception) {
                     }
@@ -179,7 +179,7 @@ class ThemSuCoActivity : AppCompatActivity() {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun goHome() {
-        mApplication!!.getDiemSuCo.point = null
+        mApplication!!.getDiemSuCo!!.point = null
         val intent = Intent()
         setResult(RESULT_OK, intent)
         finish()

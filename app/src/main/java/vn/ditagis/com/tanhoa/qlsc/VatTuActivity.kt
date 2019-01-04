@@ -38,13 +38,13 @@ class VatTuActivity : AppCompatActivity() {
         Objects.requireNonNull<ActionBar>(supportActionBar).setDisplayHomeAsUpEnabled(true)
         Objects.requireNonNull<ActionBar>(supportActionBar).setDisplayShowHomeEnabled(true)
         mApplication = application as DApplication
-        mIsComplete = java.lang.Short.parseShort(mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI].toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH
+        mIsComplete = java.lang.Short.parseShort(mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.TRANG_THAI].toString()) == Constant.TrangThaiSuCo.HOAN_THANH
         when (mApplication!!.loaiVatTu) {
             Constant.CodeVatTu.CAPMOI -> title = "Vật tư cấp mới"
             Constant.CodeVatTu.THUHOI -> title = "Vật tư thu hồi"
         }
 
-        mIDSuCoTT = mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT].toString()
+        mIDSuCoTT = mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCOTT].toString()
         //        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
         //                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
         init()
@@ -53,8 +53,8 @@ class VatTuActivity : AppCompatActivity() {
         //        });
 
         //        String queryClause = String.format("%s = '%s' and %s = '%s'",
-        //                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
-        //                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+        //                Constant.FieldSuCoThongTin.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString(),
+        //                Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
         //        QueryParameters queryParameters = new QueryParameters();
         //        queryParameters.setWhereClause(queryClause);
         //        queryServiceFeatureTableAsync.execute(queryParameters);
@@ -71,12 +71,12 @@ class VatTuActivity : AppCompatActivity() {
         val hoSoVatTuSuCoAsync = HoSoVatTuSuCoAsync(this,
                 object : HoSoVatTuSuCoAsync.AsyncResponse {
                     override fun processFinish(`object`: Any?) {
-                        if (`object` != null) {
+                        if (`object` != null && `object` is List<*>) {
                             try {
-                                val hoSoVatTuSuCoList = `object` as List<HoSoVatTuSuCo>
-                                for (hoSoVatTuSuCo in hoSoVatTuSuCoList) {
-                                    mAdapter!!.add(VatTuAdapter.Item(hoSoVatTuSuCo.tenVatTu, hoSoVatTuSuCo.soLuong,
-                                            hoSoVatTuSuCo.donViTinh, hoSoVatTuSuCo.maVatTu))
+                                for (item in `object`) {
+                                    if (item is HoSoVatTuSuCo)
+                                        mAdapter!!.add(VatTuAdapter.Item(item.tenVatTu, item.soLuong,
+                                                item.donViTinh, item.maVatTu))
                                 }
                             } catch (e: Exception) {
                                 Log.e("Lỗi ép kiểu vật tư", e.toString())
@@ -89,7 +89,7 @@ class VatTuActivity : AppCompatActivity() {
                     }
 
                 })
-        hoSoVatTuSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCoTT)
+        hoSoVatTuSuCoAsync.execute(Constant.HoSoSuCoMethod.FIND, mIDSuCoTT)
 
     }
 
@@ -106,16 +106,18 @@ class VatTuActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listTenVatTus)
         autoCompleteTV_vattu!!.setAdapter(adapter)
 
-        mAdapter = VatTuAdapter(this, ArrayList<VatTuAdapter.Item>())
+        mAdapter = VatTuAdapter(this, ArrayList())
         val maVatTu = arrayOf("")
         lstview_vattu!!.adapter = mAdapter
         //        if (!mIsComplete) {
-        lstview_vattu!!.setOnItemLongClickListener { adapterView, view, i, l ->
+        lstview_vattu!!.setOnItemLongClickListener { adapterView, _, i, _ ->
             val itemVatTu = adapterView.adapter.getItem(i) as VatTuAdapter.Item
             val builder = AlertDialog.Builder(this@VatTuActivity, android.R.style.Theme_Material_Light_Dialog_Alert)
             builder.setTitle("Xóa vật tư")
             builder.setMessage("Bạn có chắc muốn xóa vật tư " + itemVatTu.tenVatTu)
-            builder.setCancelable(false).setNegativeButton("Hủy") { dialog, which -> dialog.dismiss() }.setPositiveButton("Xóa") { dialogInterface, i12 ->
+            builder.setCancelable(false).setNegativeButton(
+                    "Hủy") { dialog, _ -> dialog.dismiss()
+            }.setPositiveButton("Xóa") { dialogInterface, _ ->
                 mAdapter!!.remove(itemVatTu)
                 mAdapter!!.notifyDataSetChanged()
                 dialogInterface.dismiss()
@@ -142,8 +144,8 @@ class VatTuActivity : AppCompatActivity() {
 
             }
         })
-        txt_them_vattu!!.setOnClickListener { view ->
-            if (etxt_soLuong_vattu!!.text.toString().trim { it <= ' ' }.length == 0)
+        txt_them_vattu!!.setOnClickListener {
+            if (etxt_soLuong_vattu!!.text.toString().trim { item -> item <= ' ' }.isEmpty())
                 MySnackBar.make(etxt_soLuong_vattu!!, this@VatTuActivity.getString(R.string.message_soluong_themhoso), true)
             else {
                 try {
@@ -168,7 +170,7 @@ class VatTuActivity : AppCompatActivity() {
                 mAdapter!!.notifyDataSetChanged()
             }
         }
-        btn_update_vattu!!.setOnClickListener { view -> updateEdit() }
+        btn_update_vattu!!.setOnClickListener { updateEdit() }
     }
     //    }
 
@@ -183,10 +185,10 @@ class VatTuActivity : AppCompatActivity() {
                         itemVatTu.soLuong, itemVatTu.maVatTu, itemVatTu.tenVatTu!!, itemVatTu.donVi))
             }
             ListObjectDB.instance.setLstHoSoVatTuSuCoInsert(hoSoVatTuSuCos)
-            if (ListObjectDB.instance.getLstHoSoVatTuSuCoInsert()!!.size > 0) {
+            if (ListObjectDB.instance.getLstHoSoVatTuSuCoInsert()!!.isNotEmpty()) {
                 val hoSoVatTuSuCoAsyncInsert = HoSoVatTuSuCoAsync(this,
                         object : HoSoVatTuSuCoAsync.AsyncResponse {
-                            override fun processFinish(`object`:   Any?) {
+                            override fun processFinish(`object`: Any?) {
                                 try {
                                     if (`object` != null) {
                                         val isDone = `object` as Boolean
@@ -194,7 +196,7 @@ class VatTuActivity : AppCompatActivity() {
                                         //                            boolean isDone = (boolean) a[0];
                                         if (isDone) {
                                             if (mIsComplete)
-                                                APICompleteAsync(mApplication!!, mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString())
+                                                APICompleteAsync(mApplication!!, mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString())
                                                         .execute()
                                             goHome()
                                             txt_status_vattu!!.text = Html.fromHtml(this@VatTuActivity.getString(R.string.info_vattu_complete), Html.FROM_HTML_MODE_LEGACY)
@@ -208,11 +210,11 @@ class VatTuActivity : AppCompatActivity() {
                             }
 
                         })
-                hoSoVatTuSuCoAsyncInsert.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCoTT)
+                hoSoVatTuSuCoAsyncInsert.execute(Constant.HoSoSuCoMethod.INSERT, mIDSuCoTT)
             }
             var check: Boolean
             do {
-                check = ListObjectDB.instance.getLstHoSoVatTuSuCoInsert()!!.size > 0
+                check = ListObjectDB.instance.getLstHoSoVatTuSuCoInsert()!!.isNotEmpty()
             } while (check)
         }
     }

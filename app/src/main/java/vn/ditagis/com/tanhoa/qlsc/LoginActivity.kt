@@ -13,7 +13,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
 
 import com.google.android.gms.common.ConnectionResult
@@ -60,14 +59,14 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun create() {
         Preference.instance.mContext = this
-        val preference_userName = Preference.instance.loadPreference(getString(R.string.preference_username))
-        val preference_password = Preference.instance.loadPreference(getString(R.string.preference_password))
-        if (preference_userName != null && !preference_userName.isEmpty()) {
-            txtUsername!!.setText(preference_userName)
+        val username = Preference.instance.loadPreference(getString(R.string.preference_username))
+        val password = Preference.instance.loadPreference(getString(R.string.preference_password))
+        if (username != null && !username.isEmpty()) {
+            txtUsername!!.setText(username)
         }
 
-        if (preference_password != null && !preference_password.isEmpty()) {
-            txtPassword!!.setText(preference_password)
+        if (password != null && !password.isEmpty()) {
+            txtPassword!!.setText(password)
             chk_login_save_password!!.isChecked = true
         }
 
@@ -136,27 +135,27 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
         if (!CheckConnectInternet.isOnline(this)) {
             txt_login_validation.setText(R.string.validate_no_connect)
             txt_login_validation.visibility = View.VISIBLE
-            return
-        }
-        txt_login_validation.visibility = View.GONE
+        } else {
+            txt_login_validation.visibility = View.GONE
 
-        val userName = txtUsername!!.text.toString().trim { it <= ' ' }
-        val passWord = txtPassword!!.text.toString().trim { it <= ' ' }
-        if (userName.isEmpty() || passWord.isEmpty()) {
-            handleInfoLoginEmpty()
-            return
-        }
-        val loginAsycn = LoginByAPIAsycn(this,
-                object : LoginByAPIAsycn.AsyncResponse {
-                    override fun processFinish(success: Boolean?) {
-                        if (mApplication!!.userDangNhap != null)
-                            handleLoginSuccess()
-                        else
-                            handleLoginFail()
-                    }
+            val userName = txtUsername!!.text.toString().trim { it <= ' ' }
+            val passWord = txtPassword!!.text.toString().trim { it <= ' ' }
+            if (userName.isEmpty() || passWord.isEmpty()) {
+                handleInfoLoginEmpty()
+            } else {
+                val loginAsycn = LoginByAPIAsycn(this,
+                        object : LoginByAPIAsycn.AsyncResponse {
+                            override fun processFinish(success: Boolean?) {
+                                if (mApplication!!.userDangNhap != null)
+                                    handleLoginSuccess()
+                                else
+                                    handleLoginFail()
+                            }
 
-                })
-        loginAsycn.execute(userName, passWord)
+                        })
+                loginAsycn.execute(userName, passWord)
+            }
+        }
     }
 
     @SuppressLint("HardwareIds")

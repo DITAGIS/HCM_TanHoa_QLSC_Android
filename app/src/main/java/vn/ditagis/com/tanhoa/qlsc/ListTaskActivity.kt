@@ -2,6 +2,7 @@ package vn.ditagis.com.tanhoa.qlsc
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -18,8 +19,8 @@ import java.util.Objects
 
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
-import vn.ditagis.com.tanhoa.qlsc.fragment.list_task.ListTaskFragment
-import vn.ditagis.com.tanhoa.qlsc.fragment.list_task.SearchFragment
+import vn.ditagis.com.tanhoa.qlsc.fragment.listtask.ListTaskFragment
+import vn.ditagis.com.tanhoa.qlsc.fragment.listtask.SearchFragment
 
 class ListTaskActivity : AppCompatActivity() {
 
@@ -47,10 +48,10 @@ class ListTaskActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter internal constructor(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment? {
-            when (position) {
-                0 -> return mSearchFragment
-                1 -> return mListTaskFragment
-                else -> return null
+            return when (position) {
+                0 -> mSearchFragment
+                1 -> mListTaskFragment
+                else -> null
             }
         }
 
@@ -61,18 +62,19 @@ class ListTaskActivity : AppCompatActivity() {
 
     fun itemClick(adapter: AdapterView<*>, position: Int) {
         val item = adapter.getItemAtPosition(position) as TraCuuAdapter.Item
-        val layout = layoutInflater.inflate(R.layout.layout_dialog, null) as LinearLayout
+        val layout = layoutInflater.inflate(R.layout.layout_dialog,
+                clayout__list_task__root_view as CoordinatorLayout, false) as LinearLayout
         layout.txt_dialog_title.text = getString(R.string.message_title_confirm)
         layout.txt_dialog_message.text = getString(R.string.message_click_list_task, item.id)
 
         val builder = AlertDialog.Builder(this@ListTaskActivity)
         builder.setView(layout)
         builder.setCancelable(false)
-                .setPositiveButton(R.string.message_btn_ok) { _, i ->
-                    mApplication!!.getDiemSuCo.idSuCo = item.id
-                    mApplication!!.getDiemSuCo.trangThai = item.trangThai.toShort()
+                .setPositiveButton(R.string.message_btn_ok) { _, _ ->
+                    mApplication!!.getDiemSuCo!!.idSuCo = item.id
+                    mApplication!!.getDiemSuCo!!.trangThai = item.trangThai.toShort()
                     goHome()
-                }.setNegativeButton(R.string.message_btn_cancel) { dialog, _ -> }
+                }.setNegativeButton(R.string.message_btn_cancel) { _, _ -> }
 
         val dialog = builder.create()
         dialog.show()
@@ -88,7 +90,7 @@ class ListTaskActivity : AppCompatActivity() {
     }
 
 
-    fun goHome() {
+    private fun goHome() {
         val intent = Intent()
         setResult(RESULT_OK, intent)
         finish()

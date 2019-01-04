@@ -8,12 +8,9 @@ import android.os.AsyncTask
 import android.os.Build
 import android.widget.Toast
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.ArcGISFeature
-import com.esri.arcgisruntime.data.Attachment
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.FeatureEditResult
-import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 
@@ -23,8 +20,6 @@ import java.util.concurrent.ExecutionException
 import vn.ditagis.com.tanhoa.qlsc.R
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
-import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
-import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB
 
 /**
  * Created by ThanLe on 4/16/2018.
@@ -57,24 +52,24 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
         val feature: Feature
         try {
             feature = mServiceFeatureTable.createFeature()
-            feature.geometry = mApplication.getDiemSuCo.point
-            feature.attributes[Constant.FIELD_SUCO.DIA_CHI] = mApplication.getDiemSuCo.vitri
+            feature.geometry = mApplication.getDiemSuCo!!.point
+            feature.attributes[Constant.FieldSuCo.DIA_CHI] = mApplication.getDiemSuCo!!.vitri
 
-            feature.attributes[Constant.FIELD_SUCO.GHI_CHU] = mApplication.getDiemSuCo.ghiChu
-            feature.attributes[Constant.FIELD_SUCO.NGUOI_PHAN_ANH] = mApplication.getDiemSuCo.nguoiPhanAnh
-            feature.attributes[Constant.FIELD_SUCO.EMAIL_NGUOI_PHAN_ANH] = mApplication.getDiemSuCo.emailPhanAnh
-            feature.attributes[Constant.FIELD_SUCO.SDT] = mApplication.getDiemSuCo.sdtPhanAnh
-            feature.attributes[Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN] = mApplication.getDiemSuCo.hinhThucPhatHien
-            feature.attributes[Constant.FIELD_SUCO.DOI_TUONG_PHAT_HIEN] = Constant.Another.DOI_TUONG_PHAT_HIEN_CBCNV
-            feature.attributes[Constant.FIELD_SUCO.KET_CAU_DUONG] = mApplication.getDiemSuCo.ketCauDuong
+            feature.attributes[Constant.FieldSuCo.GHI_CHU] = mApplication.getDiemSuCo!!.ghiChu
+            feature.attributes[Constant.FieldSuCo.NGUOI_PHAN_ANH] = mApplication.getDiemSuCo!!.nguoiPhanAnh
+            feature.attributes[Constant.FieldSuCo.EMAIL_NGUOI_PHAN_ANH] = mApplication.getDiemSuCo!!.emailPhanAnh
+            feature.attributes[Constant.FieldSuCo.SDT] = mApplication.getDiemSuCo!!.sdtPhanAnh
+            feature.attributes[Constant.FieldSuCo.HINH_THUC_PHAT_HIEN] = mApplication.getDiemSuCo!!.hinhThucPhatHien
+            feature.attributes[Constant.FieldSuCo.DOI_TUONG_PHAT_HIEN] = Constant.Another.DOI_TUONG_PHAT_HIEN_CBCNV
+            feature.attributes[Constant.FieldSuCo.KET_CAU_DUONG] = mApplication.getDiemSuCo!!.ketCauDuong
 
 
-            //            if (mApplication.getDiemSuCo.getPhuiDaoDai() != null)
-            //                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_DAI, mApplication.getDiemSuCo.getPhuiDaoDai());
-            //            if (mApplication.getDiemSuCo.getPhuiDaoRong() != null)
-            //                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_RONG, mApplication.getDiemSuCo.getPhuiDaoRong());
-            //            if (mApplication.getDiemSuCo.getPhuiDaoSau() != null)
-            //                feature.getAttributes().put(Constant.FIELD_SUCO.PHUI_DAO_1_SAU, mApplication.getDiemSuCo.getPhuiDaoSau());
+            //            if (mApplication.getDiemSuCo!!.getPhuiDaoDai() != null)
+            //                feature.getAttributes().put(Constant.FieldSuCo.PHUI_DAO_1_DAI, mApplication.getDiemSuCo!!.getPhuiDaoDai());
+            //            if (mApplication.getDiemSuCo!!.getPhuiDaoRong() != null)
+            //                feature.getAttributes().put(Constant.FieldSuCo.PHUI_DAO_1_RONG, mApplication.getDiemSuCo!!.getPhuiDaoRong());
+            //            if (mApplication.getDiemSuCo!!.getPhuiDaoSau() != null)
+            //                feature.getAttributes().put(Constant.FieldSuCo.PHUI_DAO_1_SAU, mApplication.getDiemSuCo!!.getPhuiDaoSau());
             for (dLayerInfo in mApplication.lstFeatureLayerDTG!!)
                 if (dLayerInfo.id == Constant.IDLayer.ID_BASEMAP) {
                     val serviceFeatureTableHanhChinh = ServiceFeatureTable(
@@ -85,13 +80,13 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                             object : QueryServiceFeatureTableAsync.AsyncResponse {
                                 override fun processFinish(output: Feature?) {
                                     if (output != null) {
-                                        val phuong = output.attributes[Constant.FIELD_HANHCHINH.ID_HANH_CHINH]
-                                        val quan = output.attributes[Constant.FIELD_HANHCHINH.MA_HUYEN]
+                                        val phuong = output.attributes[Constant.FieldHanhChinh.ID_HANH_CHINH]
+                                        val quan = output.attributes[Constant.FieldHanhChinh.MA_HUYEN]
                                         if (quan != null) {
-                                            feature.attributes[Constant.FIELD_SUCO.QUAN] = quan.toString()
+                                            feature.attributes[Constant.FieldSuCo.QUAN] = quan.toString()
                                         }
                                         if (phuong != null)
-                                            feature.attributes[Constant.FIELD_SUCO.PHUONG] = phuong.toString()
+                                            feature.attributes[Constant.FieldSuCo.PHUONG] = phuong.toString()
                                     }
                                     addFeature(feature)
                                 }
@@ -114,20 +109,20 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                     publishProgress()
                     return
                 }
-                feature.attributes[Constant.FIELD_SUCO.ID_SUCO] = output
+                feature.attributes[Constant.FieldSuCo.ID_SUCO] = output
                 val intObj = 0.toShort()
-                feature.attributes[Constant.FIELD_SUCO.TRANG_THAI] = intObj
+                feature.attributes[Constant.FieldSuCo.TRANG_THAI] = intObj
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     val c = Calendar.getInstance()
-                    feature.attributes[Constant.FIELD_SUCO.TGPHAN_ANH] = c
+                    feature.attributes[Constant.FieldSuCo.TGPHAN_ANH] = c
                 }
                 //            if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_TC)) {
-                feature.attributes[Constant.FIELD_SUCO.TRANG_THAI_THI_CONG] = Constant.TRANG_THAI_SU_CO.CHUA_XU_LY
-                feature.attributes[Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_THI_CONG] = mApplication.getDiemSuCo.hinhThucPhatHien
+                feature.attributes[Constant.FieldSuCo.TRANG_THAI_THI_CONG] = Constant.TrangThaiSuCo.CHUA_XU_LY
+                feature.attributes[Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_THI_CONG] = mApplication.getDiemSuCo!!.hinhThucPhatHien
 
                 //            } else if (mApplication.getUserDangNhap().getGroupRole().equals(Constant.GROUPROLE_GS)) {
-                feature.attributes[Constant.FIELD_SUCO.TRANG_THAI_GIAM_SAT] = Constant.TRANG_THAI_SU_CO.CHUA_XU_LY
-                feature.attributes[Constant.FIELD_SUCO.HINH_THUC_PHAT_HIEN_GIAM_SAT] = mApplication.getDiemSuCo.hinhThucPhatHien
+                feature.attributes[Constant.FieldSuCo.TRANG_THAI_GIAM_SAT] = Constant.TrangThaiSuCo.CHUA_XU_LY
+                feature.attributes[Constant.FieldSuCo.HINH_THUC_PHAT_HIEN_GIAM_SAT] = mApplication.getDiemSuCo!!.hinhThucPhatHien
                 //            }
                 mServiceFeatureTable.addFeatureAsync(feature).addDoneListener {
                     val listListenableEditAsync = mServiceFeatureTable.applyEditsAsync()
@@ -150,31 +145,31 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                     }
                 }
             }
-        }).execute(Constant.URL_API.GENERATE_ID_SUCO)
+        }).execute(Constant.UrlApi.GENERATE_ID_SUCO)
     }
 
     private fun addServiceFeatureTable(arcGISFeature: ArcGISFeature, feature: Feature) {
         val serviceFeatureTable = mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin
         serviceFeatureTable!!.loadAsync()
         serviceFeatureTable.addDoneLoadingListener {
-            val idSuCo = feature.attributes[Constant.FIELD_SUCO.ID_SUCO].toString()
+            val idSuCo = feature.attributes[Constant.FieldSuCo.ID_SUCO].toString()
             GenerateIDSuCoByAPIAsycn(mActivity, object : GenerateIDSuCoByAPIAsycn.AsyncResponse {
                 override fun processFinish(output: String?) {
                     if (output != null) {
 
                         val suCoThongTinFeature = serviceFeatureTable.createFeature()
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO] = idSuCo
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT] = output
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI] = 0.toShort()
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN] = mApplication.userDangNhap!!.userName
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.HINH_THUC_PHAT_HIEN] = mApplication.getDiemSuCo.hinhThucPhatHien
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.DIA_CHI] = mApplication.getDiemSuCo.vitri
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.GHI_CHU] = mApplication.getDiemSuCo.ghiChu
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.ID_SUCO] = idSuCo
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.ID_SUCOTT] = output
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.TRANG_THAI] = 0.toShort()
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.NHAN_VIEN] = mApplication.userDangNhap!!.userName
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.HINH_THUC_PHAT_HIEN] = mApplication.getDiemSuCo!!.hinhThucPhatHien
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.DIA_CHI] = mApplication.getDiemSuCo!!.vitri
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.GHI_CHU] = mApplication.getDiemSuCo!!.ghiChu
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                             val c = Calendar.getInstance()
-                            suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.TG_CAP_NHAT] = c
+                            suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.TG_CAP_NHAT] = c
                         }
-                        suCoThongTinFeature.attributes[Constant.FIELD_SUCOTHONGTIN.DON_VI] = mApplication.userDangNhap!!.role
+                        suCoThongTinFeature.attributes[Constant.FieldSuCoThongTin.DON_VI] = mApplication.userDangNhap!!.role
                         serviceFeatureTable.addFeatureAsync(suCoThongTinFeature).addDoneListener {
                             val listListenableFuture = serviceFeatureTable.applyEditsAsync()
                             listListenableFuture.addDoneListener {
@@ -183,7 +178,7 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                                     if (featureEditResults.size > 0) {
                                         val queryParameters = QueryParameters()
                                         //                            final String query = String.format(mActivity.getString(R.string.arcgis_query_by_OBJECTID), objectId);
-                                        val query = String.format("%s = '%s'", Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT, output)
+                                        val query = String.format("%s = '%s'", Constant.FieldSuCoThongTin.ID_SUCOTT, output)
                                         queryParameters.whereClause = query
                                         val featuresAsync = serviceFeatureTable
                                                 .queryFeaturesAsync(queryParameters, ServiceFeatureTable.QueryFeatureFields.IDS_ONLY)
@@ -222,7 +217,7 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
                     }
                 }
 
-            }).execute(Constant.URL_API.GENERATE_ID_SUCOTHONGTIN + idSuCo)
+            }).execute(Constant.UrlApi.GENERATE_ID_SUCOTHONGTIN + idSuCo)
         }
     }
 
@@ -230,7 +225,7 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
         val arcGISFeature = feature as ArcGISFeature
         val attachmentName = mApplication.applicationContext.getString(R.string.attachment_add) + "_" + System.currentTimeMillis() + ".png"
         val addResult = arcGISFeature.addAttachmentAsync(
-                mApplication.getDiemSuCo.image, Bitmap.CompressFormat.PNG.toString(), attachmentName)
+                mApplication.getDiemSuCo!!.image, Bitmap.CompressFormat.PNG.toString(), attachmentName)
         addResult.addDoneListener {
             //            if (mDialog != null && mDialog.isShowing()) {
             //                mDialog.dismiss();
@@ -276,7 +271,7 @@ class SingleTapAddFeatureAsync(@field:SuppressLint("StaticFieldLeak")
             mDelegate.processFinish(null)
         } else if (values.size > 0) {
             mDelegate.processFinish(values[0])
-            mApplication.getDiemSuCo.clear()
+            mApplication.getDiemSuCo!!.clear()
         }
         if (mDialog != null && mDialog.isShowing) {
             mDialog.dismiss()

@@ -26,46 +26,46 @@ class Preference private constructor() {
         editor.apply()
     }
 
-    fun savePreferences(key: String, values: Set<String>) {
-        val sharedPreferences = preferences
-        val editor = sharedPreferences.edit()
-        editor.putStringSet(key, values)
-        editor.apply()
-    }
+//    fun savePreferences(key: String, values: Set<String>) {
+//        val sharedPreferences = preferences
+//        val editor = sharedPreferences.edit()
+//        editor.putStringSet(key, values)
+//        editor.apply()
+//    }
 
     fun deletePreferences(key: String) {
         val editor = preferences.edit()
         editor.remove(key).apply()
     }
 
-    fun deletePreferences(): Boolean {
-        val editor = preferences.edit()
-        editor.clear().apply()
-        return false
-    }
+//    fun deletePreferences(): Boolean {
+//        val editor = preferences.edit()
+//        editor.clear().apply()
+//        return false
+//    }
 
     /**
      * Method used to load Preferences
      */
     fun loadPreference(key: String): String? {
-        try {
+        return try {
             val sharedPreferences = preferences
-            return sharedPreferences.getString(key, "")
+            sharedPreferences.getString(key, "")
         } catch (nullPointerException: NullPointerException) {
-            return null
+            null
         }
 
     }
 
-    fun loadPreferences(key: String): Set<String>? {
-        try {
-            val sharedPreferences = preferences
-            return sharedPreferences.getStringSet(key, null)
-        } catch (nullPointerException: NullPointerException) {
-            return null
-        }
-
-    }
+//    fun loadPreferences(key: String): Set<String>? {
+//        try {
+//            val sharedPreferences = preferences
+//            return sharedPreferences.getStringSet(key, null)
+//        } catch (nullPointerException: NullPointerException) {
+//            return null
+//        }
+//
+//    }
 
     companion object {
         @SuppressLint("StaticFieldLeak")

@@ -38,18 +38,18 @@ class ThietBiActivity : AppCompatActivity() {
         Objects.requireNonNull<ActionBar>(supportActionBar).setDisplayHomeAsUpEnabled(true)
         Objects.requireNonNull<ActionBar>(supportActionBar).setDisplayShowHomeEnabled(true)
         mApplication = application as DApplication
-        mIsComplete = java.lang.Short.parseShort(mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.TRANG_THAI].toString()) == Constant.TRANG_THAI_SU_CO.HOAN_THANH
-        mIDSuCoTT = mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT].toString()
+        mIsComplete = java.lang.Short.parseShort(mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.TRANG_THAI].toString()) == Constant.TrangThaiSuCo.HOAN_THANH
+        mIDSuCoTT = mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCOTT].toString()
         //        QueryServiceFeatureTableAsync queryServiceFeatureTableAsync = new QueryServiceFeatureTableAsync(
         //                this, mApplication.getDFeatureLayer.getServiceFeatureTableSuCoThongTin(), output -> {
         init()
         loadThietBi()
-        //            mIDSuCoTT = output.getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCOTT).toString();
+        //            mIDSuCoTT = output.getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCOTT).toString();
         //        });
         //
         //        String queryClause = String.format("%s = '%s' and %s = '%s'",
-        //                Constant.FIELD_SUCOTHONGTIN.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FIELD_SUCOTHONGTIN.ID_SUCO).toString(),
-        //                Constant.FIELD_SUCOTHONGTIN.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
+        //                Constant.FieldSuCoThongTin.ID_SUCO, mApplication.getArcGISFeature().getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString(),
+        //                Constant.FieldSuCoThongTin.NHAN_VIEN, mApplication.getUserDangNhap().getUserName());
         //        QueryParameters queryParameters = new QueryParameters();
         //        queryParameters.setWhereClause(queryClause);
         //        queryServiceFeatureTableAsync.execute(queryParameters);
@@ -63,8 +63,8 @@ class ThietBiActivity : AppCompatActivity() {
     private fun init() {
         val listTenThietBis = ArrayList<String>()
         try {
-            for (thietBi in ListObjectDB.instance.thietBis!!)
-                listTenThietBis.add(thietBi.tenThietBi!!)
+            for (item in ListObjectDB.instance.thietBis!!)
+                listTenThietBis.add(item.tenThietBi!!)
         } catch (ignored: Exception) {
 
         }
@@ -72,16 +72,18 @@ class ThietBiActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listTenThietBis)
         autoCompleteTV_thietbi!!.setAdapter(adapter)
 
-        mAdapter = ThietBiAdapter(this, ArrayList<ThietBiAdapter.Item>())
+        mAdapter = ThietBiAdapter(this, ArrayList())
         val maThietBi = arrayOf("")
         lstview_thietbi!!.adapter = mAdapter
         //        if (!mIsComplete) {
-        lstview_thietbi!!.setOnItemLongClickListener { adapterView, view, i, l ->
+        lstview_thietbi!!.setOnItemLongClickListener { adapterView, _, i, _ ->
             val itemThietBi = adapterView.adapter.getItem(i) as ThietBiAdapter.Item
             val builder = AlertDialog.Builder(this@ThietBiActivity, android.R.style.Theme_Material_Light_Dialog_Alert)
             builder.setTitle("Xóa thiết bị")
             builder.setMessage("Bạn có chắc muốn xóa thiết bị " + itemThietBi.tenThietBi)
-            builder.setCancelable(false).setNegativeButton("Hủy") { dialog, which -> dialog.dismiss() }.setPositiveButton("Xóa") { dialogInterface, i12 ->
+            builder.setCancelable(false).setNegativeButton("Hủy") {
+                dialog, _ -> dialog.dismiss()
+            }.setPositiveButton("Xóa") { dialogInterface, _ ->
                 mAdapter!!.remove(itemThietBi)
                 mAdapter!!.notifyDataSetChanged()
                 dialogInterface.dismiss()
@@ -107,8 +109,8 @@ class ThietBiActivity : AppCompatActivity() {
 
             }
         })
-        txt_thietbi_add!!.setOnClickListener { view ->
-            if (etxt_thietbi_thoigian!!.text.toString().trim { it <= ' ' }.length == 0)
+        txt_thietbi_add!!.setOnClickListener {
+            if (etxt_thietbi_thoigian!!.text.toString().trim { item -> item <= ' ' }.isEmpty())
                 MySnackBar.make(etxt_thietbi_thoigian!!, this@ThietBiActivity.getString(R.string.message_soluong_themhoso), true)
             else {
                 try {
@@ -132,7 +134,7 @@ class ThietBiActivity : AppCompatActivity() {
                 mAdapter!!.notifyDataSetChanged()
             }
         }
-        btn_thietbi_update!!.setOnClickListener { view -> updateEdit() }
+        btn_thietbi_update!!.setOnClickListener { updateEdit() }
         //        }
     }
 
@@ -141,17 +143,16 @@ class ThietBiActivity : AppCompatActivity() {
 
         val hoSoThietBiSuCoAsync = HoSoThietBiSuCoAsync(this, object : HoSoThietBiSuCoAsync.AsyncResponse {
             override fun processFinish(`object`: Any?) {
-                if (`object` != null) {
+                if (`object` != null && `object` is List<*>) {
                     try {
-                        val hoSoThietBiSuCos = `object` as List<HoSoThietBiSuCo>
-                        for (hoSoThietBiSuCo in hoSoThietBiSuCos) {
-                            mAdapter!!.add(ThietBiAdapter.Item(hoSoThietBiSuCo.tenThietBi, hoSoThietBiSuCo.thoigianVanHanh,
-                                    hoSoThietBiSuCo.maThietBi))
+                        for (item in `object`) {
+                            if (item is HoSoThietBiSuCo)
+                                mAdapter!!.add(ThietBiAdapter.Item(item.tenThietBi, item.thoigianVanHanh,
+                                        item.maThietBi))
                         }
                     } catch (e: Exception) {
                         Log.e("Lỗi ép kiểu thiết bị", e.toString())
                     }
-
                     mAdapter!!.notifyDataSetChanged()
                     lstview_thietbi!!.adapter = mAdapter
                 }
@@ -159,7 +160,7 @@ class ThietBiActivity : AppCompatActivity() {
             }
 
         })
-        hoSoThietBiSuCoAsync.execute(Constant.HOSOSUCO_METHOD.FIND, mIDSuCoTT)
+        hoSoThietBiSuCoAsync.execute(Constant.HoSoSuCoMethod.FIND, mIDSuCoTT)
 
     }
 
@@ -174,7 +175,7 @@ class ThietBiActivity : AppCompatActivity() {
                         itemThietBi.soLuong, itemThietBi.maThietBi, itemThietBi.tenThietBi!!))
             }
             ListObjectDB.instance.setLstHoSoThietBiSuCoInsert(hoSoThietBiSuCos)
-            if (ListObjectDB.instance.getLstHoSoThietBiSuCoInsert()!!.size > 0) {
+            if (ListObjectDB.instance.getLstHoSoThietBiSuCoInsert()!!.isNotEmpty()) {
                 val hoSoThietBiSuCoInsertAsync = HoSoThietBiSuCoAsync(this,
                         object : HoSoThietBiSuCoAsync.AsyncResponse {
                             override fun processFinish(`object`: Any?) {
@@ -185,7 +186,7 @@ class ThietBiActivity : AppCompatActivity() {
                                         //                            boolean isDone = (boolean) a[0];
                                         if (isDone) {
                                             if (mIsComplete)
-                                                APICompleteAsync(mApplication!!, mApplication!!.arcGISFeature!!.attributes[Constant.FIELD_SUCOTHONGTIN.ID_SUCO].toString())
+                                                APICompleteAsync(mApplication!!, mApplication!!.arcGISFeature!!.attributes[Constant.FieldSuCoThongTin.ID_SUCO].toString())
                                                         .execute()
                                             goHome()
                                             txt_thietbi_status!!.text = Html.fromHtml(this@ThietBiActivity.getString(R.string.info_thietbi_complete), Html.FROM_HTML_MODE_LEGACY)
@@ -199,11 +200,11 @@ class ThietBiActivity : AppCompatActivity() {
                             }
 
                         })
-                hoSoThietBiSuCoInsertAsync.execute(Constant.HOSOSUCO_METHOD.INSERT, mIDSuCoTT)
+                hoSoThietBiSuCoInsertAsync.execute(Constant.HoSoSuCoMethod.INSERT, mIDSuCoTT)
             }
             var check: Boolean
             do {
-                check = ListObjectDB.instance.getLstHoSoThietBiSuCoInsert()!!.size > 0
+                check = ListObjectDB.instance.getLstHoSoThietBiSuCoInsert()!!.isNotEmpty()
             } while (check)
         }
     }

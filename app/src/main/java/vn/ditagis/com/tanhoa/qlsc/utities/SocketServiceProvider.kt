@@ -7,8 +7,6 @@ import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 
-import org.json.JSONException
-import org.json.JSONObject
 
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -17,21 +15,21 @@ import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 class SocketServiceProvider : Service() {
     private var signalApplication: DApplication? = null
 
-    private val onNhanVien = Emitter.Listener { Handler(Looper.getMainLooper()).post { } }
+    private val onStaff = Emitter.Listener { Handler(Looper.getMainLooper()).post { } }
 
     private val onDisconnect = Emitter.Listener { Handler(Looper.getMainLooper()).post { } }
 
     private val onConnectError = Emitter.Listener { Handler(Looper.getMainLooper()).post { } }
 
     private val message = Emitter.Listener {
-        val result = it[0] as JSONObject
+        //        val result = it[0] as JSONObject
         Handler(mainLooper)
                 .post {
-                    try {
-                        val username = result.getString("username")
-                    } catch (e: JSONException) {
-                        e.printStackTrace()
-                    }
+                    //                    try {
+////                        val username = result.getString("username")
+//                    } catch (e: JSONException) {
+//                        e.printStackTrace()
+//                    }
                 }
     }
 
@@ -47,7 +45,7 @@ class SocketServiceProvider : Service() {
 
         signalApplication!!.socket!!.on(Socket.EVENT_CONNECT_ERROR, onConnectError)
         signalApplication!!.socket!!.on(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
-        signalApplication!!.socket!!.on(Socket.EVENT_CONNECT, onNhanVien)
+        signalApplication!!.socket!!.on(Socket.EVENT_CONNECT, onStaff)
 
         //@formatter:off
         signalApplication!!.socket!!.on("message", message)
@@ -79,7 +77,7 @@ class SocketServiceProvider : Service() {
         super.onDestroy()
 
 
-        signalApplication!!.socket!!.off(Socket.EVENT_CONNECT, onNhanVien)
+        signalApplication!!.socket!!.off(Socket.EVENT_CONNECT, onStaff)
         signalApplication!!.socket!!.off(Socket.EVENT_DISCONNECT, onDisconnect)
         signalApplication!!.socket!!.off(Socket.EVENT_CONNECT_ERROR, onConnectError)
         signalApplication!!.socket!!.off(Socket.EVENT_CONNECT_TIMEOUT, onConnectError)
@@ -100,7 +98,7 @@ class SocketServiceProvider : Service() {
         var instance: SocketServiceProvider? = null
 
         val isInstanceCreated: Boolean
-            get() = if (instance == null) false else true
+            get() = instance != null
     }
 
 }

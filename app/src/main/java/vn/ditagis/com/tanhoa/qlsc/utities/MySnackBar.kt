@@ -20,8 +20,4 @@ object MySnackBar {
                 .setAction("Action", null).show()
     }
 
-    fun make(view: View, id: Int, time: Int) {
-        Snackbar.make(view, id, time)
-                .setAction("Action", null).show()
-    }
 }

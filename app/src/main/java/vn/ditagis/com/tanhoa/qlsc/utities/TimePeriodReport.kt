@@ -1,5 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc.utities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateFormat
 
@@ -17,8 +18,8 @@ import vn.ditagis.com.tanhoa.qlsc.adapter.ThongKeAdapter
  */
 
 class TimePeriodReport(private val mContext: Context) {
-    private val calendar: Calendar
-    private val today: Date
+    private val calendar: Calendar = Calendar.getInstance()
+    private val today: Date = Date()
     private var items: MutableList<ThongKeAdapter.Item>? = null
 
     private val firstDayofMonth: Date
@@ -120,9 +121,7 @@ class TimePeriodReport(private val mContext: Context) {
         }
 
     init {
-        today = Date()
-        calendar = Calendar.getInstance()
-        items = ArrayList<ThongKeAdapter.Item>()
+        items = ArrayList()
         items!!.add(ThongKeAdapter.Item(1, "Tất cả", null, null, null))
         items!!.add(ThongKeAdapter.Item(2, "Tháng này", formatTimeToGMT(firstDayofMonth), formatTimeToGMT(lastDayofMonth), dayToFirstDayString(firstDayofMonth, lastDayofMonth)))
         items!!.add(ThongKeAdapter.Item(3, "Tháng trước", formatTimeToGMT(firstDayofLastMonth), formatTimeToGMT(lastDayofLastMonth), dayToFirstDayString(firstDayofLastMonth, lastDayofLastMonth)))
@@ -137,10 +136,7 @@ class TimePeriodReport(private val mContext: Context) {
         return items
     }
 
-    fun setItems(items: MutableList<ThongKeAdapter.Item>) {
-        this.items = items
-    }
-
+    @SuppressLint("SimpleDateFormat")
     private fun formatTimeToGMT(date: Date): String {
         val dateFormatGmt = SimpleDateFormat(mContext.getString(R.string.format_day_yearfirst))
         dateFormatGmt.timeZone = TimeZone.getTimeZone("GMT")

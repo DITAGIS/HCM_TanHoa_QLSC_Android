@@ -45,13 +45,13 @@ class ShowCaptureActivity : AppCompatActivity() {
     }
 
 
-    fun goHome() {
+    private fun goHome() {
         val intent = Intent()
         setResult(RESULT_OK, intent)
         finish()
     }
 
-    fun goHomeCancel() {
+    private fun goHomeCancel() {
         val intent = Intent()
         setResult(RESULT_CANCELED, intent)
         finish()

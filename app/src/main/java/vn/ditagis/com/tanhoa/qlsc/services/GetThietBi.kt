@@ -1,11 +1,8 @@
 package vn.ditagis.com.tanhoa.qlsc.services
 
-import android.content.Context
 import android.os.AsyncTask
 
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.Feature
-import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 import vn.ditagis.com.tanhoa.qlsc.entities.*
@@ -46,8 +43,8 @@ class GetThietBi(private val mApplication: DApplication, private val mDelegate: 
 
                         while (iterator.hasNext()) {
                             item = iterator.next()
-                            val maThietBi = item.attributes[Constant.FIELD_THIETBI.MA_THIET_BI] as String
-                            val tenThietBi = item.attributes[Constant.FIELD_THIETBI.TEN_THIET_BI] as String
+                            val maThietBi = item.attributes[Constant.FieldThietBi.MA_THIET_BI] as String
+                            val tenThietBi = item.attributes[Constant.FieldThietBi.TEN_THIET_BI] as String
                             val thietBi = ThietBi(maThietBi, tenThietBi)
                             thietBiList.add(thietBi)
                         }
@@ -61,10 +58,7 @@ class GetThietBi(private val mApplication: DApplication, private val mDelegate: 
                         e.printStackTrace()
                         publishProgress()
                     }
-
-
                 }
-
                 break
             }
         }

@@ -1,12 +1,7 @@
 package vn.ditagis.com.tanhoa.qlsc.services
 
-import android.content.Context
 import android.os.AsyncTask
-import android.widget.Toast
-
-import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.Feature
-import com.esri.arcgisruntime.data.FeatureQueryResult
 import com.esri.arcgisruntime.data.QueryParameters
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 
@@ -15,7 +10,6 @@ import java.util.concurrent.ExecutionException
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
-import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
 import vn.ditagis.com.tanhoa.qlsc.entities.VatTu
 import vn.ditagis.com.tanhoa.qlsc.entities.entitiesDB.ListObjectDB
 import java.lang.Exception
@@ -50,9 +44,9 @@ class GetVatTu(private val mApplication: DApplication, private val mDelegate: As
                         var item: Feature
                         while (iterator.hasNext()) {
                             item = iterator.next()
-                            val maVatTu = item.attributes[Constant.FIELD_VATTU.MA_VAT_TU] as String
-                            val tenVatTu = item.attributes[Constant.FIELD_VATTU.TEN_VAT_TU] as String
-                            val donViTinh = item.attributes[Constant.FIELD_VATTU.DON_VI_TINH] as String
+                            val maVatTu = item.attributes[Constant.FieldVatTu.MA_VAT_TU] as String
+                            val tenVatTu = item.attributes[Constant.FieldVatTu.TEN_VAT_TU] as String
+                            val donViTinh = item.attributes[Constant.FieldVatTu.DON_VI_TINH] as String
                             val vatTu = VatTu(maVatTu, tenVatTu, donViTinh)
                             vatTuList.add(vatTu)
                         }
@@ -64,10 +58,7 @@ class GetVatTu(private val mApplication: DApplication, private val mDelegate: As
                     } catch (e: ExecutionException) {
                         publishProgress()
                     }
-
-
                 }
-
                 break
             }
         }

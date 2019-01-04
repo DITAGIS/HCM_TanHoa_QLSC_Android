@@ -3,7 +3,6 @@ package vn.ditagis.com.tanhoa.qlsc.utities
 import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 
 /**
  * Created by ThanLe on 27/10/2017.

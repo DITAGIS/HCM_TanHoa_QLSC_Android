@@ -20,7 +20,6 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.Toast
 
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -44,18 +43,19 @@ class NotifyService : Service() {
     // onStartCommand() then create a thread or AsyncTask or loader to do it. Else, you will block
     // the UI.
 
-    private val onInfinity =Emitter.Listener { args ->
-        if (args != null && args!!.size > 0) {
-            Log.d("Nhận", args!![0].toString())
+    private val onInfinity = Emitter.Listener { args ->
+        if (args != null && args.isNotEmpty()) {
+            Log.d("Nhận", args[0].toString())
         }
     }
-    internal var onNhanViec =Emitter.Listener { args ->
+
+    private var onNhanViec = Emitter.Listener { args ->
         Handler(Looper.getMainLooper()).post {
             try {
-                if (args != null && args!!.size > 0 && mApplication!!.userDangNhap != null
+                if (args != null && args.isNotEmpty() && mApplication!!.userDangNhap != null
                         && mApplication!!.userDangNhap!!.userName != null) {
                     val title = "NhanViec"
-                    val myData = "{ \"" + title + "\": [" + args!![0].toString() + "]}"
+                    val myData = "{ \"" + title + "\": [" + args[0].toString() + "]}"
 
                     val jsonData = JSONObject(myData)
                     val jsonRoutes = jsonData.getJSONArray(title)
@@ -67,9 +67,9 @@ class NotifyService : Service() {
                         nhanVien = jsonRoute.getString("nhanVien")
                     }
                     if (nhanVien == mApplication!!.userDangNhap!!.userName) {
-                        mApplication!!.getDiemSuCo.idSuCo = suCo
+                        mApplication!!.getDiemSuCo!!.idSuCo = suCo
                         showNotify()
-                        Log.d("Nhận việc", args!![0].toString())
+                        Log.d("Nhận việc", args[0].toString())
                     }
 
                 }
@@ -132,7 +132,7 @@ class NotifyService : Service() {
             registerReceiver(notifyServiceReceiver, intentFilter)
 
             val context = applicationContext
-            val notificationTitle = "Bạn vừa nhận sự cố " + mApplication!!.getDiemSuCo.idSuCo
+            val notificationTitle = "Bạn vừa nhận sự cố " + mApplication!!.getDiemSuCo!!.idSuCo
             val notificationText = "Click vào đây để biết thêm chi tiết"
             val myIntent = Intent(mContext, ClickNotificationHandlingActivity::class.java)
 
@@ -152,11 +152,9 @@ class NotifyService : Service() {
 
             notification.flags = notification.flags or Notification.FLAG_AUTO_CANCEL
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (notificationManager != null) {
-                notificationManager.createNotificationChannel(notificationChannel)
-                mApplication!!.channelID = mApplication!!.channelID + 1
-                notificationManager.notify(mApplication!!.channelID, notification)
-            }
+            notificationManager.createNotificationChannel(notificationChannel)
+            mApplication!!.channelID = mApplication!!.channelID + 1
+            notificationManager.notify(mApplication!!.channelID, notification)
 
         } catch (e: Exception) {
             Toast.makeText(mContext, "Có lỗi khi nhận thông báo", Toast.LENGTH_SHORT).show()
@@ -165,11 +163,6 @@ class NotifyService : Service() {
     }
 
     // onDestroy corresponds to onCreate. It performs any final cleanup before an activity is destroyed
-    override fun onDestroy() {
-        super.onDestroy()
-        //        Log.d(TAG, "NotifyService:onDestroy/unregisterReceiver");
-        //        this.unregisterReceiver(notifyServiceReceiver);
-    }
 
     override fun onBind(arg0: Intent): IBinder? {
         Log.d(TAG, "NotifyService:onBind()")
@@ -197,7 +190,7 @@ class NotifyService : Service() {
                     // Finally, cancelAll - Cancel all previously shown notifications.
 
                     notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                    notificationManager?.cancelAll()
+                    notificationManager.cancelAll()
                 }
                 // Stop the service, if it was previously started. This is the same as
                 // calling stopService(Intent) for this particular service.  stopSelf()
@@ -213,10 +206,10 @@ class NotifyService : Service() {
 
     companion object {
 
-        val CHANNEL_ID = "notification channel"
-        internal val STOP_SERVICE_BROADCAST_KEY = "StopServiceBroadcastKey"
-        internal val RQS_STOP_SERVICE = 1
-        private val TAG = "NotifyService"
+        const val CHANNEL_ID = "notification channel"
+        internal const val STOP_SERVICE_BROADCAST_KEY = "StopServiceBroadcastKey"
+        internal const val RQS_STOP_SERVICE = 1
+        private const val TAG = "NotifyService"
     }
 
 }

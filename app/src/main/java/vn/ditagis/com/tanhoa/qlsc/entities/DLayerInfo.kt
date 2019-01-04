@@ -11,17 +11,17 @@ class DLayerInfo {
     lateinit var id: String
     lateinit var titleLayer: String
     lateinit var url: String
-    var isCreate: Boolean = false
+    private var isCreate: Boolean = false
     var isDelete: Boolean = false
-    var isEdit: Boolean = false
+    private var isEdit: Boolean = false
     var isView: Boolean = false
-    var definition: String? = null
+    private var definition: String? = null
     lateinit var outFields: String
     lateinit var noOutFields: String
-    lateinit var addFields: String
+    private lateinit var addFields: String
     lateinit var updateFields: String
 
-    constructor() {}
+    constructor()
 
     constructor(id: String, titleLayer: String, url: String, isCreate: Boolean, isDelete: Boolean, isEdit: Boolean, isView: Boolean, definition: String?, outFields: String, noOutFields: String, addFields: String, updateFields: String) {
         this.id = id
