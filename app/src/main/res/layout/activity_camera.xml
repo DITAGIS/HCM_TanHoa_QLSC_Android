@@ -5,20 +5,22 @@
     tools:context="vn.ditagis.com.tanhoa.qlsc.CameraActivity">
 
     <!-- TODO: Update blank fragment layout -->
-    <SurfaceView
-        android:id="@+id/surfaceView_fragment_camera"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+
 
     <!--layout chứa các nút chức năng-->
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/margin_medium">
+        android:layout_height="match_parent">
+
+        <SurfaceView
+            android:id="@+id/surfaceView_fragment_camera"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_medium">
 
             <ImageView
                 android:id="@+id/camera_back"
@@ -44,7 +46,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom">
+            android:layout_gravity="bottom"
+            android:layout_margin="@dimen/margin_medium">
 
             <ImageView
                 android:id="@+id/camera_capture"

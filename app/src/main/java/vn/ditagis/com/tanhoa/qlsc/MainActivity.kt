@@ -14,6 +14,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
+import android.os.AsyncTask.execute
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -42,6 +43,7 @@ import android.widget.Toast
 
 import com.esri.arcgisruntime.ArcGISRuntimeEnvironment
 import com.esri.arcgisruntime.ArcGISRuntimeException
+import com.esri.arcgisruntime.data.ArcGISFeature
 import com.esri.arcgisruntime.data.Feature
 import com.esri.arcgisruntime.data.ServiceFeatureTable
 import com.esri.arcgisruntime.geometry.Geometry
@@ -75,21 +77,13 @@ import kotlinx.android.synthetic.main.content_quan_ly_su_co.*
 import kotlinx.android.synthetic.main.layout_feature.view.*
 import kotlinx.android.synthetic.main.nav_header_quan_ly_su_co.view.*
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter
-import vn.ditagis.com.tanhoa.qlsc.async.FindLocationAsycn
-import vn.ditagis.com.tanhoa.qlsc.async.LoadLegendAsycn
-import vn.ditagis.com.tanhoa.qlsc.async.PreparingByAPIAsycn
-import vn.ditagis.com.tanhoa.qlsc.async.QueryFeatureGetListGeometryAsync
-import vn.ditagis.com.tanhoa.qlsc.async.QueryServiceFeatureTableGetListAsync
+import vn.ditagis.com.tanhoa.qlsc.async.*
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DAddress
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
 import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
 import vn.ditagis.com.tanhoa.qlsc.socket.LocationHelper
-import vn.ditagis.com.tanhoa.qlsc.utities.CheckConnectInternet
-import vn.ditagis.com.tanhoa.qlsc.utities.MapViewHandler
-import vn.ditagis.com.tanhoa.qlsc.utities.MySnackBar
-import vn.ditagis.com.tanhoa.qlsc.utities.Popup
-import vn.ditagis.com.tanhoa.qlsc.utities.Preference
+import vn.ditagis.com.tanhoa.qlsc.utities.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -1390,25 +1384,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Activity.RESULT_OK -> try {
                         if (mApplication!!.capture != null) {
 
-                            //                            mapViewHandler.addFeature(image);
+                             EditAsync(this, mApplication!!.arcGISFeature!!,
+                                    true, mApplication!!.capture,ArrayList(), ArrayList(),
+                                    object:EditAsync.AsyncResponse{
+                                        override fun processFinish(output: ArcGISFeature?) {
+                                            //
+                                            if (output != null) {
+                                                Toast.makeText(mapView.context, "Đã lưu ảnh", Toast.LENGTH_SHORT).show()
+                                                if ((output.getAttributes().get(Constant.FieldSuCoThongTin.TRANG_THAI).toString()).toShort()
+                                                        == Constant.TrangThaiSuCo.HOAN_THANH)
+                                                    APICompleteAsync (mApplication!!, mApplication!!.arcGISFeature!!.getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString())
+                                                .execute();
+                                                if (!output.canEditAttachments())
+                                                    Toast.makeText(mapView.context, this@MainActivity.getString(R.string.message_cannot_edit_attachment), Toast.LENGTH_SHORT).show()
+                                            } else
+                                                Toast.makeText(mapView.context, this@MainActivity.getString(R.string.message_update_failed), Toast.LENGTH_SHORT).show()
+                                        }
 
-                            //                                EditAsync editAsync = new EditAsync(this, mSelectedArcGISFeature,
-                            //                                        true, mApplication.capture, mPopUp.getListHoSoVatTuSuCo(), mPopUp.getmListHoSoVatTuThuHoiSuCo(),
-                            //                                        output -> {
-                            //                                            //
-                            //                                            if (output != null) {
-                            //                                                Toast.makeText(this, "Đã lưu ảnh", Toast.LENGTH_SHORT).show();
-                            //                                                mPopUp.getCallout().dismiss();
-                            //                                                if (Short.parseShort(output.getAttributes().get(Constant.FieldSuCoThongTin.TRANG_THAI).toString())
-                            //                                                        == Constant.TrangThaiSuCo.HOAN_THANH)
-                            //                                                    new APICompleteAsync(mApplication, mApplication.getArcGISFeature().getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString())
-                            //                                                            .execute();
-                            //                                                if (!output.canEditAttachments())
-                            //                                                    MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_cannot_edit_attachment), true);
-                            //                                            } else
-                            //                                                MySnackBar.make(mPopUp.getmBtnLeft(), MainActivity.this.getString(R.string.message_update_failed), true);
-                            //                                        });
-                            //                                editAsync.execute(mPopUp.getFeatureViewMoreInfoAdapter());
+                                    }).execute(mPopUp!!.featureViewMoreInfoAdapter)
                         }
                     } catch (ignored: Exception) {
                     }

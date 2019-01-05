@@ -10,6 +10,7 @@ import java.net.URL
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
+import java.io.Reader
 
 class APICompleteAsync(private val mApplication: DApplication, private val mIDSuCo: String) : AsyncTask<Void, Void, Void>() {
 
@@ -25,7 +26,7 @@ class APICompleteAsync(private val mApplication: DApplication, private val mIDSu
                 conn.setRequestProperty("Authorization", mApplication.userDangNhap!!.token)
                 conn.connect()
 
-                val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream))
+                val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream) as Reader?)
                 val builder = StringBuilder()
                 var line: String
                 while (true) {

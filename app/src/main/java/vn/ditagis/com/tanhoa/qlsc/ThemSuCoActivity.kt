@@ -1,5 +1,6 @@
 package vn.ditagis.com.tanhoa.qlsc
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
@@ -122,14 +123,18 @@ class ThemSuCoActivity : AppCompatActivity() {
                 //                    if (!mEtxtPhuiDaoSau.getText().toString().isEmpty())
                 //                        mApplication.getDiemSuCo.setPhuiDaoSau(Double.parseDouble(mEtxtPhuiDaoSau.getText().toString()));
                 for (codedValue in mCodeValues!!) {
-                    if (codedValue.name == spin_hinh_thuc_phat_hien_add_feature!!.selectedItem.toString())
+                    if (codedValue.name == spin_hinh_thuc_phat_hien_add_feature!!.selectedItem.toString()) {
                         mApplication!!.getDiemSuCo!!.hinhThucPhatHien = java.lang.Short.parseShort(codedValue.code.toString())
+                        break
+                    }
                 }
                 for (codedValueKetCauDuong in mCodeValuesKetCauDuong!!) {
-                    if (codedValueKetCauDuong.name == spin_add_feature_ket_cau_duong!!.selectedItem.toString())
+                    if (codedValueKetCauDuong.name == spin_add_feature_ket_cau_duong!!.selectedItem.toString()) {
                         mApplication!!.getDiemSuCo!!.ketCauDuong = java.lang.Short.parseShort(codedValueKetCauDuong.code.toString())
+                        break
+                    }
                 }
-                finish()
+                goHome()
             } else {
                 handlingEmpty()
             }
@@ -173,16 +178,23 @@ class ThemSuCoActivity : AppCompatActivity() {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onBackPressed() {
-        goHome()
+        goHomeCancel()
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    fun goHomeCancel() {
+        mApplication!!.getDiemSuCo!!.point = null
+        val intent = Intent()
+        setResult(RESULT_CANCELED, intent)
+        this@ThemSuCoActivity.finish()
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     fun goHome() {
-        mApplication!!.getDiemSuCo!!.point = null
+//        mApplication!!.getDiemSuCo!!.point = null
         val intent = Intent()
         setResult(RESULT_OK, intent)
-        finish()
+        this@ThemSuCoActivity.finish()
     }
 
 }

@@ -27,7 +27,6 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var mCamera: Camera? = null
     private var mPictureCallback: Camera.PictureCallback? = null
     private var mParameters: Camera.Parameters? = null
-    private var surfaceView_fragment_camera: SurfaceView? = null
     private var mSurfaceHolder: SurfaceHolder? = null
     private var mApplication: DApplication? = null
 
@@ -37,11 +36,10 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_camera)
-        mSurfaceHolder = surfaceView_fragment_camera!!.holder
+        mSurfaceHolder = this@CameraActivity.surfaceView_fragment_camera!!.holder
         mSurfaceHolder!!.addCallback(this)
         mApplication = application as DApplication
     }
-
     private fun getParameters() {
         mCamera = Camera.open()
         mParameters = mCamera!!.parameters

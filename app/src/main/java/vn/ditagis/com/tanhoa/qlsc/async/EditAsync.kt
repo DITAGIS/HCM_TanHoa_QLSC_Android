@@ -2,11 +2,14 @@ package vn.ditagis.com.tanhoa.qlsc.async
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Dialog
 import android.app.ProgressDialog
 import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Build
 import android.support.annotation.RequiresApi
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.esri.arcgisruntime.data.*
 import java.text.ParseException
 import java.util.Calendar
@@ -27,7 +30,7 @@ constructor(@field:SuppressLint("StaticFieldLeak")
             selectedArcGISFeature: ArcGISFeature, private val isUpdateAttachment: Boolean, private val mImage: ByteArray?,
             private val mHoSoVatTuSuCos: List<HoSoVatTuSuCo>, hoSoVatTuThuHoi_suCos: List<HoSoVatTuSuCo>, private val mDelegate: AsyncResponse)
     : AsyncTask<FeatureViewMoreInfoAdapter, ArcGISFeature, Boolean?>() {
-    private val mDialog: ProgressDialog?
+    private val mDialog: Dialog?
     private val mServiceFeatureTableSuCoThongTin: ServiceFeatureTable?
     private val mServiceFeatureTableSuCo: ServiceFeatureTable
     private var mSelectedArcGISFeature: ArcGISFeature? = null
@@ -41,15 +44,17 @@ constructor(@field:SuppressLint("StaticFieldLeak")
         mServiceFeatureTableSuCoThongTin = mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin
         mServiceFeatureTableSuCo = mApplication.getDFeatureLayer.layer!!.featureTable as ServiceFeatureTable
         mSelectedArcGISFeature = selectedArcGISFeature
-        mDialog = ProgressDialog(mActivity, android.R.style.Theme_Material_Dialog_Alert)
+        mDialog = Dialog(mActivity)
     }
 
     override fun onPreExecute() {
         super.onPreExecute()
-        mDialog!!.setMessage(mActivity.getString(R.string.async_dang_xu_ly))
-        mDialog.setCancelable(false)
-        mDialog.show()
-
+        val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
+        val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
+        txtTitle.text = "Đang lưu thông tin..."
+        mDialog!!.setCancelable(false)
+        mDialog!!.setContentView(layout)
+        mDialog!!.show()
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -61,7 +66,6 @@ constructor(@field:SuppressLint("StaticFieldLeak")
 
                         val arcGISFeatureSuCoThongTin = output as ArcGISFeature
                         val adapter = params[0]
-                        mDialog!!.max = adapter.count
                         val c = arrayOf(Calendar.getInstance())
 
                         var loaiSuCo = ""

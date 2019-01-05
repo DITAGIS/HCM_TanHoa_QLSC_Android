@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.view.MotionEvent
+import android.widget.Toast
 
 import com.esri.arcgisruntime.concurrent.ListenableFuture
 import com.esri.arcgisruntime.data.ArcGISFeature
@@ -58,12 +59,17 @@ class MapViewHandler(private val mDCallout: Callout?, private val mMapView: MapV
         mClickPoint = mMapView.locationToScreen(pointFindLocation)
 
         val singleTapAdddFeatureAsync = SingleTapAddFeatureAsync(mActivity,
-                mServiceFeatureTable!!, object:SingleTapAddFeatureAsync.AsyncResponse{
+                mServiceFeatureTable!!, object : SingleTapAddFeatureAsync.AsyncResponse {
             override fun processFinish(output: Feature?) {
                 if (output != null) {
                     if (mDCallout != null && mDCallout.isShowing)
                         mDCallout.dismiss()
+                    Toast.makeText(mMapView.context, String.format("Bạn vừa thêm sự cố có id là: %s", output.attributes.get(Constant.FieldSuCo.ID_SUCO)),
+                            Toast.LENGTH_LONG).show()
                     //                mPopUp.showPopup((ArcGISFeature) output, true);
+                } else {
+                    Toast.makeText(mMapView.context, "Không báo được sự cố. Vui lòng thử lại sau",
+                            Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -150,7 +156,7 @@ class MapViewHandler(private val mDCallout: Callout?, private val mMapView: MapV
                             queryParameters1.whereClause = queryClause
                             QueryServiceFeatureTableAsync(mActivity,
                                     mApplication.getDFeatureLayer.serviceFeatureTableSuCoThongTin!!,
-                                    object :QueryServiceFeatureTableAsync.AsyncResponse{
+                                    object : QueryServiceFeatureTableAsync.AsyncResponse {
                                         override fun processFinish(output: Feature?) {
                                             if (output != null) {
                                                 mApplication.arcGISFeature = output as ArcGISFeature
