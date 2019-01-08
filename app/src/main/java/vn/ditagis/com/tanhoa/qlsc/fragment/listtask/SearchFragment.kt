@@ -10,14 +10,7 @@ import android.text.format.DateFormat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 
 import com.esri.arcgisruntime.data.CodedValue
 import com.esri.arcgisruntime.data.CodedValueDomain
@@ -137,7 +130,7 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
 
     private fun handlingTraCuuHoanTat() {
         val items = ArrayList<TraCuuAdapter.Item>()
-        for (feature in mFeaturesResult!!) {
+        try{   for (feature in mFeaturesResult!!) {
             val attributes = feature.attributes
             for (codedValue in mCodeValues!!) {
                 if (java.lang.Short.parseShort(codedValue.code.toString()) == java.lang.Short.parseShort(attributes[Constant.FieldSuCoThongTin.TRANG_THAI].toString())) {
@@ -150,6 +143,8 @@ constructor(private val mActivity: ListTaskActivity, inflater: LayoutInflater) :
                 }
             }
 
+        }}catch (ex: Exception){
+            Toast.makeText(mRootView.context,"Có lỗi xảy ra", Toast.LENGTH_SHORT).show()
         }
         val comparator = { o1: TraCuuAdapter.Item, o2: TraCuuAdapter.Item ->
             try {

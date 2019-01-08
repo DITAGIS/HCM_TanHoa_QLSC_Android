@@ -112,7 +112,8 @@ class Constant {
     }
 
     object UrlApi {
-        const val CHECK_VERSION = "http://tanhoa.sawagis.vn/apiv1" + "/versioning/QLSC?version=%s"
+//        const val CHECK_VERSION = "http://tanhoa.sawagis.vn/apiv1" + "/versioning/QLSC?version=%s"
+        const val CHECK_VERSION = "$SERVER_API_VERSIONNING/versioning/QLSC?version=%s"
         const val LOGIN = "$SERVER_API/Login"
         const val PROFILE = "$SERVER_API/Account/Profile"
         const val GENERATE_ID_SUCO = "$SERVER_API/QuanLySuCo/GenerateIDSuCo"
@@ -254,5 +255,6 @@ class Constant {
         //    private static final String SERVER = "http://tanhoa.sawagis.vn";
         private const val SERVER = "http://113.161.88.180:798"
         private const val SERVER_API = "$SERVER/apiv1/api"
+        private const val SERVER_API_VERSIONNING = "$SERVER/apiv1"
     }
 }

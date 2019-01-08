@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, GoogleApiClient
         try {
             if (!mApplication!!.isCheckedVersion) {
                 mApplication!!.isCheckedVersion = true
-                CheckVersionAsycn(this,
+                CheckVersionAsycn(this@LoginActivity,
                         object : CheckVersionAsycn.AsyncResponse {
                             override fun processFinish(versionInfo: VersionInfo?) {
                                 if (versionInfo != null) {

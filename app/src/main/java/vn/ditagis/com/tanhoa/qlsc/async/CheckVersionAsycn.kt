@@ -1,13 +1,16 @@
 package vn.ditagis.com.tanhoa.qlsc.async
 
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.content.Context
+import android.app.Activity
+import android.app.Dialog
 import android.os.AsyncTask
 import android.util.Log
+import android.widget.LinearLayout
+import android.widget.TextView
 
 import org.json.JSONException
 import org.json.JSONObject
+import vn.ditagis.com.tanhoa.qlsc.R
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -18,12 +21,13 @@ import java.text.SimpleDateFormat
 
 import vn.ditagis.com.tanhoa.qlsc.entities.Constant
 import vn.ditagis.com.tanhoa.qlsc.entities.VersionInfo
+import java.io.Reader
 
 
 class CheckVersionAsycn(@field:SuppressLint("StaticFieldLeak")
-                        private val mContext: Context, private val mDelegate: CheckVersionAsycn.AsyncResponse)
+                        private val mActivity: Activity, private val mDelegate: CheckVersionAsycn.AsyncResponse)
     : AsyncTask<String, Void, VersionInfo?>() {
-    private var mDialog: ProgressDialog? = null
+    private var mDialog: Dialog? = null
 
     interface AsyncResponse {
         fun processFinish(versionInfo: VersionInfo?)
@@ -31,10 +35,13 @@ class CheckVersionAsycn(@field:SuppressLint("StaticFieldLeak")
 
     override fun onPreExecute() {
         super.onPreExecute()
-        this.mDialog = ProgressDialog(this.mContext, android.R.style.Theme_Material_Dialog_Alert)
-        this.mDialog!!.setMessage("Đang kiểm tra phiên bản...")
-        this.mDialog!!.setCancelable(false)
-        this.mDialog!!.show()
+        val layout = mActivity.layoutInflater.inflate(R.layout.layout_progress_dialog, null) as LinearLayout
+        val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
+        txtTitle.text = "Đang kiểm tra phiên bản..."
+        mDialog = Dialog(mActivity)
+        mDialog!!.setCancelable(false)
+        mDialog!!.setContentView(layout)
+        mDialog!!.show()
     }
 
     override fun doInBackground(vararg params: String): VersionInfo? {
@@ -46,7 +53,7 @@ class CheckVersionAsycn(@field:SuppressLint("StaticFieldLeak")
                 try {
                     conn.requestMethod = "GET"
                     conn.connect()
-                    val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream))
+                    val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream) as Reader?)
                     val stringBuilder = StringBuilder()
                     val line: String
                     while (true) {

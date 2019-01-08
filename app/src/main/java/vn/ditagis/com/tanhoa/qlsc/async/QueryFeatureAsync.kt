@@ -104,9 +104,8 @@ private val mDelegate: AsyncResponse) : AsyncTask<Void, List<Feature>?, Void?>()
     }
 
     override fun onProgressUpdate(vararg values: List<Feature>?) {
-        if (values == null) {
-            mDelegate.processFinish(null)
-        } else if (values.size > 0) mDelegate.processFinish(values[0])
+        if (values.isNotEmpty()) mDelegate.processFinish(values[0])
+        else mDelegate.processFinish(null)
     }
 
 
