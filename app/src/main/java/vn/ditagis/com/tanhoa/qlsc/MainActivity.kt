@@ -19,6 +19,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.StrictMode
+import android.provider.Settings
 import android.support.annotation.RequiresApi
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
@@ -66,6 +67,7 @@ import com.esri.arcgisruntime.symbology.SimpleMarkerSymbol
 import com.esri.arcgisruntime.symbology.UniqueValueRenderer
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
+import kotlinx.android.synthetic.main.activity_login.*
 
 import java.util.ArrayList
 import java.util.Locale
@@ -78,10 +80,7 @@ import kotlinx.android.synthetic.main.layout_feature.view.*
 import kotlinx.android.synthetic.main.nav_header_quan_ly_su_co.view.*
 import vn.ditagis.com.tanhoa.qlsc.adapter.TraCuuAdapter
 import vn.ditagis.com.tanhoa.qlsc.async.*
-import vn.ditagis.com.tanhoa.qlsc.entities.Constant
-import vn.ditagis.com.tanhoa.qlsc.entities.DAddress
-import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
-import vn.ditagis.com.tanhoa.qlsc.entities.DLayerInfo
+import vn.ditagis.com.tanhoa.qlsc.entities.*
 import vn.ditagis.com.tanhoa.qlsc.socket.LocationHelper
 import vn.ditagis.com.tanhoa.qlsc.utities.*
 
@@ -1092,6 +1091,39 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_list_task -> showListTask()
             R.id.nav_delete_searching -> deleteSearching()
             R.id.nav_visible_float_button -> visibleFloatActionButton()
+            R.id.nav_check_version -> {
+                CheckVersionAsycn(this@MainActivity,
+                        object : CheckVersionAsycn.AsyncResponse {
+                            override fun processFinish(versionInfo: VersionInfo?) {
+                                if (versionInfo != null) {
+                                    val builder = android.support.v7.app.AlertDialog.Builder(this@MainActivity, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                                    builder.setCancelable(false)
+                                            .setPositiveButton("CẬP NHẬT") { _, _ -> goURLBrowser(versionInfo.link) }.setTitle("Có phiên bản mới")
+                                            .setNegativeButton("HỦY") { _, _ ->
+
+                                            }
+                                    var isDeveloper = false
+                                    if (versionInfo.type != "RELEASE") {
+                                        val anInt = Settings.Secure.getInt(this@MainActivity.contentResolver,
+                                                Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0)
+                                        if (anInt != 0)
+                                            isDeveloper = true
+
+                                    }
+                                    if (isDeveloper)
+                                        builder.setMessage("Bạn là người phát triển ứng dụng! Bạn có muốn cập nhật lên phiên bản " + versionInfo.versionCode + "?")
+                                    else
+                                        builder.setMessage("Bạn có muốn cập nhật lên phiên bản " + (versionInfo.versionCode + "?"))
+                                    val dialog = builder.create()
+                                    dialog.show()
+
+                                } else {
+                                    Toast.makeText(this@MainActivity, "Phiên bản hiện tại là mới nhất", Toast.LENGTH_LONG).show()
+                                }
+                            }
+
+                        }).execute(packageManager.getPackageInfo(packageName, 0).versionName)
+            }
             else -> {
             }
         }
@@ -1100,7 +1132,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout!!.closeDrawer(GravityCompat.START)
         return true
     }
+    private fun goURLBrowser(url: String) {
+        var localUrl = url
+        if (!localUrl.startsWith("http://") && !localUrl.startsWith("https://"))
+            localUrl = "http://$localUrl"
 
+        val webpage = Uri.parse(localUrl)
+        val intent = Intent(Intent.ACTION_VIEW, webpage)
+
+        try {
+            startActivity(intent)
+        } catch (ignored: Exception) {
+        }
+
+    }
     fun onClickTextView(v: View) {
         when (v.id) {
             R.id.txt_quanlysuco_legend -> if (linearDisplayLayerLegend!!.visibility == View.VISIBLE) {
@@ -1384,17 +1429,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     Activity.RESULT_OK -> try {
                         if (mApplication!!.capture != null) {
 
-                             EditAsync(this, mApplication!!.arcGISFeature!!,
-                                    true, mApplication!!.capture,ArrayList(), ArrayList(),
-                                    object:EditAsync.AsyncResponse{
+                            EditAsync(this, mApplication!!.arcGISFeature!!,
+                                    true, mApplication!!.capture, ArrayList(), ArrayList(),
+                                    object : EditAsync.AsyncResponse {
                                         override fun processFinish(output: ArcGISFeature?) {
                                             //
                                             if (output != null) {
                                                 Toast.makeText(mapView.context, "Đã lưu ảnh", Toast.LENGTH_SHORT).show()
                                                 if ((output.getAttributes().get(Constant.FieldSuCoThongTin.TRANG_THAI).toString()).toShort()
                                                         == Constant.TrangThaiSuCo.HOAN_THANH)
-                                                    APICompleteAsync (mApplication!!, mApplication!!.arcGISFeature!!.getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString())
-                                                .execute();
+                                                    APICompleteAsync(mApplication!!, mApplication!!.arcGISFeature!!.getAttributes().get(Constant.FieldSuCoThongTin.ID_SUCO).toString())
+                                                            .execute();
                                                 if (!output.canEditAttachments())
                                                     Toast.makeText(mapView.context, this@MainActivity.getString(R.string.message_cannot_edit_attachment), Toast.LENGTH_SHORT).show()
                                             } else
