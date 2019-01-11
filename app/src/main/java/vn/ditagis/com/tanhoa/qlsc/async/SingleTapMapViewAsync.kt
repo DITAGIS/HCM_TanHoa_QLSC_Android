@@ -46,7 +46,8 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
         val txtTitle = layout.findViewById<TextView>(R.id.txt_progress_dialog_title)
         txtTitle.text = "Đang lấy thông tin..."
         mDialog = Dialog(mActivity)
-        mDialog!!.setCancelable(false)
+        mDialog!!.setCancelable(true)
+        mDialog!!.setOnCancelListener { publishProgress() }
         mDialog!!.setContentView(layout)
         mDialog!!.show()
     }
@@ -58,7 +59,7 @@ class SingleTapMapViewAsync(private val mActivity: Activity, private val mPopUp:
             val identifyLayerResults: List<IdentifyLayerResult>
             try {
                 identifyLayerResults = listListenableFuture.get()
-                if (identifyLayerResults.size > 0)
+                if (identifyLayerResults.isNotEmpty())
                     for (identifyLayerResult in identifyLayerResults) {
                         run {
                             val elements = identifyLayerResult.elements

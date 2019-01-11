@@ -1132,6 +1132,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout!!.closeDrawer(GravityCompat.START)
         return true
     }
+
     private fun goURLBrowser(url: String) {
         var localUrl = url
         if (!localUrl.startsWith("http://") && !localUrl.startsWith("https://"))
@@ -1146,6 +1147,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
     }
+
     fun onClickTextView(v: View) {
         when (v.id) {
             R.id.txt_quanlysuco_legend -> if (linearDisplayLayerLegend!!.visibility == View.VISIBLE) {
@@ -1174,6 +1176,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private fun handlingLocation() {
+        mGraphicsOverlay!!.graphics.clear()
         if (mIsFirstLocating) {
             mIsFirstLocating = false
             mLocationDisplay!!.stop()
@@ -1280,6 +1283,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.imgBtn_timkiemdiachi_themdiemsuco ->
                 //                themDiemSuCo();
                 themDiemSuCoNoCapture()
+
+
         }//                mCurrentPoint = mapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).getTargetGeometry().getExtent().getCenter();
     }
 
@@ -1461,6 +1466,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+        mGraphicsOverlay!!.graphics.clear()
         val item = parent.getItemAtPosition(position) as TraCuuAdapter.Item
         val objectID = item.objectID
         if (objectID != -1 && mapViewHandler != null) {

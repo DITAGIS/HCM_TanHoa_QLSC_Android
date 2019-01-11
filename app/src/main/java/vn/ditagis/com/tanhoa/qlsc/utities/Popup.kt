@@ -40,8 +40,10 @@ import com.esri.arcgisruntime.geometry.GeometryEngine
 import com.esri.arcgisruntime.geometry.Point
 import com.esri.arcgisruntime.geometry.SpatialReferences
 import com.esri.arcgisruntime.layers.FeatureLayer
+import com.esri.arcgisruntime.mapping.Viewpoint
 import com.esri.arcgisruntime.mapping.view.Callout
 import com.esri.arcgisruntime.mapping.view.MapView
+import kotlinx.android.synthetic.main.layout_timkiemdiachi.view.*
 
 import java.util.ArrayList
 import java.util.Calendar
@@ -72,6 +74,7 @@ constructor(val callout: Callout?, private val mMainActivity: MainActivity, priv
     private var mSelectedArcGISFeature: ArcGISFeature? = null
     private var mServiceFeatureTable: ServiceFeatureTable? = null
     private var lstFeatureType: MutableList<String>? = null
+    private val mDeltaScale = 2
     var featureViewMoreInfoAdapter: FeatureViewMoreInfoAdapter? = null
         private set
 
@@ -101,7 +104,6 @@ constructor(val callout: Callout?, private val mMainActivity: MainActivity, priv
         this.mListItemBeNgam = ArrayList()
 
     }
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -826,6 +828,26 @@ constructor(val callout: Callout?, private val mMainActivity: MainActivity, priv
 
             (linearLayout!!.findViewById<View>(R.id.txt_timkiemdiachi) as TextView).text = location
             linearLayout!!.findViewById<View>(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(this)
+            linearLayout!!.txt__timkiemdiachi__phong_to.setOnClickListener {
+                var scale = mMapView.mapScale
+                try {
+                    scale/=mDeltaScale
+                    val geometry = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry
+                    val center = geometry.extent.center
+                    mMapView.setViewpointCenterAsync(center, scale)
+                } catch (Ex: Exception) {
+                }
+            }
+            linearLayout!!.txt__timkiemdiachi__thu_nho.setOnClickListener {
+                var scale = mMapView.mapScale
+                try {
+                    scale*=mDeltaScale
+                    val geometry = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry
+                    val center = geometry.extent.center
+                    mMapView.setViewpointCenterAsync(center, scale)
+                } catch (Ex: Exception) {
+                }
+            }
             linearLayout!!.findViewById<View>(R.id.imgBtn_cancel_timkiemdiachi).setOnClickListener {
                 callout!!.dismiss()
                 mMainActivity.setIsAddFeature(false)
@@ -865,6 +887,26 @@ constructor(val callout: Callout?, private val mMainActivity: MainActivity, priv
                                 val inflater = LayoutInflater.from(mMainActivity.applicationContext)
                                 linearLayout = inflater.inflate(R.layout.layout_timkiemdiachi, null) as LinearLayout
                                 (linearLayout!!.findViewById<View>(R.id.txt_timkiemdiachi) as TextView).text = addressLine
+                                linearLayout!!.txt__timkiemdiachi__phong_to.setOnClickListener {
+                                    var scale = mMapView.mapScale
+                                    try {
+                                        scale /= mDeltaScale
+                                        val geometry = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry
+                                        val center = geometry.extent.center
+                                        mMapView.setViewpointCenterAsync(center, scale)
+                                    } catch (Ex: Exception) {
+                                    }
+                                }
+                                linearLayout!!.txt__timkiemdiachi__thu_nho.setOnClickListener {
+                                    var scale = mMapView.mapScale
+                                    try {
+                                        scale *= mDeltaScale
+                                        val geometry = mMapView.getCurrentViewpoint(Viewpoint.Type.CENTER_AND_SCALE).targetGeometry
+                                        val center = geometry.extent.center
+                                        mMapView.setViewpointCenterAsync(center, scale)
+                                    } catch (Ex: Exception) {
+                                    }
+                                }
                                 linearLayout!!.findViewById<View>(R.id.imgBtn_timkiemdiachi_themdiemsuco).setOnClickListener(this@Popup)
                                 linearLayout!!.findViewById<View>(R.id.imgBtn_cancel_timkiemdiachi).setOnClickListener {
                                     mMainActivity.setIsAddFeature(false)

@@ -38,18 +38,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
         android:orientation="horizontal"
         tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/txt__timkiemdiachi__phong_to"
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="Phóng tới" />
+
+        <TextView
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text=" / " />
+
+        <TextView
+            android:id="@+id/txt__timkiemdiachi__thu_nho"
+            style="@style/MyTextAppearance.Blue.Big.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:text="Lùi     " />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"></View>
 
         <TextView
             android:id="@+id/imgBtn_timkiemdiachi_themdiemsuco"
             style="@style/MyTextAppearance.Blue.Big.Bold"
             android:layout_width="wrap_content"
-            android:clickable="true"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_title_popup"
-            android:background="@drawable/layout_border_bottom_thin"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:clickable="true"
+            android:gravity="right"
             android:text="Báo sự cố"
             tools:ignore="KeyboardInaccessibleWidget,RtlSymmetry" />
     </LinearLayout>
