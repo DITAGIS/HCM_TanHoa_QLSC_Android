@@ -271,7 +271,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         requestPermisson()
         mIDSuCoList = ArrayList()
+        if (nav_view != null && nav_view!!.headerCount > 0) {
+            val header = nav_view!!.getHeaderView(0)
+            try {
+                nav_view!!.menu.add(1, 1, 1, packageManager.getPackageInfo(packageName, 0).versionName)
+            } catch (ignored: PackageManager.NameNotFoundException) {
 
+            }
+
+            if (mApplication!!.userDangNhap != null && mApplication!!.userDangNhap!!.userName != null
+                    && mApplication!!.userDangNhap!!.displayName != null) {
+                if (header.txt_nav_header_tenNV != null)
+                    header.txt_nav_header_tenNV!!.text = mApplication!!.userDangNhap!!.userName
+                if (header.txt_nav_header_displayname != null)
+                    header.txt_nav_header_displayname!!.text = mApplication!!.userDangNhap!!.displayName
+            }
+        }
     }
 
     private fun init() {
@@ -328,22 +343,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint("ClickableViewAccessibility")
     private fun prepare() {
-        if (nav_view != null && nav_view!!.headerCount > 0) {
-            val header = nav_view!!.getHeaderView(0)
-            try {
-                nav_view!!.menu.add(1, 1, 1, packageManager.getPackageInfo(packageName, 0).versionName)
-            } catch (ignored: PackageManager.NameNotFoundException) {
 
-            }
-
-            if (mApplication!!.userDangNhap != null && mApplication!!.userDangNhap!!.userName != null
-                    && mApplication!!.userDangNhap!!.displayName != null) {
-                if (header.txt_nav_header_tenNV != null)
-                    header.txt_nav_header_tenNV!!.text = mApplication!!.userDangNhap!!.userName
-                if (header.txt_nav_header_displayname != null)
-                    header.txt_nav_header_displayname!!.text = mApplication!!.userDangNhap!!.displayName
-            }
-        }
         txt_appbar_info!!.text = Html.fromHtml(getString(R.string.info_appbar_load_map_not_complete), Html.FROM_HTML_MODE_LEGACY)
         setLicense()
         mArcGISMapImageLayerThematic = null
