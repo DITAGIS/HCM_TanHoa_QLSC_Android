@@ -68,15 +68,9 @@ class ChangePasswordAsycn(@SuppressLint("StaticFieldLeak") private val mActivity
                 conn.connect()
 
                 val bufferedReader = BufferedReader(InputStreamReader(conn.inputStream))
-                val builder = StringBuilder()
-                var line: String
-                while (true) {
-                    line = bufferedReader.readLine()
-                    if (line == null)
-                        break
-                    builder.append(line)
-                }
-                return builder.toString().contains("true")
+                var line = bufferedReader.readLine()
+
+                return line.contains("true")
             } catch (e: Exception) {
                 Log.e("error", e.toString())
             } finally {

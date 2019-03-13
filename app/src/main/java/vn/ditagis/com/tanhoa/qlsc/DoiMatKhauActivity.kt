@@ -8,10 +8,12 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_doi_mat_khau.*
 
 import vn.ditagis.com.tanhoa.qlsc.async.ChangePasswordAsycn
+import vn.ditagis.com.tanhoa.qlsc.entities.DApplication
+import vn.ditagis.com.tanhoa.qlsc.utities.Preference
 
 
 class DoiMatKhauActivity : AppCompatActivity(), View.OnClickListener {
-
+    private lateinit var mApplication: DApplication
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_doi_mat_khau)
@@ -24,7 +26,7 @@ class DoiMatKhauActivity : AppCompatActivity(), View.OnClickListener {
             false
         }
         etxt_change_password_new_confirm!!.setOnKeyListener(keyListener)
-
+        mApplication = application as DApplication;
     }
 
     private fun validate(): Boolean {
@@ -43,6 +45,8 @@ class DoiMatKhauActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun changPassword() {
+        val oldPassword = etxt_change_password_old!!.text.toString().trim { it <= ' ' }
+        val newPassword = etxt_change_password_new_confirm!!.text.toString().trim { it <= ' ' }
         if (validate()) {
             val asycn = ChangePasswordAsycn(this,
                     object : ChangePasswordAsycn.AsyncResponse {
@@ -50,6 +54,10 @@ class DoiMatKhauActivity : AppCompatActivity(), View.OnClickListener {
                             if (output!!) {
                                 txt_change_password_validation!!.visibility = View.GONE
                                 Toast.makeText(this@DoiMatKhauActivity, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show()
+                                mApplication.userDangNhap!!.passWord = newPassword
+                                val password = Preference.instance.loadPreference(getString(R.string.preference_password))
+                                if (password != null)
+                                    Preference.instance.savePreferences(getString(R.string.preference_password), newPassword)
                                 this@DoiMatKhauActivity.finish()
 
                             } else {
@@ -59,8 +67,7 @@ class DoiMatKhauActivity : AppCompatActivity(), View.OnClickListener {
                         }
 
                     })
-            asycn.execute(etxt_change_password_old!!.text.toString().trim { it <= ' ' },
-                    etxt_change_password_new_confirm!!.text.toString().trim { it <= ' ' })
+            asycn.execute(oldPassword, newPassword)
         }
     }
 
